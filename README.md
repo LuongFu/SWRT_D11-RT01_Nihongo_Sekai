@@ -1,88 +1,92 @@
- 1. Cơ bản – Làm quen với Git & GitHub
-1.1. Cài đặt & cấu hình lần đầu
+A.
 
-git config --global user.name "Your Name"
-git config --global user.email "you@example.com"
-– Đây là thông tin cá nhân được ghi trong mọi commit bạn tạo.
+1. đã clone repo rồi -> chuyển sang nhánh riêng và pull:
 
-1.2. Khởi tạo repository mới
-Tạo local repo từ đầu:
+git fetch origin (so sánh code)
+   
+git branch -r (để check branch trong repo)
 
-git init
-Hoặc clone từ trên GitHub:
+2. Tạo nhánh local và chuyển sang nhánh đó
+Giả sử nhánh bạn cần là hoang/project-demo, chạy:
 
-git clone https://github.com/username/repo.git
-1.3. Thao tác thường ngày
-Kiểm tra trạng thái:
+git checkout -b hoang/project-demo origin/hoang/project-demo (vừa tạo branch vừa remote chính branch mới tạo)
 
-git status
-Thêm thay đổi:
+3. Pull source về từ remote (lần sau),
+Khi đang ở đúng nhánh:
 
-git add file1 file2 
+git pull (Lưu ý: pull khi đang ở nhánh mà mình muốn lấy về)
+
+B. 
+1.  chưa clone repo bao giờ -> Clone toàn bộ repository: git clone https://github.com/LuongFu/SWRT_D11-RT01_Nihongo_Sekai.git
+
+2.  Xem các nhánh có sẵn:
+
+git branch -r (view branch đang tồn tại trong repo)
+
+3.  Checkout nhánh muốn làm việc:
+
+Example: git checkout -b hoang/project-demo origin/hoang/project-demo
+
+C.
+
+Nếu bạn đang ở nhánh hoang/project-demo và muốn lấy (pull) thay đổi từ nhánh main về, tức là muốn cập nhật code mới từ main vào hoang/project-demo, bạn làm như sau:
+
+✅ 1. Đảm bảo bạn đang ở hoang/project-demo
+
+git branch
+
+Nếu chưa, hãy chuyển:
+
+example: git checkout hoang/project-demo
+
+✅ 2. Lấy dữ liệu mới nhất từ remote (không gộp vào nhánh hiện tại)
+
+git fetch origin
+
+✅ 3. Merge nhánh main vào hoang/project-demo
+
+git merge origin/main (có thể thay merge thành rebase)
+
+4. Nếu bạn muốn push lại nhánh hoang/project-demo sau khi merge/rebase:
+
+example: git push origin hoang/project-demo
+
+D.
+Nếu bạn muốn lấy code từ một nhánh phụ khác (không phải main) vào nhánh hiện tại, bạn chỉ cần thay thế tên nhánh là được. Dưới đây là hướng dẫn đầy đủ:
+
+🎯 Giả sử:
+Bạn đang ở nhánh feature/chatbot
+
+Bạn muốn lấy code từ nhánh active/project-demo về để cập nhật
+
+✅ Bước 1: Đảm bảo bạn đang ở đúng nhánh hiện tại
+
+git checkout feature/chatbot
+
+✅ Bước 2: Fetch toàn bộ dữ liệu từ remote
+
+git fetch origin
+
+✅ Bước 3: Merge nhánh phụ vào nhánh hiện tại
+
+git merge origin/active/project-demo
+
+Hoặc nếu muốn giữ lịch sử gọn hơn (khuyên dùng nếu làm việc cá nhân):
+
+git rebase origin/active/project-demo
+
+✅ Bước 4: Resolve conflict (nếu có), sau đó:
+
 git add .
-Commit:
 
-git commit -m "Mô tả ngắn gọn"
-Xem lịch sử commit:
+git commit -m "Resolve conflicts with active/project-demo"
 
-bash
-Sao chép
-Chỉnh sửa
-git log --oneline
-💡 Lưu ý:
-Always viết commit message rõ ràng, có dấu để dễ đọc.
+# Nếu dùng rebase:
+git rebase --continue
 
-Chia nhỏ và gộp commit có logic để sau này dễ hiểu.
+✅ Bước 5: Push thay đổi (nếu muốn)
 
- 2. Làm việc với repository trên GitHub
-2.1. Push/Pull từ remote
-push:
-
-git push origin main
-pull (kết hợp fetch + merge):
-
-git pull origin main
-fetch (chỉ đồng bộ metadata):
-
-git fetch
-git branch -r  # xem branch trên remote
-2.2. Quản lý nhánh (Branch)
-Tạo branch mới:
-
-git checkout -b feature-x
-Chuyển branch:
-
-git checkout main
-Push branch và thiết lập upstream:
-
-git push -u origin feature-x
-3. Thực chiến với Pull Request & Team workflow
-Tạo PR trên GitHub từ feature‑x → main.
-
-Người khác sẽ review, comment.
-
-Sau khi được duyệt, merge vào main.
-
-Trên máy local, bạn chuyển về main:
-
-git checkout main
-git pull origin main
-🎯 Đây là quá trình phổ biến khi làm nhóm hoặc làm open‑source.
-
-🧰 4. Mạnh hơn – Kỹ thuật nâng cao
-4.1. Rebase
-Giúp giữ lịch sử commit gọn, “dẹp” hơn:
-
-git pull --rebase
-4.2. Squash commit
-Gộp nhiều commit vụn thành 1 để lịch sử sạch hơn.
-
-4.3. Chặn push có file nhạy cảm
-Sử dụng .gitignore, git filter-repo, hoặc GitHub Secrets…
-
-Xử lý bằng cách:
-
-git filter-repo --path secret.txt --invert-paths --force
+git push origin feature/chatbot
 
 (QUAN TRỌNG!)
 | Lệnh        | Mục đích chính                                | Khi nào dùng                                     |
