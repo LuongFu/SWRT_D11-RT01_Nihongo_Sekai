@@ -1,3 +1,4 @@
+LƯU Ý: TRƯỚC KHI BẮT TAY VÀO VIỆC ĐỂ CODE, HÃY PULL VỀ VÀ SAU KHI CHẠY THỬ TRÊN LOCAL THÌ HÃY XÓA ĐI CÁC FILE THÔNG TIN NHẠY CẢM NHƯ appsettings.json, launchSettings.json(nếu có) CHẲNG HẠN. SAU ĐÓ RỒI HÃY KIỂM TRA KĨ RỒI MỚI ADD VÀ COMMIT SAU ĐÓ MỚI PUSH LÊN NHÁNH MÀ MÌNH ĐANG LÀM.
 A.
 
 1. đã clone repo rồi -> chuyển sang nhánh riêng và pull:
