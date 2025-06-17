@@ -1,0 +1,74 @@
+@inject UserManager<ApplicationUser> UserManager; 
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <div class="dropdown">
+        <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
+                type="button" id="guestDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person"></i> Account
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm mt-2" aria-labelledby="guestDropdown">
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Account" asp-action="Login">
+                    <i class="bi bi-box-arrow-in-right"></i> Log in
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2 jp-highlight" asp-controller="Account" asp-action="Register">
+                    <i class="bi bi-person-plus"></i> Register
+                </a>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+
+    @*User profile section*@
+    <div class="dropdown">
+        <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
+                type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person"></i> @UserManager.GetUserName(User)
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm mt-2" aria-labelledby="userDropdown">
+            
+
+            @if (User.IsInRole("Admin"))
+            {
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Account" asp-action="Users">
+                        <i class="bi bi-people"></i> Users
+                    </a>
+                </li>
+            }
+            else if (User.IsInRole("Partner"))
+            {
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Orders" asp-action="Index">
+                        <i class="bi bi-list"></i> My Classroom
+                    </a>
+                </li>
+            }
+            else if (User.IsInRole("Learner"))
+            {
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Orders" asp-action="Index">
+                        <i class="bi bi-list"></i> My Courses
+                    </a>
+                </li>
+            }
+
+            <li>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="dropdown-item m-0 p-0">
+                    <button type="submit" class="btn btn-link dropdown-item d-flex align-items-center gap-2 text-danger">
+                        <i class="bi bi-box-arrow-right"></i> Log out
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+}
+

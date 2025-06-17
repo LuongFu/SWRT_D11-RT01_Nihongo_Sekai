@@ -1,0 +1,39 @@
+﻿@{
+    Layout = null;
+    var returnUrl = ViewBag.ReturnUrl ?? "/";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <meta charset="utf-8" />
+    <title>Loading...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(135deg, #a5eaed, #fdb5da);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="loader-container">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading, please wait...</div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            window.location.href = "@returnUrl";
+        }, 2200);
+    </script>
+</body>
+</html>

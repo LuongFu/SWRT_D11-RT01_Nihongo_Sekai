@@ -1,0 +1,64 @@
+@using NihongoSekaiWebApplication_D11_RT01.Models
+@model IEnumerable<Course>
+
+@{
+    ViewData["Title"] = "List of Courses";
+    ViewData["HideFooter"] = false;
+}
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm rounded-4">
+                    <img src="@item.ImageURL" class="card-img-top rounded-top-4" alt="@item.Name" style="height: 220px; object-fit: cover;">
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                            <span>@item.Name</span>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <a class="text-primary" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+                            }
+                        </h5>
+                        <p class="card-text">@item.Description</p>
+                        @* <p class="card-text"><strong>Cinema:</strong> @item.Cinema.Name</p> *@
+                        <p class="card-text"><strong>Category:</strong> @item.CourseCategory</p>
+                        <p class="card-text"><strong>Start:</strong> @item.StartDate.ToString("dd MMM yy")</p>
+                        <p class="card-text"><strong>End:</strong> @item.EndDate.ToString("dd MMM yy")</p>
+                        <p class="card-text">
+                            <strong>Status:</strong>
+                            @if (DateTime.Now >= item.StartDate && DateTime.Now <= item.EndDate)
+                            {
+                                <span class="badge bg-success">AVAILABLE</span>
+                            }
+                            else if (DateTime.Now > item.EndDate)
+                            {
+                                <span class="badge bg-danger">INVALID</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-primary">UPCOMING</span>
+                            }
+                        </p>
+                    </div>
+
+                    <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center">
+                        <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.Id">
+                            <i class="bi bi-eye-fill"></i> Details
+                        </a>
+                        <a class="btn btn-success text-white @((DateTime.Now > item.EndDate) ? "disabled" : "")"
+                           asp-controller="Orders"
+                           asp-action="AddItemToShoppingCart"
+                           asp-route-id="@item.Id">
+                            <i class="bi bi-cart-plus"></i> @item.Price.ToString("c")
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@await Html.PartialAsync("_CreateItem", "Courses")

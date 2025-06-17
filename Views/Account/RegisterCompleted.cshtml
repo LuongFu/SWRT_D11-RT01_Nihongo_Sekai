@@ -1,0 +1,18 @@
+@{
+    ViewData["HideNavbar"] = true;
+    ViewData["HideFooter"] = true;
+}
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="col-md-6 shadow-lg p-5 rounded-4 bg-white text-center">
+        <div class="mb-4">
+            <i class="bi bi-check-circle-fill" style="font-size: 3rem; color: #28a745;"></i>
+            <h2 class="mt-3 fw-bold">Account Created Successfully!</h2>
+            <p class="text-muted">To continue, please access your Email and verify the link <a href="https://mail.google.com/mail/u/0/#inbox">email</a>.</p>
+        </div>
+        <hr />
+        <p class="mb-4">Thank you for joining us!</p>
+        @* <a asp-controller="Account" asp-action="Login" class="btn btn-success px-4 py-2">
+            <i class="bi bi-box-arrow-in-right"></i> Return to Login Page
+        </a> *@
+    </div>
+</div>

@@ -1,0 +1,10 @@
+# .gitignore
+appsettings*.json
+Properties/launchSettings.json
+.env
+*.user
+*.suo
+bin/
+obj/
+.vs/
+.idea/
