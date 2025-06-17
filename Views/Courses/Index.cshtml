@@ -1,0 +1,85 @@
+@using NihongoSekaiPlatform.Data.ViewModels
+@using JapaneseLearningPlatform.Models
+@* @model IEnumerable<Course> *@
+@model IEnumerable<CourseWithPurchaseVM>
+@{
+    ViewData["Title"] = "List of Courses";
+    ViewData["HideFooter"] = false;
+}
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow border-0 rounded-4 overflow-hidden position-relative">
+
+                    <img src="@item.Course.ImageURL" class="card-img-top" alt="@item.Course.Name" style="height: 220px; object-fit: cover;" />
+
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title text-truncate mb-0" title="@item.Course.Name">@item.Course.Name</h5>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Course.Id" class="btn btn-sm btn-outline-secondary ms-2" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            }
+                        </div>
+
+                        <p class="card-text small text-muted">@item.Course.Description?.Substring(0, Math.Min(100, item.Course.Description.Length))...</p>
+
+                        <ul class="list-unstyled small mb-3">
+                            <li><strong>Category:</strong> @item.Course.CourseCategory</li>
+                            <li><strong>Start:</strong> @item.Course.StartDate.ToString("dd MMM yy")</li>
+                            <li><strong>End:</strong> @item.Course.EndDate.ToString("dd MMM yy")</li>
+                            <li>
+                                <strong>Status:</strong>
+                                @if (DateTime.Now >= item.Course.StartDate && DateTime.Now <= item.Course.EndDate)
+                                {
+                                    <span class="badge bg-success">AVAILABLE</span>
+                                }
+                                else if (DateTime.Now > item.Course.EndDate)
+                                {
+                                    <span class="badge bg-danger">EXPIRED</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary">UPCOMING</span>
+                                }
+                            </li>
+                        </ul>
+
+                        <div class="mt-auto d-flex flex-column gap-2">
+                            <a class="btn btn-outline-primary w-100" asp-action="Details" asp-route-id="@item.Course.Id">
+                                <i class="bi bi-eye-fill"></i> View Details
+                            </a>
+
+                            @if (item.IsPurchased)
+                            {
+                                <button class="btn btn-secondary w-100 disabled"><i class="bi bi-play-btn"></i> Start Learning</button>
+                            }
+                            else if (item.IsInCart)
+                            {
+                                <button class="btn btn-warning w-100 disabled"><i class="bi bi-cart-check"></i> In Cart</button>
+                            }
+                            else if (DateTime.Now <= item.Course.EndDate)
+                            {
+                                <a class="btn btn-success text-white w-100" asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@item.Course.Id">
+                                    <i class="bi bi-cart-plus"></i> Buy for @item.Course.Price.ToString("c")
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger text-center p-2">Course Expired</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+@await Html.PartialAsync("_CreateItem", "Courses")

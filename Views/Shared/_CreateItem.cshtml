@@ -1,0 +1,11 @@
+@model string;
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <div class="fab-wrapper" style="position: fixed; left: 25px; bottom: 25px">
+        <a asp-controller="@Model" asp-action="Create" class="fab-button">
+            <span class="fab-icon"><i class="bi bi-plus"></i></span>
+            <span class="fab-label">Add New Item</span>
+        </a>
+    </div>
+}

@@ -1,0 +1,147 @@
+﻿@using JapaneseLearningPlatform.Models
+@using System.Security.Claims
+@using NihongoSekaiPlatform.Data.ViewModels
+@model CourseDetailVM
+
+@functions {
+    public string ToEmbedUrl(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return "";
+        if (!url.Contains("watch?v=")) return url;
+
+        var videoId = url.Split("watch?v=")[1].Split('&')[0];
+        return $"https://www.youtube.com/embed/{videoId}";
+    }
+}
+
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm rounded-4 border-0">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="@Model.Course.ImageURL" alt="@Model.Course.Name" class="img-fluid rounded-start h-100 w-100 object-fit-cover" />
+            </div>
+
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h3 class="card-title">@Model.Course.Name</h3>
+                    <p class="card-text text-muted">@Model.Course.Description</p>
+
+                    <p class="mb-1">
+                        <strong>Cinema:</strong>
+                        <a asp-controller="Cinemas" asp-action="Details" asp-route-id="@Model.Course.CinemaId">
+                            @Model.Course.Cinema.Name
+                        </a>
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Producer:</strong>
+                        <a asp-controller="Producers" asp-action="Details" asp-route-id="@Model.Course.ProducerId">
+                            @Model.Course.Producer.FullName
+                        </a>
+                    </p>
+
+                    <p class="mb-1"><strong>Category:</strong> @Model.Course.CourseCategory</p>
+                    <p class="mb-1"><strong>Start Date:</strong> @Model.Course.StartDate.ToString("dd MMM yyyy")</p>
+                    <p class="mb-3"><strong>End Date:</strong> @Model.Course.EndDate.ToString("dd MMM yyyy")</p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        @if (DateTime.Now >= Model.Course.StartDate && DateTime.Now <= Model.Course.EndDate)
+                        {
+                            <span class="badge bg-success">AVAILABLE</span>
+                        }
+                        else if (DateTime.Now > Model.Course.EndDate)
+                        {
+                            <span class="badge bg-danger">EXPIRED</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-primary">UPCOMING</span>
+                        }
+                    </p>
+
+                    <hr />
+
+                    <!-- Nút điều hướng -->
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left-circle"></i> Back to Courses
+                        </a>
+
+                        @if (Model.IsPurchased)
+                        {
+                            <button class="btn btn-success" disabled>
+                                <i class="bi bi-play-btn"></i> Start Learning
+                            </button>
+                        }
+                        else if (Model.IsInCart)
+                        {
+                            <button class="btn btn-warning" disabled>
+                                <i class="bi bi-cart-check"></i> In Cart
+                            </button>
+                        }
+                        else
+                        {
+                            <a asp-action="AddItemToShoppingCart" asp-controller="Orders" asp-route-id="@Model.Course.Id" class="btn btn-primary">
+                                <i class="bi bi-cart-plus"></i> Buy - @Model.Course.Price.ToString("c")
+                            </a>
+                        }
+                        @if (Model.IsPurchased && (Model.Videos == null || !Model.Videos.Any()))
+                        {
+                            <div class="alert alert-info mt-4">
+                                <i class="bi bi-info-circle"></i> No video lessons available for this course yet.
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Video Lessons -->
+                    @if (Model.IsPurchased && Model.Videos != null && Model.Videos.Any())
+                    {
+                        <hr />
+                        <h4 class="mt-4">Video Lessons</h4>
+                        <div class="row">
+                            @foreach (var video in Model.Videos)
+                            {
+                                <div class="col-md-6 mb-4">
+                                    <div class="card shadow-sm">
+                                        <div class="ratio ratio-16x9">
+                                            @* <iframe class="rounded-top" src="@video.VideoURL.Replace("watch?v=", "embed/")" allowfullscreen></iframe> *@
+                                            @* <iframe src="@ConvertToEmbedUrl(video.VideoURL)" allowfullscreen></iframe> *@
+                                            <iframe class="rounded-top"
+                                                    src="@ToEmbedUrl(video.VideoURL)"
+                                                    allowfullscreen
+                                                    style="width:100%; height:315px;">
+                                            </iframe>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">@video.VideoDescription</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white">
+            <strong>Actors:</strong>
+            <div class="row mt-3">
+                @foreach (var actor in Model.Course.Actors_Courses)
+                {
+                    <div class="col-md-3 col-sm-4 text-center mb-3">
+                        <img class="rounded-circle mb-2" src="@actor.Actor.ProfilePictureURL" alt="@actor.Actor.FullName" style="width: 100px; height: 100px; object-fit: cover;" />
+                        <div>
+                            <a asp-controller="Actors" asp-action="Details" asp-route-id="@actor.ActorId">@actor.Actor.FullName</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
