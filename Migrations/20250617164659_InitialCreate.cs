@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace NihongoSekaiWebApplication_D11_RT01.Migrations
+namespace JapaneseLearningPlatform.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -97,6 +97,20 @@ namespace NihongoSekaiWebApplication_D11_RT01.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Producers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Videos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VideoURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VideoDescription = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Videos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -331,6 +345,30 @@ namespace NihongoSekaiWebApplication_D11_RT01.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Videos_Courses",
+                columns: table => new
+                {
+                    CourseId = table.Column<int>(type: "int", nullable: false),
+                    VideoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Videos_Courses", x => new { x.VideoId, x.CourseId });
+                    table.ForeignKey(
+                        name: "FK_Videos_Courses_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Videos_Courses_Videos_VideoId",
+                        column: x => x.VideoId,
+                        principalTable: "Videos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Actors_Courses_CourseId",
                 table: "Actors_Courses",
@@ -404,6 +442,11 @@ namespace NihongoSekaiWebApplication_D11_RT01.Migrations
                 name: "IX_ShoppingCartItems_CourseId",
                 table: "ShoppingCartItems",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Videos_Courses_CourseId",
+                table: "Videos_Courses",
+                column: "CourseId");
         }
 
         /// <inheritdoc />
@@ -434,6 +477,9 @@ namespace NihongoSekaiWebApplication_D11_RT01.Migrations
                 name: "ShoppingCartItems");
 
             migrationBuilder.DropTable(
+                name: "Videos_Courses");
+
+            migrationBuilder.DropTable(
                 name: "Actors");
 
             migrationBuilder.DropTable(
@@ -444,6 +490,9 @@ namespace NihongoSekaiWebApplication_D11_RT01.Migrations
 
             migrationBuilder.DropTable(
                 name: "Courses");
+
+            migrationBuilder.DropTable(
+                name: "Videos");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -1,6 +1,6 @@
 using System;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Models
+namespace JapaneseLearningPlatform.Models
 {
     public class ErrorViewModel
     {

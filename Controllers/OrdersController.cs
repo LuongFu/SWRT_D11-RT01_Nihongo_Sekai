@@ -1,16 +1,18 @@
-using NihongoSekaiWebApplication_D11_RT01.Data.Cart;
-using NihongoSekaiWebApplication_D11_RT01.Data.Services;
-using NihongoSekaiWebApplication_D11_RT01.Data.Static;
-using NihongoSekaiWebApplication_D11_RT01.Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Cart;
+using JapaneseLearningPlatform.Data.Services;
+using JapaneseLearningPlatform.Data.Static;
+using JapaneseLearningPlatform.Data.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Controllers
+namespace JapaneseLearningPlatform.Controllers
 {
     [Authorize] 
     public class OrdersController : Controller
@@ -18,12 +20,14 @@ namespace NihongoSekaiWebApplication_D11_RT01.Controllers
         private readonly ICoursesService _coursesService;
         private readonly ShoppingCart _shoppingCart;
         private readonly IOrdersService _ordersService;
+        private readonly AppDbContext _context;
 
-        public OrdersController(ICoursesService coursesService, ShoppingCart shoppingCart, IOrdersService ordersService)
+        public OrdersController(ICoursesService coursesService, ShoppingCart shoppingCart, IOrdersService ordersService, AppDbContext context)
         {
             _coursesService = coursesService;
             _shoppingCart = shoppingCart;
             _ordersService = ordersService;
+            _context = context;
         }
 
         public async Task<IActionResult> Index()

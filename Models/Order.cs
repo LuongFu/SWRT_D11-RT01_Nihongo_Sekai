@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Models
+namespace JapaneseLearningPlatform.Models
 {
     public class Order
     {

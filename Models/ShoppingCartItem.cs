@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Models
+namespace JapaneseLearningPlatform.Models
 {
     public class ShoppingCartItem
     {
@@ -12,6 +12,7 @@ namespace NihongoSekaiWebApplication_D11_RT01.Models
         public int Id { get; set; }
 
         public Course Course { get; set; }
+        public int CourseId { get; set; }
         public int Amount { get; set; }
 
 

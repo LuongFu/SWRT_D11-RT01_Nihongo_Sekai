@@ -1,0 +1,56 @@
+@model Video
+
+@{
+    ViewData["Title"] = "Add a new video";
+    ViewData["HideNavbar"] = false;
+    ViewData["HideFooter"] = true;
+}
+
+<div class="row text">
+    <div class="col-md-8 offset-2">
+        <p>
+            <h1>Add a New Video</h1>
+        </p>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group text-center">
+                        <img id="ProfilePicturePreview"  class="border-info rounded-circle" style="max-width: 150px" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="VideoURL" class="control-label"></label>
+                        <input asp-for="VideoURL" class="form-control" />
+                        <span asp-validation-for="VideoURL" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="VideoDescription" class="control-label"></label>
+                        <input asp-for="VideoDescription" class="form-control" />
+                        <span asp-validation-for="VideoDescription" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-outline-success float-right" />
+                        <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{ 
+    <script>
+
+        $(document).ready(function () {
+            var output = document.getElementById('VideoPreview');
+            output.src = $("#VideoURL").val();
+        })
+
+        $("#VideoURL").on("change", function () {
+            var output = document.getElementById('VideoPreview');
+            output.src = $(this).val();
+        })
+    </script>
+}

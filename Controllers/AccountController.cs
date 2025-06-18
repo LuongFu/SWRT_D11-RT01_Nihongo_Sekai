@@ -1,7 +1,7 @@
-using NihongoSekaiWebApplication_D11_RT01.Data;
-using NihongoSekaiWebApplication_D11_RT01.Data.Static;
-using NihongoSekaiWebApplication_D11_RT01.Data.ViewModels;
-using NihongoSekaiWebApplication_D11_RT01.Models;
+using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Static;
+using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,7 +15,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Controllers
+namespace JapaneseLearningPlatform.Controllers
 {
     public class AccountController : Controller
     {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Data.Services
 {
-    public interface ICinemasService:IEntityBaseRepository<Cinema>
+    public interface IVideosService:IEntityBaseRepository<Video>
     {
     }
 }

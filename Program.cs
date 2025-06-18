@@ -1,7 +1,7 @@
-﻿using NihongoSekaiWebApplication_D11_RT01.Data;
-using NihongoSekaiWebApplication_D11_RT01.Data.Cart;
-using NihongoSekaiWebApplication_D11_RT01.Data.Services;
-using NihongoSekaiWebApplication_D11_RT01.Models;
+﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Cart;
+using JapaneseLearningPlatform.Data.Services;
+using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
@@ -18,7 +18,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01
+namespace JapaneseLearningPlatform
 {
     public class Program
     {
@@ -51,6 +51,7 @@ namespace NihongoSekaiWebApplication_D11_RT01
             builder.Services.AddScoped<ICinemasService, CinemasService>();
             builder.Services.AddScoped<ICoursesService, CoursesService>();
             builder.Services.AddScoped<IOrdersService, OrdersService>();
+            builder.Services.AddScoped<IVideosService, VideosService>();
 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
@@ -63,23 +64,6 @@ namespace NihongoSekaiWebApplication_D11_RT01
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
-
-            // google account auth
-            //            builder.Services.AddAuthentication(options =>
-            //            {
-            //                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            //            })
-            //.AddCookie()
-            //.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-            //{
-            //    IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
-            //    options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
-            //    options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET");
-            //    //options.ClientId = googleAuthNSection["ClientId"];
-            //    //options.ClientSecret = googleAuthNSection["ClientSecret"];
-            //});
-
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -87,11 +71,11 @@ namespace NihongoSekaiWebApplication_D11_RT01
         options.AccessDeniedPath = "/Account/AccessDenied";
     })
     .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-    {
-        IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
-        options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
-        options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET");
-    });
+{
+                var googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
+                options.ClientId = googleAuthNSection["ClientId"];
+                options.ClientSecret = googleAuthNSection["ClientSecret"];
+            });
 
 
 

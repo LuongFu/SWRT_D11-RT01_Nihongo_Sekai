@@ -1,5 +1,5 @@
-using NihongoSekaiWebApplication_D11_RT01.Data;
-using NihongoSekaiWebApplication_D11_RT01.Data.Base;
+using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Models
+namespace JapaneseLearningPlatform.Models
 {
     public class NewCourseVM
     {

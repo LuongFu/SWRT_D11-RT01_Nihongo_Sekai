@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Data.ViewModels
+namespace JapaneseLearningPlatform.Data.ViewModels
 {
     public class ForgotPasswordVM
     {

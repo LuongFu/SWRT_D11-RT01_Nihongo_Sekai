@@ -1,5 +1,5 @@
-using NihongoSekaiWebApplication_D11_RT01.Data.Static;
-using NihongoSekaiWebApplication_D11_RT01.Models;
+using JapaneseLearningPlatform.Data.Static;
+using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Data
+namespace JapaneseLearningPlatform.Data
 {
     public class AppDbInitializer
     {
@@ -79,24 +79,63 @@ namespace NihongoSekaiWebApplication_D11_RT01.Data
                         new Actor()
                         {
                             FullName = "Actor 3",
-                            Bio = "This is the Bio of the second actor",
+                            Bio = "This is the Bio of the third actor",
                             ProfilePictureURL = "http://dotnethow.net/images/actors/actor-3.jpeg"
                         },
                         new Actor()
                         {
                             FullName = "Actor 4",
-                            Bio = "This is the Bio of the second actor",
+                            Bio = "This is the Bio of the fourth actor",
                             ProfilePictureURL = "http://dotnethow.net/images/actors/actor-4.jpeg"
                         },
                         new Actor()
                         {
                             FullName = "Actor 5",
-                            Bio = "This is the Bio of the second actor",
+                            Bio = "This is the Bio of the fifth actor",
                             ProfilePictureURL = "http://dotnethow.net/images/actors/actor-5.jpeg"
                         }
                     });
                     context.SaveChanges();
                 }
+                //Videos
+                if (!context.Videos.Any())
+                {
+                    context.Videos.AddRange(new List<Video>()
+                    {
+                        new Video()
+                        {
+                            VideoURL = "https://www.youtube.com/watch?v=rGrBHiuPlT0&ab_channel=JapanSocietyNYC",
+                            VideoDescription = "This is the Description of the first video",
+
+
+                        },
+                        new Video()
+                        {
+                            VideoURL = "https://www.youtube.com/watch?v=bOUqVC4XkOY&ab_channel=JapanSocietyNYC",
+                            VideoDescription = "This is the Description of the second video"
+
+                        },
+                        new Video()
+                        {
+                            VideoURL = "https://www.youtube.com/watch?v=JnoZE51WZg4&t=1s&ab_channel=JapanSocietyNYC",
+                            VideoDescription = "This is the Description of the second video"
+                           
+                        },
+                        new Video()
+                        {   VideoURL = "https://www.youtube.com/watch?v=KUIWRsVZZZA&t=5s&ab_channel=JapanSocietyNYC",
+                            VideoDescription = "This is the Description of the second video"
+                            
+                        },
+                        new Video()
+                        {
+                            VideoURL = "https://www.youtube.com/watch?v=SzG9STImtk0&ab_channel=HarupakaJapanese",
+                            VideoDescription = "This is the Description of the second video"
+
+                        }
+                    });
+                    context.SaveChanges();
+                }
+                
                 //Producers
                 if (!context.Producers.Any())
                 {
@@ -312,6 +351,107 @@ namespace NihongoSekaiWebApplication_D11_RT01.Data
                         new Actor_Course()
                         {
                             ActorId = 5,
+                            CourseId = 6
+                        },
+                    });
+                    context.SaveChanges();
+                }
+                //Videos & Courses
+                if (!context.Videos_Courses.Any())
+                {
+                    context.Videos_Courses.AddRange(new List<Video_Course>()
+                    {
+                        new Video_Course()
+                        {
+                            VideoId = 1,
+                            CourseId = 1
+                        },
+                        new Video_Course()
+                        {
+                            VideoId = 3,
+                            CourseId = 1
+                        },
+
+                         new Video_Course()
+                        {
+                            VideoId = 1,
+                            CourseId = 2
+                        },
+                         new Video_Course()
+                        {
+                            VideoId = 4,
+                            CourseId = 2
+                        },
+
+                        new Video_Course()
+                        {
+                            VideoId = 1,
+                            CourseId = 3
+                        },
+                        new Video_Course()
+                        {
+                            VideoId = 2,
+                            CourseId = 3
+                        },
+                        new Video_Course()
+                        {
+                            VideoId = 5,
+                            CourseId = 3
+                        },
+
+
+                        new Video_Course()
+                        {
+                            VideoId = 2,
+                            CourseId = 4
+                        },
+                        new Video_Course()
+                        {
+                            VideoId = 3,
+                            CourseId = 4
+                        },
+                        new Video_Course()
+                        {
+                            VideoId = 4,
+                            CourseId = 4
+                        },
+
+
+                        new Video_Course()
+                        {
+                            VideoId = 2,
+                            CourseId = 5
+                        },
+                        new Video_Course()
+                        {
+                            VideoId = 3,
+                            CourseId = 5
+                        },
+                        new Video_Course()
+                        {
+                            VideoId = 4,
+                            CourseId = 5
+                        },
+                        new Video_Course()
+                        {
+                            VideoId = 5,
+                            CourseId = 5
+                        },
+
+
+                        new Video_Course()
+                        {
+                            VideoId = 3,
+                            CourseId = 6
+                        },
+                        new Video_Course()
+                        {
+                            VideoId = 4,
+                            CourseId = 6
+                        },
+                        new Video_Course()
+                        {
+                            VideoId = 5,
                             CourseId = 6
                         },
                     });

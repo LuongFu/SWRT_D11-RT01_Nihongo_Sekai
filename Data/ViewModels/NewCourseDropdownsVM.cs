@@ -1,10 +1,10 @@
-using NihongoSekaiWebApplication_D11_RT01.Models;
+using JapaneseLearningPlatform.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Data.ViewModels
+namespace JapaneseLearningPlatform.Data.ViewModels
 {
     public class NewCourseDropdownsVM
     {

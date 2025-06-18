@@ -42,6 +42,11 @@ else
                         <i class="bi bi-people"></i> Users
                     </a>
                 </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Videos" asp-action="Index">
+                        <i class="bi bi-people"></i> Videos
+                    </a>
+                </li>
             }
             else if (User.IsInRole("Partner"))
             {

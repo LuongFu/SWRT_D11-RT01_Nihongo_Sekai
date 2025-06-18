@@ -1,11 +1,11 @@
-using NihongoSekaiWebApplication_D11_RT01.Data.Cart;
+using JapaneseLearningPlatform.Data.Cart;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Data.ViewComponents
+namespace JapaneseLearningPlatform.Data.ViewComponents
 {
     public class ShoppingCartSummary:ViewComponent
     {

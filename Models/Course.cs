@@ -1,5 +1,5 @@
-using NihongoSekaiWebApplication_D11_RT01.Data;
-using NihongoSekaiWebApplication_D11_RT01.Data.Base;
+using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Models
+namespace JapaneseLearningPlatform.Models
 {
     public class Course:IEntityBase
     {
@@ -24,7 +24,7 @@ namespace NihongoSekaiWebApplication_D11_RT01.Models
 
         //Relationships
         public List<Actor_Course> Actors_Courses { get; set; }
-
+        public List<Video_Course> Videos_Courses { get; set; }
         //Cinema
         public int CinemaId { get; set; }
         [ForeignKey("CinemaId")]

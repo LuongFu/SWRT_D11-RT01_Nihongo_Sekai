@@ -1,8 +1,7 @@
-@using JapaneseLearningPlatform.Models
-@model IEnumerable<Producer>
+@model IEnumerable<Video>
 
 @{
-    ViewData["Title"] = "List of Producers";
+    ViewData["Title"] = "List of Videos";
     ViewData["HideNavbar"] = false;
     ViewData["HideFooter"] = true;
 }
@@ -13,27 +12,23 @@
         <table class="table">
             <thead>
                 <tr class="text-center">
-                    <th>@Html.DisplayNameFor(model => model.ProfilePictureURL)</th>
-                    <th>@Html.DisplayNameFor(model => model.FullName)</th>
-                    <th>@Html.DisplayNameFor(model => model.Bio)</th>
+                    <th>@Html.DisplayNameFor(model => model.VideoURL)</th>
+                    <th>@Html.DisplayNameFor(model => model.VideoDescription)</th>
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                     {
                         <th>Actions</th>
                     }
-                    </tr>
+                </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                 <tr>
                     <td class="align-middle">
-                        <img class="rounded-circle" src="@item.ProfilePictureURL" alt="@item.FullName" style="max-width: 150px" />
+                            <img class="rounded-circle" src="@item.VideoURL" alt="" style="max-width: 150px" />
                     </td>
                     <td class="align-middle">
-                        @Html.DisplayFor(modelItem => item.FullName)
-                    </td>
-                    <td class="align-middle">
-                        @Html.DisplayFor(modelItem => item.Bio)
+                        @Html.DisplayFor(modelItem => item.VideoDescription)
                     </td>
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                     {
@@ -43,11 +38,14 @@
                             <a class="btn btn-danger text-white" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i>Delete </a>
                         </td>
                     }
-                    </tr>
+
+                </tr>
                 }
             </tbody>
+
         </table>
+
     </div>
 </div>
 
-@await Html.PartialAsync("_CreateItem", "Producers") 
+@await Html.PartialAsync("_CreateItem", "Videos") 

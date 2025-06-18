@@ -1,4 +1,4 @@
-using NihongoSekaiWebApplication_D11_RT01.Models;
+using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Data.Cart
+namespace JapaneseLearningPlatform.Data.Cart
 {
     public class ShoppingCart
     {

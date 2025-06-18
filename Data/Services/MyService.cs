@@ -1,4 +1,4 @@
-﻿namespace NihongoSekaiWebApplication_D11_RT01.Data.Services
+﻿namespace JapaneseLearningPlatform.Data.Services
 {
     public class MyService
     {

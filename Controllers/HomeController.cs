@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace NihongoSekaiWebApplication_D11_RT01.Controllers
+namespace JapaneseLearningPlatform.Controllers
 {
     public class HomeController : Controller
     {

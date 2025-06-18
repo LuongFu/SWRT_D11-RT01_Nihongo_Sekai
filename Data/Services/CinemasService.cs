@@ -1,11 +1,11 @@
-using NihongoSekaiWebApplication_D11_RT01.Data.Base;
-using NihongoSekaiWebApplication_D11_RT01.Models;
+using JapaneseLearningPlatform.Data.Base;
+using JapaneseLearningPlatform.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Data.Services
+namespace JapaneseLearningPlatform.Data.Services
 {
     public class CinemasService:EntityBaseRepository<Cinema>, ICinemasService
     {

@@ -1,0 +1,49 @@
+@model Video
+
+@{
+    ViewData["Title"] = "Delete video";
+    ViewData["HideNavbar"] = false;
+    ViewData["HideFooter"] = true;
+}
+
+<div class="row text">
+    <div class="col-md-8 offset-2">
+        <p>
+            <h1>Delete confirmation for video</h1>
+        </p>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                    <div class="form-group text-center">
+                        <img class="border-info rounded-circle" style="max-width: 150px" id="VideoPreview" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="VideoURL" class="control-label"></label>
+                        <input asp-for="VideoURL" class="form-control" readonly />
+                        <span asp-validation-for="VideoURL" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="VideoDescription" class="control-label"></label>
+                        <input asp-for="VideoDescription" class="form-control" readonly />
+                        <span asp-validation-for="VideoDescription" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <form asp-action="Delete">
+                            <input type="hidden" asp-for="Id" />
+                            <input type="submit" value="Confirm" class="btn btn-danger float-right" />
+                        </form>
+                        <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var output = document.getElementById('VideoPreview');
+            output.src = $("#VideoURL").val();
+        })
+    </script>
+}

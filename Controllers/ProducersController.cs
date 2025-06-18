@@ -1,7 +1,7 @@
-using NihongoSekaiWebApplication_D11_RT01.Data;
-using NihongoSekaiWebApplication_D11_RT01.Data.Services;
-using NihongoSekaiWebApplication_D11_RT01.Data.Static;
-using NihongoSekaiWebApplication_D11_RT01.Models;
+using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Services;
+using JapaneseLearningPlatform.Data.Static;
+using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NihongoSekaiWebApplication_D11_RT01.Controllers
+namespace JapaneseLearningPlatform.Controllers
 {
     [Authorize(Roles = UserRoles.Admin)]
     public class ProducersController : Controller
