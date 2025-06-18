@@ -380,7 +380,7 @@ html, body {
 }
 
 @keyframes colorShift {
-    0% {
+    0% {    
         color: #ffffff;
     }
 

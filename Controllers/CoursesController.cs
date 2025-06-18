@@ -162,7 +162,7 @@ namespace JapaneseLearningPlatform.Controllers
             ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
             ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
             ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
-            ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "FullName");
+            ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
 
             return View();
         }
@@ -177,7 +177,7 @@ namespace JapaneseLearningPlatform.Controllers
                 ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
                 ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
                 ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
-                ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "FullName");
+                ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
 
                 return View(course);
             }
@@ -236,7 +236,7 @@ namespace JapaneseLearningPlatform.Controllers
                 ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
                 ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
                 ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
-                ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "FullName");
+                ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
 
                 return View(course);
             }

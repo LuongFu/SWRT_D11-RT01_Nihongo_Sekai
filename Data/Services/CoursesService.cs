@@ -49,7 +49,7 @@ namespace JapaneseLearningPlatform.Data.Services
             {
                 var newVideoCourse = new Video_Course()
                 {
-                    CourseId = data.Id,
+                    CourseId = newCourse.Id,
                     VideoId = videoId
                 };
                 await _context.Videos_Courses.AddAsync(newVideoCourse);
