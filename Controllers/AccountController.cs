@@ -237,6 +237,15 @@ namespace JapaneseLearningPlatform.Controllers
         //    return View();
         //}
 
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View(); // Trả view lần đầu, không truyền model, không có lỗi
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
             if (!ModelState.IsValid)
