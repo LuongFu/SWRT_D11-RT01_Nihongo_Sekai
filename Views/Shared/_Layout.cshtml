@@ -53,20 +53,15 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link role-link" asp-controller="Cinemas" asp-action="Index">
-                                            <i class="bi bi-camera-reels me-1"></i> Cinemas
+                                        <a class="nav-link role-link" asp-controller="Courses" asp-action="Index">
+                                            <i class="bi bi-camera-reels me-1"></i> Courses 
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link role-link" asp-controller="Producers" asp-action="Index">
-                                            <i class="bi bi-headset me-1"></i> Producers
+                                    <li>
+                                        <a class="nav-link role-link" asp-controller="Videos" asp-action="Index">
+                                            <i class="bi bi-person-square me-1"></i> Videos
                                         </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link role-link" asp-controller="Actors" asp-action="Index">
-                                            <i class="bi bi-person-square me-1"></i> Actors
-                                        </a>
-                                    </li>
+                                    </li> 
                                 }
                                 else if (User.Identity.IsAuthenticated && User.IsInRole("Partner"))
                                 {
@@ -140,7 +135,13 @@
         <main class="flex-grow-1">
             @RenderBody()
             @*Chat bot*@
+<<<<<<< HEAD
          @*    <iframe id="chatbot-iframe"
+=======
+
+
+            <iframe id="chatbot-iframe"
+>>>>>>> origin/Fu/project-upload
                     src="https://chat-bot-with-gemini-fe.onrender.com"
                     style="position: fixed;
          bottom: 0;
@@ -150,7 +151,13 @@
          border: none;
          z-index: 9999;
          border-radius: 12px;">
+<<<<<<< HEAD
             </iframe> *@
+=======
+
+            </iframe>
+
+>>>>>>> origin/Fu/project-upload
         </main> 
 
         @if (!hideFooter)

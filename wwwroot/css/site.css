@@ -391,4 +391,15 @@ html, body {
     100% {
         color: #ffffff;
     }
+
+
+}
+.card .card-body p {
+    font-size: 15px;
+}
+
+.badge {
+    font-size: 13px;
+    padding: 5px 10px;
+    border-radius: 6px;
 }

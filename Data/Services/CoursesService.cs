@@ -44,6 +44,16 @@ namespace JapaneseLearningPlatform.Data.Services
                 };
                 await _context.Actors_Courses.AddAsync(newActorCourse);
             }
+            //Add Course Videos
+            foreach (var videoId in data.VideoIds)
+            {
+                var newVideoCourse = new Video_Course()
+                {
+                    CourseId = data.Id,
+                    VideoId = videoId
+                };
+                await _context.Videos_Courses.AddAsync(newVideoCourse);
+            }
             await _context.SaveChangesAsync();
         }
 
@@ -53,6 +63,7 @@ namespace JapaneseLearningPlatform.Data.Services
                 .Include(c => c.Cinema)
                 .Include(p => p.Producer)
                 .Include(am => am.Actors_Courses).ThenInclude(a => a.Actor)
+                .Include(vc => vc.Videos_Courses).ThenInclude(a => a.Video)
                 .FirstOrDefaultAsync(n => n.Id == id);
 
             return courseDetails;
@@ -64,7 +75,8 @@ namespace JapaneseLearningPlatform.Data.Services
             {
                 Actors = await _context.Actors.OrderBy(n => n.FullName).ToListAsync(),
                 Cinemas = await _context.Cinemas.OrderBy(n => n.Name).ToListAsync(),
-                Producers = await _context.Producers.OrderBy(n => n.FullName).ToListAsync()
+                Producers = await _context.Producers.OrderBy(n => n.FullName).ToListAsync(),
+                Videos = await _context.Videos.OrderBy(n => n.VideoDescription).ToListAsync()
             };
 
             return response;
@@ -93,6 +105,11 @@ namespace JapaneseLearningPlatform.Data.Services
             _context.Actors_Courses.RemoveRange(existingActorsDb);
             await _context.SaveChangesAsync();
 
+            //Remove existing videos
+            var existingVideosDb = _context.Videos_Courses.Where(n => n.CourseId == data.Id).ToList();
+            _context.Videos_Courses.RemoveRange(existingVideosDb);
+            await _context.SaveChangesAsync();
+
             //Add Course Actors
             foreach (var actorId in data.ActorIds)
             {
@@ -102,6 +119,17 @@ namespace JapaneseLearningPlatform.Data.Services
                     ActorId = actorId
                 };
                 await _context.Actors_Courses.AddAsync(newActorCourse);
+            }
+
+            //Add Course Videos
+            foreach (var videoId in data.VideoIds)
+            {
+                var newVideoCourse = new Video_Course()
+                {
+                    CourseId = data.Id,
+                    VideoId = videoId
+                };
+                await _context.Videos_Courses.AddAsync(newVideoCourse);
             }
             await _context.SaveChangesAsync();
         }

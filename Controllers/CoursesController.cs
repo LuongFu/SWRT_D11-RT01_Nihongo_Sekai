@@ -113,45 +113,15 @@ namespace JapaneseLearningPlatform.Controllers
 
 
 
-        //GET: Courses/Details/1
+        //GET: Courses/Details/...
         [AllowAnonymous]
-        //public async Task<IActionResult> Details(int id)
-        //{
-        //    var courseDetail = await _service.GetCourseByIdAsync(id);
-        //    return View(courseDetail);
-        //}
-        //public async Task<IActionResult> Details(int id)
-        //{
-        //    var course = await _context.Courses
-        //        .Include(c => c.Cinema)
-        //        .Include(c => c.Producer)
-        //        .Include(c => c.Actors_Courses).ThenInclude(ac => ac.Actor)
-        //        .FirstOrDefaultAsync(c => c.Id == id);
-
-        //    if (course == null) return NotFound();
-
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //    var isPurchased = await _context.Orders
-        //        .AnyAsync(o => o.UserId == userId && o.OrderItems.Any(oi => oi.CourseId == id));
-
-        //    var isInCart = _shoppingCart.GetShoppingCartItems().Any(item => item.Course.Id == id);
-
-        //    var viewModel = new CourseDetailVM
-        //    {
-        //        Course = course,
-        //        IsPurchased = isPurchased,
-        //        IsInCart = isInCart
-        //    };
-
-        //    return View(viewModel); // Trả đúng ViewModel như View mong đợi
-        //}
         public async Task<IActionResult> Details(int id)
         {
             var course = await _context.Courses
                 .Include(c => c.Cinema)
                 .Include(c => c.Producer)
                 .Include(c => c.Actors_Courses).ThenInclude(ac => ac.Actor)
+                .Include(c => c.Videos_Courses).ThenInclude(vc => vc.Video)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (course == null) return View("NotFound");
@@ -184,35 +154,35 @@ namespace JapaneseLearningPlatform.Controllers
             return View(viewModel);
         }
 
-
-
         //GET: Courses/Create
         public async Task<IActionResult> Create()
         {
-            var movieDropdownsData = await _service.GetNewCourseDropdownsValues();
+            var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
 
-            ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
-            ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
-            ViewBag.Actors = new SelectList(movieDropdownsData.Actors, "Id", "FullName");
+            ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
+            ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
+            ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
+            ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "FullName");
 
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(NewCourseVM movie)
+        public async Task<IActionResult> Create(NewCourseVM course)
         {
             if (!ModelState.IsValid)
             {
-                var movieDropdownsData = await _service.GetNewCourseDropdownsValues();
+                var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
 
-                ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
-                ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
-                ViewBag.Actors = new SelectList(movieDropdownsData.Actors, "Id", "FullName");
+                ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
+                ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
+                ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
+                ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "FullName");
 
-                return View(movie);
+                return View(course);
             }
 
-            await _service.AddNewCourseAsync(movie);
+            await _service.AddNewCourseAsync(course);
             return RedirectToAction(nameof(Index));
         }
 
@@ -220,49 +190,58 @@ namespace JapaneseLearningPlatform.Controllers
         //GET: Courses/Edit/1
         public async Task<IActionResult> Edit(int id)
         {
-            var movieDetails = await _service.GetCourseByIdAsync(id);
-            if (movieDetails == null) return View("NotFound");
+            //var courseDetails = await _service.GetCourseByIdAsync(id);
+            var courseDetails = await _context.Courses
+        .Include(c => c.Videos_Courses)
+        .Include(c => c.Actors_Courses)
+        .FirstOrDefaultAsync(c => c.Id == id);
+            if (courseDetails == null) return View("NotFound");
 
             var response = new NewCourseVM()
             {
-                Id = movieDetails.Id,
-                Name = movieDetails.Name,
-                Description = movieDetails.Description,
-                Price = movieDetails.Price,
-                StartDate = movieDetails.StartDate,
-                EndDate = movieDetails.EndDate,
-                ImageURL = movieDetails.ImageURL,
-                CourseCategory = movieDetails.CourseCategory,
-                CinemaId = movieDetails.CinemaId,
-                ProducerId = movieDetails.ProducerId,
-                ActorIds = movieDetails.Actors_Courses.Select(n => n.ActorId).ToList(),
+                Id = courseDetails.Id,
+                Name = courseDetails.Name,
+                Description = courseDetails.Description,
+                Price = courseDetails.Price,
+                StartDate = courseDetails.StartDate,
+                EndDate = courseDetails.EndDate,
+                ImageURL = courseDetails.ImageURL,
+                CourseCategory = courseDetails.CourseCategory,
+                CinemaId = courseDetails.CinemaId,
+                ProducerId = courseDetails.ProducerId,
+                ActorIds = courseDetails.Actors_Courses.Select(ac => ac.ActorId).ToList(),
+                VideoIds = courseDetails.Videos_Courses.Select(vc => vc.VideoId).ToList()
+                //VideoIds = courseDetails.Videos_Courses?.Select(vc => vc.VideoId).ToList() ?? new List<int>()
             };
 
-            var movieDropdownsData = await _service.GetNewCourseDropdownsValues();
-            ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
-            ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
-            ViewBag.Actors = new SelectList(movieDropdownsData.Actors, "Id", "FullName");
+            var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
+            ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
+            ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
+            ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
+            ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
+            
 
             return View(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, NewCourseVM movie)
+        public async Task<IActionResult> Edit(int id, NewCourseVM course)
         {
-            if (id != movie.Id) return View("NotFound");
+            if (id != course.Id) return View("NotFound");
 
             if (!ModelState.IsValid)
             {
-                var movieDropdownsData = await _service.GetNewCourseDropdownsValues();
+                var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
 
-                ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
-                ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
-                ViewBag.Actors = new SelectList(movieDropdownsData.Actors, "Id", "FullName");
+                ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
+                ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
+                ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
+                ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "FullName");
 
-                return View(movie);
+                return View(course);
             }
 
-            await _service.UpdateCourseAsync(movie);
+            await _service.UpdateCourseAsync(course);
             return RedirectToAction(nameof(Index));
         }
     }
