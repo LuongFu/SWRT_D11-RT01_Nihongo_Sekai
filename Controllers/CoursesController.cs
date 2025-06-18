@@ -24,11 +24,16 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly ICoursesService _service;
         private readonly ShoppingCart _shoppingCart;
         private readonly AppDbContext _context;
-        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IOrdersService _orderService;
+
+        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService)
         {
             _service = service;
             _shoppingCart = shoppingCart;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _orderService = orderService;
         }
 
         [AllowAnonymous]
@@ -62,19 +67,51 @@ namespace JapaneseLearningPlatform.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Filter(string searchString)
         {
-            var allCourses = await _service.GetAllAsync(n => n.Cinema);
+            // Bước 1: Lấy toàn bộ khóa học
+            var allCourses = await _service.GetAllAsync();
 
+            // Bước 2: Lọc theo từ khóa (theo tên hoặc mô tả)
+            var filteredCourses = allCourses;
             if (!string.IsNullOrEmpty(searchString))
             {
-                //var filteredResult = allCourses.Where(n => n.Name.ToLower().Contains(searchString.ToLower()) || n.Description.ToLower().Contains(searchString.ToLower())).ToList();
-
-                var filteredResultNew = allCourses.Where(n => string.Equals(n.Name, searchString, StringComparison.CurrentCultureIgnoreCase) || string.Equals(n.Description, searchString, StringComparison.CurrentCultureIgnoreCase)).ToList();
-
-                return View("Index", filteredResultNew);
+                var lowerSearch = searchString.ToLower();
+                filteredCourses = allCourses
+                    .Where(c =>
+                        (!string.IsNullOrEmpty(c.Name) && c.Name.ToLower().Contains(lowerSearch)) ||
+                        (!string.IsNullOrEmpty(c.Description) && c.Description.ToLower().Contains(lowerSearch)))
+                    .ToList();
             }
 
-            return View("Index", allCourses);
+            // Bước 3: Lấy ID người dùng hiện tại (có thể null nếu chưa login)
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // Bước 4: Lấy danh sách giỏ hàng
+            var cartCourseIds = _shoppingCart
+                ?.GetShoppingCartItems()
+                ?.Where(i => i.Course != null)
+                .Select(i => i.Course.Id)
+                .ToList() ?? new List<int>();
+
+            // Bước 5: Nếu có user => lấy danh sách khóa học đã mua
+            var purchasedCourseIds = new List<int>();
+            if (!string.IsNullOrEmpty(userId))
+            {
+                purchasedCourseIds = await _orderService.GetPurchasedCourseIdsByUser(userId);
+            }
+
+            // Bước 6: Map sang ViewModel
+            var viewModelList = filteredCourses.Select(course => new CourseWithPurchaseVM
+            {
+                Course = course,
+                IsPurchased = purchasedCourseIds.Contains(course.Id),
+                IsInCart = cartCourseIds.Contains(course.Id)
+            }).ToList();
+
+            return View("Index", viewModelList);
         }
+
+
+
 
         //GET: Courses/Details/1
         [AllowAnonymous]

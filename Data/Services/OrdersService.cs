@@ -27,6 +27,16 @@ namespace JapaneseLearningPlatform.Data.Services
             return orders;
         }
 
+        public async Task<List<int>> GetPurchasedCourseIdsByUser(string userId)
+        {
+            return await _context.OrderItems
+                .Where(o => o.Order.UserId == userId)
+                .Select(o => o.CourseId)
+                .Distinct()
+                .ToListAsync();
+        }
+
+
         public async Task StoreOrderAsync(List<ShoppingCartItem> items, string userId, string userEmailAddress)
         {
             var order = new Order()

@@ -53,6 +53,7 @@ namespace JapaneseLearningPlatform
             builder.Services.AddScoped<IOrdersService, OrdersService>();
             builder.Services.AddScoped<IVideosService, VideosService>();
 
+
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
 
