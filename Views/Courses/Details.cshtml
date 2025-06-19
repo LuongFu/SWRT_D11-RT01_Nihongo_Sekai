@@ -55,7 +55,7 @@
 
                 <!-- Purchase Buttons -->
                 <div class="d-flex flex-column flex-md-row gap-2">
-                    @if (!Model.IsPurchased && DateTime.Now <= Model.Course.EndDate)
+                    @if (!Model.IsPurchased && DateTime.Now <= Model.Course.EndDate && !Model.IsInCart)
                     {
                         <a class="btn btn-success text-white w-100"
                            asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Course.Id">
