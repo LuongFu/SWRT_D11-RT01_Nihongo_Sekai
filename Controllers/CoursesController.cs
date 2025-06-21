@@ -42,73 +42,97 @@ namespace JapaneseLearningPlatform.Controllers
         //    var allCourses = await _service.GetAllAsync(n => n.Cinema);
         //    return View(allCourses);
         //}
-        public async Task<IActionResult> Index()
-{
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var cartItems = _shoppingCart.GetShoppingCartItems().Select(c => c.Course.Id).ToList();
-        var purchasedCourseIds = _context.Orders
-            .Where(o => o.UserId == userId)
-            .SelectMany(o => o.OrderItems.Select(oi => oi.CourseId))
-            .ToHashSet();
-
-        var courses = await _context.Courses.Include(c => c.Actors_Courses).ThenInclude(a => a.Actor).ToListAsync();
-
-        var viewModel = courses.Select(course => new CourseWithPurchaseVM
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 6)
         {
-            Course = course,
-            IsInCart = cartItems.Contains(course.Id),
-            IsPurchased = purchasedCourseIds.Contains(course.Id)
-        });
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cartItems = _shoppingCart.GetShoppingCartItems().Select(c => c.Course.Id).ToList();
+            var purchasedCourseIds = _context.Orders
+                .Where(o => o.UserId == userId)
+                .SelectMany(o => o.OrderItems.Select(oi => oi.CourseId))
+                .ToHashSet();
 
-    return View(viewModel);
-}
+            var courses = await _context.Courses
+                .Include(c => c.Actors_Courses)
+                .ThenInclude(a => a.Actor)
+                .ToListAsync();
+
+            var totalItems = courses.Count;
+            var itemsToDisplay = courses
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var viewModel = itemsToDisplay.Select(course => new CourseWithPurchaseVM
+            {
+                Course = course,
+                IsInCart = cartItems.Contains(course.Id),
+                IsPurchased = purchasedCourseIds.Contains(course.Id)
+            });
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return View(viewModel);
+        }
+
 
 
         [AllowAnonymous]
-        public async Task<IActionResult> Filter(string searchString)
+        public async Task<IActionResult> Filter(string searchString, int page = 1, int pageSize = 6)
         {
-            // Bước 1: Lấy toàn bộ khóa học
+            // Giữ nguyên kiểu var
             var allCourses = await _service.GetAllAsync();
 
-            // Bước 2: Lọc theo từ khóa (theo tên hoặc mô tả)
-            var filteredCourses = allCourses;
+            // Lọc theo search string
             if (!string.IsNullOrEmpty(searchString))
             {
                 var lowerSearch = searchString.ToLower();
-                filteredCourses = allCourses
+                allCourses = allCourses
                     .Where(c =>
                         (!string.IsNullOrEmpty(c.Name) && c.Name.ToLower().Contains(lowerSearch)) ||
-                        (!string.IsNullOrEmpty(c.Description) && c.Description.ToLower().Contains(lowerSearch)))
-                    .ToList();
+                        (!string.IsNullOrEmpty(c.Description) && c.Description.ToLower().Contains(lowerSearch)));
             }
 
-            // Bước 3: Lấy ID người dùng hiện tại (có thể null nếu chưa login)
+            // Chuyển sang list để phân trang
+            var filteredCoursesList = allCourses.ToList();
+            var totalItems = filteredCoursesList.Count;
+
+            var pagedCourses = filteredCoursesList
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Lấy user và cart
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            // Bước 4: Lấy danh sách giỏ hàng
             var cartCourseIds = _shoppingCart
                 ?.GetShoppingCartItems()
                 ?.Where(i => i.Course != null)
                 .Select(i => i.Course.Id)
                 .ToList() ?? new List<int>();
 
-            // Bước 5: Nếu có user => lấy danh sách khóa học đã mua
             var purchasedCourseIds = new List<int>();
             if (!string.IsNullOrEmpty(userId))
             {
                 purchasedCourseIds = await _orderService.GetPurchasedCourseIdsByUser(userId);
             }
 
-            // Bước 6: Map sang ViewModel
-            var viewModelList = filteredCourses.Select(course => new CourseWithPurchaseVM
+            var viewModelList = pagedCourses.Select(course => new CourseWithPurchaseVM
             {
                 Course = course,
                 IsPurchased = purchasedCourseIds.Contains(course.Id),
                 IsInCart = cartCourseIds.Contains(course.Id)
             }).ToList();
 
+            // ViewBag phân trang
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewBag.SearchString = searchString;
+
             return View("Index", viewModelList);
         }
+
 
 
 

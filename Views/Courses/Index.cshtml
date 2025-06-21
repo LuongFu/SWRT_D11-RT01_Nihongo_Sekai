@@ -88,6 +88,41 @@
         }
 
     </div>
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Course pagination">
+            <ul class="pagination">
+
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == (int)ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                    </li>
+                }
+
+            </ul>
+        </nav>
+    </div>
 </div>
 
 @await Html.PartialAsync("_CreateItem", "Courses")
+
+@if (ViewBag.TotalItems != null && ViewBag.PageSize != null && ViewBag.CurrentPage != null)
+{
+    var totalPages = (int)Math.Ceiling((double)ViewBag.TotalItems / ViewBag.PageSize);
+    if (totalPages > 1)
+    {
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           href="@Url.Action("Filter", "Courses", new { page = i, searchString = ViewBag.SearchString })">
+                            @i
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}

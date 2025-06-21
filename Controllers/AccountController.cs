@@ -317,6 +317,8 @@ namespace JapaneseLearningPlatform.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.Remove("CartId"); //remove cart session after logged out
+
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Loading", new { returnUrl = "/Courses" });
         }
