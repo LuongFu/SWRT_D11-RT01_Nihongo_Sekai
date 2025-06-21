@@ -25,25 +25,12 @@ namespace JapaneseLearningPlatform.Data.Services
                 Description = data.Description,
                 Price = data.Price,
                 ImageURL = data.ImageURL,
-                CinemaId = data.CinemaId,
                 StartDate = data.StartDate,
                 EndDate = data.EndDate,
-                CourseCategory = data.CourseCategory,
-                ProducerId = data.ProducerId
+                CourseCategory = data.CourseCategory
             };
             await _context.Courses.AddAsync(newCourse);
             await _context.SaveChangesAsync();
-
-            //Add Course Actors
-            foreach (var actorId in data.ActorIds)
-            {
-                var newActorCourse = new Actor_Course()
-                {
-                    CourseId = newCourse.Id,
-                    ActorId = actorId
-                };
-                await _context.Actors_Courses.AddAsync(newActorCourse);
-            }
             //Add Course Videos
             foreach (var videoId in data.VideoIds)
             {
@@ -60,9 +47,6 @@ namespace JapaneseLearningPlatform.Data.Services
         public async Task<Course> GetCourseByIdAsync(int id)
         {
             var courseDetails = await _context.Courses
-                .Include(c => c.Cinema)
-                .Include(p => p.Producer)
-                .Include(am => am.Actors_Courses).ThenInclude(a => a.Actor)
                 .Include(vc => vc.Videos_Courses).ThenInclude(a => a.Video)
                 .FirstOrDefaultAsync(n => n.Id == id);
 
@@ -73,9 +57,6 @@ namespace JapaneseLearningPlatform.Data.Services
         {
             var response = new NewCourseDropdownsVM()
             {
-                Actors = await _context.Actors.OrderBy(n => n.FullName).ToListAsync(),
-                Cinemas = await _context.Cinemas.OrderBy(n => n.Name).ToListAsync(),
-                Producers = await _context.Producers.OrderBy(n => n.FullName).ToListAsync(),
                 Videos = await _context.Videos.OrderBy(n => n.VideoDescription).ToListAsync()
             };
 
@@ -92,34 +73,15 @@ namespace JapaneseLearningPlatform.Data.Services
                 dbCourse.Description = data.Description;
                 dbCourse.Price = data.Price;
                 dbCourse.ImageURL = data.ImageURL;
-                dbCourse.CinemaId = data.CinemaId;
                 dbCourse.StartDate = data.StartDate;
                 dbCourse.EndDate = data.EndDate;
                 dbCourse.CourseCategory = data.CourseCategory;
-                dbCourse.ProducerId = data.ProducerId;
                 await _context.SaveChangesAsync();
             }
-
-            //Remove existing actors
-            var existingActorsDb = _context.Actors_Courses.Where(n => n.CourseId == data.Id).ToList();
-            _context.Actors_Courses.RemoveRange(existingActorsDb);
-            await _context.SaveChangesAsync();
-
             //Remove existing videos
             var existingVideosDb = _context.Videos_Courses.Where(n => n.CourseId == data.Id).ToList();
             _context.Videos_Courses.RemoveRange(existingVideosDb);
             await _context.SaveChangesAsync();
-
-            //Add Course Actors
-            foreach (var actorId in data.ActorIds)
-            {
-                var newActorCourse = new Actor_Course()
-                {
-                    CourseId = data.Id,
-                    ActorId = actorId
-                };
-                await _context.Actors_Courses.AddAsync(newActorCourse);
-            }
 
             //Add Course Videos
             foreach (var videoId in data.VideoIds)

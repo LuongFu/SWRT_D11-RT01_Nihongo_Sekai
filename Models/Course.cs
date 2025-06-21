@@ -23,16 +23,6 @@ namespace JapaneseLearningPlatform.Models
         public CourseCategory CourseCategory { get; set; }
 
         //Relationships
-        public List<Actor_Course> Actors_Courses { get; set; }
         public List<Video_Course> Videos_Courses { get; set; }
-        //Cinema
-        public int CinemaId { get; set; }
-        [ForeignKey("CinemaId")]
-        public Cinema Cinema { get; set; }
-
-        //Producer
-        public int ProducerId { get; set; }
-        [ForeignKey("ProducerId")]
-        public Producer Producer { get; set; }
     }
 }
