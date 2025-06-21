@@ -73,45 +73,53 @@ namespace JapaneseLearningPlatform.Controllers
 
 
         [AllowAnonymous]
-        public async Task<IActionResult> Filter(string searchString, int page = 1, int pageSize = 6)
+        [HttpGet]
+        public async Task<IActionResult> Filter(string searchString, CourseCategory? selectedCategory, int page = 1, int pageSize = 6)
         {
-            // Giữ nguyên kiểu var
+            // B1: Lấy tất cả khóa học và đưa về List để tránh lỗi delegate inference
             var allCourses = await _service.GetAllAsync();
+            var allCoursesList = allCourses.ToList();
 
-            // Lọc theo search string
+            // B2: Lọc theo từ khóa
             if (!string.IsNullOrEmpty(searchString))
             {
                 var lowerSearch = searchString.ToLower();
-                allCourses = allCourses
+                allCoursesList = allCoursesList
                     .Where(c =>
                         (!string.IsNullOrEmpty(c.Name) && c.Name.ToLower().Contains(lowerSearch)) ||
-                        (!string.IsNullOrEmpty(c.Description) && c.Description.ToLower().Contains(lowerSearch)));
+                        (!string.IsNullOrEmpty(c.Description) && c.Description.ToLower().Contains(lowerSearch)))
+                    .ToList();
             }
 
-            // Chuyển sang list để phân trang
-            var filteredCoursesList = allCourses.ToList();
-            var totalItems = filteredCoursesList.Count;
+            // B3: Lọc theo category nếu có chọn
+            if (selectedCategory != null)
+            {
+                allCoursesList = allCoursesList
+                    .Where(c => c.CourseCategory == selectedCategory)
+                    .ToList();
+            }
 
-            var pagedCourses = filteredCoursesList
+            // B4: Phân trang
+            var totalItems = allCoursesList.Count;
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            var pagedCourses = allCoursesList
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
 
-            // take user and cart information
-            var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // B5: Lấy thông tin người dùng và giỏ hàng
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
 
-            var cartCourseIds = _shoppingCart
-                ?.GetShoppingCartItems()
-                ?.Where(i => i.Course != null)
+            var cartCourseIds = _shoppingCart.GetShoppingCartItems()
+                .Where(i => i.Course != null)
                 .Select(i => i.Course.Id)
-                .ToList() ?? new List<int>();
+                .ToList();
 
-            var purchasedCourseIds = new List<int>();
-            if (!string.IsNullOrEmpty(userId))
-            {
-                purchasedCourseIds = await _orderService.GetPurchasedCourseIdsByUser(userId);
-            }
+            var purchasedCourseIds = !string.IsNullOrEmpty(userId)
+                ? await _orderService.GetPurchasedCourseIdsByUser(userId)
+                : new List<int>();
 
+            // B6: Map sang ViewModel
             var viewModelList = pagedCourses.Select(course => new CourseWithPurchaseVM
             {
                 Course = course,
@@ -119,14 +127,16 @@ namespace JapaneseLearningPlatform.Controllers
                 IsInCart = cartCourseIds.Contains(course.Id)
             }).ToList();
 
-            // ViewBag paging
+            // B7: Truyền dữ liệu cho View
             ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalItems = totalItems;
+            ViewBag.TotalPages = totalPages;
             ViewBag.SearchString = searchString;
+            ViewBag.SelectedCategory = selectedCategory;
+            ViewBag.ShowAdvancedFilter = true;
 
             return View("Index", viewModelList);
         }
+
 
 
 
