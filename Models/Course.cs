@@ -1,4 +1,4 @@
-using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Base;
 using System;
 using System.Collections.Generic;
@@ -24,5 +24,7 @@ namespace JapaneseLearningPlatform.Models
 
         //Relationships
         public List<Video_Course> Videos_Courses { get; set; }
+        // Relationship: Course → CourseSection
+        public List<CourseSection> Sections { get; set; }
     }
 }

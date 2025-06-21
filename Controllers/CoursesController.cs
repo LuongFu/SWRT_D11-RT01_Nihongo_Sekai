@@ -133,42 +133,54 @@ namespace JapaneseLearningPlatform.Controllers
 
 
         //GET: Courses/Details/...
+        //[AllowAnonymous]
+        //public async Task<IActionResult> Details(int id)
+        //{
+        //    var course = await _context.Courses
+        //        .Include(c => c.Videos_Courses).ThenInclude(vc => vc.Video)
+        //        .FirstOrDefaultAsync(c => c.Id == id);
+
+        //    if (course == null) return View("NotFound");
+
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        //    var isPurchased = await _context.Orders
+        //        .Include(o => o.OrderItems)
+        //        .AnyAsync(o => o.UserId == userId && o.OrderItems.Any(i => i.CourseId == id));
+
+        //    var isInCart = _shoppingCart.GetShoppingCartItems().Any(i => i.CourseId == id);
+
+        //    var videoIds = await _context.Videos_Courses
+        //        .Where(vc => vc.CourseId == id)
+        //        .Select(vc => vc.VideoId)
+        //        .ToListAsync();
+
+        //    var videos = await _context.Videos
+        //        .Where(v => videoIds.Contains(v.Id))
+        //        .ToListAsync();
+
+        //    var viewModel = new CourseDetailVM
+        //    {
+        //        Course = course,
+        //        IsPurchased = isPurchased,
+        //        IsInCart = isInCart,
+        //        Videos = videos
+        //    };
+
+        //    return View(viewModel);
+        //}
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            var course = await _context.Courses
-                .Include(c => c.Videos_Courses).ThenInclude(vc => vc.Video)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (course == null) return View("NotFound");
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cartId = _shoppingCart.ShoppingCartId; // fix an toàn dựa trên session
 
-            var isPurchased = await _context.Orders
-                .Include(o => o.OrderItems)
-                .AnyAsync(o => o.UserId == userId && o.OrderItems.Any(i => i.CourseId == id));
+            var courseHierarchy = await _service.GetCourseHierarchyAsync(id, userId, cartId);
+            if (courseHierarchy == null || courseHierarchy.Course == null) return View("NotFound");
 
-            var isInCart = _shoppingCart.GetShoppingCartItems().Any(i => i.CourseId == id);
-
-            var videoIds = await _context.Videos_Courses
-                .Where(vc => vc.CourseId == id)
-                .Select(vc => vc.VideoId)
-                .ToListAsync();
-
-            var videos = await _context.Videos
-                .Where(v => videoIds.Contains(v.Id))
-                .ToListAsync();
-
-            var viewModel = new CourseDetailVM
-            {
-                Course = course,
-                IsPurchased = isPurchased,
-                IsInCart = isInCart,
-                Videos = videos
-            };
-
-            return View(viewModel);
+            return View(courseHierarchy);
         }
+
 
         //GET: Courses/Create
         public async Task<IActionResult> Create()

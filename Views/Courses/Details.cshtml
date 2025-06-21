@@ -1,14 +1,12 @@
-﻿@using JapaneseLearningPlatform.Models
-@using System.Security.Claims
-@using NihongoSekaiPlatform.Data.ViewModels
-@model CourseDetailVM
+﻿@using NihongoSekaiPlatform.Data.ViewModels
+@using JapaneseLearningPlatform.Data
+@model CourseHierarchyVM
 
 @functions {
     public string ToEmbedUrl(string url)
     {
         if (string.IsNullOrWhiteSpace(url)) return "";
         if (!url.Contains("watch?v=")) return url;
-
         var videoId = url.Split("watch?v=")[1].Split('&')[0];
         return $"https://www.youtube.com/embed/{videoId}";
     }
@@ -20,15 +18,12 @@
 
 <div class="container mt-4">
     <div class="card shadow-sm rounded-4 border-0 p-4">
-        <!-- Top section with image and course details -->
         <div class="row g-4 align-items-start">
-            <!-- Image on top-left -->
             <div class="col-lg-4 col-md-12 text-center">
                 <img src="@Model.Course.ImageURL" alt="@Model.Course.Name"
                      class="img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: cover;" />
             </div>
 
-            <!-- Course info on top-right -->
             <div class="col-lg-8 col-md-12">
                 <h2 class="fw-bold">@Model.Course.Name</h2>
                 <p class="text-muted mb-2">@Model.Course.Description</p>
@@ -74,43 +69,62 @@
                         </button>
                     }
                 </div>
-
-                @if (Model.IsPurchased && (Model.Videos == null || !Model.Videos.Any()))
-                {
-                    <div class="alert alert-info mt-4">
-                        <i class="bi bi-info-circle"></i> No video lessons available for this course yet.
-                    </div>
-                }
             </div>
         </div>
 
-        <!-- Video Lessons -->
-        @if (Model.IsPurchased && Model.Videos != null && Model.Videos.Any())
+        <!-- Udemy-style hierarchy -->
+        @if (Model.IsPurchased && Model.Sections != null && Model.Sections.Any())
         {
             <hr />
-            <h4 class="mt-4">Video Lessons</h4>
-            <div class="row">
-                @foreach (var video in Model.Videos)
-                {
-                    <div class="col-md-6 mb-4">
-                        <div class="card shadow-sm">
-                            <div class="ratio ratio-16x9">
-                                <iframe class="rounded-top"
-                                        src="@ToEmbedUrl(video.VideoURL)"
-                                        allowfullscreen
-                                        style="width:100%; height:315px;">
-                                </iframe>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-text">@video.VideoDescription</p>
-                            </div>
-                        </div>
+            <h4 class="mt-4">Course Content</h4>
+
+            @foreach (var sections in Model.Sections)
+            {
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-header bg-light fw-bold">
+                        @sections.Title
                     </div>
-                }
+                    <ul class="list-group list-group-flush">
+                        @foreach (var item in sections.ContentItems)
+                        {
+                            <li class="list-group-item">
+                                <strong>@item.Title</strong>
+                                @if (item.ContentType == ContentType.Video && item.Video != null)
+                                {
+                                    <div class="mt-2">
+                                        <div class="ratio ratio-16x9">
+                                            <iframe class="rounded"
+                                                    src="@ToEmbedUrl(item.Video.VideoURL)"
+                                                    allowfullscreen style="width:100%; height:300px;">
+                                            </iframe>
+                                        </div>
+                                        <p class="text-muted mt-1">@item.Video.VideoDescription</p>
+                                    </div>
+                                }
+                                else if (item.ContentType == ContentType.Quiz && item.Quiz != null)
+                                {
+                                    <div class="mt-2">
+                                        <a asp-controller="Quizzes" asp-action="Start"
+                                           asp-route-id="@item.Quiz.Id"
+                                           class="btn btn-outline-primary">
+                                            <i class="bi bi-pencil-square"></i> Start Quiz
+                                        </a>
+                                    </div>
+                                }
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        }
+        else if (Model.IsPurchased)
+        {
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle"></i> No content available for this course yet.
             </div>
         }
 
-        <!-- Footer / Back Button -->
+        <!-- Back Button -->
         <div class="mt-4">
             <a asp-action="Index" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left-circle"></i> Back to Courses

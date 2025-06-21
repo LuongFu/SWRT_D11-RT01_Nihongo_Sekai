@@ -2,6 +2,7 @@ using JapaneseLearningPlatform.Data.Base;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.EntityFrameworkCore;
+using NihongoSekaiPlatform.Data.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,5 +96,31 @@ namespace JapaneseLearningPlatform.Data.Services
             }
             await _context.SaveChangesAsync();
         }
+        public async Task<CourseHierarchyVM> GetCourseHierarchyAsync(int courseId, string userId, string cartId)
+        {
+            var course = await _context.Courses
+                .Include(c => c.Sections)
+                    .ThenInclude(s => s.ContentItems)
+                        .ThenInclude(ci => ci.Video)
+                .Include(c => c.Sections)
+                    .ThenInclude(s => s.ContentItems)
+                        .ThenInclude(ci => ci.Quiz)
+                .FirstOrDefaultAsync(c => c.Id == courseId);
+
+            var isPurchased = _context.OrderItems
+                .Any(x => x.CourseId == courseId && x.Order.UserId == userId);
+
+            var isInCart = _context.ShoppingCartItems
+                .Any(x => x.CourseId == courseId && x.ShoppingCartId == cartId);
+
+            return new CourseHierarchyVM
+            {
+                Course = course,
+                Sections = course?.Sections?.ToList(),
+                IsPurchased = isPurchased,
+                IsInCart = isInCart
+            };
+        }
+
     }
 }

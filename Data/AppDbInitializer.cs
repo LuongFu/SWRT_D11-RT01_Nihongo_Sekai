@@ -127,6 +127,81 @@ namespace JapaneseLearningPlatform.Data
                     });
                     context.SaveChanges();
                 }
+                // CourseSections
+                if (!context.CourseSections.Any())
+                {
+                    var sections = new List<CourseSection>()
+    {
+        new CourseSection
+        {
+            Title = "Introduction to Japanese Culture",
+            CourseId = 1
+        },
+        new CourseSection
+        {
+            Title = "Basic Expressions Quiz",
+            CourseId = 1
+        }
+    };
+                    context.CourseSections.AddRange(sections);
+                    context.SaveChanges();
+
+                    // Quizzes
+                    var quiz = new Quiz
+                    {
+                        Title = "Basic Expressions Quiz"
+                    };
+                    context.Quizzes.Add(quiz);
+                    context.SaveChanges();
+
+                    var questions = new List<QuizQuestion>()
+    {
+        new QuizQuestion
+        {
+            QuestionText = "How do you say 'Hello' in Japanese?",
+            QuizId = quiz.Id,
+            Options = new List<QuizOption>
+            {
+                new QuizOption { OptionText = "Konnichiwa", IsCorrect = true },
+                new QuizOption { OptionText = "Sayonara", IsCorrect = false }
+            }
+        },
+        new QuizQuestion
+        {
+            QuestionText = "What is the meaning of 'Arigatou'?",
+            QuizId = quiz.Id,
+            Options = new List<QuizOption>
+            {
+                new QuizOption { OptionText = "Goodbye", IsCorrect = false },
+                new QuizOption { OptionText = "Thank you", IsCorrect = true }
+            }
+        }
+    };
+                    context.QuizQuestions.AddRange(questions);
+                    context.SaveChanges();
+
+                    // CourseContentItems
+                    var contentItems = new List<CourseContentItem>()
+    {
+        new CourseContentItem
+        {
+            Title = "Watch: Intro Video",
+            SectionId = sections[0].Id,
+            ContentType = ContentType.Video,
+            VideoId = 1
+        },
+        new CourseContentItem
+        {
+            Title = "Take: Basic Quiz",
+            SectionId = sections[1].Id,
+            ContentType = ContentType.Quiz,
+            QuizId = quiz.Id
+        }
+    };
+                    context.CourseContentItems.AddRange(contentItems);
+                    context.SaveChanges();
+                }
+
                 //Videos & Courses
                 if (!context.Videos_Courses.Any())
                 {
@@ -169,8 +244,6 @@ namespace JapaneseLearningPlatform.Data
                             VideoId = 5,
                             CourseId = 3
                         },
-
-
                         new Video_Course()
                         {
                             VideoId = 2,
@@ -208,8 +281,6 @@ namespace JapaneseLearningPlatform.Data
                             VideoId = 5,
                             CourseId = 5
                         },
-
-
                         new Video_Course()
                         {
                             VideoId = 3,

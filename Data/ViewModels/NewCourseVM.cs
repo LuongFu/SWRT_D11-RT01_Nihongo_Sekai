@@ -41,21 +41,8 @@ namespace JapaneseLearningPlatform.Models
         [Required(ErrorMessage = "Course category is required")]
         public CourseCategory CourseCategory { get; set; }
 
-        //Relationships
-        [Display(Name = "Select actor(s)")]
-        [Required(ErrorMessage = "Course actor(s) is required")]
-        public List<int> ActorIds { get; set; }
-
         [Display(Name = "Select video(s)")]
         [Required(ErrorMessage = "Course video(s) is required")]
         public List<int> VideoIds { get; set; }
-
-        [Display(Name = "Select a cinema")]
-        [Required(ErrorMessage = "Course cinema is required")]
-        public int CinemaId { get; set; }
-
-        [Display(Name = "Select a producer")]
-        [Required(ErrorMessage = "Course producer is required")]
-        public int ProducerId { get; set; }
     }
 }
