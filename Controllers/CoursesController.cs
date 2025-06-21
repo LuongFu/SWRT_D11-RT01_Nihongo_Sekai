@@ -107,13 +107,8 @@ namespace JapaneseLearningPlatform.Controllers
                 .Take(pageSize)
                 .ToList();
 
-<<<<<<< HEAD
             // B5: Lấy thông tin người dùng và giỏ hàng
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
-=======
-            // take user and cart information
-            var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
->>>>>>> 205d7e3f2986fd6e9989cd05cad638d933d63a5f
 
             var cartCourseIds = _shoppingCart.GetShoppingCartItems()
                 .Where(i => i.Course != null)
@@ -132,11 +127,7 @@ namespace JapaneseLearningPlatform.Controllers
                 IsInCart = cartCourseIds.Contains(course.Id)
             }).ToList();
 
-<<<<<<< HEAD
             // B7: Truyền dữ liệu cho View
-=======
-            // ViewBag paging
->>>>>>> 205d7e3f2986fd6e9989cd05cad638d933d63a5f
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.SearchString = searchString;
