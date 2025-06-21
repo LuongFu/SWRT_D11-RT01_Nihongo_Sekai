@@ -22,47 +22,6 @@ namespace JapaneseLearningPlatform.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.Actor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ProfilePictureURL")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Actors");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.Actor_Course", b =>
-                {
-                    b.Property<int>("ActorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ActorId", "CourseId");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("Actors_Courses");
-                });
-
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -83,7 +42,6 @@ namespace JapaneseLearningPlatform.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsApproved")
@@ -142,31 +100,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.Cinema", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Logo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cinemas");
-                });
-
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Course", b =>
                 {
                     b.Property<int>("Id")
@@ -174,9 +107,6 @@ namespace JapaneseLearningPlatform.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CinemaId")
-                        .HasColumnType("int");
 
                     b.Property<int>("CourseCategory")
                         .HasColumnType("int");
@@ -199,17 +129,10 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("ProducerId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CinemaId");
-
-                    b.HasIndex("ProducerId");
 
                     b.ToTable("Courses");
                 });
@@ -264,32 +187,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.Producer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ProfilePictureURL")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Producers");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ShoppingCartItem", b =>
@@ -486,44 +383,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.Actor_Course", b =>
-                {
-                    b.HasOne("JapaneseLearningPlatform.Models.Actor", "Actor")
-                        .WithMany("Actors_Courses")
-                        .HasForeignKey("ActorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("JapaneseLearningPlatform.Models.Course", "Course")
-                        .WithMany("Actors_Courses")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Actor");
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.Course", b =>
-                {
-                    b.HasOne("JapaneseLearningPlatform.Models.Cinema", "Cinema")
-                        .WithMany("Courses")
-                        .HasForeignKey("CinemaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("JapaneseLearningPlatform.Models.Producer", "Producer")
-                        .WithMany("Courses")
-                        .HasForeignKey("ProducerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cinema");
-
-                    b.Navigation("Producer");
-                });
-
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Order", b =>
                 {
                     b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")
@@ -635,31 +494,14 @@ namespace JapaneseLearningPlatform.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.Actor", b =>
-                {
-                    b.Navigation("Actors_Courses");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.Cinema", b =>
-                {
-                    b.Navigation("Courses");
-                });
-
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Course", b =>
                 {
-                    b.Navigation("Actors_Courses");
-
                     b.Navigation("Videos_Courses");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.Producer", b =>
-                {
-                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Video", b =>

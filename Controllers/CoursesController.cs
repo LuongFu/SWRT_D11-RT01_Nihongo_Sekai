@@ -37,11 +37,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         [AllowAnonymous]
-        //public async Task<IActionResult> Index()
-        //{
-        //    var allCourses = await _service.GetAllAsync(n => n.Cinema);
-        //    return View(allCourses);
-        //}
         public async Task<IActionResult> Index(int page = 1, int pageSize = 6)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -52,8 +47,8 @@ namespace JapaneseLearningPlatform.Controllers
                 .ToHashSet();
 
             var courses = await _context.Courses
-                .Include(c => c.Actors_Courses)
-                .ThenInclude(a => a.Actor)
+                .Include(c => c.Videos_Courses)
+                .ThenInclude(a => a.Video)
                 .ToListAsync();
 
             var totalItems = courses.Count;
@@ -102,7 +97,7 @@ namespace JapaneseLearningPlatform.Controllers
                 .Take(pageSize)
                 .ToList();
 
-            // Lấy user và cart
+            // take user and cart information
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var cartCourseIds = _shoppingCart
@@ -124,7 +119,7 @@ namespace JapaneseLearningPlatform.Controllers
                 IsInCart = cartCourseIds.Contains(course.Id)
             }).ToList();
 
-            // ViewBag phân trang
+            // ViewBag paging
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalItems = totalItems;
@@ -142,9 +137,6 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var course = await _context.Courses
-                .Include(c => c.Cinema)
-                .Include(c => c.Producer)
-                .Include(c => c.Actors_Courses).ThenInclude(ac => ac.Actor)
                 .Include(c => c.Videos_Courses).ThenInclude(vc => vc.Video)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
@@ -182,10 +174,6 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> Create()
         {
             var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
-
-            ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
-            ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
-            ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
             ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
 
             return View();
@@ -197,10 +185,6 @@ namespace JapaneseLearningPlatform.Controllers
             if (!ModelState.IsValid)
             {
                 var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
-
-                ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
-                ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
-                ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
                 ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
 
                 return View(course);
@@ -217,7 +201,7 @@ namespace JapaneseLearningPlatform.Controllers
             //var courseDetails = await _service.GetCourseByIdAsync(id);
             var courseDetails = await _context.Courses
         .Include(c => c.Videos_Courses)
-        .Include(c => c.Actors_Courses)
+        .Include(c => c.Videos_Courses)
         .FirstOrDefaultAsync(c => c.Id == id);
             if (courseDetails == null) return View("NotFound");
 
@@ -231,18 +215,11 @@ namespace JapaneseLearningPlatform.Controllers
                 EndDate = courseDetails.EndDate,
                 ImageURL = courseDetails.ImageURL,
                 CourseCategory = courseDetails.CourseCategory,
-                CinemaId = courseDetails.CinemaId,
-                ProducerId = courseDetails.ProducerId,
-                ActorIds = courseDetails.Actors_Courses.Select(ac => ac.ActorId).ToList(),
                 VideoIds = courseDetails.Videos_Courses.Select(vc => vc.VideoId).ToList()
-                //VideoIds = courseDetails.Videos_Courses?.Select(vc => vc.VideoId).ToList() ?? new List<int>()
             };
 
             var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
-            ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
-            ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
             ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
-            ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
             
 
             return View(response);
@@ -257,9 +234,6 @@ namespace JapaneseLearningPlatform.Controllers
             {
                 var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
 
-                ViewBag.Cinemas = new SelectList(courseDropdownsData.Cinemas, "Id", "Name");
-                ViewBag.Producers = new SelectList(courseDropdownsData.Producers, "Id", "FullName");
-                ViewBag.Actors = new SelectList(courseDropdownsData.Actors, "Id", "FullName");
                 ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
 
                 return View(course);
