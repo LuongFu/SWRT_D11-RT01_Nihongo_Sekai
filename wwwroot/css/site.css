@@ -380,7 +380,7 @@ html, body {
 }
 
 @keyframes colorShift {
-    0% {
+    0% {    
         color: #ffffff;
     }
 
@@ -391,8 +391,15 @@ html, body {
     100% {
         color: #ffffff;
     }
-<<<<<<< HEAD
+
+
 }
-=======
+.card .card-body p {
+    font-size: 15px;
 }
->>>>>>> ba02a64efd04756313493988f4830d3c2a484acd
+
+.badge {
+    font-size: 13px;
+    padding: 5px 10px;
+    border-radius: 6px;
+}

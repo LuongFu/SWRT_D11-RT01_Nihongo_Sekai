@@ -53,20 +53,15 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link role-link" asp-controller="Cinemas" asp-action="Index">
-                                            <i class="bi bi-camera-reels me-1"></i> Cinemas
+                                        <a class="nav-link role-link" asp-controller="Courses" asp-action="Index">
+                                            <i class="bi bi-camera-reels me-1"></i> Courses 
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link role-link" asp-controller="Producers" asp-action="Index">
-                                            <i class="bi bi-headset me-1"></i> Producers
+                                    <li>
+                                        <a class="nav-link role-link" asp-controller="Videos" asp-action="Index">
+                                            <i class="bi bi-person-square me-1"></i> Videos
                                         </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link role-link" asp-controller="Actors" asp-action="Index">
-                                            <i class="bi bi-person-square me-1"></i> Actors
-                                        </a>
-                                    </li>
+                                    </li> 
                                 }
                                 else if (User.Identity.IsAuthenticated && User.IsInRole("Partner"))
                                 {
@@ -117,12 +112,12 @@
 
                             </ul>
 
-                            <form asp-controller="Movies" asp-action="Filter" method="get" class="search-bar-container">
+                            <form asp-controller="Courses" asp-action="Filter" method="get" class="search-bar-container">
                                 <div class="search-bar">
-                                <input type="text" name="searchString" class="search-input form-control" placeholder="What are you looking for?" />
-                                    <a>
-                                        <i class='bx bx-search' type="submit"></i>
-                                    </a>
+                                    <input type="text" name="searchString" class="search-input form-control" placeholder="Looking for a course?..." />
+                                    <button type="submit" class="btn btn-link p-0">
+                                        <i class='bx bx-search'></i>
+                                    </button>
                                 </div>
                             </form>
 
@@ -140,11 +135,7 @@
         <main class="flex-grow-1">
             @RenderBody()
             @*Chat bot*@
-<<<<<<< HEAD
-           <iframe id="chatbot-iframe"
-=======
-         @*    <iframe id="chatbot-iframe"
->>>>>>> ba02a64efd04756313493988f4830d3c2a484acd
+            <iframe id="chatbot-iframe"
                     src="https://chat-bot-with-gemini-fe.onrender.com"
                     style="position: fixed;
          bottom: 0;
@@ -154,11 +145,7 @@
          border: none;
          z-index: 9999;
          border-radius: 12px;">
-<<<<<<< HEAD
             </iframe>
-=======
-            </iframe> *@
->>>>>>> ba02a64efd04756313493988f4830d3c2a484acd
         </main> 
 
         @if (!hideFooter)

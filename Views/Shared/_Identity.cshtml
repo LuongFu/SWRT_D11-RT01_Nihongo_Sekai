@@ -60,7 +60,12 @@ else
             {
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Orders" asp-action="Index">
-                        <i class="bi bi-list"></i> My Courses
+                        <i class="bi bi-list"></i> Order History
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Learner" asp-action="MyPurchasedCourses">
+                        <i class="bi bi-book"></i> My Purchased Courses
                     </a>
                 </li>
             }

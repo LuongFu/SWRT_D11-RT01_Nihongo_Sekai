@@ -2,11 +2,11 @@
 
 namespace NihongoSekaiPlatform.Data.ViewModels
 {
-    public class CourseDetailVM
+    public class CourseHierarchyVM
     {
-        public Course? Course { get; set; }
+        public Course Course { get; set; }
+        public List<CourseSection> Sections { get; set; }
         public bool IsPurchased { get; set; }
         public bool IsInCart { get; set; }
-        public List<Video>? Videos { get; set; }
     }
 }

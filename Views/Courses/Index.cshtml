@@ -1,6 +1,7 @@
 @using NihongoSekaiPlatform.Data.ViewModels
 @using JapaneseLearningPlatform.Models
-@* @model IEnumerable<Course> *@
+@using JapaneseLearningPlatform.Data
+
 @model IEnumerable<CourseWithPurchaseVM>
 @{
     ViewData["Title"] = "List of Courses";
@@ -8,6 +9,36 @@
 }
 
 <div class="container">
+    @if (ViewBag.ShowAdvancedFilter as bool? == true)
+{
+    <div class="mb-4">
+        <form asp-action="Filter" method="get" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <label class="form-label mb-0">Category:</label>
+            </div>
+            <div class="col-auto">
+                <select name="selectedCategory" class="form-select">
+                 <option value="">Select a category...</option>
+
+@foreach (CourseCategory category in Enum.GetValues(typeof(CourseCategory)))
+{
+    var isSelected = ViewBag.SelectedCategory != null && category.ToString() == ViewBag.SelectedCategory.ToString();
+    var selectedAttr = isSelected ? "selected" : "";
+    @: <option value="@category" @selectedAttr>@category</option>
+}
+                </select>
+            </div>
+            <div class="col-auto">
+                <input type="text" name="searchString" class="form-control" placeholder="Search by name..." value="@ViewBag.SearchString" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-funnel"></i> Apply Filter
+                </button>
+            </div>
+        </form>
+    </div>
+}
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach (var item in Model)
         {
@@ -51,22 +82,30 @@
                         </ul>
 
                         <div class="mt-auto d-flex flex-column gap-2">
-                            <a class="btn btn-outline-primary w-100" asp-action="Details" asp-route-id="@item.Course.Id">
-                                <i class="bi bi-eye-fill"></i> View Details
-                            </a>
 
-                            @if (item.IsPurchased)
+                            @if (!item.IsPurchased && DateTime.Now <= item.Course.EndDate && !item.IsInCart)
                             {
-                                <button class="btn btn-secondary w-100 disabled"><i class="bi bi-play-btn"></i> Start Learning</button>
-                            }
-                            else if (item.IsInCart)
-                            {
-                                <button class="btn btn-warning w-100 disabled"><i class="bi bi-cart-check"></i> In Cart</button>
-                            }
-                            else if (DateTime.Now <= item.Course.EndDate)
-                            {
+                                <a class="btn btn-outline-primary w-100" asp-action="Details" asp-route-id="@item.Course.Id">
+                                    <i class="bi bi-eye-fill"></i> View Details
+                                </a>
                                 <a class="btn btn-success text-white w-100" asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@item.Course.Id">
                                     <i class="bi bi-cart-plus"></i> Buy for @item.Course.Price.ToString("c")
+                                </a>
+                            }
+
+                            else if (item.IsInCart)
+                            {
+                                <a class="btn btn-outline-primary w-100" asp-action="Details" asp-route-id="@item.Course.Id">
+                                    <i class="bi bi-eye-fill"></i> View Details
+                                </a>
+                                <a class="btn btn-warning w-100 disabled">
+                                    <i class="bi bi-cart-check"></i> In Cart
+                                </a>
+                            }
+                            else if (item.IsPurchased)
+                            {
+                                <a class="btn btn-success text-white w-100" asp-action="Details" asp-route-id="@item.Course.Id">
+                                        <i class="bi bi-play-btn"></i> Start Learning
                                 </a>
                             }
                             else
@@ -80,6 +119,41 @@
         }
 
     </div>
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Course pagination">
+            <ul class="pagination">
+
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == (int)ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                    </li>
+                }
+
+            </ul>
+        </nav>
+    </div>
 </div>
 
 @await Html.PartialAsync("_CreateItem", "Courses")
+
+@if (ViewBag.TotalItems != null && ViewBag.PageSize != null && ViewBag.CurrentPage != null)
+{
+    var totalPages = (int)Math.Ceiling((double)ViewBag.TotalItems / ViewBag.PageSize);
+    if (totalPages > 1)
+    {
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           href="@Url.Action("Filter", "Courses", new { page = i, searchString = ViewBag.SearchString })">
+                            @i
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}

@@ -237,6 +237,15 @@ namespace JapaneseLearningPlatform.Controllers
         //    return View();
         //}
 
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View(); // Trả view lần đầu, không truyền model, không có lỗi
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
             if (!ModelState.IsValid)
@@ -308,6 +317,8 @@ namespace JapaneseLearningPlatform.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.Remove("CartId"); //remove cart session after logged out
+
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Loading", new { returnUrl = "/Courses" });
         }
