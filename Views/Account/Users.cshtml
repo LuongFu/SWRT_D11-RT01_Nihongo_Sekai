@@ -5,37 +5,55 @@
 }
 
 <div class="row">
-    <div class="col-md-6 offset-3">
-        <p>
-            <h4>List of all users</h4>
-        </p>
+    <div class="col-md-10 offset-1">
+        <h4 class="mb-4">List of all users</h4>
 
-        <table class="table">
-            <thead>
-                <tr class="text-center">
+        <table class="table table-bordered text-center">
+            <thead class="table-light">
+                <tr>
                     <th>@Html.DisplayNameFor(model => model.FullName)</th>
                     <th>@Html.DisplayNameFor(model => model.UserName)</th>
                     <th>@Html.DisplayNameFor(model => model.Email)</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-                <tr>
-                    <td class="align-middle">
-                        @Html.DisplayFor(modelItem => item.FullName)
-                    </td>
-                    <td class="align-middle">
-                        @Html.DisplayFor(modelItem => item.UserName)
-                    </td>
-                    <td class="align-middle">
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </td>
-                </tr>
+                    <tr>
+                        <td>@item.FullName</td>
+                        <td>@item.UserName</td>
+                        <td>@item.Email</td>
+                        <td>@item.Role</td>
+                        <td>
+                            @if (item.IsBanned)
+                            {
+                                <span class="text-danger fw-bold">Banned</span>
+                            }
+                            else
+                            {
+                                <span class="text-success fw-bold">Active</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.Role != "Admin")
+                            {
+                                <form asp-action="ToggleBan" asp-route-id="@item.Id" method="post">
+                                    <button type="submit" class="btn @(item.IsBanned ? "btn-success" : "btn-danger") btn-sm">
+                                        @(item.IsBanned ? "Unban" : "Ban")
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Protected</span>
+                            }
+                        </td>
+                    </tr>
                 }
             </tbody>
-
         </table>
-
     </div>
 </div>
