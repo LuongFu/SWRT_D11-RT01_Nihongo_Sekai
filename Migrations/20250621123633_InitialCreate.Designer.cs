@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250621114352_InitialCreate")]
+    [Migration("20250621123633_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

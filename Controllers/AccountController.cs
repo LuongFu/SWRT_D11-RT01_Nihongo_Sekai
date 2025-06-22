@@ -2,6 +2,7 @@ using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -309,9 +310,15 @@ namespace JapaneseLearningPlatform.Controllers
 
             return View("Error");
         }
+        //Profile của người dùng
+        [Authorize(Roles = "Learner,Partner,Admin")]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
 
-       
-
+            return View("~/Views/Learner/Profile.cshtml", user);
+        }
 
         // POST: /Account/Logout
         [HttpPost]
