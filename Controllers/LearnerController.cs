@@ -1,4 +1,5 @@
 ﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -175,5 +176,12 @@ namespace NihongoSekaiPlatform.Controllers
             return RedirectToAction("Profile");
         }
 
+        // 📚 Lớp học của tôi (hiển thị thời khóa biểu và partner)
+        [Authorize(Roles = "Learner")]
+        [HttpGet]
+        public async Task<IActionResult> MyClassroom()
+        {
+            return View("~/Views/Learner/MyClassroom.cshtml");
+        }
     }
 }
