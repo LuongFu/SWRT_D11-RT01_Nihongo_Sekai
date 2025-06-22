@@ -55,6 +55,11 @@ else
                         <i class="bi bi-list"></i> My Classroom
                     </a>
                 </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Account" asp-action="Profile">
+                        <i class="bi bi-person-circle"></i> My Profile
+                    </a>
+                </li>
             }
             else if (User.IsInRole("Learner"))
             {
