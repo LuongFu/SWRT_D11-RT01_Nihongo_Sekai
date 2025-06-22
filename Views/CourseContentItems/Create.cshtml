@@ -29,6 +29,11 @@
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
+    <div class="mb-3">
+        <label asp-for="DisplayOrder" class="form-label"></label>
+        <input asp-for="DisplayOrder" class="form-control" type="number" min="0" />
+        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+    </div>
 
     <div class="mb-3">
         <label asp-for="ContentType" class="form-label"></label>

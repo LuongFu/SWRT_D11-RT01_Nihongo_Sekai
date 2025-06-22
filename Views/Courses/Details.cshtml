@@ -51,7 +51,7 @@
 
                 <!-- Purchase Buttons -->
                 <div class="d-flex flex-column flex-md-row gap-2">
-                    @if (!Model.IsPurchased && DateTime.Now <= Model.Course.EndDate && !Model.IsInCart)
+                    @if (!Model.IsPurchased && !User.IsInRole("Admin") && DateTime.Now <= Model.Course.EndDate && !Model.IsInCart)
                     {
                         <a class="btn btn-success text-white w-100"
                            asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Course.Id">
@@ -74,7 +74,7 @@
         </div>
 
         <!-- Udemy-style hierarchy -->
-        @if (Model.IsPurchased && Model.Sections != null && Model.Sections.Any())
+        @if ((Model.IsPurchased || User.IsInRole("Admin")) && Model.Sections != null && Model.Sections.Any())
         {
             <hr />
             <h4 class="mt-4">Course Content</h4>
@@ -174,11 +174,22 @@
                 </div>
             }
         }
-        else if (Model.IsPurchased)
+        else if (Model.IsPurchased || !User.IsInRole("Admin"))
         {
             <div class="alert alert-info mt-4">
                 <i class="bi bi-info-circle"></i> No content available for this course yet.
             </div>
+        }
+        else if (User.IsInRole("Admin"))
+        {
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle"></i> No content available for this course yet.
+            </div>
+        
+            <a asp-controller="CourseSections" asp-action="Create" asp-route-courseId="@Model.Course.Id"
+                     class="btn btn-sm btn-outline-success mb-3">
+                <i class="bi bi-plus-circle"></i> Add Section
+            </a>
         }
 
         <!-- Back Button -->

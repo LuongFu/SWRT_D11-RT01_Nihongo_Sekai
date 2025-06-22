@@ -29,6 +29,7 @@ public class CourseContentItemsService : ICourseContentItemsService
         return await _context.CourseContentItems
             .Include(ci => ci.Video)
             .Include(ci => ci.Quiz)
+            .Include(ci => ci.Section)
             .FirstOrDefaultAsync(ci => ci.Id == id);
     }
 
