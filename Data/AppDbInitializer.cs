@@ -334,22 +334,26 @@ namespace JapaneseLearningPlatform.Data
                     };
                     await userManager.CreateAsync(newAdminUser, "Phu123123@");
                     await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
+                    newAdminUser.Role = UserRoles.Admin;
+                    await userManager.UpdateAsync(newAdminUser);
                 }
                 // partner account if not exists
                 string partnerUserEmail = "giakhoiquang@gmail.com";
 
                 var partner = await userManager.FindByEmailAsync(partnerUserEmail);
-                if (adminUser == null)
+                if (partner == null)
                 {
-                    var newAdminUser = new ApplicationUser()
+                    var newPartnerUser = new ApplicationUser()
                     {
                         FullName = "Gia Khoi Partner",
-                        UserName = "giakhoiquang@gmail.com",
+                        UserName = partnerUserEmail,
                         Email = partnerUserEmail,
-                        EmailConfirmed = true
+                        EmailConfirmed = true,
+                        Role = UserRoles.Partner // add this line
                     };
-                    await userManager.CreateAsync(newAdminUser, "Khoi2005.");
-                    await userManager.AddToRoleAsync(newAdminUser, UserRoles.Partner);
+                    await userManager.CreateAsync(newPartnerUser, "Khoi2005.");
+                    await userManager.AddToRoleAsync(newPartnerUser, UserRoles.Partner);
+                    await userManager.UpdateAsync(newPartnerUser);
                 }
                 // learner account if not exists
                 string learnerUserEmail = "noobhoang@gmail.com";
@@ -366,6 +370,24 @@ namespace JapaneseLearningPlatform.Data
                     };
                     await userManager.CreateAsync(newAppUser, "Hoang2005.");
                     await userManager.AddToRoleAsync(newAppUser, UserRoles.Learner);
+                }
+
+                string bannedEmail = "banneduser@gmail.com";
+
+                var bannedUser = await userManager.FindByEmailAsync(bannedEmail);
+                if (bannedUser == null)
+                {
+                    var newBannedUser = new ApplicationUser()
+                    {
+                        FullName = "Banned User",
+                        UserName = bannedEmail,
+                        Email = bannedEmail,
+                        EmailConfirmed = true,
+                        IsBanned = true // ✅ set banned flag
+                    };
+
+                    await userManager.CreateAsync(newBannedUser, "Test123!@#");
+                    await userManager.AddToRoleAsync(newBannedUser, UserRoles.Learner);
                 }
             }
         }
