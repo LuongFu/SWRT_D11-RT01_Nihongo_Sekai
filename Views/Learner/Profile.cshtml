@@ -1,0 +1,75 @@
+﻿@model JapaneseLearningPlatform.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "My Profile";
+    ViewData["HideFooter"] = false;
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Welcome, @Model.FullName!</h2>
+
+    <div class="row">
+        <!-- Ảnh đại diện và form upload -->
+        <div class="col-md-4 text-center">
+            @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
+            {
+                <img src="@Model.ProfilePicturePath" alt="Avatar"
+                     class="rounded-circle img-thumbnail mb-3"
+                     style="width: 150px; height: 150px; object-fit: cover;" />
+            }
+            else
+            {
+                <img src="/images/default-img.jpg" alt="Default Avatar"
+                     class="rounded-circle img-thumbnail mb-3"
+                     style="width: 150px; height: 150px; object-fit: cover;" />
+            }
+
+            <form asp-action="UploadProfilePicture"
+                  asp-controller="Learner"
+                  method="post"
+                  enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="file" name="profilePicture" class="form-control mb-2" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary w-100">Upload New Photo</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Thông tin hồ sơ -->
+        <div class="col-md-8">
+            <dl class="row">
+                <dt class="col-sm-4">Full Name</dt>
+                <dd class="col-sm-8">@Model.FullName</dd>
+
+                <dt class="col-sm-4">Email</dt>
+                <dd class="col-sm-8">@Model.Email</dd>
+
+                <dt class="col-sm-4">Role</dt>
+                <dd class="col-sm-8">@Model.Role</dd>
+            </dl>
+
+            <!-- Shortcut Actions -->
+            <h5 class="mt-4">Quick Actions</h5>
+            <div class="list-group">
+                <a asp-controller="Learner" asp-action="MyPurchasedCourses"
+                   class="list-group-item list-group-item-action">
+                    <i class="bi bi-book"></i> My Courses
+                </a>
+
+                <a href="#" class="list-group-item list-group-item-action disabled">
+                    <i class="bi bi-easel"></i> My Classroom <span class="text-muted">(coming soon)</span>
+                </a>
+
+                <a asp-controller="Learner" asp-action="EditProfile"
+                   class="list-group-item list-group-item-action">
+                    <i class="bi bi-pencil-square"></i> Edit Profile
+                </a>
+
+                <a asp-controller="Learner" asp-action="ResetPassword"
+                   class="list-group-item list-group-item-action">
+                    <i class="bi bi-shield-lock"></i> Reset Password
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

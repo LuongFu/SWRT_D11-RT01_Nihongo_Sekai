@@ -315,9 +315,17 @@ namespace JapaneseLearningPlatform.Controllers
 
             return View("Error");
         }
+        //Profile của người dùng
+        [Authorize(Roles = "Learner,Partner,Admin")]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+            return View("~/Views/Learner/Profile.cshtml", user);
+        }
 
-        //Ban feature
-        [HttpPost]
+            //Ban feature
+            [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> ToggleBan(string id)

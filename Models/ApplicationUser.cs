@@ -14,7 +14,7 @@ namespace JapaneseLearningPlatform.Models
         public string Role { get; set; } = "Learner";
         public bool IsApproved { get; set; } = false;
         public string? PartnerDocumentPath { get; set; }
-
         public bool IsBanned { get; set; } = false;
+        public string? ProfilePicturePath { get; set; }
     }
 }
