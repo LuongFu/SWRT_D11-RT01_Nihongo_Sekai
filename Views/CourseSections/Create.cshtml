@@ -1,0 +1,40 @@
+﻿@using JapaneseLearningPlatform.Data.ViewModels
+@model CourseSectionVM
+
+@{
+    ViewData["Title"] = "Create Section";
+    ViewData["Layout"] = "_Layout";
+}
+
+<h2 class="mb-4">Create New Section</h2>
+
+<form asp-action="Create" method="post" class="border p-4 rounded shadow-sm">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <input type="hidden" asp-for="CourseId" />
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label fw-semibold"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    @* <div class="mb-3">
+        <label asp-for="DisplayOrder" class="form-label fw-semibold"></label>
+        <input asp-for="DisplayOrder" class="form-control" type="number" min="1" />
+        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+    </div> *@
+
+    <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-check-circle"></i> Save
+        </button>
+        <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Back
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

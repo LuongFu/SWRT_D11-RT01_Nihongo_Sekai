@@ -155,16 +155,47 @@ namespace NihongoSekaiPlatform.Controllers
         public async Task<IActionResult> UploadProfilePicture(IFormFile profilePicture)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null || profilePicture == null || profilePicture.Length == 0)
-                return RedirectToAction("Profile");
+            if (user == null)
+                return NotFound();
 
+            if (profilePicture == null || profilePicture.Length == 0)
+            {
+                TempData["UploadError"] = "Please select a photo before uploading.";
+                return RedirectToAction("Profile");
+            }
+
+            var extension = Path.GetExtension(profilePicture.FileName)?.ToLower();
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                TempData["UploadError"] = "Invalid file. No file extension found.";
+                return RedirectToAction("Profile");
+            }
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+            if (!allowedExtensions.Contains(extension))
+            {
+                TempData["UploadError"] = "Invalid file type. Please select an image with one of the following formats: .jpg, .jpeg, .png, .gif, .webp.";
+                return RedirectToAction("Profile");
+            }
+
+            // 📁 Tạo thư mục nếu chưa có
             var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "profile");
             if (!Directory.Exists(uploadsFolder))
                 Directory.CreateDirectory(uploadsFolder);
 
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(profilePicture.FileName)}";
-            var filePath = Path.Combine(uploadsFolder, fileName);
+            // 🧹 Xoá ảnh cũ nếu có (trừ khi đang dùng default)
+            if (!string.IsNullOrEmpty(user.ProfilePicturePath) && !user.ProfilePicturePath.Contains("default-img.jpg"))
+            {
+                var oldPath = Path.Combine(_env.WebRootPath, user.ProfilePicturePath.TrimStart('/'));
+                if (System.IO.File.Exists(oldPath))
+                {
+                    System.IO.File.Delete(oldPath);
+                }
+            }
 
+            // 📥 Lưu ảnh mới
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await profilePicture.CopyToAsync(stream);
@@ -175,6 +206,8 @@ namespace NihongoSekaiPlatform.Controllers
 
             return RedirectToAction("Profile");
         }
+
+
 
         // 📚 Lớp học của tôi (hiển thị thời khóa biểu và partner)
         [Authorize(Roles = "Learner")]
