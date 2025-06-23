@@ -54,7 +54,7 @@ namespace JapaneseLearningPlatform.Data.Services
                     Amount = item.Amount,
                     CourseId = item.Course.Id,
                     OrderId = order.Id,
-                    Price = item.Course.Price
+                    Price = item.Course.FinalPrice
                 };
                 await _context.OrderItems.AddAsync(orderItem);
             }

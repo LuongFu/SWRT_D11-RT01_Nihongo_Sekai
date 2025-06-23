@@ -299,6 +299,86 @@ namespace JapaneseLearningPlatform.Data
                     });
                     context.SaveChanges();
                 }
+                // New Course (Course 7)
+                if (!context.Courses.Any(c => c.Name == "Nihongo Lesson ep 7"))
+                    {
+                    var newCourse = new Course
+                    {
+                        Name = "Nihongo Lesson ep 7",
+                        Description = "Advanced Grammar and Expressions",
+                        Price = 19.99,
+                        ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749737126/japanese_lesson_7_demo.jpg",
+                        StartDate = DateTime.Now,
+                        EndDate = DateTime.Now.AddDays(30),
+                        CourseCategory = CourseCategory.Advanced
+                    };
+                    context.Courses.Add(newCourse);
+                    context.SaveChanges(); // Save to get Course.Id
+
+                    // Create 3 sections
+                    var section1 = new CourseSection { Title = "Advanced Greetings", CourseId = newCourse.Id };
+                    var section2 = new CourseSection { Title = "Honorific Quiz", CourseId = newCourse.Id };
+                    var section3 = new CourseSection { Title = "Situational Dialogues", CourseId = newCourse.Id };
+                    context.CourseSections.AddRange(section1, section2, section3);
+                    context.SaveChanges(); // Save to get Section IDs
+
+                    // Create quiz
+                    var newQuiz = new Quiz
+                    {
+                        Title = "Honorific Expressions Quiz",
+                        CourseId = newCourse.Id
+                    };
+                    context.Quizzes.Add(newQuiz);
+                    context.SaveChanges(); // Save to get Quiz.Id
+
+                    // Create 6 questions, each with 4 options (1 correct)
+                    var quizQuestions = new List<QuizQuestion>();
+                    for (int i = 1; i <= 6; i++)
+                    {
+                        var options = new List<QuizOption>();
+                        int correctIndex = new Random().Next(0, 4);
+
+                        for (int j = 0; j < 4; j++)
+                        {
+                            options.Add(new QuizOption
+                            {
+                                OptionText = $"Option {j + 1} for Q{i}",
+                                IsCorrect = (j == correctIndex)
+                            });
+                        }
+
+                        quizQuestions.Add(new QuizQuestion
+                        {
+                            QuestionText = $"What is the correct usage of honorific in sentence {i}?",
+                            QuizId = newQuiz.Id,
+                            Options = options
+                        });
+                    }
+                    context.QuizQuestions.AddRange(quizQuestions);
+                    context.SaveChanges();
+
+                    // Add content items for sections
+                    var contentItem1 = new CourseContentItem
+                    {
+                        Title = "Watch: Advanced Greetings Video",
+                        SectionId = section1.Id,
+                        ContentType = ContentType.Video,
+                        VideoId = 2 // Assumes VideoId 2 exists
+                    };
+                    var contentItem2 = new CourseContentItem
+                    {
+                        Title = "Take: Honorific Quiz",
+                        SectionId = section2.Id,
+                        ContentType = ContentType.Quiz,
+                        QuizId = newQuiz.Id
+                    };
+
+                    context.CourseContentItems.AddRange(contentItem1, contentItem2);
+                    context.SaveChanges();
+                }
+                
+                
+
             }
 
         }

@@ -46,7 +46,6 @@
         </select>
         <span asp-validation-for="ContentType" class="text-danger"></span>
     </div>
-
     <div id="videoFields" style="display:none;">
         <div class="mb-3">
             <label asp-for="VideoURL" class="form-label"></label>
@@ -63,14 +62,18 @@
 
     <div id="quizFields" style="display:none;">
         <div class="mb-3">
-            <label asp-for="QuizId" class="form-label"></label>
-            <select asp-for="QuizId" class="form-select" asp-items="Model.Quizzes">
-                <option value="">-- Select a Quiz --</option>
-            </select>
-            <span asp-validation-for="QuizId" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="NewQuizTitle"></label>
+                <input asp-for="NewQuizTitle" class="form-control" />
+                <span asp-validation-for="NewQuizTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewQuizDescription"></label>
+                <input asp-for="NewQuizDescription" class="form-control" />
+                <span asp-validation-for="NewQuizDescription" class="text-danger"></span>
+            </div>
         </div>
     </div>
-
     <div class="mb-3">
         <button type="submit" class="btn btn-success">
             <i class="bi bi-save"></i> Save

@@ -92,9 +92,41 @@ namespace JapaneseLearningPlatform.Controllers
                     VideoDescription = vm.VideoDescription
                 };
             }
+            //else if (vm.ContentType == ContentType.Quiz)
+            //{
+            //    contentItem.QuizId = vm.QuizId;
+            //}
             else if (vm.ContentType == ContentType.Quiz)
             {
-                contentItem.QuizId = vm.QuizId;
+                if (!string.IsNullOrWhiteSpace(vm.NewQuizTitle))
+                {
+                    // Tạo mới quiz
+                    var newQuiz = new Quiz
+                    {
+                        Title = vm.NewQuizTitle,
+                        CourseId = vm.CourseId
+                    };
+
+                    _context.Quizzes.Add(newQuiz);
+                    await _context.SaveChangesAsync();
+
+                    contentItem.QuizId = newQuiz.Id;
+                }
+                else if (vm.QuizId.HasValue)
+                {
+                    // Gán quiz đã chọn từ dropdown
+                    contentItem.QuizId = vm.QuizId.Value;
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Please select or create a quiz.");
+                    vm.Quizzes = await _context.Quizzes
+                        .Where(q => q.CourseId == vm.CourseId)
+                        .Select(q => new SelectListItem { Text = q.Title, Value = q.Id.ToString() })
+                        .ToListAsync();
+
+                    return View(vm);
+                }
             }
 
             await _service.AddAsync(contentItem);

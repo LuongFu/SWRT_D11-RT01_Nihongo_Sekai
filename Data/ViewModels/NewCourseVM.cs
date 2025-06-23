@@ -28,6 +28,9 @@ namespace JapaneseLearningPlatform.Models
         [Display(Name = "Course poster URL")]
         [Required(ErrorMessage = "Course poster URL is required")]
         public string ImageURL { get; set; }
+        [Display(Name = "Discount Percent")]
+        [Required(ErrorMessage = "Discount Percent is required. If you want, you can set to 0%.")]
+        public int? DiscountPercent { get; set; }
 
         [Display(Name = "Course start date")]
         [Required(ErrorMessage = "Start date is required")]

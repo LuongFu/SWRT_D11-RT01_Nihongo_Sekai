@@ -11,7 +11,7 @@ public class Quiz : IEntityBase
     public string Title { get; set; }
     // Foreign key
     public int CourseId { get; set; }
-    //public Course Course { get; set; }
+    public Course Course { get; set; }
 
     // Navigation
     public List<QuizQuestion> Questions { get; set; }

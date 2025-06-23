@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Services;
+using JapaneseLearningPlatform.Data.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NihongoSekaiPlatform.Data.ViewModels;
-using JapaneseLearningPlatform.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using JapaneseLearningPlatform.Data.ViewModels;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -14,11 +15,25 @@ namespace JapaneseLearningPlatform.Controllers
     public class QuizzesController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IQuizQuestionsService _questionsService;
 
-        public QuizzesController(AppDbContext context)
+        public QuizzesController(AppDbContext context, IQuizQuestionsService questionsService)
         {
             _context = context;
+            _questionsService = questionsService;
         }
+
+         public async Task<IActionResult> Details(int id)
+    {
+        var quiz = await _context.Quizzes
+            .Include(q => q.Questions)
+                .ThenInclude(q => q.Options)
+            .FirstOrDefaultAsync(q => q.Id == id);
+
+        if (quiz == null) return NotFound();
+
+        return View(quiz);
+    }
 
         // GET: /Quizzes/Start/5
         [HttpGet]
@@ -113,5 +128,49 @@ namespace JapaneseLearningPlatform.Controllers
 
             return View("Result", model);
         }
+        public async Task<IActionResult> Manage(int id)
+        {
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Options)
+                .FirstOrDefaultAsync(q => q.Id == id);
+
+            if (quiz == null) return NotFound();
+
+            ViewData["QuizTitle"] = quiz.Title;
+            ViewData["CourseId"] = quiz.CourseId;
+
+            return View(quiz);
+        }
+
+        [HttpGet]
+        [AllowAnonymous] // Cho phép mọi user xem trước
+        public async Task<IActionResult> Preview(int id)
+        {
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Options)
+                .FirstOrDefaultAsync(q => q.Id == id);
+
+            if (quiz == null) return NotFound();
+
+            var vm = new QuizPreviewVM
+            {
+                QuizTitle = quiz.Title,
+                Questions = quiz.Questions.Select(q => new QuizQuestionVM
+                {
+                    QuestionText = q.QuestionText,
+                    Options = q.Options.Select(o => new QuizOptionVM
+                    {
+                        OptionText = o.OptionText,
+                        IsCorrect = false // nếu chỉ preview → không tiết lộ đáp án
+                    }).ToList()
+                }).ToList()
+            };
+
+            ViewData["CourseId"] = quiz.CourseId;
+            return View(vm);
+        }
+
     }
 }
