@@ -86,26 +86,45 @@
                 </a>
             }
 
-            @foreach (var sections in Model.Sections)
-            {
-                <div class="card mb-3 border-0 shadow-sm">
-                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                        <div class="fw-bold">@sections.Title</div>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <div class="d-flex gap-2">
-                                <a asp-controller="CourseSections" asp-action="Edit" asp-route-id="@sections.Id"
-                                   class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a asp-controller="CourseSections" asp-action="Delete" asp-route-id="@sections.Id"
-                                   class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </div>
-                        }
-                    </div>
+            <div class="accordion" id="courseSectionsAccordion">
+    @for (int i = 0; i < Model.Sections.Count; i++)
+    {
+        var sections = Model.Sections[i];
+        var headingId = $"heading{i}";
+        var collapseId = $"collapse{i}";
 
+        <div class="accordion-item mb-2">
+            <h2 class="accordion-header" id="@headingId">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#@collapseId"
+                        aria-expanded="false"
+                        aria-controls="@collapseId">
+                    @sections.Title
+                </button>
+            </h2>
+
+            <div id="@collapseId"
+                 class="accordion-collapse collapse"
+                 aria-labelledby="@headingId"
+                 data-bs-parent="#courseSectionsAccordion">
+                <div class="accordion-body">
+                                <div class="mt-3 d-flex gap-2">
+                                    <a asp-controller="CourseContentItems" asp-action="Create"
+                                       asp-route-courseId="@Model.Course.Id"
+                                       asp-route-sectionId="@sections.Id"
+                                       class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-plus-circle"></i> Add Content
+                                    </a>
+                                    <a asp-controller="CourseSections" asp-action="Edit" asp-route-id="@sections.Id"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i> Edit Section
+                                    </a>
+                                    <a asp-controller="CourseSections" asp-action="Delete" asp-route-id="@sections.Id"
+                                       class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i> Delete Section
+                                    </a>
+                                </div>
                     <ul class="list-group list-group-flush">
                         @foreach (var itemWithIndex in sections.ContentItems.Select((ci, index) => new { Item = ci, Index = index + 1 }))
                         {
@@ -121,12 +140,12 @@
                                         @if (item.ContentType == ContentType.Video && item.Video != null)
                                         {
                                             <div class="mt-2">
-                                                <div class="ratio ratio-16x9">
+                                                @* <div class="ratio ratio-16x9"> *@
                                                     <iframe class="rounded"
                                                             src="@ToEmbedUrl(item.Video.VideoURL)"
-                                                            allowfullscreen style="width:100%; height:300px;">
+                                                            allowfullscreen style="width:42vw; height:50vh;">
                                                     </iframe>
-                                                </div>
+                                                @* </div> *@
                                                 <p class="text-muted mt-1">@item.Video.VideoDescription</p>
                                             </div>
                                         }
@@ -154,44 +173,19 @@
                                                 <i class="bi bi-trash"></i>
                                             </a>
                                         </div>
+                                        
+                                        
                                     }
                                 </div>
                             </li>
                         }
-
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="list-group-item text-end">
-                                <a asp-controller="CourseContentItems" asp-action="Create"
-                                   asp-route-courseId="@Model.Course.Id"
-                                   asp-route-sectionId="@sections.Id"
-                                   class="btn btn-sm btn-outline-success">
-                                    <i class="bi bi-plus-circle"></i> Add Content Item
-                                </a>
-                            </li>
-                        }
-                    </ul>
                 </div>
-            }
-        }
-        else if (Model.IsPurchased || !User.IsInRole("Admin"))
-        {
-            <div class="alert alert-info mt-4">
-                <i class="bi bi-info-circle"></i> No content available for this course yet.
             </div>
-        }
-        else if (User.IsInRole("Admin"))
-        {
-            <div class="alert alert-info mt-4">
-                <i class="bi bi-info-circle"></i> No content available for this course yet.
-            </div>
-        
-            <a asp-controller="CourseSections" asp-action="Create" asp-route-courseId="@Model.Course.Id"
-                     class="btn btn-sm btn-outline-success mb-3">
-                <i class="bi bi-plus-circle"></i> Add Section
-            </a>
-        }
+        </div>
+    }
+</div>
 
+        }
         <!-- Back Button -->
         <div class="mt-4">
             <a asp-action="Index" class="btn btn-outline-secondary">
