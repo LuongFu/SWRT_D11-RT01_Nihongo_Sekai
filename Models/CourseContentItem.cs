@@ -24,4 +24,6 @@ public class CourseContentItem : IEntityBase
 
     public int? QuizId { get; set; }
     public Quiz Quiz { get; set; }
+    [Required]
+    public int DisplayOrder { get; internal set; }
 }

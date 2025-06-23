@@ -32,6 +32,12 @@
     </div>
 
     <div class="mb-3">
+        <label asp-for="DisplayOrder" class="form-label"></label>
+        <input asp-for="DisplayOrder" class="form-control" type="number" min="1" />
+        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
         <label asp-for="ContentType" class="form-label"></label>
         <select asp-for="ContentType" class="form-select" id="contentTypeSelect" disabled>
             @foreach (var type in Enum.GetValues(typeof(ContentType)))
@@ -81,17 +87,14 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        const contentTypeSelect = document.getElementById("contentTypeSelect");
         const videoFields = document.getElementById("videoFields");
         const quizFields = document.getElementById("quizFields");
+        const selectedType = "@Model.ContentType";
 
-        function toggleFields(type) {
-            videoFields.style.display = type === "Video" ? "block" : "none";
-            quizFields.style.display = type === "Quiz" ? "block" : "none";
+        if (selectedType === "Video") {
+            videoFields.style.display = "block";
+        } else if (selectedType === "Quiz") {
+            quizFields.style.display = "block";
         }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            toggleFields("@Model.ContentType");
-        });
     </script>
 }

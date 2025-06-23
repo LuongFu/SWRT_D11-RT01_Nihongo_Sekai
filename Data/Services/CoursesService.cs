@@ -26,6 +26,7 @@ namespace JapaneseLearningPlatform.Data.Services
                 Description = data.Description,
                 Price = data.Price,
                 ImageURL = data.ImageURL,
+                DiscountPercent = data.DiscountPercent,
                 StartDate = data.StartDate,
                 EndDate = data.EndDate,
                 CourseCategory = data.CourseCategory
@@ -74,6 +75,7 @@ namespace JapaneseLearningPlatform.Data.Services
                 dbCourse.Description = data.Description;
                 dbCourse.Price = data.Price;
                 dbCourse.ImageURL = data.ImageURL;
+                dbCourse.DiscountPercent = data.DiscountPercent;
                 dbCourse.StartDate = data.StartDate;
                 dbCourse.EndDate = data.EndDate;
                 dbCourse.CourseCategory = data.CourseCategory;
