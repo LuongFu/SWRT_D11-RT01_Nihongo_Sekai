@@ -1,0 +1,82 @@
+﻿@using JapaneseLearningPlatform.Data.Enums
+@using JapaneseLearningPlatform.Data.ViewModels
+@model QuizQuestionFormVM
+@{
+    ViewData["Title"] = Model.QuestionId.HasValue ? "Edit Question" : "Create Question";
+    var isEdit = Model.QuestionId.HasValue;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Save" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="QuestionId" />
+    <input type="hidden" asp-for="QuizId" />
+
+    <div class="form-group">
+        <label asp-for="QuestionText"></label>
+        <input asp-for="QuestionText" class="form-control" />
+        <span asp-validation-for="QuestionText" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="QuestionType"></label>
+        <select asp-for="QuestionType" class="form-control" asp-items="Html.GetEnumSelectList<QuestionType>()"></select>
+    </div>
+
+    <h5 class="mt-4">Answer Options</h5>
+
+    <div id="option-list">
+        @for (int i = 0; i < Model.Options.Count; i++)
+        {
+            <div class="card mb-2 p-2">
+                <input type="hidden" asp-for="Options[@i].OptionId" />
+                <div class="form-group">
+                    <label>Option Text</label>
+                    <input asp-for="Options[@i].OptionText" class="form-control" />
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="Options[@i].IsCorrect" />
+                    <label class="form-check-label">Correct Answer</label>
+                </div>
+                <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeOption(this)">Remove</button>
+            </div>
+        }
+    </div>
+
+    <button type="button" class="btn btn-secondary" onclick="addOption()">+ Add Option</button>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Manage" asp-controller="Quizzes" asp-route-id="@Model.QuizId" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function addOption() {
+            const index = document.querySelectorAll('#option-list .card').length;
+            const container = document.createElement('div');
+            container.className = 'card mb-2 p-2';
+            container.innerHTML = `
+                <input type="hidden" name="Options[${index}].OptionId" value="0" />
+                <div class="form-group">
+                    <label>Option Text</label>
+                    <input name="Options[${index}].OptionText" class="form-control" />
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="Options[${index}].IsCorrect" class="form-check-input" />
+                    <label class="form-check-label">Correct Answer</label>
+                </div>
+                <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeOption(this)">Remove</button>
+            `;
+            document.getElementById('option-list').appendChild(container);
+        }
+
+        function removeOption(btn) {
+            btn.closest('.card').remove();
+        }
+    </script>
+}

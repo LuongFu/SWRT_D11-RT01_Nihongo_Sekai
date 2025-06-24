@@ -1,0 +1,53 @@
+﻿@model Quiz
+@{
+    ViewData["Title"] = "Manage Q&A";
+    var quizTitle = ViewData["QuizTitle"] as string;
+    var courseId = (int)ViewData["CourseId"];
+}
+
+<h2>Manage Q&A: @quizTitle</h2>
+
+<a asp-action="Create" asp-controller="QuizQuestions" asp-route-quizId="@Model.Id" class="btn btn-success mb-3">
+    + Add Question
+</a>
+<a asp-action="Preview" asp-controller="Quizzes" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+    Preview Quiz
+</a>
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>Question</th>
+            <th>Type</th>
+            <th>Options</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var q in Model.Questions)
+        {
+            <tr>
+                <td>@q.QuestionText</td>
+                <td>@q.QuestionType</td>
+                <td>
+                    <ul>
+                        @foreach (var o in q.Options)
+                        {
+                            <li>@o.OptionText @if (o.IsCorrect) {
+                            <strong>(✔)</strong>
+                        }
+    </li>
+                    }
+                </ul>
+            </td>
+            <td>
+                <a asp-action="Edit" asp-controller="QuizQuestions" asp-route-id="@q.Id" class="btn btn-sm btn-warning">Edit</a>
+                <form asp-action="Delete" asp-controller="QuizQuestions" asp-route-id="@q.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this question?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+                }
+    </tbody>
+</table>
+
+<a asp-action="Details" asp-controller="Courses" asp-route-id="@courseId" class="btn btn-secondary mt-3">← Back to Course</a>

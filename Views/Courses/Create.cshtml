@@ -23,6 +23,11 @@
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <label asp-for="DiscountPercent" class="control-label"></label>
+                        <input asp-for="DiscountPercent" class="form-control" />
+                        <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
                         <label asp-for="StartDate"></label>
                         <input asp-for="StartDate" type="date" class="form-control" />
                         <span asp-validation-for="StartDate" class="text-danger"></span>

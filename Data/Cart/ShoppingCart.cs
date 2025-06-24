@@ -1,4 +1,4 @@
-using JapaneseLearningPlatform.Models;
+﻿using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -75,7 +75,16 @@ namespace JapaneseLearningPlatform.Data.Cart
             return ShoppingCartItems ?? (ShoppingCartItems = _context.ShoppingCartItems.Where(n => n.ShoppingCartId == ShoppingCartId).Include(n => n.Course).ToList());
         }
 
-        public double GetShoppingCartTotal() =>  _context.ShoppingCartItems.Where(n => n.ShoppingCartId == ShoppingCartId).Select(n => n.Course.Price * n.Amount).Sum();
+        //public double GetShoppingCartTotal() =>  _context.ShoppingCartItems.Where(n => n.ShoppingCartId == ShoppingCartId).Select(n => n.Course.Price * n.Amount).Sum();
+        public double GetShoppingCartTotal()
+        {
+            var items = _context.ShoppingCartItems
+                .Where(n => n.ShoppingCartId == ShoppingCartId)
+                .Include(n => n.Course)
+                .ToList(); // thực thi query ở đây
+
+            return items.Sum(n => n.Course.FinalPrice * n.Amount);
+        }
 
         public async Task ClearShoppingCartAsync()
         {
