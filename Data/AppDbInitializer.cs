@@ -20,83 +20,7 @@ namespace JapaneseLearningPlatform.Data
 
                 context.Database.EnsureCreated();
 
-                //Cinema
-                if (!context.Cinemas.Any())
-                {
-                    context.Cinemas.AddRange(new List<Cinema>()
-                    {
-                        new Cinema()
-                        {
-                            Name = "Cinema 1",
-                            Logo = "http://dotnethow.net/images/cinemas/cinema-1.jpeg",
-                            Description = "This is the description of the first cinema"
-                        },
-                        new Cinema()
-                        {
-                            Name = "Cinema 2",
-                            Logo = "http://dotnethow.net/images/cinemas/cinema-2.jpeg",
-                            Description = "This is the description of the first cinema"
-                        },
-                        new Cinema()
-                        {
-                            Name = "Cinema 3",
-                            Logo = "http://dotnethow.net/images/cinemas/cinema-3.jpeg",
-                            Description = "This is the description of the first cinema"
-                        },
-                        new Cinema()
-                        {
-                            Name = "Cinema 4",
-                            Logo = "http://dotnethow.net/images/cinemas/cinema-4.jpeg",
-                            Description = "This is the description of the first cinema"
-                        },
-                        new Cinema()
-                        {
-                            Name = "Cinema 5",
-                            Logo = "http://dotnethow.net/images/cinemas/cinema-5.jpeg",
-                            Description = "This is the description of the first cinema"
-                        },
-                    });
-                    context.SaveChanges();
-                }
-                //Actors
-                if (!context.Actors.Any())
-                {
-                    context.Actors.AddRange(new List<Actor>()
-                    {
-                        new Actor()
-                        {
-                            FullName = "Actor 1",
-                            Bio = "This is the Bio of the first actor",
-                            ProfilePictureURL = "http://dotnethow.net/images/actors/actor-1.jpeg"
-
-                        },
-                        new Actor()
-                        {
-                            FullName = "Actor 2",
-                            Bio = "This is the Bio of the second actor",
-                            ProfilePictureURL = "http://dotnethow.net/images/actors/actor-2.jpeg"
-                        },
-                        new Actor()
-                        {
-                            FullName = "Actor 3",
-                            Bio = "This is the Bio of the third actor",
-                            ProfilePictureURL = "http://dotnethow.net/images/actors/actor-3.jpeg"
-                        },
-                        new Actor()
-                        {
-                            FullName = "Actor 4",
-                            Bio = "This is the Bio of the fourth actor",
-                            ProfilePictureURL = "http://dotnethow.net/images/actors/actor-4.jpeg"
-                        },
-                        new Actor()
-                        {
-                            FullName = "Actor 5",
-                            Bio = "This is the Bio of the fifth actor",
-                            ProfilePictureURL = "http://dotnethow.net/images/actors/actor-5.jpeg"
-                        }
-                    });
-                    context.SaveChanges();
-                }
+                
                 //Videos
                 if (!context.Videos.Any())
                 {
@@ -135,227 +59,142 @@ namespace JapaneseLearningPlatform.Data
                     });
                     context.SaveChanges();
                 }
-                
-                //Producers
-                if (!context.Producers.Any())
-                {
-                    context.Producers.AddRange(new List<Producer>()
-                    {
-                        new Producer()
-                        {
-                            FullName = "Producer 1",
-                            Bio = "This is the Bio of the first actor",
-                            ProfilePictureURL = "http://dotnethow.net/images/producers/producer-1.jpeg"
-
-                        },
-                        new Producer()
-                        {
-                            FullName = "Producer 2",
-                            Bio = "This is the Bio of the second actor",
-                            ProfilePictureURL = "http://dotnethow.net/images/producers/producer-2.jpeg"
-                        },
-                        new Producer()
-                        {
-                            FullName = "Producer 3",
-                            Bio = "This is the Bio of the second actor",
-                            ProfilePictureURL = "http://dotnethow.net/images/producers/producer-3.jpeg"
-                        },
-                        new Producer()
-                        {
-                            FullName = "Producer 4",
-                            Bio = "This is the Bio of the second actor",
-                            ProfilePictureURL = "http://dotnethow.net/images/producers/producer-4.jpeg"
-                        },
-                        new Producer()
-                        {
-                            FullName = "Producer 5",
-                            Bio = "This is the Bio of the second actor",
-                            ProfilePictureURL = "http://dotnethow.net/images/producers/producer-5.jpeg"
-                        }
-                    });
-                    context.SaveChanges();
-                }
                 //Courses
-                if (!context.Courses.Any())
+                if (!context.Courses.Any(c => c.Id <= 6))
                 {
-                    context.Courses.AddRange(new List<Course>()
-                    {
-                        new Course()
-                        {
-                            Name = "Nihongo Lesson ep 1",
-                            Description = "Basic Japanese Lesson 1",
-                            Price = 7.80,
-                            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749731338/japanese_lesson_1_epmipj.jpg",
-                            StartDate = DateTime.Now.AddDays(-10),
-                            EndDate = DateTime.Now.AddDays(10),
-                            CinemaId = 3,
-                            ProducerId = 3,
-                            CourseCategory = CourseCategory.Alphabet
-                        },
-                        new Course()
-                        {
-                            Name = "Nihongo Lesson ep 2",
-                            Description = "Basic Japanese Lesson 2",
-                            Price = 16.80,
-                            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749731340/japanese_lesson_2_ktfwkn.jpg",
-                            StartDate = DateTime.Now,
-                            EndDate = DateTime.Now.AddDays(3),
-                            CinemaId = 1,
-                            ProducerId = 1,
-                            CourseCategory = CourseCategory.Basic
-                        },
-                        new Course()
-                        {
-                            Name = "Nihongo Lesson ep 3",
-                            Description = "Basic Japanese Lesson 3",
-                            Price = 13.30,
-                            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749731343/japanese_lesson_3_w221xl.jpg",
-                            StartDate = DateTime.Now,
-                            EndDate = DateTime.Now.AddDays(7),
-                            CinemaId = 4,
-                            ProducerId = 4,
-                            CourseCategory = CourseCategory.Intermediate
-                        },
-                        new Course()
-                        {
-                            Name = "Nihongo Lesson ep 4",
-                            Description = "Basic Japanese Lesson 4",
-                            Price = 10.50,
-                            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749731369/japanese_lesson_4_odxddf.jpg",
-                            StartDate = DateTime.Now.AddDays(-10),
-                            EndDate = DateTime.Now.AddDays(-5),
-                            CinemaId = 1,
-                            ProducerId = 2,
-                            CourseCategory = CourseCategory.Advanced
-                        },
-                        new Course()
-                        {
-                            Name = "Nihongo Lesson ep 5",
-                            Description = "Basic Japanese Lesson 5",
-                            Price = 11.50,
-                            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749731372/japanese_lesson_5_ruumi6.jpg",
-                            StartDate = DateTime.Now.AddDays(-10),
-                            EndDate = DateTime.Now.AddDays(-2),
-                            CinemaId = 1,
-                            ProducerId = 3,
-                            CourseCategory = CourseCategory.Advanced
-                        },
-                        new Course()
-                        {
-                            Name = "Japanese with Harupaka ",
-                            Description = "Basic Japanese Lesson - (ただいま)",
-                            Price = 23.50,
-                            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749737125/japanese_lesson_6_adt5j9.jpg",
-                            StartDate = DateTime.Now.AddDays(3),
-                            EndDate = DateTime.Now.AddDays(20),
-                            CinemaId = 1,
-                            ProducerId = 5,
-                            CourseCategory = CourseCategory.Culture
-                        }
-                    });
+                    var courses = new List<Course>
+    {
+        new Course
+        {
+            Name = "Nihongo Lesson ep 1",
+            Description = "Basic Japanese Lesson 1",
+            Price = 7.80,
+            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749731338/japanese_lesson_1_epmipj.jpg",
+            StartDate = DateTime.Now.AddDays(-10),
+            EndDate = DateTime.Now.AddDays(10),
+            CourseCategory = CourseCategory.Alphabet
+        },
+        new Course
+        {
+            Name = "Nihongo Lesson ep 2",
+            Description = "Basic Japanese Lesson 2",
+            Price = 16.80,
+            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749731340/japanese_lesson_2_ktfwkn.jpg",
+            StartDate = DateTime.Now,
+            EndDate = DateTime.Now.AddDays(3),
+            CourseCategory = CourseCategory.Basic
+        },
+        new Course
+        {
+            Name = "Nihongo Lesson ep 3",
+            Description = "Basic Japanese Lesson 3",
+            Price = 13.30,
+            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749731343/japanese_lesson_3_w221xl.jpg",
+            StartDate = DateTime.Now,
+            EndDate = DateTime.Now.AddDays(7),
+            CourseCategory = CourseCategory.Intermediate
+        },
+        new Course
+        {
+            Name = "Nihongo Lesson ep 4",
+            Description = "Basic Japanese Lesson 4",
+            Price = 10.50,
+            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749731369/japanese_lesson_4_odxddf.jpg",
+            StartDate = DateTime.Now.AddDays(-10),
+            EndDate = DateTime.Now.AddDays(-5),
+            CourseCategory = CourseCategory.Advanced
+        },
+        new Course
+        {
+            Name = "Nihongo Lesson ep 5",
+            Description = "Basic Japanese Lesson 5",
+            Price = 11.50,
+            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749731372/japanese_lesson_5_ruumi6.jpg",
+            StartDate = DateTime.Now.AddDays(-10),
+            EndDate = DateTime.Now.AddDays(-2),
+            CourseCategory = CourseCategory.Advanced
+        },
+        new Course
+        {
+            Name = "Japanese with Harupaka",
+            Description = "Basic Japanese Lesson - (ただいま)",
+            Price = 23.50,
+            ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749737125/japanese_lesson_6_adt5j9.jpg",
+            StartDate = DateTime.Now.AddDays(3),
+            EndDate = DateTime.Now.AddDays(20),
+            CourseCategory = CourseCategory.Culture
+        }
+    };
+
+                    context.Courses.AddRange(courses);
                     context.SaveChanges();
-                }
-                //Actors & Courses
-                if (!context.Actors_Courses.Any())
+
+                    int courseIndex = 1;
+                    var videos = context.Videos.Take(6).ToList();
+                    foreach (var course in courses)
+                    {
+                        var section1 = new CourseSection { Title = $"Section A of {course.Name}", CourseId = course.Id };
+                        var section2 = new CourseSection { Title = $"Quiz Section of {course.Name}", CourseId = course.Id };
+                        context.CourseSections.AddRange(section1, section2);
+                        context.SaveChanges();
+
+                        var quiz = new Quiz
+                        {
+                            Title = $"Quiz of {course.Name}",
+                            CourseId = course.Id
+                        };
+                        context.Quizzes.Add(quiz);
+                        context.SaveChanges();
+
+                        var questions = new List<QuizQuestion>
+        {
+            new QuizQuestion
+            {
+                QuestionText = $"Question 1 of {course.Name}",
+                QuizId = quiz.Id,
+                Options = new List<QuizOption>
                 {
-                    context.Actors_Courses.AddRange(new List<Actor_Course>()
-                    {
-                        new Actor_Course()
-                        {
-                            ActorId = 1,
-                            CourseId = 1
-                        },
-                        new Actor_Course()
-                        {
-                            ActorId = 3,
-                            CourseId = 1
-                        },
-
-                         new Actor_Course()
-                        {
-                            ActorId = 1,
-                            CourseId = 2
-                        },
-                         new Actor_Course()
-                        {
-                            ActorId = 4,
-                            CourseId = 2
-                        },
-
-                        new Actor_Course()
-                        {
-                            ActorId = 1,
-                            CourseId = 3
-                        },
-                        new Actor_Course()
-                        {
-                            ActorId = 2,
-                            CourseId = 3
-                        },
-                        new Actor_Course()
-                        {
-                            ActorId = 5,
-                            CourseId = 3
-                        },
-
-
-                        new Actor_Course()
-                        {
-                            ActorId = 2,
-                            CourseId = 4
-                        },
-                        new Actor_Course()
-                        {
-                            ActorId = 3,
-                            CourseId = 4
-                        },
-                        new Actor_Course()
-                        {
-                            ActorId = 4,
-                            CourseId = 4
-                        },
-
-
-                        new Actor_Course()
-                        {
-                            ActorId = 2,
-                            CourseId = 5
-                        },
-                        new Actor_Course()
-                        {
-                            ActorId = 3,
-                            CourseId = 5
-                        },
-                        new Actor_Course()
-                        {
-                            ActorId = 4,
-                            CourseId = 5
-                        },
-                        new Actor_Course()
-                        {
-                            ActorId = 5,
-                            CourseId = 5
-                        },
-
-
-                        new Actor_Course()
-                        {
-                            ActorId = 3,
-                            CourseId = 6
-                        },
-                        new Actor_Course()
-                        {
-                            ActorId = 4,
-                            CourseId = 6
-                        },
-                        new Actor_Course()
-                        {
-                            ActorId = 5,
-                            CourseId = 6
-                        },
-                    });
-                    context.SaveChanges();
+                    new QuizOption { OptionText = "Option 1", IsCorrect = true },
+                    new QuizOption { OptionText = "Option 2", IsCorrect = false }
                 }
+            },
+            new QuizQuestion
+            {
+                QuestionText = $"Question 2 of {course.Name}",
+                QuizId = quiz.Id,
+                Options = new List<QuizOption>
+                {
+                    new QuizOption { OptionText = "Option A", IsCorrect = false },
+                    new QuizOption { OptionText = "Option B", IsCorrect = true }
+                }
+            }
+        };
+                        context.QuizQuestions.AddRange(questions);
+                        context.SaveChanges();
+
+                        context.CourseContentItems.AddRange(new List<CourseContentItem>
+        {
+            new CourseContentItem
+            {
+                Title = $"Intro Video of {course.Name}",
+                SectionId = section1.Id,
+                ContentType = ContentType.Video,
+                VideoId = videos[courseIndex - 1].Id
+            },
+            new CourseContentItem
+            {
+                Title = $"Quiz: {quiz.Title}",
+                SectionId = section2.Id,
+                ContentType = ContentType.Quiz,
+                QuizId = quiz.Id
+            }
+        });
+                        context.SaveChanges();
+
+                        courseIndex++;
+                    }
+                }
+
                 //Videos & Courses
                 if (!context.Videos_Courses.Any())
                 {
@@ -398,8 +237,6 @@ namespace JapaneseLearningPlatform.Data
                             VideoId = 5,
                             CourseId = 3
                         },
-
-
                         new Video_Course()
                         {
                             VideoId = 2,
@@ -437,8 +274,6 @@ namespace JapaneseLearningPlatform.Data
                             VideoId = 5,
                             CourseId = 5
                         },
-
-
                         new Video_Course()
                         {
                             VideoId = 3,
@@ -457,6 +292,86 @@ namespace JapaneseLearningPlatform.Data
                     });
                     context.SaveChanges();
                 }
+                // New Course (Course 7)
+                if (!context.Courses.Any(c => c.Name == "Nihongo Lesson ep 7"))
+                    {
+                    var newCourse = new Course
+                    {
+                        Name = "Nihongo Lesson ep 7",
+                        Description = "Advanced Grammar and Expressions",
+                        Price = 19.99,
+                        ImageURL = "https://res.cloudinary.com/dfso7lfxa/image/upload/v1749737126/japanese_lesson_7_demo.jpg",
+                        StartDate = DateTime.Now,
+                        EndDate = DateTime.Now.AddDays(30),
+                        CourseCategory = CourseCategory.Advanced
+                    };
+                    context.Courses.Add(newCourse);
+                    context.SaveChanges(); // Save to get Course.Id
+
+                    // Create 3 sections
+                    var section1 = new CourseSection { Title = "Advanced Greetings", CourseId = newCourse.Id };
+                    var section2 = new CourseSection { Title = "Honorific Quiz", CourseId = newCourse.Id };
+                    var section3 = new CourseSection { Title = "Situational Dialogues", CourseId = newCourse.Id };
+                    context.CourseSections.AddRange(section1, section2, section3);
+                    context.SaveChanges(); // Save to get Section IDs
+
+                    // Create quiz
+                    var newQuiz = new Quiz
+                    {
+                        Title = "Honorific Expressions Quiz",
+                        CourseId = newCourse.Id
+                    };
+                    context.Quizzes.Add(newQuiz);
+                    context.SaveChanges(); // Save to get Quiz.Id
+
+                    // Create 6 questions, each with 4 options (1 correct)
+                    var quizQuestions = new List<QuizQuestion>();
+                    for (int i = 1; i <= 6; i++)
+                    {
+                        var options = new List<QuizOption>();
+                        int correctIndex = new Random().Next(0, 4);
+
+                        for (int j = 0; j < 4; j++)
+                        {
+                            options.Add(new QuizOption
+                            {
+                                OptionText = $"Option {j + 1} for Q{i}",
+                                IsCorrect = (j == correctIndex)
+                            });
+                        }
+
+                        quizQuestions.Add(new QuizQuestion
+                        {
+                            QuestionText = $"What is the correct usage of honorific in sentence {i}?",
+                            QuizId = newQuiz.Id,
+                            Options = options
+                        });
+                    }
+                    context.QuizQuestions.AddRange(quizQuestions);
+                    context.SaveChanges();
+
+                    // Add content items for sections
+                    var contentItem1 = new CourseContentItem
+                    {
+                        Title = "Watch: Advanced Greetings Video",
+                        SectionId = section1.Id,
+                        ContentType = ContentType.Video,
+                        VideoId = 2 // Assumes VideoId 2 exists
+                    };
+                    var contentItem2 = new CourseContentItem
+                    {
+                        Title = "Take: Honorific Quiz",
+                        SectionId = section2.Id,
+                        ContentType = ContentType.Quiz,
+                        QuizId = newQuiz.Id
+                    };
+
+                    context.CourseContentItems.AddRange(contentItem1, contentItem2);
+                    context.SaveChanges();
+                }
+                
+                
+
             }
 
         }
@@ -492,22 +407,26 @@ namespace JapaneseLearningPlatform.Data
                     };
                     await userManager.CreateAsync(newAdminUser, "Phu123123@");
                     await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
+                    newAdminUser.Role = UserRoles.Admin;
+                    await userManager.UpdateAsync(newAdminUser);
                 }
                 // partner account if not exists
                 string partnerUserEmail = "giakhoiquang@gmail.com";
 
                 var partner = await userManager.FindByEmailAsync(partnerUserEmail);
-                if (adminUser == null)
+                if (partner == null)
                 {
-                    var newAdminUser = new ApplicationUser()
+                    var newPartnerUser = new ApplicationUser()
                     {
                         FullName = "Gia Khoi Partner",
-                        UserName = "giakhoiquang@gmail.com",
+                        UserName = partnerUserEmail,
                         Email = partnerUserEmail,
-                        EmailConfirmed = true
+                        EmailConfirmed = true,
+                        Role = UserRoles.Partner // add this line
                     };
-                    await userManager.CreateAsync(newAdminUser, "Khoi2005.");
-                    await userManager.AddToRoleAsync(newAdminUser, UserRoles.Partner);
+                    await userManager.CreateAsync(newPartnerUser, "Khoi2005.");
+                    await userManager.AddToRoleAsync(newPartnerUser, UserRoles.Partner);
+                    await userManager.UpdateAsync(newPartnerUser);
                 }
                 // learner account if not exists
                 string learnerUserEmail = "noobhoang@gmail.com";
@@ -524,6 +443,24 @@ namespace JapaneseLearningPlatform.Data
                     };
                     await userManager.CreateAsync(newAppUser, "Hoang2005.");
                     await userManager.AddToRoleAsync(newAppUser, UserRoles.Learner);
+                }
+
+                string bannedEmail = "banneduser@gmail.com";
+
+                var bannedUser = await userManager.FindByEmailAsync(bannedEmail);
+                if (bannedUser == null)
+                {
+                    var newBannedUser = new ApplicationUser()
+                    {
+                        FullName = "Banned User",
+                        UserName = bannedEmail,
+                        Email = bannedEmail,
+                        EmailConfirmed = true,
+                        IsBanned = true // ✅ set banned flag
+                    };
+
+                    await userManager.CreateAsync(newBannedUser, "Test123!@#");
+                    await userManager.AddToRoleAsync(newBannedUser, UserRoles.Learner);
                 }
             }
         }

@@ -1,0 +1,68 @@
+﻿@model JapaneseLearningPlatform.Data.ViewModels.TakeQuizVM
+
+@{
+    ViewData["Title"] = "Quiz Result";
+    var correctAnswers = ViewBag.CorrectAnswers as int? ?? 0;
+    var totalQuestions = ViewBag.TotalQuestions as int? ?? 0;
+    var scorePercent = ViewBag.ScorePercent as int? ?? 0;
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 rounded-4 p-4">
+        <h2 class="fw-bold mb-3">Your Result: @Model.QuizTitle</h2>
+
+        <div class="alert alert-info">
+            <strong>Score:</strong> @correctAnswers / @totalQuestions
+            (<span class="fw-bold">@scorePercent%</span>)
+        </div>
+
+        @for (int i = 0; i < Model.Questions.Count; i++)
+        {
+            var question = Model.Questions[i];
+            var selected = question.SelectedOptionId;
+
+            <div class="mb-4">
+                <h5>Question @(i + 1): @question.QuestionText</h5>
+
+                @foreach (var option in question.Options)
+                {
+                    var isSelected = option.OptionId == selected;
+                    var isCorrect = option.IsCorrect;
+
+                    string bgClass = "";
+                    if (isSelected && isCorrect)
+                    {
+                        bgClass = "bg-success text-white";
+                    }
+                    else if (isSelected && !isCorrect)
+                    {
+                        bgClass = "bg-danger text-white";
+                    }
+                    else if (!isSelected && isCorrect)
+                    {
+                        bgClass = "bg-success bg-opacity-25";
+                    }
+
+                    <div class="p-2 rounded mb-1 @bgClass">
+                        @option.OptionText
+                        @if (isCorrect)
+                        {
+                            <i class="bi bi-check-circle-fill ms-2"></i>
+                        }
+                        else if (isSelected)
+                        {
+                            <i class="bi bi-x-circle-fill ms-2"></i>
+                        }
+                    </div>
+                }
+            </div>
+            <hr />
+        }
+
+        <div class="mt-4">
+            <a asp-controller="Courses" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left-circle"></i> Back to Courses
+            </a>
+        </div>
+    </div>
+</div>

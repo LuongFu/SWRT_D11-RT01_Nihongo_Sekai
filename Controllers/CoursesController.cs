@@ -24,158 +24,153 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly ICoursesService _service;
         private readonly ShoppingCart _shoppingCart;
         private readonly AppDbContext _context;
-        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IOrdersService _orderService;
+
+        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService)
         {
             _service = service;
             _shoppingCart = shoppingCart;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _orderService = orderService;
         }
 
         [AllowAnonymous]
-        //public async Task<IActionResult> Index()
-        //{
-        //    var allCourses = await _service.GetAllAsync(n => n.Cinema);
-        //    return View(allCourses);
-        //}
-        public async Task<IActionResult> Index()
-{
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var cartItems = _shoppingCart.GetShoppingCartItems().Select(c => c.Course.Id).ToList();
-        var purchasedCourseIds = _context.Orders
-            .Where(o => o.UserId == userId)
-            .SelectMany(o => o.OrderItems.Select(oi => oi.CourseId))
-            .ToHashSet();
-
-        var courses = await _context.Courses.Include(c => c.Actors_Courses).ThenInclude(a => a.Actor).ToListAsync();
-
-        var viewModel = courses.Select(course => new CourseWithPurchaseVM
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 6)
         {
-            Course = course,
-            IsInCart = cartItems.Contains(course.Id),
-            IsPurchased = purchasedCourseIds.Contains(course.Id)
-        });
-
-    return View(viewModel);
-}
-
-
-        [AllowAnonymous]
-        public async Task<IActionResult> Filter(string searchString)
-        {
-            var allCourses = await _service.GetAllAsync(n => n.Cinema);
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                //var filteredResult = allCourses.Where(n => n.Name.ToLower().Contains(searchString.ToLower()) || n.Description.ToLower().Contains(searchString.ToLower())).ToList();
-
-                var filteredResultNew = allCourses.Where(n => string.Equals(n.Name, searchString, StringComparison.CurrentCultureIgnoreCase) || string.Equals(n.Description, searchString, StringComparison.CurrentCultureIgnoreCase)).ToList();
-
-                return View("Index", filteredResultNew);
-            }
-
-            return View("Index", allCourses);
-        }
-
-        //GET: Courses/Details/1
-        [AllowAnonymous]
-        //public async Task<IActionResult> Details(int id)
-        //{
-        //    var courseDetail = await _service.GetCourseByIdAsync(id);
-        //    return View(courseDetail);
-        //}
-        //public async Task<IActionResult> Details(int id)
-        //{
-        //    var course = await _context.Courses
-        //        .Include(c => c.Cinema)
-        //        .Include(c => c.Producer)
-        //        .Include(c => c.Actors_Courses).ThenInclude(ac => ac.Actor)
-        //        .FirstOrDefaultAsync(c => c.Id == id);
-
-        //    if (course == null) return NotFound();
-
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //    var isPurchased = await _context.Orders
-        //        .AnyAsync(o => o.UserId == userId && o.OrderItems.Any(oi => oi.CourseId == id));
-
-        //    var isInCart = _shoppingCart.GetShoppingCartItems().Any(item => item.Course.Id == id);
-
-        //    var viewModel = new CourseDetailVM
-        //    {
-        //        Course = course,
-        //        IsPurchased = isPurchased,
-        //        IsInCart = isInCart
-        //    };
-
-        //    return View(viewModel); // Trả đúng ViewModel như View mong đợi
-        //}
-        public async Task<IActionResult> Details(int id)
-        {
-            var course = await _context.Courses
-                .Include(c => c.Cinema)
-                .Include(c => c.Producer)
-                .Include(c => c.Actors_Courses).ThenInclude(ac => ac.Actor)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (course == null) return View("NotFound");
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cartItems = _shoppingCart.GetShoppingCartItems().Select(c => c.Course.Id).ToList();
+            var purchasedCourseIds = _context.Orders
+                .Where(o => o.UserId == userId)
+                .SelectMany(o => o.OrderItems.Select(oi => oi.CourseId))
+                .ToHashSet();
 
-            var isPurchased = await _context.Orders
-                .Include(o => o.OrderItems)
-                .AnyAsync(o => o.UserId == userId && o.OrderItems.Any(i => i.CourseId == id));
-
-            var isInCart = _shoppingCart.GetShoppingCartItems().Any(i => i.CourseId == id);
-
-            var videoIds = await _context.Videos_Courses
-                .Where(vc => vc.CourseId == id)
-                .Select(vc => vc.VideoId)
+            var courses = await _context.Courses
+                .Include(c => c.Videos_Courses)
+                .ThenInclude(a => a.Video)
                 .ToListAsync();
 
-            var videos = await _context.Videos
-                .Where(v => videoIds.Contains(v.Id))
-                .ToListAsync();
+            var totalItems = courses.Count;
+            var itemsToDisplay = courses
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
-            var viewModel = new CourseDetailVM
+            var viewModel = itemsToDisplay.Select(course => new CourseWithPurchaseVM
             {
                 Course = course,
-                IsPurchased = isPurchased,
-                IsInCart = isInCart,
-                Videos = videos
-            };
+                IsInCart = cartItems.Contains(course.Id),
+                IsPurchased = purchasedCourseIds.Contains(course.Id)
+            });
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
             return View(viewModel);
         }
 
 
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Filter(string searchString, CourseCategory? selectedCategory, int page = 1, int pageSize = 6)
+        {
+            // B1: Lấy tất cả khóa học và đưa về List để tránh lỗi delegate inference
+            var allCourses = await _service.GetAllAsync();
+            var allCoursesList = allCourses.ToList();
+
+            // B2: Lọc theo từ khóa
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var lowerSearch = searchString.ToLower();
+                allCoursesList = allCoursesList
+                    .Where(c =>
+                        (!string.IsNullOrEmpty(c.Name) && c.Name.ToLower().Contains(lowerSearch)) ||
+                        (!string.IsNullOrEmpty(c.Description) && c.Description.ToLower().Contains(lowerSearch)))
+                    .ToList();
+            }
+
+            // B3: Lọc theo category nếu có chọn
+            if (selectedCategory != null)
+            {
+                allCoursesList = allCoursesList
+                    .Where(c => c.CourseCategory == selectedCategory)
+                    .ToList();
+            }
+
+            // B4: Phân trang
+            var totalItems = allCoursesList.Count;
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            var pagedCourses = allCoursesList
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // B5: Lấy thông tin người dùng và giỏ hàng
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+
+            var cartCourseIds = _shoppingCart.GetShoppingCartItems()
+                .Where(i => i.Course != null)
+                .Select(i => i.Course.Id)
+                .ToList();
+
+            var purchasedCourseIds = !string.IsNullOrEmpty(userId)
+                ? await _orderService.GetPurchasedCourseIdsByUser(userId)
+                : new List<int>();
+
+            // B6: Map sang ViewModel
+            var viewModelList = pagedCourses.Select(course => new CourseWithPurchaseVM
+            {
+                Course = course,
+                IsPurchased = purchasedCourseIds.Contains(course.Id),
+                IsInCart = cartCourseIds.Contains(course.Id)
+            }).ToList();
+
+            // B7: Truyền dữ liệu cho View
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.SearchString = searchString;
+            ViewBag.SelectedCategory = selectedCategory;
+            ViewBag.ShowAdvancedFilter = true;
+
+            return View("Index", viewModelList);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cartId = _shoppingCart.ShoppingCartId; // fix an toàn dựa trên session
+
+            var courseHierarchy = await _service.GetCourseHierarchyAsync(id, userId, cartId);
+            if (courseHierarchy == null || courseHierarchy.Course == null) return View("NotFound");
+
+            return View(courseHierarchy);
+        }
+
+
         //GET: Courses/Create
         public async Task<IActionResult> Create()
         {
-            var movieDropdownsData = await _service.GetNewCourseDropdownsValues();
-
-            ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
-            ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
-            ViewBag.Actors = new SelectList(movieDropdownsData.Actors, "Id", "FullName");
+            var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
+            ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
 
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(NewCourseVM movie)
+        public async Task<IActionResult> Create(NewCourseVM course)
         {
             if (!ModelState.IsValid)
             {
-                var movieDropdownsData = await _service.GetNewCourseDropdownsValues();
+                var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
+                ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
 
-                ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
-                ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
-                ViewBag.Actors = new SelectList(movieDropdownsData.Actors, "Id", "FullName");
-
-                return View(movie);
+                return View(course);
             }
 
-            await _service.AddNewCourseAsync(movie);
+            await _service.AddNewCourseAsync(course);
             return RedirectToAction(nameof(Index));
         }
 
@@ -183,49 +178,61 @@ namespace JapaneseLearningPlatform.Controllers
         //GET: Courses/Edit/1
         public async Task<IActionResult> Edit(int id)
         {
-            var movieDetails = await _service.GetCourseByIdAsync(id);
-            if (movieDetails == null) return View("NotFound");
+            //var courseDetails = await _service.GetCourseByIdAsync(id);
+            var courseDetails = await _context.Courses
+        .Include(c => c.Videos_Courses)
+        .Include(c => c.Videos_Courses)
+        .FirstOrDefaultAsync(c => c.Id == id);
+            if (courseDetails == null) return View("NotFound");
 
             var response = new NewCourseVM()
             {
-                Id = movieDetails.Id,
-                Name = movieDetails.Name,
-                Description = movieDetails.Description,
-                Price = movieDetails.Price,
-                StartDate = movieDetails.StartDate,
-                EndDate = movieDetails.EndDate,
-                ImageURL = movieDetails.ImageURL,
-                CourseCategory = movieDetails.CourseCategory,
-                CinemaId = movieDetails.CinemaId,
-                ProducerId = movieDetails.ProducerId,
-                ActorIds = movieDetails.Actors_Courses.Select(n => n.ActorId).ToList(),
+                Id = courseDetails.Id,
+                Name = courseDetails.Name,
+                Description = courseDetails.Description,
+                Price = courseDetails.Price,
+                DiscountPercent = courseDetails?.DiscountPercent,
+                StartDate = (DateTime)courseDetails?.StartDate,
+                EndDate = (DateTime)courseDetails?.EndDate,
+                ImageURL = courseDetails.ImageURL,
+                CourseCategory = courseDetails.CourseCategory,
+                VideoIds = courseDetails.Videos_Courses.Select(vc => vc.VideoId).ToList()
             };
 
-            var movieDropdownsData = await _service.GetNewCourseDropdownsValues();
-            ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
-            ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
-            ViewBag.Actors = new SelectList(movieDropdownsData.Actors, "Id", "FullName");
+            var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
+            ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
+            
 
             return View(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, NewCourseVM movie)
+        public async Task<IActionResult> Edit(int id, NewCourseVM course)
         {
-            if (id != movie.Id) return View("NotFound");
+            if (id != course.Id) return View("NotFound");
 
             if (!ModelState.IsValid)
             {
-                var movieDropdownsData = await _service.GetNewCourseDropdownsValues();
+                var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
 
-                ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
-                ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
-                ViewBag.Actors = new SelectList(movieDropdownsData.Actors, "Id", "FullName");
+                ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
 
-                return View(movie);
+                return View(course);
             }
 
-            await _service.UpdateCourseAsync(movie);
+            await _service.UpdateCourseAsync(course);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null) return NotFound();
+
+            _context.Courses.Remove(course);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

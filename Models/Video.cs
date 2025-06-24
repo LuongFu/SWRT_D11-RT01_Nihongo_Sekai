@@ -18,7 +18,7 @@ namespace JapaneseLearningPlatform.Models
 
         [Display(Name = "Video Description")]
         [Required(ErrorMessage = "Video Description is required")]
-        public string VideoDescription { get; set; }
+        public string? VideoDescription { get; set; }
 
         //Relationships
         public List<Video_Course> Videos_Courses { get; set; }

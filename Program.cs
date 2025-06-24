@@ -46,12 +46,13 @@ namespace JapaneseLearningPlatform
             //    options.UseSqlServer(configuration.GetConnectionString("DefaultConnectionString")));
 
             // Services configuration
-            builder.Services.AddScoped<IActorsService, ActorsService>();
-            builder.Services.AddScoped<IProducersService, ProducersService>();
-            builder.Services.AddScoped<ICinemasService, CinemasService>();
             builder.Services.AddScoped<ICoursesService, CoursesService>();
             builder.Services.AddScoped<IOrdersService, OrdersService>();
             builder.Services.AddScoped<IVideosService, VideosService>();
+            builder.Services.AddScoped<ICourseSectionsService, CourseSectionsService>();
+            builder.Services.AddScoped<ICourseContentItemsService, CourseContentItemsService>();
+            builder.Services.AddScoped<IQuizzesService, QuizzesService>();
+            builder.Services.AddScoped<IQuizQuestionsService, QuizQuestionsService>();
 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
@@ -64,20 +65,18 @@ namespace JapaneseLearningPlatform
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Account/Login"; //  quay lại login page tự viết
-        options.AccessDeniedPath = "/Account/AccessDenied";
-    })
-    .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-{
+                        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login"; //  quay lại login page tự viết
+                    options.AccessDeniedPath = "/Account/AccessDenied";
+                })
+                .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+            {
                 var googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
                 options.ClientId = googleAuthNSection["ClientId"];
                 options.ClientSecret = googleAuthNSection["ClientSecret"];
             });
-
-
 
             builder.Services.AddMemoryCache();
             builder.Services.AddSession();

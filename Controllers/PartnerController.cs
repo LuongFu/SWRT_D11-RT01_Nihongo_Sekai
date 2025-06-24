@@ -1,83 +1,115 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace NihongoSekaiPlatform.Controllers
 {
     public class PartnerController : Controller
     {
-        // GET: PartnerController
-        public ActionResult Index()
+        private readonly AppDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _env;
+
+        public PartnerController(AppDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env)
         {
-            return View();
+            _context = context;
+            _userManager = userManager;
+            _env = env;
         }
 
-        // GET: PartnerController/Details/5
-        public ActionResult Details(int id)
+        // 👤 Trang hồ sơ đối tác
+        [Authorize(Roles = "Partner")]
+        [HttpGet]
+        public async Task<IActionResult> Profile()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+            return View("~/Views/Partner/Profile.cshtml", user);
         }
 
-        // GET: PartnerController/Create
-        public ActionResult Create()
+        // ✏️ Sửa hồ sơ
+        [Authorize(Roles = "Partner")]
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+            return View("~/Views/Partner/EditProfile.cshtml", user);
         }
 
-        // POST: PartnerController/Create
+        [Authorize(Roles = "Partner")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> EditProfile(ApplicationUser updatedUser)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            user.FullName = updatedUser.FullName;
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction("Profile");
         }
 
-        // GET: PartnerController/Edit/5
-        public ActionResult Edit(int id)
+        // 🔒 Đặt lại mật khẩu
+        [Authorize(Roles = "Partner")]
+        [HttpGet]
+        public IActionResult ResetPassword()
         {
-            return View();
+            return View("~/Views/Partner/ResetPassword.cshtml");
         }
 
-        // POST: PartnerController/Edit/5
+        [Authorize(Roles = "Partner")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
         {
-            try
+            if (!ModelState.IsValid)
+                return View("~/Views/Partner/ResetPassword.cshtml", model);
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+
+            if (!result.Succeeded)
             {
-                return RedirectToAction(nameof(Index));
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+                return View("~/Views/Partner/ResetPassword.cshtml", model);
             }
-            catch
-            {
-                return View();
-            }
+
+            return RedirectToAction("Profile");
         }
 
-        // GET: PartnerController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: PartnerController/Delete/5
+        // 📷 Tải lên ảnh đại diện
+        [Authorize(Roles = "Partner")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> UploadProfilePicture(IFormFile profilePicture)
         {
-            try
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || profilePicture == null || profilePicture.Length == 0)
+                return RedirectToAction("Profile");
+
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "profile");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(profilePicture.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                return RedirectToAction(nameof(Index));
+                await profilePicture.CopyToAsync(stream);
             }
-            catch
-            {
-                return View();
-            }
+
+            user.ProfilePicturePath = $"/uploads/profile/{fileName}";
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction("Profile");
         }
     }
 }

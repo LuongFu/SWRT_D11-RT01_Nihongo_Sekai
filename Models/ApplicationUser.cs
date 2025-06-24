@@ -10,9 +10,11 @@ namespace JapaneseLearningPlatform.Models
     public class ApplicationUser:IdentityUser
     {
         [Display(Name = "Full name")]
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
         public string Role { get; set; } = "Learner";
         public bool IsApproved { get; set; } = false;
         public string? PartnerDocumentPath { get; set; }
+        public bool IsBanned { get; set; } = false;
+        public string? ProfilePicturePath { get; set; }
     }
 }

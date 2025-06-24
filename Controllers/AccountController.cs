@@ -2,6 +2,7 @@ using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -201,8 +202,22 @@ namespace JapaneseLearningPlatform.Controllers
             if (email != null)
             {
                 var user = await _userManager.FindByEmailAsync(email);
-                if (user == null)
+                if (user != null)
                 {
+                    // ✅ Kiểm tra bị ban
+                    if (user.IsBanned)
+                    {
+                        TempData["Error"] = "Your account has been banned by an administrator.";
+                        return RedirectToAction("Login");
+                    }
+
+                    // Đăng nhập nếu hợp lệ
+                    await _signInManager.SignInAsync(user, false);
+                    return LocalRedirect(returnUrl);
+                }
+                else
+                {
+                    // Tạo user mới
                     user = new ApplicationUser
                     {
                         Email = email,
@@ -211,32 +226,24 @@ namespace JapaneseLearningPlatform.Controllers
                     };
                     await _userManager.CreateAsync(user);
                     await _userManager.AddLoginAsync(user, info);
-                }
 
-                await _signInManager.SignInAsync(user, false);
-                return LocalRedirect(returnUrl);
+                    await _signInManager.SignInAsync(user, false);
+                    return LocalRedirect(returnUrl);
+                }
             }
 
             TempData["Error"] = "Email claim not received.";
             return RedirectToAction("Index", "Loading", new { returnUrl = "/Account/Login" });
         }
 
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View(); // Trả view lần đầu, không truyền model, không có lỗi
+        }
 
-
-        // GET: /Account/Login
-        //public async Task<IActionResult> Login(ApplicationUser user)
-        //{
-        //    if (!await _userManager.IsEmailConfirmedAsync(user))
-        //    {
-        //        ModelState.AddModelError("", "You must confirm your email to log in.");
-        //    }
-        //    else
-        //    {
-        //        return RedirectToAction("Index", "Loading", new { returnUrl = "/Account/EmailConfirmed" });
-        //    }
-        //    return View();
-        //}
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
             if (!ModelState.IsValid)
@@ -246,6 +253,14 @@ namespace JapaneseLearningPlatform.Controllers
             if (user == null)
             {
                 TempData["Error"] = "The email does not exist in the system. Please, try another email!";
+                return View(loginVM);
+            }
+
+            // Check if user is banned
+
+            if (user.IsBanned)
+            {
+                TempData["Error"] = "This account has been banned. Please contact support.";
                 return View(loginVM);
             }
 
@@ -300,14 +315,38 @@ namespace JapaneseLearningPlatform.Controllers
 
             return View("Error");
         }
+        //Profile của người dùng
+        [Authorize(Roles = "Learner,Partner,Admin")]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+            return View("~/Views/Learner/Profile.cshtml", user);
+        }
 
-       
+            //Ban feature
+            [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> ToggleBan(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return NotFound();
 
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            user.IsBanned = !user.IsBanned;
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction(nameof(Users));
+        }
 
         // POST: /Account/Logout
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.Remove("CartId"); //remove cart session after logged out
+
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Loading", new { returnUrl = "/Courses" });
         }
