@@ -1,5 +1,6 @@
 @using NihongoSekaiPlatform.Data.ViewModels
 @using JapaneseLearningPlatform.Data.Static
+@using JapaneseLearningPlatform.Data
 @model IEnumerable<CourseWithPurchaseVM>
 
 @{
@@ -13,6 +14,38 @@
 
 <div class="container mt-4">
     <h2 class="fw-bold mb-4 text-center">Explore All Courses</h2>
+
+<div class="container">
+    @if (ViewBag.ShowAdvancedFilter as bool? == true)
+{
+    <div class="mb-4">
+        <form asp-action="Filter" method="get" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <label class="form-label mb-0">Category:</label>
+            </div>
+            <div class="col-auto">
+                <select name="selectedCategory" class="form-select">
+                 <option value="">Select a category...</option>
+
+@foreach (CourseCategory category in Enum.GetValues(typeof(CourseCategory)))
+{
+    var isSelected = ViewBag.SelectedCategory != null && category.ToString() == ViewBag.SelectedCategory.ToString();
+    var selectedAttr = isSelected ? "selected" : "";
+    @: <option value="@category" @selectedAttr>@category</option>
+}
+                </select>
+            </div>
+            <div class="col-auto">
+                <input type="text" name="searchString" class="form-control" placeholder="Search by name..." value="@ViewBag.SearchString" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-funnel"></i> Apply Filter
+                </button>
+            </div>
+        </form>
+    </div>
+}
 
     @* Admin Create Button *@
     @if (isAdmin)
