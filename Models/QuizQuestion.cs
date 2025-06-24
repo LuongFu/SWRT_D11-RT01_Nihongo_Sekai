@@ -1,6 +1,5 @@
 ﻿using JapaneseLearningPlatform.Data.Base;
 using JapaneseLearningPlatform.Data.Enums;
-using Microsoft.VisualBasic.FileIO;
 using System.ComponentModel.DataAnnotations;
 
 public class QuizQuestion : IEntityBase

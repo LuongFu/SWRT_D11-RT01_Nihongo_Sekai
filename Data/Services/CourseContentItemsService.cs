@@ -1,10 +1,6 @@
 ﻿using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Services;
-using JapaneseLearningPlatform.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 public class CourseContentItemsService : ICourseContentItemsService
 {

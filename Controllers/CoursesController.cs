@@ -1,20 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using NihongoSekaiPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Cart;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {

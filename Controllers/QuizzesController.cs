@@ -4,10 +4,7 @@ using JapaneseLearningPlatform.Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NihongoSekaiPlatform.Data.ViewModels;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {

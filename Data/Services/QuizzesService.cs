@@ -1,8 +1,4 @@
-﻿using JapaneseLearningPlatform.Data;
-using JapaneseLearningPlatform.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace JapaneseLearningPlatform.Data.Services
 {

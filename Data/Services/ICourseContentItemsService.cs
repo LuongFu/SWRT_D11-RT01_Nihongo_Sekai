@@ -1,8 +1,4 @@
-﻿using JapaneseLearningPlatform.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace JapaneseLearningPlatform.Data.Services
+﻿namespace JapaneseLearningPlatform.Data.Services
 {
 
     public interface ICourseContentItemsService

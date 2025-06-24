@@ -2,11 +2,6 @@ using JapaneseLearningPlatform.Data.Base;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.EntityFrameworkCore;
-using NihongoSekaiPlatform.Data.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Data.Services
 {
