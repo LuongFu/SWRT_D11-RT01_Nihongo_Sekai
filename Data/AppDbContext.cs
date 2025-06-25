@@ -84,6 +84,60 @@ namespace JapaneseLearningPlatform.Data
 
             //for classroom instance
             modelBuilder.Entity<ClassroomInstance>().Property(c => c.Status).HasConversion<int>();
+            modelBuilder.Entity<ClassroomEnrollment>()
+    .HasIndex(e => new { e.InstanceId, e.LearnerId })
+    .IsUnique();
+
+            // ClassroomEnrollment → ClassroomInstance
+            modelBuilder.Entity<ClassroomEnrollment>()
+                .HasOne(e => e.Instance)
+                .WithMany(i => i.Enrollments)
+                .HasForeignKey(e => e.InstanceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ClassroomEnrollment → ApplicationUser
+            modelBuilder.Entity<ClassroomEnrollment>()
+                .HasOne(e => e.Learner)
+                .WithMany()
+                .HasForeignKey(e => e.LearnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // FinalAssessment → ClassroomInstance
+            modelBuilder.Entity<FinalAssessment>()
+                .HasOne(fa => fa.Instance)
+                .WithMany(ci => ci.Assessments)
+                .HasForeignKey(fa => fa.ClassroomInstanceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // AssessmentSubmission → FinalAssessment
+            modelBuilder.Entity<AssessmentSubmission>()
+                .HasOne(s => s.Assessment)
+                .WithMany(a => a.Submissions)
+                .HasForeignKey(s => s.FinalAssessmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // AssessmentSubmission → ApplicationUser
+            modelBuilder.Entity<AssessmentSubmission>()
+                .HasOne(s => s.Learner)
+                .WithMany()
+                .HasForeignKey(s => s.LearnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ClassroomEvaluation → ClassroomInstance
+            modelBuilder.Entity<ClassroomEvaluation>()
+                .HasOne(e => e.Instance)
+                .WithMany()
+                .HasForeignKey(e => e.InstanceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ClassroomEvaluation → ApplicationUser
+            modelBuilder.Entity<ClassroomEvaluation>()
+                .HasOne(e => e.Learner)
+                .WithMany()
+                .HasForeignKey(e => e.LearnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
 
             modelBuilder.Entity<Video_Course>().HasOne(m => m.Course).WithMany(am => am.Videos_Courses).HasForeignKey(m => m.CourseId);
             modelBuilder.Entity<Video_Course>().HasOne(m => m.Video).WithMany(am => am.Videos_Courses).HasForeignKey(m => m.VideoId);

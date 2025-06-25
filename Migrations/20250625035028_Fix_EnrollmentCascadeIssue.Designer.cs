@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250625025503_InitializeClassroomEntity")]
-    partial class InitializeClassroomEntity
+    [Migration("20250625035028_Fix_EnrollmentCascadeIssue")]
+    partial class Fix_EnrollmentCascadeIssue
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -298,9 +298,10 @@ namespace JapaneseLearningPlatform.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InstanceId");
-
                     b.HasIndex("LearnerId");
+
+                    b.HasIndex("InstanceId", "LearnerId")
+                        .IsUnique();
 
                     b.ToTable("ClassroomEnrollments");
                 });
@@ -876,13 +877,13 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasOne("JapaneseLearningPlatform.Models.FinalAssessment", "Assessment")
                         .WithMany("Submissions")
                         .HasForeignKey("FinalAssessmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "Learner")
                         .WithMany()
                         .HasForeignKey("LearnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Assessment");
@@ -895,13 +896,13 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", "Instance")
                         .WithMany("Enrollments")
                         .HasForeignKey("InstanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "Learner")
                         .WithMany()
                         .HasForeignKey("LearnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Instance");
@@ -914,13 +915,13 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", "Instance")
                         .WithMany()
                         .HasForeignKey("InstanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "Learner")
                         .WithMany()
                         .HasForeignKey("LearnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Instance");
@@ -955,7 +956,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", "Instance")
                         .WithMany("Assessments")
                         .HasForeignKey("ClassroomInstanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Instance");

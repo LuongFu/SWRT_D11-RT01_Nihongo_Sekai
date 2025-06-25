@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JapaneseLearningPlatform.Migrations
 {
     /// <inheritdoc />
-    public partial class InitializeClassroomEntity : Migration
+    public partial class Fix_EnrollmentCascadeIssue : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -80,13 +80,13 @@ namespace JapaneseLearningPlatform.Migrations
                         column: x => x.LearnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ClassroomEnrollments_ClassroomInstances_InstanceId",
                         column: x => x.InstanceId,
                         principalTable: "ClassroomInstances",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -109,13 +109,13 @@ namespace JapaneseLearningPlatform.Migrations
                         column: x => x.LearnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ClassroomEvaluations_ClassroomInstances_InstanceId",
                         column: x => x.InstanceId,
                         principalTable: "ClassroomInstances",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -136,7 +136,7 @@ namespace JapaneseLearningPlatform.Migrations
                         column: x => x.ClassroomInstanceId,
                         principalTable: "ClassroomInstances",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -161,13 +161,13 @@ namespace JapaneseLearningPlatform.Migrations
                         column: x => x.LearnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AssessmentSubmissions_FinalAssessments_FinalAssessmentId",
                         column: x => x.FinalAssessmentId,
                         principalTable: "FinalAssessments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -181,9 +181,10 @@ namespace JapaneseLearningPlatform.Migrations
                 column: "LearnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClassroomEnrollments_InstanceId",
+                name: "IX_ClassroomEnrollments_InstanceId_LearnerId",
                 table: "ClassroomEnrollments",
-                column: "InstanceId");
+                columns: new[] { "InstanceId", "LearnerId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClassroomEnrollments_LearnerId",
