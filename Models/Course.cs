@@ -1,4 +1,4 @@
-﻿using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

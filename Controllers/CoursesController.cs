@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.Cart;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.Static;

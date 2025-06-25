@@ -1,4 +1,4 @@
-﻿namespace JapaneseLearningPlatform.Data
+﻿namespace JapaneseLearningPlatform.Data.Enums
 {
     public enum ContentType
     {

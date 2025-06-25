@@ -7,7 +7,6 @@ namespace JapaneseLearningPlatform.Models
         public int Id { get; set; }
         public int TemplateId { get; set; }
         public ClassroomTemplate Template { get; set; }
-
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public TimeSpan ClassTime { get; set; }             // Giờ học mỗi buổi
@@ -17,8 +16,7 @@ namespace JapaneseLearningPlatform.Models
 
         public string? GoogleMeetLink { get; set; }         // Link lớp học
         public ClassroomStatus Status { get; set; }         // Upcoming, Ongoing, Completed, Cancelled
-
-        public ICollection<ClassroomEnrollment>? Enrollments { get; set; }
-        public ICollection<FinalAssessment>? Assessments { get; set; }
+        public ICollection<ClassroomEnrollment> Enrollments { get; set; } = new List<ClassroomEnrollment>();
+        public List<FinalAssessment>? Assessments { get; set; }
     }
 }

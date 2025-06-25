@@ -8,7 +8,6 @@
         public string? ImageUrl { get; set; }              // Ảnh đại diện lớp học
         public string PartnerId { get; set; }              // Người tạo lớp học (Partner)
         public ApplicationUser Partner { get; set; }
-
-        public ICollection<ClassroomInstance>? Instances { get; set; } // Các lần mở lớp từ template này
+        public List<ClassroomInstance>? Instances { get; set; } // Các lần mở lớp từ template này
     }
 }

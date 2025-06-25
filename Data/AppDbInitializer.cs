@@ -1,4 +1,5 @@
 using JapaneseLearningPlatform.Data.Static;
+using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Identity;
 

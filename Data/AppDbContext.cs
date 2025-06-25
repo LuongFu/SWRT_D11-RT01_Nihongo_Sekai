@@ -82,6 +82,9 @@ namespace JapaneseLearningPlatform.Data
                 am.CourseId
             });
 
+            //for classroom instance
+            modelBuilder.Entity<ClassroomInstance>().Property(c => c.Status).HasConversion<int>();
+
             modelBuilder.Entity<Video_Course>().HasOne(m => m.Course).WithMany(am => am.Videos_Courses).HasForeignKey(m => m.CourseId);
             modelBuilder.Entity<Video_Course>().HasOne(m => m.Video).WithMany(am => am.Videos_Courses).HasForeignKey(m => m.VideoId);
 
@@ -102,5 +105,13 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+        //CLASSROOMS:
+        public DbSet<ClassroomTemplate> ClassroomTemplates { get; set; }
+        public DbSet<ClassroomInstance> ClassroomInstances { get; set; }
+        public DbSet<ClassroomEnrollment> ClassroomEnrollments { get; set; }
+        public DbSet<FinalAssessment> FinalAssessments { get; set; }
+        public DbSet<AssessmentSubmission> AssessmentSubmissions { get; set; }
+        public DbSet<ClassroomEvaluation> ClassroomEvaluations { get; set; }
+
     }
 }

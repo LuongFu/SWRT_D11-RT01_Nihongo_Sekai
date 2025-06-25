@@ -10,6 +10,6 @@
         public string Instructions { get; set; }            // Hướng dẫn làm bài kiểm tra
         public DateTime? DueDate { get; set; }
 
-        public ICollection<AssessmentSubmission>? Submissions { get; set; }
+        public List<AssessmentSubmission>? Submissions { get; set; }
     }
 }

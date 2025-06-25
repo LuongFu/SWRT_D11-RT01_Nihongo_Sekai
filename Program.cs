@@ -44,6 +44,9 @@ namespace JapaneseLearningPlatform
             builder.Services.AddScoped<IQuizzesService, QuizzesService>();
             builder.Services.AddScoped<IQuizQuestionsService, QuizQuestionsService>();
 
+            //Classrooms:
+            builder.Services.AddScoped<IClassroomTemplateService, ClassroomTemplateService>();
+
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
 
