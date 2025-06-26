@@ -15,7 +15,6 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
     <link rel="icon" type="image/png" href="~/logo/LogoNihongoSekaiPNGBackground.png" />
-
     @RenderSection("Styles", required: false)
 </head>
 
@@ -25,38 +24,52 @@
         {
             <header class="header">
                 <nav class="navbar">
-                    <div class="container">
-                        <div class="nav-brand">
-                            <a asp-controller="Learner" asp-action="Index" class="brand-link">
-                                <span class="brand-icon">日</span>
-                                <span class="brand-text">
-                                    <span class="brand-nihongo">Nihongo</span>
-                                    <span class="brand-sekai">Sekai</span>
-                                </span>
-                            </a>
-                        </div>
+                    <div class="nav-brand">
+                        <a asp-controller="Learner" asp-action="Index" class="brand-link">
+                            <span class="brand-icon">日</span>
+                            <span><span class="brand-nihongo">Nihongo</span> <span class="brand-sekai">Sekai</span></span>
+                        </a>
+                    </div>
+                    <ul class="nav-list">
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" ? "active-tab" : "")" asp-controller="Admin" asp-action="Index">Home</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active-tab" : "")" asp-controller="Account" asp-action="Users">User List</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")" asp-controller="Courses" asp-action="Index">Courses</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Videos" ? "active-tab" : "")" asp-controller="Videos" asp-action="Index">Videos</a></li>
+                        }
+                        else if (User.Identity.IsAuthenticated && User.IsInRole("Partner"))
+                        {
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Partner" ? "active-tab" : "")" asp-controller="Partner" asp-action="Index">Home</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Cinemas" ? "active-tab" : "")" asp-controller="Cinemas" asp-action="Index">Classrooms</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")" asp-controller="Schedule" asp-action="Index">Schedule</a></li>
+                        }
+                        else
+                        {
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active-tab" : "")" asp-controller="Learner" asp-action="Index">Home</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")" asp-controller="Courses" asp-action="Index">Courses</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" && ViewContext.RouteData.Values["action"]?.ToString() == "Classroom" ? "active-tab" : "")" asp-controller="Learner" asp-action="Classroom">Classroom</a></li>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Learner"))
+                            {
+                                <li>
+                                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")"
+                                       asp-controller="Schedule" asp-action="Index">Schedule</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "About" ? "active-tab" : "")"
+                                       asp-controller="About" asp-action="Index">About</a>
+                                </li>
+                            }
 
-                        <div class="nav-menu" id="navMenu">
-                            <ul class="nav-list">
-                                <li><a asp-controller="Learner" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">Home</a></li>
-                                <li><a asp-controller="Courses" asp-action="Index" class="nav-link">Courses</a></li>
-                                <li><a asp-controller="Classroom" asp-action="Index" class="nav-link">Classrooms</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="nav-actions d-flex align-items-center gap-3">
-                            <partial name="_Identity.cshtml" />
-                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline">Sign In</a>
-                            <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Get Started</a>
-                            @await Component.InvokeAsync("ShoppingCartSummary")
                             
-                        </div>
-
-                        <button class="nav-toggle" id="navToggle">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </button>
+                        }
+                    </ul>
+                    <div class="nav-actions">
+                        @await Component.InvokeAsync("ShoppingCartSummary")
+                        <partial name="_Identity.cshtml" />
                     </div>
                 </nav>
             </header>
@@ -71,61 +84,7 @@
         {
             <footer class="footer text-muted text-center">
                 <div class="container">
-                    <div class="footer-content">
-                        <div class="footer-section">
-                            <div class="footer-brand">
-                                <span class="brand-icon">日</span>
-                                <span class="brand-text">Nihongo Sekai</span>
-                            </div>
-                            <p class="footer-description">
-                                Master Japanese through immersive conversations, cultural insights, and personalized learning paths with native speakers.
-                            </p>
-                            <div class="social-links">
-                                <a href="#" class="social-link">🌐</a>
-                                <a href="#" class="social-link">🐦</a>
-                                <a href="#" class="social-link">📸</a>
-                            </div>
-                        </div>
-
-                        <div class="footer-section">
-                            <h4 class="footer-title">Learning</h4>
-                            <ul class="footer-links">
-                                <li><a href="/Courses">Courses</a></li>
-                                <li><a href="/Classroom">Classrooms</a></li>
-                                <li><a href="/Partners">Partners</a></li>
-                                <li><a href="#">Pricing</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="footer-section">
-                            <h4 class="footer-title">Support</h4>
-                            <ul class="footer-links">
-                                <li><a href="#">Help Center</a></li>
-                                <li><a href="#">Contact Us</a></li>
-                                <li><a href="#">Community</a></li>
-                                <li><a href="#">Blog</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="footer-section">
-                            <h4 class="footer-title">Company</h4>
-                            <ul class="footer-links">
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="#">Careers</a></li>
-                                <li><a href="#">Press</a></li>
-                                <li><a href="#">Partners</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="footer-bottom">
-                        <p>© 2025 Nihongo Sekai. All rights reserved.</p>
-                        <div class="footer-bottom-links">
-                            <a href="#">Privacy Policy</a>
-                            <a href="#">Terms of Service</a>
-                            <a href="#">Cookie Policy</a>
-                        </div>
-                    </div>
+                    &copy; NihongoSekai - Development Team
                 </div>
             </footer>
         }
@@ -134,8 +93,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/script.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

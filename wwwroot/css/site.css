@@ -65,11 +65,37 @@ html, body {
     object-fit: cover;
     z-index: 0;
 }
+/* === BRANDING === */
+.brand-icon {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #d9232e;
+}
+.brand-link {
+    text-decoration: none !important;
+}
 
-/* ====== HEADER STYLES ====== */
+.navbar a {
+    text-decoration: none !important;
+}
+
+
+.brand-nihongo {
+    font-weight: 700;
+    color: #d9232e;
+    font-size: 1.5rem;
+}
+
+.brand-sekai {
+    font-weight: 700;
+    color: #111;
+    font-size: 1.5rem;
+}
+
+/* === HEADER LAYOUT === */
 .header {
     background-color: #ffffff;
-    padding: 1rem 0;
+    padding: 1.2rem 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 0;
@@ -85,37 +111,14 @@ html, body {
     padding: 0 1.5rem;
 }
 
-.nav-brand .brand-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #111;
-}
-
-.brand-icon {
-    font-size: 2rem;
-    margin-right: 0.5rem;
-    color: #d9232e;
-}
-
-.brand-nihongo {
-    font-weight: 700;
-    color: #d9232e;
-}
-
-.brand-sekai {
-    font-weight: 700;
-    color: #111;
-}
-
 .nav-list {
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem;
     list-style: none;
     margin: 0;
     padding: 0;
+    align-items: center;
+    font-size: 1.1rem;
 }
 
 .nav-link {
@@ -124,22 +127,61 @@ html, body {
     color: #333;
     transition: all 0.3s;
     position: relative;
+    padding-bottom: 3px;
 }
 
-    .nav-link:hover,
-    .nav-link.active {
-        color: #d9232e;
-    }
+.nav-link:hover,
+.nav-link.active-tab {
+    color: #d9232e;
+    font-weight: 700;
+}
 
-        .nav-link.active::after {
-            content: "";
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            height: 2px;
-            width: 100%;
-            background-color: #d9232e;
-        }
+.nav-link.active-tab::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #d9232e;
+}
+
+/* === SEARCH === */
+.nav-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nav-actions input[type="text"] {
+    max-width: 130px;
+    border: 1px solid #d9232e;
+    color: #d9232e;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.nav-actions input[type="text"]:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(217, 35, 46, 0.5);
+    border-color: #d9232e;
+}
+
+.nav-actions button {
+    color: #d9232e;
+    font-size: 1.25rem;
+    padding: 0 0.25rem;
+}
+
+/* === DROPDOWN OVERRIDE === */
+.dropdown-menu .dropdown-item.text-danger:hover {
+    background-color: #f8d7da;
+    color: #a71d2a;
+}
+
+}
 
 /* ACTION BUTTONS */
 .nav-actions {
@@ -494,3 +536,19 @@ html, body {
 footer.footer {
     margin-top: 0 !important;
 }
+
+.nav-link.active-tab {
+    color: #dc3545 !important;
+    font-weight: bold;
+    position: relative;
+}
+
+    .nav-link.active-tab::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        background-color: #dc3545;
+    }
