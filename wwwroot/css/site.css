@@ -5,6 +5,7 @@ html, body {
     width: 100vw;
     height: 100vh;
     font-family: 'Noto Sans JP', sans-serif;
+    padding-top: 44px;
 }
 
     /* Use only on home page (in _Layout.cshtml, class="home-lock-scroll") */
@@ -14,7 +15,7 @@ html, body {
 
 /* Footer fix for flex layout */
 .footer {
-    background-color: #f9f9f9;
+/*    background-color: #f9f9f9;*/
     font-size: 0.9rem;
     padding: 1rem 0;
 }
@@ -22,10 +23,22 @@ html, body {
 /* Navbar */
 .navbar-gradient {
     background: linear-gradient(90deg, #f0fafb, #fff5f8);
-/*    animation: fadeInDown 0.6s ease forwards;*/
+    /*    animation: fadeInDown 0.6s ease forwards;*/
     opacity: 1;
-/*    transform: translateY(-10px);*/
+    /*    transform: translateY(-10px);*/
     font-size: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    background: var(--color-white, #fff);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbar-gradient {
+    
 }
 
 @keyframes fadeInDown {

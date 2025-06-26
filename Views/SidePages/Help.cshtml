@@ -1,0 +1,255 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Help Center - Nihongo Sekai";
+}
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help Center - Nihongo Sekai</title>
+    <meta name="description"
+          content="Get help with your Japanese learning journey. Find answers to common questions, tutorials, and support resources." />
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="~/css/help.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+}
+
+<!-- Main Content -->
+<main>
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Help Center</h1>
+            <p class="page-subtitle">
+                Find answers to common questions and get support for your Japanese
+                learning journey
+            </p>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="help-search-section">
+        <div class="container">
+            <div class="search-box">
+                <svg class="search-icon"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" />
+                </svg>
+                <input type="text"
+                       id="helpSearch"
+                       placeholder="Search help articles..."
+                       class="search-input" />
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Categories -->
+    <section class="faq-categories-section">
+        <div class="container">
+            <h2 class="section-title">Popular Topics</h2>
+            <div class="categories-grid">
+                <div class="category-card" data-category="getting-started">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                            <path d="M2 17l10 5 10-5" />
+                            <path d="M2 12l10 5 10-5" />
+                        </svg>
+                    </div>
+                    <h3 class="category-title">Getting Started</h3>
+                    <p class="category-description">
+                        Learn how to create your account, choose courses, and begin your
+                        Japanese learning journey.
+                    </p>
+                    <span class="category-count">12 articles</span>
+                </div>
+
+                <div class="category-card" data-category="courses">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                        </svg>
+                    </div>
+                    <h3 class="category-title">Courses & Learning</h3>
+                    <p class="category-description">
+                        Everything about our courses, progress tracking, certificates,
+                        and learning materials.
+                    </p>
+                    <span class="category-count">18 articles</span>
+                </div>
+
+                <div class="category-card" data-category="classrooms">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="m22 21-3-3" />
+                        </svg>
+                    </div>
+                    <h3 class="category-title">Live Classrooms</h3>
+                    <p class="category-description">
+                        Join live sessions, interact with teachers, and practice with
+                        other students in real-time.
+                    </p>
+                    <span class="category-count">8 articles</span>
+                </div>
+
+                <div class="category-card" data-category="technical">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                    </div>
+                    <h3 class="category-title">Technical Support</h3>
+                    <p class="category-description">
+                        Troubleshoot technical issues, browser requirements, and account
+                        problems.
+                    </p>
+                    <span class="category-count">15 articles</span>
+                </div>
+
+                <div class="category-card" data-category="billing">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                            <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>
+                    </div>
+                    <h3 class="category-title">Billing & Payments</h3>
+                    <p class="category-description">
+                        Manage your subscription, payment methods, refunds, and billing
+                        information.
+                    </p>
+                    <span class="category-count">10 articles</span>
+                </div>
+
+                <div class="category-card" data-category="account">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </div>
+                    <h3 class="category-title">Account Settings</h3>
+                    <p class="category-description">
+                        Update your profile, change password, privacy settings, and
+                        account preferences.
+                    </p>
+                    <span class="category-count">7 articles</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular FAQs -->
+    <section class="popular-faqs-section">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-accordion" id="faqAccordion">
+                <!-- FAQ items will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Support -->
+    <section class="contact-support-section">
+        <div class="container">
+            <div class="support-card">
+                <div class="support-content">
+                    <h2 class="support-title">Still need help?</h2>
+                    <p class="support-description">
+                        Can't find what you're looking for? Our support team is here to
+                        help you with any questions about your Japanese learning
+                        journey.
+                    </p>
+                    <div class="support-actions">
+                        <a href="contact.html" class="btn btn-primary">Contact Support</a>
+                        <a href="mailto:support@nihongosekai.com"
+                           class="btn btn-outline">Email Us</a>
+                    </div>
+                </div>
+                <div class="support-image">
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script src="~/js/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          initializeContactForm();
+        });
+
+        function initializeContactForm() {
+          const form = document.getElementById("contactForm");
+          form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await handleContactFormSubmission(form);
+          });
+          form.querySelectorAll("input, textarea, select")
+              .forEach(i => i.addEventListener("blur", () => validateInput(i)));
+        }
+
+        async function handleContactFormSubmission(form) {
+          try {
+            showLoading();
+            // simulate API call
+            await new Promise(r => setTimeout(r, 1500));
+            window.NihongoSekai.showToast("Message sent successfully! We'll get back to you within 24 hours.", "success");
+            form.reset();
+          } catch {
+            window.NihongoSekai.showToast("Failed to send message. Please try again.", "error");
+          } finally {
+            hideLoading();
+          }
+        }
+
+        function openLiveChat() {
+          window.NihongoSekai.showToast("Live chat feature coming soon! Please use email or phone for now.", "info");
+        }
+
+        function showOfficeLocations() {
+          document.getElementById("officeLocations").scrollIntoView({ behavior: "smooth" });
+        }
+    </script>
+}

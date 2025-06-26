@@ -1,0 +1,361 @@
+﻿@using JapaneseLearningPlatform.Data.ViewModels
+@model LoginVM
+
+@{
+    ViewData["Title"] = "Home";
+    Layout = "_Layout";
+    ViewData["HideNavbar"] = false;
+    ViewData["HideFooter"] = false;
+}
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nihongo Sekai - Japanese Learning Platform</title>
+    <meta name="description"
+          content="Master Japanese through immersive conversations, cultural insights, and personalized learning paths with native speakers." />
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <!-- Global CSS -->
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="~/css/home.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
+}
+
+<!-- Main Content -->
+<main>
+    @* <!-- Hero Section -->
+    <section class="hero animate-on-scroll">
+        <div class="hero-background">
+            <div class="sakura-container" id="sakuraContainer"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Master Japanese with
+                    <span class="text-primary">Nihongo Sekai</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Unlock the beauty of Japanese language through immersive
+                    conversations, cultural insights, and personalized learning paths
+                    with native speakers.
+                </p>
+                <div class="hero-actions">
+                    <a href="register.html" class="btn btn-primary btn-lg">
+                        Start Learning Today
+                    </a>
+                    <a href="#features" class="btn btn-outline btn-lg">
+                        Explore Features
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-image">
+                    <!-- Hero illustration would go here -->
+                    <div class="hero-placeholder">
+                        <span class="hero-icon">🎌</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> *@
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        Master Japanese with
+                        <span class="highlight">Native Speakers</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Join our immersive learning community and discover the beauty of
+                        Japanese language and culture through personalized courses and
+                        live conversations.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="~/Views/Courses/Index.cshtml" class="btn btn-primary btn-large">
+                            <svg class="icon"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polygon points="10,8 16,12 10,16" />
+                            </svg>
+                            Start Learning Today
+                        </a>
+                        <a href="~/Views/SidePages/About.cshtml" class="btn btn-outline btn-large1">Learn More</a>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">10,000+</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">150+</div>
+                            <div class="stat-label">Courses</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Partners</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">95%</div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&h=400&fit=crop"
+                         alt="Japanese Learning"
+                         class="hero-img" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Courses & Live Classrooms -->
+    <section class="featured-content animate-on-scroll" id="featured">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Learning Opportunities</h2>
+                <p>Discover our most popular courses and live classroom sessions</p>
+            </div>
+
+            <!-- Featured Courses -->
+            <div class="featured-section">
+                <div class="featured-header">
+                    <h3>Featured Courses</h3>
+                    <a href="courses.html" class="btn btn-outline">View All Courses</a>
+                </div>
+                <div class="featured-grid courses-grid" id="featuredCourses">
+                    <!-- Courses will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Live Classrooms -->
+            <div class="featured-section">
+                <div class="featured-header">
+                    <h3>Popular Live Classrooms</h3>
+                    <a href="classrooms.html" class="btn btn-outline">View All Classrooms</a>
+                </div>
+                <div class="featured-grid classrooms-grid" id="featuredClassrooms">
+                    <!-- Classrooms will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Nihongo Sekai -->
+    <section class="why-choose animate-on-scroll" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>
+                    Why Nihongo Sekai Is Your Ultimate Japanese Learning Partner
+                </h2>
+                <p>
+                    Interactive courses, live native-speaker sessions, and
+                    personalized paths—all in one place.
+                </p>
+                <a href="about.html" class="btn btn-primary learn-more-btn">Learn More</a>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">💬</div>
+                    <h3>Live Conversations</h3>
+                    <p>
+                        Practice with native speakers in real-time video sessions
+                        tailored to your level.
+                    </p>
+                </div>
+
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">📚</div>
+                    <h3>Structured Courses</h3>
+                    <p>
+                        Comprehensive curriculum from beginner to advanced, designed by
+                        language experts.
+                    </p>
+                </div>
+
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Personalized Learning</h3>
+                    <p>
+                        AI-powered recommendations and custom learning paths based on
+                        your goals.
+                    </p>
+                </div>
+
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">🏆</div>
+                    <h3>Cultural Immersion</h3>
+                    <p>
+                        Learn beyond language with cultural insights and real-world
+                        context.
+                    </p>
+                </div>
+
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">📱</div>
+                    <h3>Learn Anywhere</h3>
+                    <p>
+                        Access your lessons on any device, continue learning on the go.
+                    </p>
+                </div>
+
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">🌟</div>
+                    <h3>Expert Teachers</h3>
+                    <p>
+                        Learn from qualified native speakers and certified Japanese
+                        instructors.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials animate-on-scroll">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Our Students Say</h2>
+                <p>
+                    Join thousands of learners who've transformed their Japanese
+                    skills
+                </p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="testimonial-content">
+                        <p>
+                            "Nihongo Sekai transformed my Japanese learning experience.
+                            The live conversations with native speakers gave me confidence
+                            I never had before."
+                        </p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah"
+                                 alt="Sarah Kim" />
+                        </div>
+                        <div class="author-info">
+                            <h4>Sarah Kim</h4>
+                            <p>Software Engineer</p>
+                            <div class="author-rating">⭐⭐⭐⭐⭐</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="testimonial-content">
+                        <p>
+                            "The structured approach and cultural insights made learning
+                            Japanese enjoyable and effective. I went from zero to
+                            conversational in 6 months!"
+                        </p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mike"
+                                 alt="Mike Chen" />
+                        </div>
+                        <div class="author-info">
+                            <h4>Mike Chen</h4>
+                            <p>Business Analyst</p>
+                            <div class="author-rating">⭐⭐⭐⭐⭐</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="testimonial-content">
+                        <p>
+                            "The flexibility to learn at my own pace while having access
+                            to live teachers when needed is exactly what I was looking
+                            for."
+                        </p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Emma"
+                                 alt="Emma Rodriguez" />
+                        </div>
+                        <div class="author-info">
+                            <h4>Emma Rodriguez</h4>
+                            <p>Marketing Manager</p>
+                            <div class="author-rating">⭐⭐⭐⭐⭐</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta animate-on-scroll">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Start Your Japanese Journey?</h2>
+                <p>
+                    Join thousands of learners and start speaking Japanese confidently
+                    today.
+                </p>
+                <div class="cta-actions">
+                    <a href="register.html" class="btn btn-primary btn-lg">Get Started Free</a>
+                    <a href="courses.html" class="btn btn-outline btn-lg">Browse Courses</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script>
+        // ✅ 1. Fix missing script.js if not used
+        console.warn("✅ script.js not loaded, fallback applied");
+
+        // ✅ 2. Fix CONFIG already declared
+        window.CONFIG = window.CONFIG || {};
+
+        // ✅ 3. Mock initializeAnimations if missing
+        function initializeAnimations() {
+            document.querySelectorAll(".animate-on-scroll").forEach(el => {
+                el.style.opacity = 1;
+                el.style.transform = "none";
+            });
+            console.log("✅ Animations initialized manually");
+        }
+
+        // ✅ 4. Mock LoadingManager if missing
+        const LoadingManager = {
+            loadFeaturedContent: () => {
+                console.warn("⚠️ Mock LoadingManager used - content not dynamic");
+            }
+        };
+
+        // ✅ 5. Fallback for Toast if missing
+        window.Toast = {
+            error: (msg) => alert("Error: " + msg),
+            success: (msg) => alert("Success: " + msg)
+        };
+    </script>
+
+    <script src="~/js/global.js" asp-append-version="true"></script>
+    <script src="~/js/home.js" asp-append-version="true"></script>
+    @* <script src="~/js/script.js" asp-append-version="true"></script> *@
+}

@@ -1,0 +1,556 @@
+﻿@{
+    Layout = "_Layout";
+    ViewBag.Title = "Community - Nihongo Sekai";
+}
+
+@section Head {
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <meta name="description"
+          content="Join the Nihongo Sekai community. Connect with fellow learners, participate in events, share experiences, and practice Japanese together." />
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/css/community.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+
+    <!-- Favicon -->
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎌</text></svg>" />
+}
+
+<body>
+
+    @* Main Content *@
+    <main>
+        <!-- Page Header -->
+        <section class="community-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Join Our <span class="text-gradient">Global Community</span>
+                    </h1>
+                    <p class="hero-description">
+                        Connect with over 50,000 Japanese learners worldwide. Share
+                        experiences, practice together, and celebrate your learning
+                        journey with fellow students and native speakers.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary" onclick="showJoinModal()">
+                            Join Community
+                        </button>
+                        <button class="btn btn-outline" onclick="scrollToForums()">
+                            Browse Forums
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">50,000+</div>
+                        <div class="stat-label">Active Members</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">2,500+</div>
+                        <div class="stat-label">Daily Posts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">120+</div>
+                        <div class="stat-label">Countries</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Features -->
+        <section class="features-section">
+            <div class="container">
+                <h2 class="section-title">Community Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Discussion Forums</h3>
+                        <p class="feature-description">
+                            Participate in topic-based discussions, ask questions, and share
+                            learning tips with fellow students and teachers.
+                        </p>
+                        <a href="#forums" class="feature-link">Explore Forums →</a>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Community Events</h3>
+                        <p class="feature-description">
+                            Join virtual cultural events, conversation meetups, and special
+                            learning challenges throughout the year.
+                        </p>
+                        <a href="#events" class="feature-link">View Events →</a>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Study Groups</h3>
+                        <p class="feature-description">
+                            Form or join study groups with learners at your level. Practice
+                            together and motivate each other on your learning journey.
+                        </p>
+                        <a href="#study-groups" class="feature-link">Find Groups →</a>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <path d="M9 12l2 2 4-4" />
+                                <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3" />
+                                <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3" />
+                                <path d="M13 12h3a2 2 0 0 1 2 2v1" />
+                                <path d="M13 12h-3a2 2 0 0 0-2 2v1" />
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Achievement System</h3>
+                        <p class="feature-description">
+                            Earn badges and recognition for your contributions, study
+                            milestones, and community participation.
+                        </p>
+                        <a href="#achievements" class="feature-link">View Badges →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Discussion Forums -->
+        <section class="forums-section" id="forums">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Discussion Forums</h2>
+                    <p class="section-subtitle">
+                        Connect with fellow learners and teachers in our active discussion
+                        forums
+                    </p>
+                </div>
+
+                <div class="forums-grid">
+                    <div class="forum-category">
+                        <div class="forum-header">
+                            <div class="forum-icon">📚</div>
+                            <div class="forum-info">
+                                <h3 class="forum-title">General Learning</h3>
+                                <p class="forum-description">
+                                    General discussions about Japanese learning, study tips, and
+                                    motivation
+                                </p>
+                            </div>
+                            <div class="forum-stats">
+                                <div class="stat">1,234 topics</div>
+                                <div class="stat">15,678 posts</div>
+                            </div>
+                        </div>
+                        <div class="recent-topics">
+                            <div class="topic-item">
+                                <div class="topic-title">
+                                    Best apps to complement Nihongo Sekai?
+                                </div>
+                                <div class="topic-meta">by KenjiLearner • 2 hours ago</div>
+                            </div>
+                            <div class="topic-item">
+                                <div class="topic-title">
+                                    How to stay motivated during N3 preparation
+                                </div>
+                                <div class="topic-meta">by SakuraStudent • 5 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="forum-category">
+                        <div class="forum-header">
+                            <div class="forum-icon">📝</div>
+                            <div class="forum-info">
+                                <h3 class="forum-title">Grammar & Vocabulary</h3>
+                                <p class="forum-description">
+                                    Specific questions about Japanese grammar, vocabulary, and
+                                    usage
+                                </p>
+                            </div>
+                            <div class="forum-stats">
+                                <div class="stat">2,567 topics</div>
+                                <div class="stat">28,903 posts</div>
+                            </div>
+                        </div>
+                        <div class="recent-topics">
+                            <div class="topic-item">
+                                <div class="topic-title">
+                                    Difference between は and が particles
+                                </div>
+                                <div class="topic-meta">by GrammarSeeker • 1 hour ago</div>
+                            </div>
+                            <div class="topic-item">
+                                <div class="topic-title">Keigo in everyday conversation</div>
+                                <div class="topic-meta">by PoliteStudent • 3 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="forum-category">
+                        <div class="forum-header">
+                            <div class="forum-icon">🎌</div>
+                            <div class="forum-info">
+                                <h3 class="forum-title">Japanese Culture</h3>
+                                <p class="forum-description">
+                                    Discuss Japanese culture, traditions, current events, and
+                                    society
+                                </p>
+                            </div>
+                            <div class="forum-stats">
+                                <div class="stat">890 topics</div>
+                                <div class="stat">12,456 posts</div>
+                            </div>
+                        </div>
+                        <div class="recent-topics">
+                            <div class="topic-item">
+                                <div class="topic-title">
+                                    Cherry blossom viewing traditions (Hanami)
+                                </div>
+                                <div class="topic-meta">by CultureLover • 4 hours ago</div>
+                            </div>
+                            <div class="topic-item">
+                                <div class="topic-title">
+                                    Business etiquette in Japanese companies
+                                </div>
+                                <div class="topic-meta">by TokyoWorker • 6 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="forum-category">
+                        <div class="forum-header">
+                            <div class="forum-icon">🗣️</div>
+                            <div class="forum-info">
+                                <h3 class="forum-title">Speaking Practice</h3>
+                                <p class="forum-description">
+                                    Find conversation partners, pronunciation tips, and speaking
+                                    challenges
+                                </p>
+                            </div>
+                            <div class="forum-stats">
+                                <div class="stat">456 topics</div>
+                                <div class="stat">7,892 posts</div>
+                            </div>
+                        </div>
+                        <div class="recent-topics">
+                            <div class="topic-item">
+                                <div class="topic-title">
+                                    Weekly pronunciation challenge: Week 12
+                                </div>
+                                <div class="topic-meta">
+                                    by SpeakingCoach • 30 minutes ago
+                                </div>
+                            </div>
+                            <div class="topic-item">
+                                <div class="topic-title">
+                                    Looking for conversation partner (PST timezone)
+                                </div>
+                                <div class="topic-meta">
+                                    by CaliforniaTalker • 2 hours ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upcoming Events -->
+        <section class="events-section" id="events">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Upcoming Community Events</h2>
+                    <p class="section-subtitle">
+                        Join our regular events to practice, learn, and connect with the
+                        community
+                    </p>
+                </div>
+
+                <div class="events-grid">
+                    <div class="event-card featured">
+                        <div class="event-badge">Featured</div>
+                        <div class="event-date">
+                            <div class="event-month">Mar</div>
+                            <div class="event-day">25</div>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">Spring Festival Celebration</h3>
+                            <p class="event-description">
+                                Join us for a virtual hanami (cherry blossom viewing) party
+                                with games, cultural presentations, and conversation practice.
+                            </p>
+                            <div class="event-details">
+                                <div class="event-time">🕒 2:00 PM JST</div>
+                                <div class="event-participants">👥 245 registered</div>
+                            </div>
+                            <button class="btn btn-primary">Register Now</button>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date">
+                            <div class="event-month">Mar</div>
+                            <div class="event-day">28</div>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">Weekly Conversation Circle</h3>
+                            <p class="event-description">
+                                Practice speaking Japanese with learners and native speakers
+                                in small groups.
+                            </p>
+                            <div class="event-details">
+                                <div class="event-time">🕒 7:00 PM JST</div>
+                                <div class="event-participants">👥 67 registered</div>
+                            </div>
+                            <button class="btn btn-outline">Join Event</button>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date">
+                            <div class="event-month">Apr</div>
+                            <div class="event-day">02</div>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">JLPT Study Marathon</h3>
+                            <p class="event-description">
+                                Intensive study session for N3-N1 level students preparing for
+                                the July JLPT exam.
+                            </p>
+                            <div class="event-details">
+                                <div class="event-time">🕒 10:00 AM JST</div>
+                                <div class="event-participants">👥 189 registered</div>
+                            </div>
+                            <button class="btn btn-outline">Register</button>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date">
+                            <div class="event-month">Apr</div>
+                            <div class="event-day">05</div>
+                        </div>
+                        <div class="event-content">
+                            <h3 class="event-title">Cultural Cooking Class</h3>
+                            <p class="event-description">
+                                Learn to make traditional Japanese dishes while practicing
+                                kitchen vocabulary.
+                            </p>
+                            <div class="event-details">
+                                <div class="event-time">🕒 3:00 PM JST</div>
+                                <div class="event-participants">👥 34 registered</div>
+                            </div>
+                            <button class="btn btn-outline">Join Class</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Success Stories -->
+        <section class="stories-section">
+            <div class="container">
+                <h2 class="section-title">Community Success Stories</h2>
+                <div class="stories-grid">
+                    <div class="story-card">
+                        <div class="story-avatar">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Maria&backgroundColor=b6e3f4"
+                                 alt="Maria Silva" />
+                        </div>
+                        <div class="story-content">
+                            <div class="story-quote">
+                                "The community here is amazing! I found my study buddy through
+                                the forums and we've been practicing together for 6 months. I
+                                passed N4 last December!"
+                            </div>
+                            <div class="story-author">
+                                <div class="author-name">Maria Silva</div>
+                                <div class="author-location">São Paulo, Brazil</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="story-card">
+                        <div class="story-avatar">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed&backgroundColor=ffd93d"
+                                 alt="Ahmed Hassan" />
+                        </div>
+                        <div class="story-content">
+                            <div class="story-quote">
+                                "The cultural exchange events opened my eyes to so many
+                                aspects of Japanese society I never knew about. Now I feel
+                                confident about my upcoming trip to Tokyo!"
+                            </div>
+                            <div class="story-author">
+                                <div class="author-name">Ahmed Hassan</div>
+                                <div class="author-location">Cairo, Egypt</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="story-card">
+                        <div class="story-avatar">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Emma&backgroundColor=ffdfbf"
+                                 alt="Emma Johnson" />
+                        </div>
+                        <div class="story-content">
+                            <div class="story-quote">
+                                "Being part of this community motivated me to keep studying
+                                even when it got tough. The support and encouragement from
+                                everyone here is incredible!"
+                            </div>
+                            <div class="story-author">
+                                <div class="author-name">Emma Johnson</div>
+                                <div class="author-location">London, UK</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Guidelines -->
+        <section class="guidelines-section">
+            <div class="container">
+                <div class="guidelines-content">
+                    <div class="guidelines-text">
+                        <h2 class="section-title">Community Guidelines</h2>
+                        <p class="guidelines-intro">
+                            Our community thrives on mutual respect, kindness, and a shared
+                            passion for learning Japanese. Please follow these guidelines to
+                            help maintain a positive environment for everyone.
+                        </p>
+
+                        <div class="guidelines-list">
+                            <div class="guideline-item">
+                                <div class="guideline-icon">🤝</div>
+                                <div class="guideline-content">
+                                    <h4>Be Respectful</h4>
+                                    <p>
+                                        Treat all members with kindness and respect, regardless of
+                                        their level or background.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="guideline-item">
+                                <div class="guideline-icon">💬</div>
+                                <div class="guideline-content">
+                                    <h4>Stay On Topic</h4>
+                                    <p>
+                                        Keep discussions relevant to Japanese learning, culture,
+                                        or community-related topics.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="guideline-item">
+                                <div class="guideline-icon">🎯</div>
+                                <div class="guideline-content">
+                                    <h4>Help Others Learn</h4>
+                                    <p>
+                                        Share knowledge, answer questions, and support fellow
+                                        learners in their journey.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="guideline-item">
+                                <div class="guideline-icon">����</div>
+                                <div class="guideline-content">
+                                    <h4>Celebrate Progress</h4>
+                                    <p>
+                                        Acknowledge achievements, milestones, and progress of
+                                        community members.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="guidelines-image">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=600&fit=crop"
+                             alt="Community Guidelines" />
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    @* Scripts *@
+    <script src="~/js/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", initializeCommunityPage);
+
+        function initializeCommunityPage() {
+          setupEventRegistration();
+          setupForumNavigation();
+        }
+
+        function showJoinModal() {
+          NihongoSekai.showToast(
+            "Join our community by creating a free account! Sign up to get started.",
+            "info"
+          );
+        }
+
+        function scrollToForums() {
+          document.getElementById("forums").scrollIntoView({ behavior: "smooth" });
+        }
+
+        function setupEventRegistration() {
+          document.querySelectorAll(".event-card .btn").forEach(btn => {
+            btn.addEventListener("click", e => {
+              const title = e.target.closest(".event-card")
+                               .querySelector(".event-title").textContent;
+              NihongoSekai.showToast(`Registered: ${title}`, "success");
+            });
+          });
+        }
+
+        function setupForumNavigation() {
+          document.querySelectorAll(".forum-category").forEach(cat => {
+            cat.addEventListener("click", () => {
+              const name = cat.querySelector(".forum-title").textContent;
+              NihongoSekai.showToast(`Opening ${name} forum…`, "info");
+            });
+          });
+        }
+    </script>
+</body>
+

@@ -104,7 +104,7 @@ namespace JapaneseLearningPlatform
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=PreLoading}/{action=Index}/{id?}");
 
             // Seed database
             AppDbInitializer.Seed(app);

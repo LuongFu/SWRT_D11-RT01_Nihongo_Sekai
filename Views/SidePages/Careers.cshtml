@@ -1,0 +1,455 @@
+﻿@{
+    ViewData["Title"] = "Careers - Nihongo Sekai";
+}
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+          content="Join the Nihongo Sekai team. Explore career opportunities, company culture, and benefits. Help us bridge cultures through Japanese language education." />
+}
+
+@section Styles {
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/css/careers.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+    <!-- Favicon -->
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎌</text></svg>" />
+}
+
+<!-- Main Content -->
+<main>
+    <!-- Hero Section -->
+    <section class="careers-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Build the Future of
+                    <span class="text-gradient">Japanese Education</span>
+                </h1>
+                <p class="hero-description">
+                    Join our passionate team of educators, technologists, and cultural
+                    bridges. Help us connect learners worldwide with the beauty of
+                    Japanese language and culture.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Team Members</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">Open Positions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Office Locations</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Work With Us -->
+    <section class="why-work-section">
+        <div class="container">
+            <h2 class="section-title">Why Work With Us</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">💡</div>
+                    <h3 class="benefit-title">Innovation & Impact</h3>
+                    <p class="benefit-description">
+                        Work on cutting-edge EdTech solutions that impact thousands of
+                        learners worldwide. Your ideas and contributions directly shape
+                        how people learn Japanese.
+                    </p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">🌍</div>
+                    <h3 class="benefit-title">Global Remote Culture</h3>
+                    <p class="benefit-description">
+                        Work from anywhere with flexible hours. Our team spans across
+                        time zones, united by our mission to bridge cultures through
+                        education.
+                    </p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">📚</div>
+                    <h3 class="benefit-title">Continuous Learning</h3>
+                    <p class="benefit-description">
+                        $2,000 annual learning budget, conference attendance, and access
+                        to all our courses. Grow professionally while staying curious
+                        and learning.
+                    </p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">🏥</div>
+                    <h3 class="benefit-title">Comprehensive Benefits</h3>
+                    <p class="benefit-description">
+                        Health, dental, and vision insurance. Mental health support, gym
+                        memberships, and 4 weeks paid vacation plus national holidays.
+                    </p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎌</div>
+                    <h3 class="benefit-title">Cultural Immersion</h3>
+                    <p class="benefit-description">
+                        Annual team trips to Japan, cultural exchange programs, and
+                        opportunities to experience Japanese culture firsthand with our
+                        local teams.
+                    </p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">💰</div>
+                    <h3 class="benefit-title">Competitive Compensation</h3>
+                    <p class="benefit-description">
+                        Market-leading salaries, equity participation, performance
+                        bonuses, and comprehensive retirement planning support.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Open Positions -->
+    <section class="positions-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Open Positions</h2>
+                <p class="section-subtitle">
+                    Find your next opportunity to make a global impact in education
+                </p>
+            </div>
+
+            <div class="position-filters">
+                <button class="filter-btn active" data-category="all">
+                    All Positions
+                </button>
+                <button class="filter-btn" data-category="engineering">
+                    Engineering
+                </button>
+                <button class="filter-btn" data-category="education">
+                    Education
+                </button>
+                <button class="filter-btn" data-category="design">Design</button>
+                <button class="filter-btn" data-category="marketing">
+                    Marketing
+                </button>
+                <button class="filter-btn" data-category="operations">
+                    Operations
+                </button>
+            </div>
+
+            <div class="positions-grid" id="positionsGrid">
+                <!-- Positions will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Culture & Values -->
+    <section class="culture-section">
+        <div class="container">
+            <div class="culture-content">
+                <div class="culture-text">
+                    <h2 class="section-title">Our Culture & Values</h2>
+                    <p class="culture-description">
+                        We believe in creating an inclusive environment where everyone
+                        can thrive. Our values guide how we work together and serve our
+                        global community.
+                    </p>
+
+                    <div class="values-list">
+                        <div class="value-item">
+                            <div class="value-icon">🤝</div>
+                            <div class="value-content">
+                                <h4>Respect & Inclusion</h4>
+                                <p>
+                                    We celebrate diversity and create belonging for everyone,
+                                    embracing different perspectives and backgrounds.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="value-item">
+                            <div class="value-icon">🎯</div>
+                            <div class="value-content">
+                                <h4>Student-First Mindset</h4>
+                                <p>
+                                    Every decision we make prioritizes our learners' success
+                                    and educational experience.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="value-item">
+                            <div class="value-icon">🌱</div>
+                            <div class="value-content">
+                                <h4>Growth & Innovation</h4>
+                                <p>
+                                    We embrace continuous improvement, experimentation, and
+                                    learning from both successes and failures.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="value-item">
+                            <div class="value-icon">🌸</div>
+                            <div class="value-content">
+                                <h4>Cultural Bridge</h4>
+                                <p>
+                                    We honor Japanese traditions while building connections
+                                    across cultures through education.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="culture-image">
+                    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=500&h=600&fit=crop"
+                         alt="Team Culture" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Employee Testimonials -->
+    <section class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">What Our Team Says</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p class="testimonial-quote">
+                            "Working at Nihongo Sekai has been incredibly fulfilling. I
+                            get to combine my passion for technology with meaningful
+                            impact on education. The team is supportive and the mission is
+                            something I truly believe in."
+                        </p>
+                        <div class="testimonial-author">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex&backgroundColor=b6e3f4"
+                                 alt="Alex Chen" />
+                            <div class="author-info">
+                                <div class="author-name">Alex Chen</div>
+                                <div class="author-role">Senior Frontend Engineer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p class="testimonial-quote">
+                            "The learning opportunities here are amazing. Not only do I
+                            get to teach Japanese, but I'm also learning about EdTech,
+                            curriculum design, and working with an international team.
+                            It's the perfect blend of education and innovation."
+                        </p>
+                        <div class="testimonial-author">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Yuki&backgroundColor=ffd93d"
+                                 alt="Yuki Nakamura" />
+                            <div class="author-info">
+                                <div class="author-name">Yuki Nakamura</div>
+                                <div class="author-role">Lead Curriculum Designer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p class="testimonial-quote">
+                            "The company truly lives its values. The support for
+                            professional development is real - I've attended conferences,
+                            taken courses, and grown my career here in ways I never
+                            expected. Plus, the team trip to Japan was life-changing!"
+                        </p>
+                        <div class="testimonial-author">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Maria&backgroundColor=ffdfbf"
+                                 alt="Maria Rodriguez" />
+                            <div class="author-info">
+                                <div class="author-name">Maria Rodriguez</div>
+                                <div class="author-role">Product Marketing Manager</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Process -->
+    <section class="process-section">
+        <div class="container">
+            <h2 class="section-title">Our Hiring Process</h2>
+            <div class="process-timeline">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Application Review</h3>
+                        <p class="step-description">
+                            We carefully review every application within 5 business days.
+                        </p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Initial Conversation</h3>
+                        <p class="step-description">
+                            30-minute chat with our HR team to discuss your interests and
+                            experience.
+                        </p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Technical/Skills Assessment</h3>
+                        <p class="step-description">
+                            Role-specific evaluation to understand your capabilities and
+                            approach.
+                        </p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Team Interviews</h3>
+                        <p class="step-description">
+                            Meet your potential teammates and learn more about our
+                            culture.
+                        </p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Final Decision</h3>
+                        <p class="step-description">
+                            We'll make a decision within a week and provide detailed
+                            feedback.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Ready to Join Our Mission?</h2>
+                <p class="cta-description">
+                    Don't see a perfect fit? We're always looking for talented
+                    individuals who share our passion for education and cultural
+                    bridge-building.
+                </p>
+                <div class="cta-actions">
+                    <a href="mailto:careers@nihongosekai.com" class="btn btn-primary">Send Us Your Resume</a>
+                    <a href="contact.html" class="btn btn-outline">Get in Touch</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script src="~/js/careers.js"></script>
+    <script src="~/js/script.js"></script>
+    <script>
+        // Mock positions data
+          const mockPositions = [
+            {
+              title: "Senior Frontend Engineer",
+              category: "engineering",
+              type: "Full-time",
+              location: "Remote",
+              department: "Engineering",
+              description:
+                "Build beautiful and responsive user interfaces for our learning platform using React, TypeScript, and modern web technologies.",
+              skills: ["React", "TypeScript", "Next.js", "CSS", "REST APIs"],
+            },
+            {
+              title: "Japanese Language Instructor",
+              category: "education",
+              type: "Full-time",
+              location: "Tokyo/Remote",
+              department: "Education",
+              description:
+                "Teach Japanese to international students through live classes and create engaging curriculum content.",
+              skills: [
+                "Native Japanese",
+                "Teaching Experience",
+                "JLPT",
+                "Online Education",
+              ],
+            },
+            {
+              title: "Product Designer",
+              category: "design",
+              type: "Full-time",
+              location: "Remote",
+              department: "Design",
+              description:
+                "Design intuitive learning experiences and user interfaces that make Japanese learning accessible and enjoyable.",
+              skills: [
+                "UI/UX Design",
+                "Figma",
+                "Design Systems",
+                "User Research",
+                "Prototyping",
+              ],
+            },
+            {
+              title: "DevOps Engineer",
+              category: "engineering",
+              type: "Full-time",
+              location: "Remote",
+              department: "Engineering",
+              description:
+                "Manage and scale our cloud infrastructure to support millions of learning sessions worldwide.",
+              skills: ["AWS", "Docker", "Kubernetes", "CI/CD", "Monitoring"],
+            },
+            {
+              title: "Content Marketing Manager",
+              category: "marketing",
+              type: "Full-time",
+              location: "San Francisco/Remote",
+              department: "Marketing",
+              description:
+                "Create compelling content that showcases Japanese culture and our learning methodology to global audiences.",
+              skills: [
+                "Content Strategy",
+                "SEO",
+                "Social Media",
+                "Analytics",
+                "Japanese Culture",
+              ],
+            },
+            {
+              title: "Curriculum Designer",
+              category: "education",
+              type: "Contract",
+              location: "Remote",
+              department: "Education",
+              description:
+                "Design structured learning paths and interactive exercises for different Japanese proficiency levels.",
+              skills: [
+                "Curriculum Design",
+                "Japanese Pedagogy",
+                "EdTech",
+                "Learning Sciences",
+              ],
+            },
+          ];
+          <</script>
+}

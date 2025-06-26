@@ -1,0 +1,768 @@
+﻿@using JapaneseLearningPlatform.Data.ViewModels
+@model LoginVM
+
+@{
+    ViewData["Title"] = "Japanese Partners - Nihongo Sekai";
+    Layout = "_Layout";
+    ViewData["HideNavbar"] = false;
+    ViewData["HideFooter"] = false;
+}
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Japanese Partners - Nihongo Sekai</title>
+    <meta name="description"
+          content="Connect with certified Japanese teachers and language partners. Find the perfect tutor for personalized Japanese lessons and conversation practice." />
+}
+
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="../css/global.css" />
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/partners.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+}
+
+<!-- Main Content -->
+<main>
+    <!-- Hero Section -->
+    <section class="partners-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Partner with Us to
+                    <span class="text-gradient">Bridge Cultures</span>
+                </h1>
+                <p class="hero-description">
+                    Join our network of educational institutions, businesses, and
+                    cultural organizations to expand access to Japanese language
+                    learning worldwide. Together, we can build bridges between
+                    cultures and create meaningful connections.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" onclick="showPartnershipForm()">
+                        Become a Partner
+                    </button>
+                    <a href="#partnership-types" class="btn btn-outline">Explore Partnerships</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partnership Types -->
+    <section class="partnership-types-section" id="partnership-types">
+        <div class="container">
+            <h2 class="section-title">Partnership Opportunities</h2>
+            <div class="partnership-grid">
+                <div class="partnership-card">
+                    <div class="partnership-icon">🏫</div>
+                    <h3 class="partnership-title">Educational Institutions</h3>
+                    <p class="partnership-description">
+                        Partner with universities, schools, and educational
+                        organizations to integrate Japanese language learning into
+                        curricula and offer student discounts.
+                    </p>
+                    <div class="partnership-benefits">
+                        <h4>Benefits:</h4>
+                        <ul>
+                            <li>Bulk licensing discounts</li>
+                            <li>Custom curriculum development</li>
+                            <li>Teacher training programs</li>
+                            <li>Student progress tracking</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="inquirePartnership('education')">
+                        Learn More
+                    </button>
+                </div>
+
+                <div class="partnership-card">
+                    <div class="partnership-icon">🏢</div>
+                    <h3 class="partnership-title">Corporate Training</h3>
+                    <p class="partnership-description">
+                        Provide Japanese language training for businesses working with
+                        Japanese companies or expanding into the Japanese market.
+                    </p>
+                    <div class="partnership-benefits">
+                        <h4>Benefits:</h4>
+                        <ul>
+                            <li>Business-focused curriculum</li>
+                            <li>Flexible scheduling</li>
+                            <li>Corporate reporting tools</li>
+                            <li>Cultural training modules</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="inquirePartnership('corporate')">
+                        Learn More
+                    </button>
+                </div>
+
+                <div class="partnership-card">
+                    <div class="partnership-icon">🌍</div>
+                    <h3 class="partnership-title">Cultural Organizations</h3>
+                    <p class="partnership-description">
+                        Collaborate with cultural centers, museums, and Japan-related
+                        organizations to promote Japanese culture through language
+                        learning.
+                    </p>
+                    <div class="partnership-benefits">
+                        <h4>Benefits:</h4>
+                        <ul>
+                            <li>Cultural content integration</li>
+                            <li>Event partnerships</li>
+                            <li>Cross-promotion opportunities</li>
+                            <li>Community outreach programs</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="inquirePartnership('cultural')">
+                        Learn More
+                    </button>
+                </div>
+
+                <div class="partnership-card">
+                    <div class="partnership-icon">💻</div>
+                    <h3 class="partnership-title">Technology Partners</h3>
+                    <p class="partnership-description">
+                        Integrate with learning management systems, educational
+                        platforms, and technology solutions to enhance the learning
+                        experience.
+                    </p>
+                    <div class="partnership-benefits">
+                        <h4>Benefits:</h4>
+                        <ul>
+                            <li>API integration support</li>
+                            <li>Technical documentation</li>
+                            <li>Co-marketing opportunities</li>
+                            <li>Revenue sharing programs</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="inquirePartnership('technology')">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    @* <!-- Enhanced Hero Section -->
+    <section class="enhanced-hero">
+        <div class="container">
+            <div class="enhanced-hero-content">
+                <h1 class="enhanced-hero-title">
+                    Connect with Expert Japanese Teachers
+                </h1>
+                <p class="enhanced-hero-subtitle">
+                    Learn from certified native speakers and experienced teachers. Get
+                    personalized lessons, conversation practice, and cultural insights
+                    tailored to your learning style and goals.
+                </p>
+            </div>
+        </div>
+    </section> *@
+
+    <!-- Featured Partners Section -->
+    <section class="featured-partners">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Teaching Partners</h2>
+                <p>
+                    Meet our top-rated teachers who have helped thousands of students
+                    master Japanese
+                </p>
+            </div>
+
+            <div class="featured-partners-grid" id="featuredPartnersGrid">
+                <!-- Featured partners will be populated by JavaScript -->
+            </div>
+
+            <div class="view-all-partners">
+                <a href="#directory" class="btn btn-primary btn-lg">View All Partners</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Directory Section -->
+    <section class="partners-directory" id="directory">
+        <div class="container">
+            <div class="section-header">
+                <h2>Teacher Directory</h2>
+                <p>
+                    Browse our complete directory of qualified Japanese teachers and
+                    language partners
+                </p>
+            </div>
+
+            <!-- Directory Filters -->
+            <div class="directory-filters">
+                <div class="container">
+                    <div class="filters-container">
+                        <div class="filters-group">
+                            <select id="expertiseFilter" class="filter-select">
+                                <option value="">All Specializations</option>
+                                <option value="Business Japanese Expert">
+                                    Business Japanese
+                                </option>
+                                <option value="Conversation Specialist">
+                                    Conversation
+                                </option>
+                                <option value="JLPT Preparation">JLPT Preparation</option>
+                                <option value="Grammar Specialist">Grammar</option>
+                                <option value="Cultural Studies">Cultural Studies</option>
+                                <option value="Test Preparation">Test Preparation</option>
+                                <option value="Travel Japanese">Travel Japanese</option>
+                                <option value="Pronunciation">Pronunciation</option>
+                            </select>
+
+                            <select id="ratingFilter" class="filter-select">
+                                <option value="">All Ratings</option>
+                                <option value="4.8">4.8+ Stars</option>
+                                <option value="4.5">4.5+ Stars</option>
+                                <option value="4.0">4.0+ Stars</option>
+                            </select>
+
+                            <select id="availabilityFilter" class="filter-select">
+                                <option value="">All Availability</option>
+                                <option value="Available">Available Now</option>
+                                <option value="Busy">Accepting Wait List</option>
+                            </select>
+                        </div>
+
+                        <div class="search-container">
+                            <svg class="search-icon"
+                                 width="16"
+                                 height="16"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            <input type="text"
+                                   id="partnerSearch"
+                                   class="search-input"
+                                   placeholder="Search teachers by name or expertise..." />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="partners-grid" id="partnersGrid">
+                <!-- Partners directory will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Trusted Partners Section -->
+    <section class="trusted-partners">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Trusted Partners</h2>
+                <p>
+                    Recognized institutions and organizations that trust our platform
+                </p>
+            </div>
+
+            <div class="partners-carousel">
+                <div class="partner-logo"
+                     style="
+                width: 120px;
+                height: 60px;
+                background: var(--color-gray-200);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                color: var(--color-gray-600);
+              ">
+                    Tokyo University
+                </div>
+                <div class="partner-logo"
+                     style="
+                width: 120px;
+                height: 60px;
+                background: var(--color-gray-200);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                color: var(--color-gray-600);
+              ">
+                    JLPT Official
+                </div>
+                <div class="partner-logo"
+                     style="
+                width: 120px;
+                height: 60px;
+                background: var(--color-gray-200);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                color: var(--color-gray-600);
+              ">
+                    Waseda Uni
+                </div>
+                <div class="partner-logo"
+                     style="
+                width: 120px;
+                height: 60px;
+                background: var(--color-gray-200);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                color: var(--color-gray-600);
+              ">
+                    JET Program
+                </div>
+                <div class="partner-logo"
+                     style="
+                width: 120px;
+                height: 60px;
+                background: var(--color-gray-200);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                color: var(--color-gray-600);
+              ">
+                    Japan Foundation
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Partnership Benefits -->
+        <section class="benefits-section">
+            <div class="container">
+                <div class="benefits-content">
+                    <div class="benefits-text">
+                        <h2 class="section-title">Why Partner with Nihongo Sekai?</h2>
+                        <p class="benefits-description">
+                            Our partnerships go beyond simple integration. We work closely
+                            with our partners to create meaningful, long-term relationships
+                            that benefit learners, organizations, and the broader Japanese
+                            learning community.
+                        </p>
+
+                        <div class="benefit-items">
+                            <div class="benefit-item">
+                                <div class="benefit-icon">📈</div>
+                                <div class="benefit-content">
+                                    <h4>Proven Results</h4>
+                                    <p>
+                                        95% student success rate and 50,000+ satisfied learners
+                                        worldwide demonstrate our effectiveness.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">🤝</div>
+                                <div class="benefit-content">
+                                    <h4>Collaborative Approach</h4>
+                                    <p>
+                                        We work closely with partners to customize solutions that
+                                        meet specific needs and goals.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">🌟</div>
+                                <div class="benefit-content">
+                                    <h4>Quality Content</h4>
+                                    <p>
+                                        Curriculum developed by native speakers and education
+                                        experts ensures authentic learning experiences.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">🔧</div>
+                                <div class="benefit-content">
+                                    <h4>Technical Support</h4>
+                                    <p>
+                                        Dedicated integration support and ongoing technical
+                                        assistance for seamless implementation.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="benefits-image">
+                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=600&fit=crop"
+                             alt="Partnership Benefits" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Success Stories -->
+        <section class="success-stories-section">
+            <div class="container">
+                <h2 class="section-title">Partnership Success Stories</h2>
+                <div class="stories-grid">
+                    <div class="story-card">
+                        <div class="story-header">
+                            <div class="story-logo">
+                                <div class="logo-placeholder small">TU</div>
+                            </div>
+                            <div class="story-info">
+                                <h3 class="story-partner">Tokyo University</h3>
+                                <div class="story-type">Educational Partnership</div>
+                            </div>
+                        </div>
+                        <p class="story-content">
+                            "Partnering with Nihongo Sekai has revolutionized our Japanese
+                            language program. Student engagement increased by 300% and
+                            completion rates improved to 92%. The cultural immersion
+                            elements are particularly valuable for our international
+                            students."
+                        </p>
+                        <div class="story-metrics">
+                            <div class="metric">
+                                <div class="metric-number">3,000+</div>
+                                <div class="metric-label">Students Enrolled</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-number">92%</div>
+                                <div class="metric-label">Completion Rate</div>
+                            </div>
+                        </div>
+                        <div class="story-author">
+                            <strong>Dr. Tanaka Hiroshi</strong> - Dean of International
+                            Studies
+                        </div>
+                    </div>
+
+                    <div class="story-card">
+                        <div class="story-header">
+                            <div class="story-logo">
+                                <div class="logo-placeholder small">TG</div>
+                            </div>
+                            <div class="story-info">
+                                <h3 class="story-partner">Global Tech Corp</h3>
+                                <div class="story-type">Corporate Training</div>
+                            </div>
+                        </div>
+                        <p class="story-content">
+                            "Our expansion into the Japanese market required effective
+                            language training for our team. Nihongo Sekai's business-focused
+                            curriculum and flexible scheduling made it possible for our
+                            employees to learn while maintaining their work
+                            responsibilities."
+                        </p>
+                        <div class="story-metrics">
+                            <div class="metric">
+                                <div class="metric-number">500+</div>
+                                <div class="metric-label">Employees Trained</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-number">40%</div>
+                                <div class="metric-label">Revenue Increase</div>
+                            </div>
+                        </div>
+                        <div class="story-author">
+                            <strong>Sarah Johnson</strong> - VP of International Operations
+                        </div>
+                    </div>
+
+                    <div class="story-card">
+                        <div class="story-header">
+                            <div class="story-logo">
+                                <div class="logo-placeholder small">JF</div>
+                            </div>
+                            <div class="story-info">
+                                <h3 class="story-partner">Japan Foundation</h3>
+                                <div class="story-type">Cultural Partnership</div>
+                            </div>
+                        </div>
+                        <p class="story-content">
+                            "The partnership with Nihongo Sekai aligns perfectly with our
+                            mission to promote Japanese culture globally. Their platform
+                            beautifully integrates language learning with cultural
+                            understanding, reaching audiences we couldn't reach alone."
+                        </p>
+                        <div class="story-metrics">
+                            <div class="metric">
+                                <div class="metric-number">25,000+</div>
+                                <div class="metric-label">Cultural Participants</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-number">50+</div>
+                                <div class="metric-label">Cultural Events</div>
+                            </div>
+                        </div>
+                        <div class="story-author">
+                            <strong>Yamamoto Keiko</strong> - Director of International
+                            Programs
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Partnership Process -->
+        <section class="process-section">
+            <div class="container">
+                <h2 class="section-title">Partnership Process</h2>
+                <div class="process-timeline">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Initial Consultation</h3>
+                            <p class="step-description">
+                                We discuss your organization's needs, goals, and how our
+                                platform can support your objectives.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Proposal Development</h3>
+                            <p class="step-description">
+                                Our team creates a customized partnership proposal with
+                                pricing, implementation timeline, and support details.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Pilot Program</h3>
+                            <p class="step-description">
+                                Start with a small-scale pilot to test integration and gather
+                                feedback before full implementation.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Full Implementation</h3>
+                            <p class="step-description">
+                                Roll out the complete solution with ongoing support, training,
+                                and regular check-ins for optimization.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- Partnership Form Section -->
+    <section class="partnership-form-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Ready to Partner with Us?</h2>
+                <p>
+                    Join our community of expert Japanese teachers and share your
+                    knowledge with students worldwide
+                </p>
+            </div>
+
+            <div class="form-container">
+                <form id="partnershipForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="teacherName">Full Name *</label>
+                            <input type="text"
+                                   id="teacherName"
+                                   name="teacherName"
+                                   class="form-input"
+                                   required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="teacherEmail">Email Address *</label>
+                            <input type="email"
+                                   id="teacherEmail"
+                                   name="teacherEmail"
+                                   class="form-input"
+                                   required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="teacherPhone">Phone Number</label>
+                            <input type="tel"
+                                   id="teacherPhone"
+                                   name="teacherPhone"
+                                   class="form-input" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="teachingExperience">Years of Experience *</label>
+                            <select id="teachingExperience"
+                                    name="teachingExperience"
+                                    class="form-select"
+                                    required>
+                                <option value="">Select experience</option>
+                                <option value="1-2">1-2 years</option>
+                                <option value="3-5">3-5 years</option>
+                                <option value="6-10">6-10 years</option>
+                                <option value="10+">10+ years</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label" for="specializations">Specializations</label>
+                            <div style="
+                      display: grid;
+                      grid-template-columns: repeat(
+                        auto-fit,
+                        minmax(200px, 1fr)
+                      );
+                      gap: 1rem;
+                      margin-top: 0.5rem;
+                    ">
+                                <label style="display: flex; align-items: center; gap: 0.5rem">
+                                    <input type="checkbox"
+                                           name="specializations"
+                                           value="conversation" />
+                                    <span>Conversation Practice</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem">
+                                    <input type="checkbox"
+                                           name="specializations"
+                                           value="business" />
+                                    <span>Business Japanese</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem">
+                                    <input type="checkbox"
+                                           name="specializations"
+                                           value="jlpt" />
+                                    <span>JLPT Preparation</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem">
+                                    <input type="checkbox"
+                                           name="specializations"
+                                           value="grammar" />
+                                    <span>Grammar</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem">
+                                    <input type="checkbox"
+                                           name="specializations"
+                                           value="culture" />
+                                    <span>Cultural Studies</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem">
+                                    <input type="checkbox"
+                                           name="specializations"
+                                           value="pronunciation" />
+                                    <span>Pronunciation</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label" for="teachingBackground">Teaching Background & Experience *</label>
+                            <textarea id="teachingBackground"
+                                      name="teachingBackground"
+                                      class="form-textarea"
+                                      rows="4"
+                                      placeholder="Tell us about your teaching experience, qualifications, and approach..."
+                                      required></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label" for="certificates">Certificates & Qualifications</label>
+                            <input type="file"
+                                   id="certificates"
+                                   name="certificates"
+                                   class="form-input"
+                                   accept=".pdf,.doc,.docx,.jpg,.png"
+                                   multiple />
+                            <small style="
+                      color: var(--color-gray-600);
+                      font-size: 0.875rem;
+                      margin-top: 0.25rem;
+                      display: block;
+                    ">
+                                Upload your teaching certificates, degrees, or JLPT
+                                certificates (PDF, DOC, or images)
+                            </small>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 2rem">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Request Partnership
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+            <div class="contact-info">
+                <div class="contact-method">
+                    <h3>Direct Contact</h3>
+                    <p><strong>Email:</strong> partnerships@nihongosekai.com</p>
+                    <p><strong>Phone:</strong> +1 (555) 123-4569</p>
+                    <p><strong>Response Time:</strong> Within 24 hours</p>
+                </div>
+            </div>
+    </section>
+</main>
+
+<!-- Chat Modal -->
+<div class="chat-modal" id="chatModal">
+    <div class="chat-modal-content">
+        <div class="chat-header">
+            <div class="chat-partner-info">
+                <div class="chat-partner-avatar" id="chatPartnerAvatar">
+                    <!-- Avatar will be populated by JavaScript -->
+                </div>
+                <div class="chat-partner-details">
+                    <h4 id="chatPartnerName">Partner Name</h4>
+                    <p class="chat-partner-status" id="chatPartnerStatus">
+                        Available
+                    </p>
+                </div>
+            </div>
+            <button class="chat-close-btn" id="chatCloseBtn">×</button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be populated by JavaScript -->
+        </div>
+
+        <div class="chat-input-area">
+            <form class="chat-input-form" id="chatForm">
+                <textarea class="chat-input"
+                          id="chatInput"
+                          placeholder="Type your message..."
+                          rows="1"></textarea>
+                <button type="submit" class="chat-send-btn">
+                    <svg width="16"
+                         height="16"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="../js/global.js"></script>
+<script src="../js/partners.js"></script>

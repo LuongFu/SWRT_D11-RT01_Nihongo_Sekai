@@ -1,0 +1,990 @@
+﻿
+@{
+    ViewData["Title"] = "Pricing - Nihongo Sekai";
+    Layout = "_Layout";
+}
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pricing - Nihongo Sekai</title>
+    <meta name="description"
+          content="Choose the perfect Japanese learning plan for your needs. Flexible pricing for courses, live classes, and premium features." />
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="~/css/pricing.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+
+    <!-- Favicon -->
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎌</text></svg>" />
+}
+
+<!-- Main Content -->
+<main class="main">
+    <!-- Hero Section -->
+    <section class="legal-hero pricing-hero">
+        <div class="container">
+            <div class="legal-hero-content">
+                <div class="legal-breadcrumb">
+                    <a href="index.html">Home</a>
+                    <span class="legal-breadcrumb-separator">›</span>
+                    <span>Pricing</span>
+                </div>
+                <h1 class="legal-page-title">Choose Your Learning Path</h1>
+                <p class="legal-page-subtitle">
+                    Flexible plans designed to fit your learning style and budget.
+                    Start your Japanese journey today with confidence.
+                </p>
+
+                <!-- Billing Toggle -->
+                <div class="billing-toggle">
+                    <span class="billing-label">Monthly</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="billingToggle" />
+                        <span class="slider"></span>
+                    </label>
+                    <span class="billing-label">
+                        Annual
+                        <span class="save-badge">Save 20%</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscription Plans -->
+    <section class="pricing-plans">
+        <div class="container">
+            <div class="plans-grid">
+                <!-- Free Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Free</h3>
+                        <div class="plan-price">
+                            <span class="currency">$</span>
+                            <span class="amount">0</span>
+                            <span class="period">/month</span>
+                        </div>
+                        <p class="plan-description">
+                            Perfect for getting started with Japanese basics
+                        </p>
+                    </div>
+
+                    <div class="plan-features">
+                        <ul class="features-list">
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Access to 3 beginner courses</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Basic hiragana & katakana</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Community forum access</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Progress tracking</span>
+                            </li>
+                            <li class="feature excluded">
+                                <span class="feature-icon">✗</span>
+                                <span class="feature-text">Live classes</span>
+                            </li>
+                            <li class="feature excluded">
+                                <span class="feature-icon">✗</span>
+                                <span class="feature-text">Downloadable content</span>
+                            </li>
+                            <li class="feature excluded">
+                                <span class="feature-icon">✗</span>
+                                <span class="feature-text">One-on-one sessions</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-action">
+                        <a href="register.html" class="btn btn-outline btn-plan">Get Started Free</a>
+                    </div>
+                </div>
+
+                <!-- Basic Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Basic</h3>
+                        <div class="plan-price">
+                            <span class="currency">$</span>
+                            <span class="amount monthly-price">19</span>
+                            <span class="amount annual-price" style="display: none">15</span>
+                            <span class="period">/month</span>
+                        </div>
+                        <p class="plan-description">
+                            Essential tools for dedicated learners
+                        </p>
+                    </div>
+
+                    <div class="plan-features">
+                        <ul class="features-list">
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">All Free plan features</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Access to 20+ courses</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Downloadable materials</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Mobile app access</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Email support</span>
+                            </li>
+                            <li class="feature excluded">
+                                <span class="feature-icon">✗</span>
+                                <span class="feature-text">Live classes</span>
+                            </li>
+                            <li class="feature excluded">
+                                <span class="feature-icon">✗</span>
+                                <span class="feature-text">One-on-one sessions</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-action">
+                        <a href="register.html" class="btn btn-primary btn-plan">Choose Basic</a>
+                    </div>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="plan-card popular">
+                    <div class="plan-badge">Most Popular</div>
+                    <div class="plan-header">
+                        <h3 class="plan-name">Premium</h3>
+                        <div class="plan-price">
+                            <span class="currency">$</span>
+                            <span class="amount monthly-price">39</span>
+                            <span class="amount annual-price" style="display: none">31</span>
+                            <span class="period">/month</span>
+                        </div>
+                        <p class="plan-description">
+                            Complete learning experience with live instruction
+                        </p>
+                    </div>
+
+                    <div class="plan-features">
+                        <ul class="features-list">
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">All Basic plan features</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Unlimited live classes</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Interactive exercises</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Priority support</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Certificate programs</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Study groups</span>
+                            </li>
+                            <li class="feature excluded">
+                                <span class="feature-icon">✗</span>
+                                <span class="feature-text">One-on-one sessions</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-action">
+                        <a href="register.html" class="btn btn-primary btn-plan">Choose Premium</a>
+                    </div>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Pro</h3>
+                        <div class="plan-price">
+                            <span class="currency">$</span>
+                            <span class="amount monthly-price">79</span>
+                            <span class="amount annual-price" style="display: none">63</span>
+                            <span class="period">/month</span>
+                        </div>
+                        <p class="plan-description">
+                            Premium features plus personalized tutoring
+                        </p>
+                    </div>
+
+                    <div class="plan-features">
+                        <ul class="features-list">
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">All Premium plan features</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">4 one-on-one sessions/month</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Custom learning path</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">24/7 chat support</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Advanced analytics</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Exclusive content</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Priority class booking</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-action">
+                        <a href="register.html" class="btn btn-primary btn-plan">Choose Pro</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Individual Course Pricing -->
+    <section class="section"
+             style="background: var(--color-gray-50); padding: var(--spacing-3xl) 0">
+        <div class="container">
+            <div class="section-header"
+                 style="text-align: center; margin-bottom: var(--spacing-3xl)">
+                <h2 class="section-title"
+                    style="
+                font-family: var(--font-heading);
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: var(--color-gray-900);
+                margin-bottom: var(--spacing-lg);
+              ">
+                    Individual Course Pricing
+                </h2>
+                <p class="section-subtitle"
+                   style="
+                font-size: 1.25rem;
+                color: var(--color-gray-600);
+                max-width: 600px;
+                margin: 0 auto;
+              ">
+                    Prefer to buy courses individually? Choose from our comprehensive
+                    catalog with lifetime access.
+                </p>
+            </div>
+
+            <div class="legal-contact-grid">
+                <div class="legal-contact-card" style="text-align: center">
+                    <h3 style="
+                  color: var(--color-primary-600);
+                  margin-bottom: var(--spacing-md);
+                ">
+                        Beginner Courses
+                    </h3>
+                    <div style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  color: var(--color-gray-900);
+                  margin-bottom: var(--spacing-sm);
+                ">
+                        $29 - $49
+                    </div>
+                    <p style="
+                  color: var(--color-gray-600);
+                  margin-bottom: var(--spacing-lg);
+                ">
+                        Perfect for starting your Japanese journey
+                    </p>
+                    <ul style="
+                  list-style: none;
+                  padding: 0;
+                  margin-bottom: var(--spacing-xl);
+                  text-align: left;
+                ">
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ 10-15 video lessons
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Interactive quizzes
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Downloadable resources
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Certificate of completion
+                        </li>
+                    </ul>
+                    <a href="courses.html" class="btn btn-outline" style="width: 100%">Browse Beginner Courses</a>
+                </div>
+
+                <div class="legal-contact-card" style="text-align: center">
+                    <h3 style="
+                  color: var(--color-primary-600);
+                  margin-bottom: var(--spacing-md);
+                ">
+                        Intermediate Courses
+                    </h3>
+                    <div style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  color: var(--color-gray-900);
+                  margin-bottom: var(--spacing-sm);
+                ">
+                        $49 - $79
+                    </div>
+                    <p style="
+                  color: var(--color-gray-600);
+                  margin-bottom: var(--spacing-lg);
+                ">
+                        Build upon your foundation with advanced concepts
+                    </p>
+                    <ul style="
+                  list-style: none;
+                  padding: 0;
+                  margin-bottom: var(--spacing-xl);
+                  text-align: left;
+                ">
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ 15-25 video lessons
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Cultural context lessons
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Speaking practice exercises
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Progress assessments
+                        </li>
+                    </ul>
+                    <a href="courses.html" class="btn btn-outline" style="width: 100%">Browse Intermediate Courses</a>
+                </div>
+
+                <div class="legal-contact-card" style="text-align: center">
+                    <h3 style="
+                  color: var(--color-primary-600);
+                  margin-bottom: var(--spacing-md);
+                ">
+                        Advanced Courses
+                    </h3>
+                    <div style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  color: var(--color-gray-900);
+                  margin-bottom: var(--spacing-sm);
+                ">
+                        $79 - $129
+                    </div>
+                    <p style="
+                  color: var(--color-gray-600);
+                  margin-bottom: var(--spacing-lg);
+                ">
+                        Master complex topics and achieve fluency
+                    </p>
+                    <ul style="
+                  list-style: none;
+                  padding: 0;
+                  margin-bottom: var(--spacing-xl);
+                  text-align: left;
+                ">
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ 20-30 comprehensive lessons
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Business Japanese focus
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Live practice sessions
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Professional certification
+                        </li>
+                    </ul>
+                    <a href="courses.html" class="btn btn-outline" style="width: 100%">Browse Advanced Courses</a>
+                </div>
+
+                <div class="legal-contact-card" style="text-align: center">
+                    <h3 style="
+                  color: var(--color-primary-600);
+                  margin-bottom: var(--spacing-md);
+                ">
+                        JLPT Preparation
+                    </h3>
+                    <div style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  color: var(--color-gray-900);
+                  margin-bottom: var(--spacing-sm);
+                ">
+                        $99 - $199
+                    </div>
+                    <p style="
+                  color: var(--color-gray-600);
+                  margin-bottom: var(--spacing-lg);
+                ">
+                        Specialized courses for Japanese proficiency tests
+                    </p>
+                    <ul style="
+                  list-style: none;
+                  padding: 0;
+                  margin-bottom: var(--spacing-xl);
+                  text-align: left;
+                ">
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Comprehensive test preparation
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Practice exams & timing
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Expert teacher guidance
+                        </li>
+                        <li style="
+                    padding: var(--spacing-xs) 0;
+                    color: var(--color-gray-700);
+                  ">
+                            ✓ Pass guarantee program
+                        </li>
+                    </ul>
+                    <a href="courses.html" class="btn btn-outline" style="width: 100%">View JLPT Courses</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Class Pricing -->
+    <section class="section"
+             style="background: var(--color-white); padding: var(--spacing-3xl) 0">
+        <div class="container">
+            <div class="section-header"
+                 style="text-align: center; margin-bottom: var(--spacing-3xl)">
+                <h2 class="section-title"
+                    style="
+                font-family: var(--font-heading);
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: var(--color-gray-900);
+                margin-bottom: var(--spacing-lg);
+              ">
+                    Live Class Options
+                </h2>
+                <p class="section-subtitle"
+                   style="
+                font-size: 1.25rem;
+                color: var(--color-gray-600);
+                max-width: 600px;
+                margin: 0 auto;
+              ">
+                    Interactive learning with certified Japanese teachers
+                </p>
+            </div>
+
+            <div class="plans-grid" style="max-width: 1000px; margin: 0 auto">
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Group Classes</h3>
+                        <div class="plan-price">
+                            <span class="currency">$</span>
+                            <span class="amount">25</span>
+                            <span class="period" style="font-size: 0.875rem">/60-min session</span>
+                        </div>
+                        <p class="plan-description">
+                            Interactive group learning experience
+                        </p>
+                    </div>
+
+                    <div class="plan-features">
+                        <ul class="features-list">
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">5-8 students per class</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Certified native teachers</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Interactive activities</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Class recordings available</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Multiple time zones</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-action">
+                        <a href="classrooms.html" class="btn btn-primary btn-plan">Book Group Class</a>
+                    </div>
+                </div>
+
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">Semi-Private Classes</h3>
+                        <div class="plan-price">
+                            <span class="currency">$</span>
+                            <span class="amount">45</span>
+                            <span class="period" style="font-size: 0.875rem">/60-min session</span>
+                        </div>
+                        <p class="plan-description">
+                            More personalized attention and flexibility
+                        </p>
+                    </div>
+
+                    <div class="plan-features">
+                        <ul class="features-list">
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">2-3 students per class</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">More personalized attention</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Customizable curriculum</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Flexible scheduling</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Rapid progress tracking</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-action">
+                        <a href="classrooms.html" class="btn btn-primary btn-plan">Book Semi-Private</a>
+                    </div>
+                </div>
+
+                <div class="plan-card popular">
+                    <div class="plan-badge">Most Effective</div>
+                    <div class="plan-header">
+                        <h3 class="plan-name">Private Tutoring</h3>
+                        <div class="plan-price">
+                            <span class="currency">$</span>
+                            <span class="amount">75</span>
+                            <span class="period" style="font-size: 0.875rem">/60-min session</span>
+                        </div>
+                        <p class="plan-description">
+                            One-on-one instruction tailored to your needs
+                        </p>
+                    </div>
+
+                    <div class="plan-features">
+                        <ul class="features-list">
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">One-on-one instruction</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Fully customized lessons</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Choose your teacher</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Flexible rescheduling</span>
+                            </li>
+                            <li class="feature included">
+                                <span class="feature-icon">✓</span>
+                                <span class="feature-text">Fastest progress guarantee</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-action">
+                        <a href="partners.html" class="btn btn-primary btn-plan">Find a Tutor</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Comparison -->
+    <section class="section"
+             style="background: var(--color-gray-50); padding: var(--spacing-3xl) 0">
+        <div class="container">
+            <div class="section-header"
+                 style="text-align: center; margin-bottom: var(--spacing-3xl)">
+                <h2 class="section-title"
+                    style="
+                font-family: var(--font-heading);
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: var(--color-gray-900);
+                margin-bottom: var(--spacing-lg);
+              ">
+                    Plan Comparison
+                </h2>
+                <p class="section-subtitle"
+                   style="font-size: 1.25rem; color: var(--color-gray-600)">
+                    See what's included in each subscription plan
+                </p>
+            </div>
+
+            <div class="legal-table-wrapper">
+                <table class="legal-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left">Features</th>
+                            <th style="text-align: center">Free</th>
+                            <th style="text-align: center">Basic</th>
+                            <th style="
+                      text-align: center;
+                      background: linear-gradient(
+                        135deg,
+                        var(--color-primary-50),
+                        var(--color-secondary-50)
+                      );
+                      color: var(--color-primary-700);
+                    ">
+                                Premium
+                            </th>
+                            <th style="text-align: center">Pro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 500">Course Access</td>
+                            <td style="text-align: center">3 courses</td>
+                            <td style="text-align: center">20+ courses</td>
+                            <td style="
+                      text-align: center;
+                      background: var(--color-primary-50);
+                    ">
+                                All courses
+                            </td>
+                            <td style="text-align: center">All courses</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 500">Live Classes</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">
+                                ✗
+                            </td>
+                            <td style="text-align: center; color: var(--color-gray-400)">
+                                ✗
+                            </td>
+                            <td style="
+                      text-align: center;
+                      color: var(--color-success);
+                      background: var(--color-primary-50);
+                    ">
+                                Unlimited
+                            </td>
+                            <td style="text-align: center; color: var(--color-success)">
+                                Unlimited
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 500">One-on-One Sessions</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">
+                                ✗
+                            </td>
+                            <td style="text-align: center; color: var(--color-gray-400)">
+                                ✗
+                            </td>
+                            <td style="
+                      text-align: center;
+                      color: var(--color-gray-400);
+                      background: var(--color-primary-50);
+                    ">
+                                ✗
+                            </td>
+                            <td style="text-align: center; color: var(--color-success)">
+                                4/month
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 500">Downloadable Content</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">
+                                ✗
+                            </td>
+                            <td style="text-align: center; color: var(--color-success)">
+                                ✓
+                            </td>
+                            <td style="
+                      text-align: center;
+                      color: var(--color-success);
+                      background: var(--color-primary-50);
+                    ">
+                                ✓
+                            </td>
+                            <td style="text-align: center; color: var(--color-success)">
+                                ✓
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 500">Mobile App</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">
+                                ✗
+                            </td>
+                            <td style="text-align: center; color: var(--color-success)">
+                                ✓
+                            </td>
+                            <td style="
+                      text-align: center;
+                      color: var(--color-success);
+                      background: var(--color-primary-50);
+                    ">
+                                ✓
+                            </td>
+                            <td style="text-align: center; color: var(--color-success)">
+                                ✓
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 500">Certificates</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">
+                                ✗
+                            </td>
+                            <td style="text-align: center">Basic</td>
+                            <td style="
+                      text-align: center;
+                      background: var(--color-primary-50);
+                    ">
+                                Professional
+                            </td>
+                            <td style="text-align: center">Professional</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 500">Support</td>
+                            <td style="text-align: center">Community</td>
+                            <td style="text-align: center">Email</td>
+                            <td style="
+                      text-align: center;
+                      background: var(--color-primary-50);
+                    ">
+                                Priority
+                            </td>
+                            <td style="text-align: center">24/7 Chat</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 500">Progress Analytics</td>
+                            <td style="text-align: center">Basic</td>
+                            <td style="text-align: center">Standard</td>
+                            <td style="
+                      text-align: center;
+                      background: var(--color-primary-50);
+                    ">
+                                Advanced
+                            </td>
+                            <td style="text-align: center">Advanced</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section"
+             style="
+          background: linear-gradient(
+            135deg,
+            var(--color-primary-600),
+            var(--color-primary-800)
+          );
+          color: var(--color-white);
+          padding: var(--spacing-3xl) 0;
+          text-align: center;
+        ">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto">
+                <h2 style="
+                font-family: var(--font-heading);
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: var(--spacing-lg);
+              ">
+                    Ready to Start Your Japanese Journey?
+                </h2>
+                <p style="
+                font-size: 1.25rem;
+                line-height: 1.6;
+                opacity: 0.9;
+                margin-bottom: var(--spacing-2xl);
+              ">
+                    Join thousands of learners who trust Nihongo Sekai for their
+                    Japanese education. Start with our free plan or choose the option
+                    that best fits your goals.
+                </p>
+                <div style="
+                display: flex;
+                gap: var(--spacing-lg);
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-bottom: var(--spacing-2xl);
+              ">
+                    <a href="register.html"
+                       class="btn"
+                       style="
+                  background: var(--color-white);
+                  color: var(--color-primary-600);
+                  padding: var(--spacing-lg) var(--spacing-2xl);
+                  font-weight: 600;
+                  font-size: 1.125rem;
+                ">Start Free Trial</a>
+                    <a href="contact.html"
+                       class="btn btn-outline"
+                       style="
+                  border-color: var(--color-white);
+                  color: var(--color-white);
+                  padding: var(--spacing-lg) var(--spacing-2xl);
+                  font-weight: 600;
+                  font-size: 1.125rem;
+                ">Contact Sales</a>
+                </div>
+
+                <div style="
+                display: flex;
+                justify-content: center;
+                gap: var(--spacing-3xl);
+                flex-wrap: wrap;
+              ">
+                    <div>
+                        <div style="
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                    margin-bottom: var(--spacing-xs);
+                  ">
+                            50K+
+                        </div>
+                        <div style="opacity: 0.8">Active Students</div>
+                    </div>
+                    <div>
+                        <div style="
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                    margin-bottom: var(--spacing-xs);
+                  ">
+                            95%
+                        </div>
+                        <div style="opacity: 0.8">Success Rate</div>
+                    </div>
+                    <div>
+                        <div style="
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                    margin-bottom: var(--spacing-xs);
+                  ">
+                            30+
+                        </div>
+                        <div style="opacity: 0.8">Countries</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script src="~/js/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const billingToggle = document.getElementById("billingToggle");
+          const monthly = document.querySelectorAll(".monthly-price");
+          const annual = document.querySelectorAll(".annual-price");
+          billingToggle.addEventListener("change", function () {
+            if (this.checked) {
+              monthly.forEach(p => p.style.display = "none");
+              annual.forEach(p => p.style.display = "inline");
+            } else {
+              monthly.forEach(p => p.style.display = "inline");
+              annual.forEach(p => p.style.display = "none");
+            }
+          });
+        });
+    </script>
+}
