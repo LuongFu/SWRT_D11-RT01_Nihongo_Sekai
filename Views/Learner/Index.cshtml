@@ -1,12 +1,158 @@
-﻿@using JapaneseLearningPlatform.Data.ViewModels
-@model LoginVM
+﻿@using NihongoSekaiPlatform.Data.ViewModels
+@model List<CourseWithPurchaseVM>
 
 @{
     ViewData["Title"] = "Home";
-    Layout = "_Layout";
-    ViewData["HideNavbar"] = false;
-    ViewData["HideFooter"] = true;
 }
-<div class="role-page learner-style">
-    Learner 🎓
-</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+}
+
+<section class="hero">
+    <div class="container hero-content">
+        <div class="hero-text">
+            <h1 class="hero-title">
+                Master Japanese with <span class="highlight-yellow">Native Speakers</span>
+            </h1>
+            <p class="hero-subtitle">
+                Join our immersive learning community and discover the beauty of Japanese language and culture through personalized courses and live conversations.
+            </p>
+            <div class="hero-buttons">
+                <a href="/Courses" class="btn btn-primary btn-large">
+                    <i class="bi bi-play-circle me-1"></i> Start Learning Today
+                </a>
+                <a href="/Home/About" class="btn btn-outline btn-large">Learn More</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item"><strong>10,000+</strong> <span class="stat-label">Students</span></div>
+                <div class="stat-item"><strong>150+</strong> <span class="stat-label">Courses</span></div>
+                <div class="stat-item"><strong>50+</strong> <span class="stat-label">Partners</span></div>
+                <div class="stat-item"><strong>95%</strong> <span class="stat-label">Success Rate</span></div>
+            </div>
+        </div>
+        <div class="hero-image-wrapper float-animation shadow-lg">
+            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&h=400&fit=crop" alt="Banner" />
+            <div class="kanji-overlay">日</div>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-light py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4 px-3 py-2 bg-white rounded shadow-sm">
+            <h2 class="fw-bold m-0">Featured Courses</h2>
+            <p class="text-muted m-0">Start your Japanese journey with our most popular courses</p>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="@item.Course.ImageURL" class="card-img-top" alt="@item.Course.Name" style="height: 200px; object-fit: cover;" />
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Course.Name</h5>
+                            <p class="card-text">@item.Course.Description</p>
+                            <p class="text-muted">@item.Course.CourseCategory - <strong>@item.Course.FinalPrice.ToString("C")</strong></p>
+                            <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-danger w-100 mt-2">
+                                View Course
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-controller="Courses" asp-action="Index" class="btn btn-danger">
+                View All Courses <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+@* <section class="section section-gray">
+    <div class="container">
+        <h2 class="fw-bold mb-4">Live Classrooms</h2>
+        <div class="classrooms-grid" id="popularClassrooms"></div>
+    </div>
+</section> *@
+
+<section class="section py-5" style="background-color: #FEF3F4;">
+    <div class="container">
+        <div class="text-center mb-5 bg-white p-4 rounded shadow-sm">
+            <h2 class="fw-bold">Why Choose Nihongo Sekai?</h2>
+            <p class="text-muted">Experience the most effective way to learn Japanese</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm p-4 rounded-4 transition-hover">
+                    <div class="mb-3">
+                        <i class="bi bi-person fs-1 text-danger"></i>
+                    </div>
+                    <h5 class="fw-bold">Native Speakers</h5>
+                    <p class="text-muted">
+                        Learn from certified Japanese teachers and native speakers who understand the nuances of the language.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm p-4 rounded-4 transition-hover">
+                    <div class="mb-3">
+                        <i class="bi bi-book fs-1 text-danger"></i>
+                    </div>
+                    <h5 class="fw-bold">Interactive Courses</h5>
+                    <p class="text-muted">
+                        Engage with multimedia content, interactive exercises, and real-world scenarios designed for effective learning.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm p-4 rounded-4 transition-hover">
+                    <div class="mb-3">
+                        <i class="bi bi-clock fs-1 text-danger"></i>
+                    </div>
+                    <h5 class="fw-bold">Flexible Schedule</h5>
+                    <p class="text-muted">
+                        Study at your own pace with 24/7 access to courses and join live sessions at convenient times.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section text-center"
+         style="background: linear-gradient(135deg, #e02424, #ec4899); padding: 100px 0 80px 0; margin-bottom: 0;">
+    <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
+        <h2 class="fw-bold mb-3 display-6" style="color: #0F172A;">
+            Ready to Start Your Japanese Journey?
+        </h2>
+        <p class="lead mb-4 text-white">
+            Join thousands of students who have successfully learned Japanese with us
+        </p>
+        <div class="d-flex gap-3 flex-wrap justify-content-center">
+            <a href="/Account/Register" class="btn fw-semibold px-4 py-2 rounded"
+               style="background-color: #fff; color: #e02424; min-width: 180px;">
+                Get Started Free
+            </a>
+            <a href="/Courses" class="btn fw-semibold px-4 py-2 rounded"
+               style="color: #fff; border: 2px solid #fff; background-color: transparent; min-width: 180px;">
+                Browse Courses
+            </a>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadFeaturedCourses();
+            loadPopularClassrooms();
+        });
+    </script>
+}

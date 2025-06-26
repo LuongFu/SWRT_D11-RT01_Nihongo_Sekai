@@ -16,6 +16,8 @@ namespace JapaneseLearningPlatform.Data.Services
         Task AddNewCourseAsync(NewCourseVM data);
         Task UpdateCourseAsync(NewCourseVM data);
         Task<CourseHierarchyVM> GetCourseHierarchyAsync(int courseId, string userId, string cartId);
+        Task<IEnumerable<CourseListItemVM>> GetFeaturedCoursesAsync();
+        Task<List<CourseWithPurchaseVM>> GetAllCoursesWithPurchaseInfoAsync(string userId, string shoppingCartId);
 
     }
 }

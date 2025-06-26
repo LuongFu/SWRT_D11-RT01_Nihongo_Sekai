@@ -107,5 +107,7 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+        //public DbSet<Classroom> Classrooms { get; set; }
+        //public DbSet<ClassroomRegistration> ClassroomRegistrations { get; set; }
     }
 }

@@ -1,9 +1,8 @@
-using JapaneseLearningPlatform.Data.Base;
+﻿using JapaneseLearningPlatform.Data.Base;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.EntityFrameworkCore;
 using NihongoSekaiPlatform.Data.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,11 +12,46 @@ namespace JapaneseLearningPlatform.Data.Services
     public class CoursesService : EntityBaseRepository<Course>, ICoursesService
     {
         private readonly AppDbContext _context;
+
         public CoursesService(AppDbContext context) : base(context)
         {
             _context = context;
         }
+        public async Task<List<CourseWithPurchaseVM>> GetAllCoursesWithPurchaseInfoAsync(string userId, string shoppingCartId)
+        {
+            var courses = await _context.Courses.ToListAsync();
 
+            var purchasedCourseIds = new List<int>();
+            var cartCourseIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                purchasedCourseIds = await _context.Orders
+                    .Where(o => o.UserId == userId)
+                    .SelectMany(o => o.OrderItems.Select(oi => oi.CourseId))
+                    .Distinct()
+                    .ToListAsync();
+            }
+
+            if (!string.IsNullOrEmpty(shoppingCartId))
+            {
+                cartCourseIds = await _context.ShoppingCartItems
+                    .Where(i => i.ShoppingCartId == shoppingCartId)
+                    .Select(i => i.Course.Id)
+                    .ToListAsync();
+            }
+
+            var result = courses.Select(course => new CourseWithPurchaseVM
+            {
+                Course = course,
+                IsPurchased = purchasedCourseIds.Contains(course.Id),
+                IsInCart = cartCourseIds.Contains(course.Id)
+            }).ToList();
+
+            return result;
+        }
+
+        // Thêm khóa học mới
         public async Task AddNewCourseAsync(NewCourseVM data)
         {
             var newCourse = new Course()
@@ -33,7 +67,8 @@ namespace JapaneseLearningPlatform.Data.Services
             };
             await _context.Courses.AddAsync(newCourse);
             await _context.SaveChangesAsync();
-            //Add Course Videos
+
+            // Gắn video vào khóa học (many-to-many)
             foreach (var videoId in data.VideoIds)
             {
                 var newVideoCourse = new Video_Course()
@@ -46,6 +81,7 @@ namespace JapaneseLearningPlatform.Data.Services
             await _context.SaveChangesAsync();
         }
 
+        // Lấy chi tiết 1 khóa học bao gồm video
         public async Task<Course> GetCourseByIdAsync(int id)
         {
             var courseDetails = await _context.Courses
@@ -55,21 +91,25 @@ namespace JapaneseLearningPlatform.Data.Services
             return courseDetails;
         }
 
+        // Lấy danh sách video để hiển thị trong dropdown
         public async Task<NewCourseDropdownsVM> GetNewCourseDropdownsValues()
         {
             var response = new NewCourseDropdownsVM()
             {
-                Videos = await _context.Videos.OrderBy(n => n.VideoDescription).ToListAsync()
+                Videos = await _context.Videos
+                    .OrderBy(n => n.VideoDescription)
+                    .ToListAsync()
             };
 
             return response;
         }
 
+        // Cập nhật thông tin khóa học
         public async Task UpdateCourseAsync(NewCourseVM data)
         {
             var dbCourse = await _context.Courses.FirstOrDefaultAsync(n => n.Id == data.Id);
 
-            if(dbCourse != null)
+            if (dbCourse != null)
             {
                 dbCourse.Name = data.Name;
                 dbCourse.Description = data.Description;
@@ -81,12 +121,14 @@ namespace JapaneseLearningPlatform.Data.Services
                 dbCourse.CourseCategory = data.CourseCategory;
                 await _context.SaveChangesAsync();
             }
-            //Remove existing videos
-            var existingVideosDb = _context.Videos_Courses.Where(n => n.CourseId == data.Id).ToList();
+
+            // Xóa các video cũ
+            var existingVideosDb = _context.Videos_Courses
+                .Where(n => n.CourseId == data.Id).ToList();
             _context.Videos_Courses.RemoveRange(existingVideosDb);
             await _context.SaveChangesAsync();
 
-            //Add Course Videos
+            // Gắn video mới
             foreach (var videoId in data.VideoIds)
             {
                 var newVideoCourse = new Video_Course()
@@ -98,6 +140,8 @@ namespace JapaneseLearningPlatform.Data.Services
             }
             await _context.SaveChangesAsync();
         }
+
+        // Lấy toàn bộ thông tin khóa học (dùng cho trang chi tiết)
         public async Task<CourseHierarchyVM> GetCourseHierarchyAsync(int courseId, string userId, string cartId)
         {
             var course = await _context.Courses
@@ -124,5 +168,25 @@ namespace JapaneseLearningPlatform.Data.Services
             };
         }
 
+        // 🔥 API TRANG CHỦ: Lấy 3 khóa học nổi bật (có giá, mới nhất)
+        public async Task<IEnumerable<CourseListItemVM>> GetFeaturedCoursesAsync()
+        {
+            var courses = await _context.Courses
+                .Where(c => c.Price > 0)
+                .OrderByDescending(c => c.Id)
+                .Take(3)
+                .Select(c => new CourseListItemVM
+                {
+                    CourseId = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    CoverImageUrl = c.ImageURL,
+                    Tuition = c.Price,
+                    Level = c.CourseCategory.ToString()
+                })
+                .ToListAsync();
+
+            return courses;
+        }
     }
 }

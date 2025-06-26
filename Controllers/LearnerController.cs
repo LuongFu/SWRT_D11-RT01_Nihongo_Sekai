@@ -1,4 +1,5 @@
 ﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
@@ -16,15 +17,33 @@ namespace NihongoSekaiPlatform.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _env;
+        private readonly ICoursesService _coursesService;
 
-        public LearnerController(AppDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env)
+        public LearnerController(AppDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, ICoursesService coursesService)
         {
             _context = context;
             _userManager = userManager;
-            _env = env; 
+            _env = env;
+            _coursesService = coursesService;
         }
 
-        public ActionResult Index() => View();
+        public async Task<IActionResult> Index()
+        {
+            var userId = User.Identity.IsAuthenticated
+                ? _userManager.GetUserId(User)
+                : null;
+
+            var cartId = HttpContext.Session.GetString("CartId") ?? Guid.NewGuid().ToString();
+            HttpContext.Session.SetString("CartId", cartId);
+
+            var courses = await _coursesService.GetAllCoursesWithPurchaseInfoAsync(userId, cartId);
+
+            // chỉ lấy 3 khóa học rẻ nhất làm Featured
+            var featuredCourses = courses.OrderBy(c => c.FinalPrice).Take(3).ToList();
+
+            return View(featuredCourses); // Model sẽ là List<CourseWithPurchaseVM>
+        }
+
 
         public ActionResult Details(int id) => View();
 
