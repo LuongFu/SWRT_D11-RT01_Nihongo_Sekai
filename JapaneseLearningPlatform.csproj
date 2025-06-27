@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Classrooms\NewFolder\" />
     <Folder Include="wwwroot\uploads\profile\" />
   </ItemGroup>
 

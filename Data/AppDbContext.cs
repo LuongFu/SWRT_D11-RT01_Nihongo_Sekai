@@ -84,9 +84,18 @@ namespace JapaneseLearningPlatform.Data
 
             //for classroom instance
             modelBuilder.Entity<ClassroomInstance>().Property(c => c.Status).HasConversion<int>();
+            modelBuilder.Entity<ClassroomInstance>()
+    .Property(ci => ci.Price)
+    .HasPrecision(10, 2);
             modelBuilder.Entity<ClassroomEnrollment>()
     .HasIndex(e => new { e.InstanceId, e.LearnerId })
     .IsUnique();
+
+            //for language level
+            modelBuilder.Entity<ClassroomTemplate>()
+    .Property(c => c.LanguageLevel)
+    .HasConversion<int>(); // ✅ Enum -> int
+
 
             // ClassroomEnrollment → ClassroomInstance
             modelBuilder.Entity<ClassroomEnrollment>()
