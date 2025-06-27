@@ -1,4 +1,4 @@
-using JapaneseLearningPlatform.Data.Base;
+﻿using JapaneseLearningPlatform.Data.Base;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.EntityFrameworkCore;
@@ -104,20 +104,42 @@ namespace JapaneseLearningPlatform.Data.Services
                         .ThenInclude(ci => ci.Quiz)
                 .FirstOrDefaultAsync(c => c.Id == courseId);
 
+            if (course == null) return null;
+
             var isPurchased = _context.OrderItems
                 .Any(x => x.CourseId == courseId && x.Order.UserId == userId);
 
             var isInCart = _context.ShoppingCartItems
                 .Any(x => x.CourseId == courseId && x.ShoppingCartId == cartId);
 
+            // ✳ Lấy tất cả QuizId từ content items
+            var quizIds = course.Sections
+                .SelectMany(s => s.ContentItems)
+                .Where(ci => ci.Quiz != null)
+                .Select(ci => ci.Quiz.Id)
+                .ToList();
+
+            // ✳ Truy vấn điểm cao nhất từ QuizResults (nếu user đã đăng nhập)
+            Dictionary<int, int> quizScores = new();
+            if (!string.IsNullOrEmpty(userId))
+            {
+                quizScores = await _context.QuizResults
+                    .Where(r => quizIds.Contains(r.QuizId) && r.UserId == userId)
+                    .GroupBy(r => r.QuizId)
+                    .Select(g => new { QuizId = g.Key, MaxScore = g.Max(r => r.Score) })
+                    .ToDictionaryAsync(g => g.QuizId, g => g.MaxScore);
+            }
+
             return new CourseHierarchyVM
             {
                 Course = course,
-                Sections = course?.Sections?.ToList(),
+                Sections = course.Sections.ToList(),
                 IsPurchased = isPurchased,
-                IsInCart = isInCart
+                IsInCart = isInCart,
+                QuizHighScores = quizScores
             };
         }
+
 
     }
 }
