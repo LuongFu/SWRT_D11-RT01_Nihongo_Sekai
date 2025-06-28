@@ -181,8 +181,6 @@ html, body {
     color: #a71d2a;
 }
 
-}
-
 /* ACTION BUTTONS */
 .nav-actions {
     display: flex;
@@ -574,7 +572,6 @@ footer.footer {
     font-size: 24px;
     font-weight: bold;
     animation: colorShift 3s ease-in-out infinite;
-}
 }
 
 @keyframes spin {
