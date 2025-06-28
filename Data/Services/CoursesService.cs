@@ -54,6 +54,10 @@ namespace JapaneseLearningPlatform.Data.Services
         // Thêm khóa học mới
         public async Task AddNewCourseAsync(NewCourseVM data)
         {
+            if (data.DiscountPercent == 0)
+            {
+                data.DiscountPercent = null;
+            }
             var newCourse = new Course()
             {
                 Name = data.Name,
@@ -108,7 +112,10 @@ namespace JapaneseLearningPlatform.Data.Services
         public async Task UpdateCourseAsync(NewCourseVM data)
         {
             var dbCourse = await _context.Courses.FirstOrDefaultAsync(n => n.Id == data.Id);
-
+            if (data.DiscountPercent == 0)
+            {
+                data.DiscountPercent = null;
+            }
             if (dbCourse != null)
             {
                 dbCourse.Name = data.Name;

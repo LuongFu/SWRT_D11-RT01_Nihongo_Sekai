@@ -1,7 +1,9 @@
-using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.Enums;
+using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using static System.Net.WebRequestMethods;
 
 namespace JapaneseLearningPlatform.Data
 {
@@ -371,6 +373,89 @@ namespace JapaneseLearningPlatform.Data
 
         }
 
+        public static async Task SeedClassroomTemplatesAsync(IApplicationBuilder app)
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            if (!context.ClassroomTemplates.Any())
+            {
+                var partner = await userManager.FindByEmailAsync("giakhoiquang@gmail.com");
+
+                if (partner != null)
+                {
+                    context.ClassroomTemplates.AddRange(new List<ClassroomTemplate>
+            {
+                new ClassroomTemplate
+                {
+                    Title = "Beginner Japanese Conversation",
+                    Description = "Focus on daily life dialogues for beginners.",
+                    LanguageLevel = LanguageLevel.N5,
+                    PartnerId = partner.Id,
+                    ImageURL = "https://eclectic-homeschool.com/wp-content/uploads/2014/09/beginningjapanese.jpg"
+                },
+                new ClassroomTemplate
+                {
+                    Title = "Intermediate Listening Practice",
+                    Description = "Listen and discuss JLPT N4-level audios.",
+                    LanguageLevel = LanguageLevel.N4,
+                    PartnerId = partner.Id,
+                    ImageURL = "https://static.vecteezy.com/system/resources/previews/009/385/472/original/school-desk-clipart-design-illustration-free-png.png"
+                }
+            });
+
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
+        public static async Task SeedClassroomInstancesAsync(IApplicationBuilder app)
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            if (!context.ClassroomInstances.Any())
+            {
+                var template = await context.ClassroomTemplates.FirstOrDefaultAsync();
+
+                if (template != null)
+                {
+                    context.ClassroomInstances.AddRange(new List<ClassroomInstance>
+            {
+                new ClassroomInstance
+                {
+                    TemplateId = template.Id,
+                    StartDate = DateTime.Today.AddDays(3),
+                    EndDate = DateTime.Today.AddDays(33),
+                    ClassTime = new TimeSpan(19, 0, 0),
+                    MaxCapacity = 10,
+                    Price = 120000,
+                    IsPaid = true,
+                    GoogleMeetLink = "https://meet.google.com/test-class1",
+                    Status = ClassroomStatus.Published
+                },
+                new ClassroomInstance
+                {
+                    TemplateId = template.Id,
+                    StartDate = DateTime.Today.AddDays(-10),
+                    EndDate = DateTime.Today.AddDays(20),
+                    ClassTime = new TimeSpan(20, 0, 0),
+                    MaxCapacity = 8,
+                    Price = 0,
+                    IsPaid = false,
+                    GoogleMeetLink = "https://meet.google.com/free-class",
+                    Status = ClassroomStatus.InProgress
+                }
+            });
+
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
+
+
         public static async Task SeedUsersAndRolesAsync(IApplicationBuilder applicationBuilder)
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
@@ -423,6 +508,34 @@ namespace JapaneseLearningPlatform.Data
                     await userManager.AddToRoleAsync(newPartnerUser, UserRoles.Partner);
                     await userManager.UpdateAsync(newPartnerUser);
                 }
+
+
+                // Additional partner accounts
+                var extraPartners = new[]
+                {
+    new { Email = "partner1@nihongo.com", FullName = "Partner One" },
+    new { Email = "partner2@nihongo.com", FullName = "Partner Two" },
+};
+
+                foreach (var p in extraPartners)
+                {
+                    var found = await userManager.FindByEmailAsync(p.Email);
+                    if (found == null)
+                    {
+                        var user = new ApplicationUser
+                        {
+                            FullName = p.FullName,
+                            UserName = p.Email,
+                            Email = p.Email,
+                            EmailConfirmed = true,
+                            Role = UserRoles.Partner
+                        };
+                        await userManager.CreateAsync(user, "Test123@"); // ✅ default password
+                        await userManager.AddToRoleAsync(user, UserRoles.Partner);
+                        await userManager.UpdateAsync(user);
+                    }
+                }
+
                 // learner account if not exists
                 string learnerUserEmail = "noobhoang@gmail.com";
 

@@ -1,0 +1,159 @@
+﻿@{
+    ViewData["Title"] = "Blog - Nihongo Sekai";
+}
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+          content="Explore Japanese language learning tips, cultural insights, student success stories, and expert advice from our teachers and community." />
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/blog.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+}
+
+<main>
+    <!-- Blog Hero -->
+    <section class="blog-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Learning <span class="text-gradient">Japanese</span> Together
+                </h1>
+                <p class="hero-description">
+                    Discover insights, tips, and stories from our Japanese learning
+                    community. From grammar guides to cultural deep-dives, explore
+                    everything that makes learning Japanese an incredible journey.
+                </p>
+                <div class="hero-search">
+                    <div class="search-box">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
+                        </svg>
+                        <input type="text" id="blogSearch" placeholder="Search articles..." class="search-input" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Article -->
+    <section class="featured-article-section">
+        <div class="container">
+            <div class="featured-article">
+                <div class="featured-image">
+                    <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&h=500&fit=crop" alt="Featured Article" />
+                    <div class="featured-badge">Featured</div>
+                </div>
+                <div class="featured-content">
+                    <div class="article-meta">
+                        <span class="article-category">Cultural Insights</span>
+                        <span class="article-date">March 18, 2024</span>
+                        <span class="article-reading-time">8 min read</span>
+                    </div>
+                    <h2 class="featured-title">Understanding Keigo: The Art of Japanese Politeness</h2>
+                    <p class="featured-excerpt">
+                        Dive deep into the complex world of Japanese honorific language
+                        (keigo) and discover how mastering these forms can transform
+                        your Japanese communication. From basic respect to business
+                        formality, learn when and how to use these essential
+                        expressions.
+                    </p>
+                    <div class="article-author">
+                        <div class="author-avatar">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=YukiSensei&backgroundColor=b6e3f4" alt="Yuki Tanaka" />
+                        </div>
+                        <div class="author-info">
+                            <div class="author-name">Yuki Tanaka</div>
+                            <div class="author-title">Senior Japanese Instructor</div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary">Read Full Article</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+        <div class="container">
+            <h2 class="section-title">Explore by Category</h2>
+            <div class="categories-grid">
+                @* Lặp qua model hoặc hardcode các thẻ category-card *@
+                <div class="category-card" data-category="learning-tips">
+                    <div class="category-icon">📚</div>
+                    <h3 class="category-title">Learning Tips</h3>
+                    <p class="category-description">
+                        Effective study methods, memory techniques, and learning strategies
+                    </p>
+                    <div class="category-count">45 articles</div>
+                </div>
+                <!-- ... các thẻ khác tương tự ... -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Articles -->
+    <section class="articles-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Recent Articles</h2>
+                <div class="section-filters">
+                    <select id="categoryFilter" class="filter-select">
+                        <option value="">All Categories</option>
+                        <option value="learning-tips">Learning Tips</option>
+                        <!-- ... -->
+                    </select>
+                    <select id="sortFilter" class="filter-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="popular">Most Popular</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="articles-grid" id="articlesGrid">
+                @* Nội dung articles sẽ render bằng JS hoặc từ Model *@
+            </div>
+
+            <div class="load-more-section">
+                <button class="btn btn-outline" id="loadMoreBtn">Load More Articles</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Signup -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <div class="newsletter-text">
+                    <h2 class="newsletter-title">Stay Updated</h2>
+                    <p class="newsletter-description">
+                        Get the latest Japanese learning tips, cultural insights, and
+                        success stories delivered to your inbox. Join 25,000+ learners
+                        who read our weekly newsletter.
+                    </p>
+                </div>
+                <form class="newsletter-form" id="newsletterForm">
+                    <div class="form-group">
+                        <input type="email" id="newsletterEmail" placeholder="Enter your email address" class="newsletter-input" required />
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </div>
+                    <p class="newsletter-note">
+                        Free to subscribe. Unsubscribe anytime. No spam, we promise! 📧
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script src="~/js/blog.js"></script>
+    <script src="~/js/script.js"></script>
+}

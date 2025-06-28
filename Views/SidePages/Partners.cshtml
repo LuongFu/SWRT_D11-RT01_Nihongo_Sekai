@@ -1,0 +1,358 @@
+﻿@using JapaneseLearningPlatform.Data.ViewModels
+@model LoginVM
+
+@{
+    ViewData["Title"] = "Japanese Partners - Nihongo Sekai";
+    Layout = "_Layout";
+    ViewData["HideNavbar"] = false;
+    ViewData["HideFooter"] = false;
+}
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <meta name="description"
+          content="Connect with certified Japanese teachers and language partners. Find the perfect tutor for personalized Japanese lessons and conversation practice." />
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="~/css/global.css" />
+
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="~/css/partners.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+}
+
+<main>
+    <!-- Hero Section -->
+    <section class="partners-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Partner with Us to
+                    <span class="text-gradient">Bridge Cultures</span>
+                </h1>
+                <p class="hero-description">
+                    Join our network of educational institutions, businesses, and
+                    cultural organizations to expand access to Japanese language
+                    learning worldwide. Together, we can build bridges between
+                    cultures and create meaningful connections.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" onclick="showPartnershipForm()">
+                        Become a Partner
+                    </button>
+                    <a href="#partnership-types" class="btn btn-outline">
+                        Explore Partnerships
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partnership Types -->
+    <section class="partnership-types-section" id="partnership-types">
+        <div class="container">
+            <h2 class="section-title">Partnership Opportunities</h2>
+            <div class="partnership-grid">
+                @* Educational Institutions *@
+                <div class="partnership-card">
+                    <div class="partnership-icon">🏫</div>
+                    <h3 class="partnership-title">Educational Institutions</h3>
+                    <p class="partnership-description">
+                        Partner with universities, schools, and educational
+                        organizations to integrate Japanese language learning into
+                        curricula and offer student discounts.
+                    </p>
+                    <div class="partnership-benefits">
+                        <h4>Benefits:</h4>
+                        <ul>
+                            <li>Bulk licensing discounts</li>
+                            <li>Custom curriculum development</li>
+                            <li>Teacher training programs</li>
+                            <li>Student progress tracking</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="inquirePartnership('education')">
+                        Learn More
+                    </button>
+                </div>
+
+                @* Corporate Training *@
+                <div class="partnership-card">
+                    <div class="partnership-icon">🏢</div>
+                    <h3 class="partnership-title">Corporate Training</h3>
+                    <p class="partnership-description">
+                        Provide Japanese language training for businesses working with
+                        Japanese companies or expanding into the Japanese market.
+                    </p>
+                    <div class="partnership-benefits">
+                        <h4>Benefits:</h4>
+                        <ul>
+                            <li>Business-focused curriculum</li>
+                            <li>Flexible scheduling</li>
+                            <li>Corporate reporting tools</li>
+                            <li>Cultural training modules</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="inquirePartnership('corporate')">
+                        Learn More
+                    </button>
+                </div>
+
+                @* Cultural Organizations *@
+                <div class="partnership-card">
+                    <div class="partnership-icon">🌍</div>
+                    <h3 class="partnership-title">Cultural Organizations</h3>
+                    <p class="partnership-description">
+                        Collaborate with cultural centers, museums, and Japan-related
+                        organizations to promote Japanese culture through language
+                        learning.
+                    </p>
+                    <div class="partnership-benefits">
+                        <h4>Benefits:</h4>
+                        <ul>
+                            <li>Cultural content integration</li>
+                            <li>Event partnerships</li>
+                            <li>Cross-promotion opportunities</li>
+                            <li>Community outreach programs</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="inquirePartnership('cultural')">
+                        Learn More
+                    </button>
+                </div>
+
+                @* Technology Partners *@
+                <div class="partnership-card">
+                    <div class="partnership-icon">💻</div>
+                    <h3 class="partnership-title">Technology Partners</h3>
+                    <p class="partnership-description">
+                        Integrate with learning management systems, educational
+                        platforms, and technology solutions to enhance the learning
+                        experience.
+                    </p>
+                    <div class="partnership-benefits">
+                        <h4>Benefits:</h4>
+                        <ul>
+                            <li>API integration support</li>
+                            <li>Technical documentation</li>
+                            <li>Co-marketing opportunities</li>
+                            <li>Revenue sharing programs</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="inquirePartnership('technology')">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Partners Section -->
+    <section class="featured-partners">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Teaching Partners</h2>
+                <p>
+                    Meet our top-rated teachers who have helped thousands of students
+                    master Japanese
+                </p>
+            </div>
+
+            <div class="featured-partners-grid" id="featuredPartnersGrid">
+                @* Populated by JavaScript *@
+            </div>
+
+            <div class="view-all-partners">
+                <a href="#directory" class="btn btn-primary btn-lg">
+                    View All Partners
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Directory Section -->
+    <section class="partners-directory" id="directory">
+        <div class="container">
+            <div class="section-header">
+                <h2>Teacher Directory</h2>
+                <p>
+                    Browse our complete directory of qualified Japanese teachers and
+                    language partners
+                </p>
+            </div>
+
+            <!-- Directory Filters -->
+            <div class="directory-filters">
+                <div class="container">
+                    <div class="filters-container">
+                        <div class="filters-group">
+                            <select id="expertiseFilter" class="filter-select">
+                                <option value="">All Specializations</option>
+                                <option value="Business Japanese Expert">
+                                    Business Japanese
+                                </option>
+                                <option value="Conversation Specialist">
+                                    Conversation
+                                </option>
+                                <option value="JLPT Preparation">
+                                    JLPT Preparation
+                                </option>
+                                <option value="Grammar Specialist">
+                                    Grammar
+                                </option>
+                                <option value="Cultural Studies">
+                                    Cultural Studies
+                                </option>
+                                <option value="Test Preparation">
+                                    Test Preparation
+                                </option>
+                                <option value="Travel Japanese">
+                                    Travel Japanese
+                                </option>
+                                <option value="Pronunciation">
+                                    Pronunciation
+                                </option>
+                            </select>
+
+                            <select id="ratingFilter" class="filter-select">
+                                <option value="">All Ratings</option>
+                                <option value="4.8">4.8+ Stars</option>
+                                <option value="4.5">4.5+ Stars</option>
+                                <option value="4.0">4.0+ Stars</option>
+                            </select>
+
+                            <select id="availabilityFilter" class="filter-select">
+                                <option value="">All Availability</option>
+                                <option value="Available">Available Now</option>
+                                <option value="Busy">Accepting Wait List</option>
+                            </select>
+                        </div>
+
+                        <div class="search-container">
+                            <svg class="search-icon"
+                                 width="16"
+                                 height="16"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            <input type="text"
+                                   id="partnerSearch"
+                                   class="search-input"
+                                   placeholder="Search teachers by name or expertise..." />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="partners-grid" id="partnersGrid">
+                @* Populated by JavaScript *@
+            </div>
+        </div>
+    </section>
+
+    <!-- ... (omitted other sections for brevity) ... -->
+    <!-- Partnership Form Section -->
+    <section class="partnership-form-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Ready to Partner with Us?</h2>
+                <p>
+                    Join our community of expert Japanese teachers and share your
+                    knowledge with students worldwide
+                </p>
+            </div>
+
+            <div class="form-container">
+                <form id="partnershipForm">
+                    <div class="form-grid">
+                        <!-- Form fields here -->
+                        <div class="form-group">
+                            <label for="teacherName" class="form-label">
+                                Full Name *
+                            </label>
+                            <input type="text"
+                                   id="teacherName"
+                                   name="teacherName"
+                                   class="form-input"
+                                   required />
+                        </div>
+                        <!-- ... other form fields ... -->
+                    </div>
+                    <div class="form-actions text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Request Partnership
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="contact-info mt-4">
+                <h3>Direct Contact</h3>
+                <p><strong>Email:</strong> partnerships@nihongosekai.com</p>
+                <p><strong>Phone:</strong> +1 (555) 123-4569</p>
+                <p><strong>Response Time:</strong> Within 24 hours</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Chat Modal -->
+<div class="chat-modal" id="chatModal">
+    <div class="chat-modal-content">
+        <!-- Chat header, messages, and input form -->
+        <div class="chat-header">
+            <div class="chat-partner-info">
+                <div class="chat-partner-avatar" id="chatPartnerAvatar"></div>
+                <div class="chat-partner-details">
+                    <h4 id="chatPartnerName">Partner Name</h4>
+                    <p class="chat-partner-status" id="chatPartnerStatus">
+                        Available
+                    </p>
+                </div>
+            </div>
+            <button class="chat-close-btn" id="chatCloseBtn">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+            <form id="chatForm" class="chat-input-form">
+                <textarea id="chatInput"
+                          class="chat-input"
+                          rows="1"
+                          placeholder="Type your message..."></textarea>
+                <button type="submit" class="chat-send-btn">
+                    <svg width="16"
+                         height="16"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/global.js"></script>
+    <script src="~/js/partners.js"></script>
+}

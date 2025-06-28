@@ -102,7 +102,8 @@ namespace JapaneseLearningPlatform
             // Seed database
             AppDbInitializer.Seed(app);
             await AppDbInitializer.SeedUsersAndRolesAsync(app);
-
+            await AppDbInitializer.SeedClassroomTemplatesAsync(app);
+            await AppDbInitializer.SeedClassroomInstancesAsync(app);
             app.Run();
         }
     }

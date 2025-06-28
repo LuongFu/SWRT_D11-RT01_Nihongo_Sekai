@@ -7,83 +7,148 @@
     ViewData["Title"] = "Add Content Item";
 }
 
-<h2 class="mb-4">Add New Content Item</h2>
+<!-- Internal Theme Styles -->
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-<form asp-action="Create" method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
+    h2 {
+        color: #b91c1c;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+    }
 
-    <input type="hidden" asp-for="CourseId" />
-    <input type="hidden" asp-for="SectionId" />
+    label.form-label {
+        color: #7f1d1d;
+        font-weight: 500;
+    }
 
-    <div class="mb-3">
-        <label class="form-label">Course</label>
-        <input class="form-control" value="@Model.CourseTitle" readonly />
-    </div>
+    .form-control:focus, .form-select:focus {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.25);
+    }
 
-    <div class="mb-3">
-        <label class="form-label">Section</label>
-        <input class="form-control" value="@Model.SectionTitle" readonly />
-    </div>
+    .btn-red {
+        background-color: #dc2626;
+        color: white;
+        border: none;
+    }
 
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="DisplayOrder" class="form-label"></label>
-        <input asp-for="DisplayOrder" class="form-control" type="number" min="0" />
-        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
-    </div>
+        .btn-red:hover {
+            background-color: #b91c1c;
+        }
 
-    <div class="mb-3">
-        <label asp-for="ContentType" class="form-label"></label>
-        <select asp-for="ContentType" class="form-select" id="contentTypeSelect">
-            <option value="">-- Select Content Type --</option>
-            @foreach (var type in Enum.GetValues(typeof(ContentType)))
-            {
-                <option value="@type">@type</option>
-            }
-        </select>
-        <span asp-validation-for="ContentType" class="text-danger"></span>
-    </div>
-    <div id="videoFields" style="display:none;">
-        <div class="mb-3">
-            <label asp-for="VideoURL" class="form-label"></label>
-            <input asp-for="VideoURL" class="form-control" />
-            <span asp-validation-for="VideoURL" class="text-danger"></span>
-        </div>
+    .btn-outline-red {
+        background-color: white;
+        color: #dc2626;
+        border: 1px solid #dc2626;
+    }
 
-        <div class="mb-3">
-            <label asp-for="VideoDescription" class="form-label"></label>
-            <textarea asp-for="VideoDescription" class="form-control"></textarea>
-            <span asp-validation-for="VideoDescription" class="text-danger"></span>
-        </div>
-    </div>
+        .btn-outline-red:hover {
+            background-color: #fef2f2;
+            color: #b91c1c;
+            border-color: #b91c1c;
+        }
 
-    <div id="quizFields" style="display:none;">
-        <div class="mb-3">
-            <div class="form-group">
-                <label asp-for="NewQuizTitle"></label>
-                <input asp-for="NewQuizTitle" class="form-control" />
-                <span asp-validation-for="NewQuizTitle" class="text-danger"></span>
+    .text-danger {
+        color: #dc2626 !important;
+    }
+
+    .section-label {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-top: 1.2rem;
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="card shadow-sm rounded-4 p-4">
+        <h2>Add New Content Item</h2>
+
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="CourseId" />
+            <input type="hidden" asp-for="SectionId" />
+
+            <div class="mb-3">
+                <label class="form-label">Course</label>
+                <input class="form-control" value="@Model.CourseTitle" readonly />
             </div>
-            <div class="form-group">
-                <label asp-for="NewQuizDescription"></label>
-                <input asp-for="NewQuizDescription" class="form-control" />
-                <span asp-validation-for="NewQuizDescription" class="text-danger"></span>
+
+            <div class="mb-3">
+                <label class="form-label">Section</label>
+                <input class="form-control" value="@Model.SectionTitle" readonly />
             </div>
-        </div>
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="DisplayOrder" class="form-label"></label>
+                <input asp-for="DisplayOrder" type="number" min="0" class="form-control" />
+                <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ContentType" class="form-label"></label>
+                <select asp-for="ContentType" class="form-select" id="contentTypeSelect">
+                    <option value="">-- Select Content Type --</option>
+                    @foreach (var type in Enum.GetValues(typeof(ContentType)))
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </select>
+                <span asp-validation-for="ContentType" class="text-danger"></span>
+            </div>
+
+            <div id="videoFields" style="display:none;">
+                <div class="section-label">Video Details</div>
+
+                <div class="mb-3">
+                    <label asp-for="VideoURL" class="form-label"></label>
+                    <input asp-for="VideoURL" class="form-control" />
+                    <span asp-validation-for="VideoURL" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="VideoDescription" class="form-label"></label>
+                    <textarea asp-for="VideoDescription" class="form-control"></textarea>
+                    <span asp-validation-for="VideoDescription" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div id="quizFields" style="display:none;">
+                <div class="section-label">Quiz Details</div>
+
+                <div class="mb-3">
+                    <label asp-for="NewQuizTitle" class="form-label"></label>
+                    <input asp-for="NewQuizTitle" class="form-control" />
+                    <span asp-validation-for="NewQuizTitle" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NewQuizDescription" class="form-label"></label>
+                    <input asp-for="NewQuizDescription" class="form-control" />
+                    <span asp-validation-for="NewQuizDescription" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-red">
+                    <i class="bi bi-save"></i> Save
+                </button>
+                <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-outline-red">
+                    <i class="bi bi-arrow-left-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
     </div>
-    <div class="mb-3">
-        <button type="submit" class="btn btn-success">
-            <i class="bi bi-save"></i> Save
-        </button>
-        <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary ms-2">
-            <i class="bi bi-arrow-left-circle"></i> Cancel
-        </a>
-    </div>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -98,7 +163,7 @@
             quizFields.style.display = selected === "Quiz" ? "block" : "none";
         });
 
-        // Trigger on page load
+        // Initialize on load
         document.addEventListener("DOMContentLoaded", function () {
             const selected = contentTypeSelect.value;
             videoFields.style.display = selected === "Video" ? "block" : "none";
