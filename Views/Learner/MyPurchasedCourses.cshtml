@@ -27,7 +27,7 @@
                             <p class="card-text text-muted small">@course.Description?.Substring(0, Math.Min(100, course.Description.Length))...</p>
 
                             <div class="mt-auto">
-                                <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.Id" class="btn btn-success w-100">
+                                <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.Id" class="btn btn-danger w-100">
                                     <i class="bi bi-play-btn"></i> Start Learning
                                 </a>
                             </div>
