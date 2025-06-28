@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace NihongoSekaiPlatform.Controllers
+namespace JapaneseLearningPlatform.Controllers
 {
     public class LoadingController : Controller
     {

@@ -1,8 +1,6 @@
 ﻿using JapaneseLearningPlatform.Data;
-using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
-using JapaneseLearningPlatform.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class QuizQuestionsService : IQuizQuestionsService

@@ -1,6 +1,5 @@
-﻿using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace JapaneseLearningPlatform.Data.ViewModels

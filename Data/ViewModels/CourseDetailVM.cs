@@ -1,6 +1,6 @@
 ﻿using JapaneseLearningPlatform.Models;
 
-namespace NihongoSekaiPlatform.Data.ViewModels
+namespace JapaneseLearningPlatform.Data.ViewModels
 {
     public class CourseDetailVM
     {

@@ -1,11 +1,5 @@
-using JapaneseLearningPlatform.Data;
-using JapaneseLearningPlatform.Data.Base;
-using System;
-using System.Collections.Generic;
+using JapaneseLearningPlatform.Data.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Models
 {

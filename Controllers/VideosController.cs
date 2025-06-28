@@ -1,13 +1,8 @@
-using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {

@@ -1,12 +1,7 @@
 using JapaneseLearningPlatform.Data.Static;
+using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Models;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Data
 {

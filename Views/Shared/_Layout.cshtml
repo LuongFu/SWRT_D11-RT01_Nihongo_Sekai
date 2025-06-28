@@ -55,6 +55,7 @@
                                     <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")"
                                        asp-controller="Schedule" asp-action="Index">Schedule</a>
                                 </li>
+
                             }
                             else
                             {
@@ -62,9 +63,7 @@
                                     <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "About" ? "active-tab" : "")"
                                        asp-controller="About" asp-action="Index">About</a>
                                 </li>
-                            }
-
-                            
+                            }                            
                         }
                     </ul>
                     <div class="nav-actions">
@@ -77,8 +76,23 @@
 
         <main class="flex-grow-1" style="margin-bottom: 0; padding-bottom: 0;">
             @RenderBody()
+
             <iframe id="chatbot-iframe" src="https://chat-bot-with-gemini-fe.onrender.com" style="position: fixed; bottom: 0; right: 0; width: 400px; height: 500px; border: none; z-index: 9999; border-radius: 12px;"></iframe>
         </main>
+            @*Chat bot*@
+            <iframe id="chatbot-iframe"
+                    src="https://chat-bot-with-gemini-fe.onrender.com"
+                    style="position: fixed;
+               bottom: 0;
+               right: 0;
+               width: 60px; /* chỉ hiển thị icon toggle */
+               height: 60px;
+               border: none;
+               z-index: 9999;
+               border-radius: 50%;
+               overflow: hidden;">
+            </iframe>
+        </main> 
 
         @if (!hideFooter)
         {
@@ -89,7 +103,24 @@
             </footer>
         }
     </div>
+    <script>
+        window.addEventListener("message", function (event) {
+            if (!event.data || typeof event.data !== "object") return;
 
+            const iframe = document.getElementById("chatbot-iframe");
+            if (!iframe) return;
+
+            if (event.data.type === "chatbot-open") {
+                iframe.style.width = "400px";
+                iframe.style.height = "500px";
+                iframe.style.borderRadius = "12px";
+            } else if (event.data.type === "chatbot-close") {
+                iframe.style.width = "60px";
+                iframe.style.height = "60px";
+                iframe.style.borderRadius = "12px";
+            }
+        }, false);
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

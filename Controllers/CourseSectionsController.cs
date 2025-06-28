@@ -1,8 +1,6 @@
 ﻿using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
-using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 public class CourseSectionsController : Controller
 {

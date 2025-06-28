@@ -1,5 +1,3 @@
-using System;
-
 namespace JapaneseLearningPlatform.Models
 {
     public class ErrorViewModel

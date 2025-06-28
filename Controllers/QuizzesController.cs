@@ -4,10 +4,7 @@ using JapaneseLearningPlatform.Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NihongoSekaiPlatform.Data.ViewModels;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -76,6 +73,9 @@ namespace JapaneseLearningPlatform.Controllers
 
             int totalQuestions = model.Questions.Count;
             int correctAnswers = 0;
+            var quiz = await _context.Quizzes.FirstOrDefaultAsync(q => q.Id == model.QuizId); // take quiz
+
+            if (quiz == null) return NotFound();
 
             var result = new QuizResult
             {
@@ -121,6 +121,8 @@ namespace JapaneseLearningPlatform.Controllers
             result.Score = correctAnswers;
             _context.QuizResults.Add(result);
             await _context.SaveChangesAsync();
+
+            model.CourseId = quiz.CourseId; // add courseId to model for result view
 
             ViewBag.TotalQuestions = totalQuestions;
             ViewBag.CorrectAnswers = correctAnswers;

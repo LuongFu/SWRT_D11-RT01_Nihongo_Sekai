@@ -1,11 +1,11 @@
 ﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -83,7 +83,6 @@ namespace JapaneseLearningPlatform.Controllers
                 DisplayOrder = vm.DisplayOrder ?? 0,
                 ContentType = vm.ContentType
             };
-
             if (vm.ContentType == ContentType.Video)
             {
                 contentItem.Video = new Video
@@ -92,10 +91,6 @@ namespace JapaneseLearningPlatform.Controllers
                     VideoDescription = vm.VideoDescription
                 };
             }
-            //else if (vm.ContentType == ContentType.Quiz)
-            //{
-            //    contentItem.QuizId = vm.QuizId;
-            //}
             else if (vm.ContentType == ContentType.Quiz)
             {
                 if (!string.IsNullOrWhiteSpace(vm.NewQuizTitle))

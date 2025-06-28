@@ -1,5 +1,4 @@
 ﻿@model JapaneseLearningPlatform.Data.ViewModels.TakeQuizVM
-
 @{
     ViewData["Title"] = "Quiz Result";
     var correctAnswers = ViewBag.CorrectAnswers as int? ?? 0;
@@ -60,9 +59,13 @@
         }
 
         <div class="mt-4">
-            <a asp-controller="Courses" asp-action="Index" class="btn btn-outline-secondary">
+            @* <a asp-controller="Courses" asp-action="Index" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left-circle"></i> Back to Courses
-            </a>
+            </a> *@
+            <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId"
+   class="btn btn-outline-secondary mt-3">
+    <i class="bi bi-arrow-left-circle"></i> Back to Course
+</a>
         </div>
     </div>
 </div>

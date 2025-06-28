@@ -4,9 +4,8 @@ using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
-namespace NihongoSekaiPlatform.Controllers
+namespace JapaneseLearningPlatform.Controllers
 {
     public class PartnerController : Controller
     {
