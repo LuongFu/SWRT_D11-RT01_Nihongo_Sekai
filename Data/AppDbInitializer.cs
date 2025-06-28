@@ -572,5 +572,96 @@ namespace JapaneseLearningPlatform.Data
                 }
             }
         }
+
+        public static async Task SeedClassroomTestEnrollmentsAsync(IApplicationBuilder app)
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var learner = await userManager.FindByEmailAsync("noobhoang@gmail.com");
+
+            var instance = await context.ClassroomInstances
+                .FirstOrDefaultAsync(c => c.Status == ClassroomStatus.InProgress); // chọn lớp free hoặc đang hoạt động
+
+            if (learner != null && instance != null)
+            {
+                var alreadyEnrolled = await context.ClassroomEnrollments
+                    .AnyAsync(e => e.InstanceId == instance.Id && e.LearnerId == learner.Id);
+
+                if (!alreadyEnrolled)
+                {
+                    context.ClassroomEnrollments.Add(new ClassroomEnrollment
+                    {
+                        InstanceId = instance.Id,
+                        LearnerId = learner.Id,
+                        EnrolledAt = DateTime.Now,
+                        IsPaid = false,
+                        HasLeft = false
+                    });
+
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
+        public static async Task SeedClassroomAssessmentsAsync(IApplicationBuilder applicationBuilder)
+        {
+            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
+
+                context.Database.EnsureCreated();
+
+                // Get an existing instance and learner
+                var instance = context.ClassroomInstances.FirstOrDefault();
+                var learner = context.Users.FirstOrDefault(u => u.Role == UserRoles.Learner);
+
+                if (instance == null || learner == null)
+                    return;
+
+                // Create FinalAssessment if not exists
+                if (!context.FinalAssessments.Any(a => a.ClassroomInstanceId == instance.Id))
+                {
+                    var assessment = new FinalAssessment
+                    {
+                        ClassroomInstanceId = instance.Id,
+                        Instructions = "Please submit a short essay about your classroom experience.",
+                        DueDate = DateTime.UtcNow.AddDays(7)
+                    };
+
+                    context.FinalAssessments.Add(assessment);
+                    await context.SaveChangesAsync();
+
+                    // Create AssessmentSubmission
+                    var submission = new AssessmentSubmission
+                    {
+                        FinalAssessmentId = assessment.Id,
+                        LearnerId = learner.Id,
+                        SubmittedAt = DateTime.UtcNow,
+                        AnswerText = "This is my essay submission.",
+                        Score = 8.5,
+                        Feedback = "Good job overall."
+                    };
+
+                    context.AssessmentSubmissions.Add(submission);
+
+                    // Create ClassroomEvaluation
+                    var evaluation = new ClassroomEvaluation
+                    {
+                        InstanceId = instance.Id,
+                        LearnerId = learner.Id,
+                        Score = 9.0,
+                        Comment = "Great learning experience!",
+                        EvaluatedAt = DateTime.UtcNow
+                    };
+
+                    context.ClassroomEvaluations.Add(evaluation);
+
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
     }
 }

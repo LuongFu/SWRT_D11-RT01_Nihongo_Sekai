@@ -104,6 +104,9 @@ namespace JapaneseLearningPlatform
             await AppDbInitializer.SeedUsersAndRolesAsync(app);
             await AppDbInitializer.SeedClassroomTemplatesAsync(app);
             await AppDbInitializer.SeedClassroomInstancesAsync(app);
+            await AppDbInitializer.SeedClassroomTestEnrollmentsAsync(app);
+            await AppDbInitializer.SeedClassroomAssessmentsAsync(app);
+
             app.Run();
         }
     }

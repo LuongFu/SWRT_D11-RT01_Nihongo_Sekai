@@ -1,0 +1,128 @@
+﻿@using JapaneseLearningPlatform.Data.ViewModels
+@model ClassroomContentVM
+
+@{
+    ViewData["Title"] = "Classroom Content";
+}
+
+<div class="container mt-4">
+
+    <!-- 🔹 Header -->
+    <div class="bg-light p-4 rounded shadow-sm mb-4">
+        <h2 class="fw-bold">@Model.Template.Title</h2>
+        <p class="mb-1"><strong>Partner:</strong> @Model.PartnerName</p>
+        <p class="mb-1"><strong>Schedule:</strong> @Model.Instance.StartDate.ToShortDateString() → @Model.Instance.EndDate.ToShortDateString()</p>
+        <p class="mb-1"><strong>Time:</strong> @($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</p>
+        <p class="mb-1"><strong>Meet Link:</strong> <a href="@Model.Instance.GoogleMeetLink" target="_blank">@Model.Instance.GoogleMeetLink</a></p>
+    </div>
+
+    <!-- 🔸 Tabs -->
+    <ul class="nav nav-tabs mb-3" id="classTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button">Overview</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="resources-tab" data-bs-toggle="tab" data-bs-target="#resources" type="button">Resources</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="assessment-tab" data-bs-toggle="tab" data-bs-target="#assessment" type="button">Final Assessment</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="review-tab" data-bs-toggle="tab" data-bs-target="#review" type="button">Feedback</button>
+        </li>
+    </ul>
+
+    <!-- 🔸 Tab Contents -->
+    <div class="tab-content" id="classTabsContent">
+        <!-- 🔹 Overview -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <div class="p-3">
+                <h5 class="fw-bold">Class Description</h5>
+                <p class="text-muted">The class description or content is not available yet.</p>
+
+                <!-- TODO: Uncomment and use later when ContentHtml is added -->
+                @*
+                <p>@Html.Raw(Model.Template.ContentHtml ?? Model.Template.Description)</p>
+                *@
+            </div>
+        </div>
+
+        <!-- 🔹 Resources -->
+        <div class="tab-pane fade" id="resources" role="tabpanel">
+            <div class="p-3">
+                <h5 class="fw-bold">Learning Materials</h5>
+                <p class="text-muted">No downloadable materials have been added.</p>
+
+                <!-- TODO: Uncomment and use later when ResourceUrl is added -->
+                @*
+                @if (!string.IsNullOrEmpty(Model.Template.ResourceUrl))
+                {
+                    <p><a href="@Model.Template.ResourceUrl" target="_blank">Download Resource</a></p>
+                }
+                else
+                {
+                    <p class="text-muted">No materials provided yet.</p>
+                }
+                *@
+            </div>
+        </div>
+
+        <!-- 🔹 Final Assessment -->
+        <div class="tab-pane fade" id="assessment" role="tabpanel">
+            <div class="p-3">
+                <h5 class="fw-bold">Final Assignment</h5>
+                @if (Model.FinalAssessment != null)
+                {
+                    <p><strong>Instructions:</strong></p>
+                    <p>@Html.Raw(Model.FinalAssessment.Instructions)</p>
+
+                    @if (!Model.HasSubmitted)
+                    {
+                        <form asp-action="SubmitAssessment" asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="submission" class="form-label">Upload your file</label>
+                                <input type="file" name="SubmissionFile" class="form-control" required />
+                            </div>
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p class="text-success">✅ You have submitted your assessment.</p>
+                        <p><strong>Score:</strong> @Model.Submission?.Score ?? "-"</p>
+                        <p><strong>Feedback:</strong> @Model.Submission?.Feedback ?? "Not reviewed yet"</p>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">This class does not include a final assessment.</p>
+                }
+            </div>
+        </div>
+
+        <!-- 🔹 Feedback -->
+        <div class="tab-pane fade" id="review" role="tabpanel">
+            <div class="p-3">
+                <h5 class="fw-bold">Class Feedback</h5>
+                @if (!Model.HasReviewed)
+                {
+                    <form asp-action="SubmitReview" asp-route-instanceId="@Model.Instance.Id" method="post">
+                        <div class="mb-3">
+                            <label for="Rating" class="form-label">Rating (1 to 5)</label>
+                            <input type="number" class="form-control" name="Rating" min="1" max="5" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="Comment" class="form-label">Your Comment</label>
+                            <textarea class="form-control" name="Comment" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                }
+                else
+                {
+                    <p class="text-success">✅ You've submitted your review.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
