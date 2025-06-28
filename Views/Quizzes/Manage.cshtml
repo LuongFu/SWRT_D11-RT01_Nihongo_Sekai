@@ -5,49 +5,124 @@
     var courseId = (int)ViewData["CourseId"];
 }
 
-<h2>Manage Q&A: @quizTitle</h2>
+<!-- Internal Theme Styles -->
+<style>
+    h2 {
+        color: #b91c1c;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+    }
 
-<a asp-action="Create" asp-controller="QuizQuestions" asp-route-quizId="@Model.Id" class="btn btn-success mb-3">
-    + Add Question
-</a>
-<a asp-action="Preview" asp-controller="Quizzes" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
-    Preview Quiz
-</a>
-<table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>Question</th>
-            <th>Type</th>
-            <th>Options</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var q in Model.Questions)
-        {
-            <tr>
-                <td>@q.QuestionText</td>
-                <td>@q.QuestionType</td>
-                <td>
-                    <ul>
-                        @foreach (var o in q.Options)
-                        {
-                            <li>@o.OptionText @if (o.IsCorrect) {
-                            <strong>(✔)</strong>
-                        }
-    </li>
-                    }
-                </ul>
-            </td>
-            <td>
-                <a asp-action="Edit" asp-controller="QuizQuestions" asp-route-id="@q.Id" class="btn btn-sm btn-warning">Edit</a>
-                <form asp-action="Delete" asp-controller="QuizQuestions" asp-route-id="@q.Id" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this question?')">Delete</button>
-                </form>
-            </td>
-        </tr>
+    .btn-red {
+        background-color: #dc2626;
+        color: white;
+        border: none;
+    }
+
+        .btn-red:hover {
+            background-color: #b91c1c;
+        }
+
+    .btn-outline-red {
+        background-color: white;
+        color: #dc2626;
+        border: 1px solid #dc2626;
+    }
+
+        .btn-outline-red:hover {
+            background-color: #fef2f2;
+            color: #b91c1c;
+            border-color: #b91c1c;
+        }
+
+    .table thead {
+        background-color: #fee2e2;
+        color: #7f1d1d;
+    }
+
+    .table-bordered {
+        border: 1px solid #fecaca;
+    }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #fecaca;
+            vertical-align: middle;
+        }
+
+    ul {
+        padding-left: 1.2rem;
+    }
+
+    li strong {
+        color: #16a34a;
+    }
+
+    .btn-sm {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.6rem;
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="card shadow-sm rounded-4 p-4">
+        <h2>Manage Q&A: @quizTitle</h2>
+
+        <div class="mb-3 d-flex gap-2">
+            <a asp-action="Create" asp-controller="QuizQuestions" asp-route-quizId="@Model.Id" class="btn btn-red">
+                <i class="bi bi-plus-circle"></i> Add Question
+            </a>
+            <a asp-action="Preview" asp-controller="Quizzes" asp-route-id="@Model.Id" class="btn btn-outline-red">
+                <i class="bi bi-eye"></i> Preview Quiz
+            </a>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Type</th>
+                    <th>Options</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var q in Model.Questions)
+                {
+                    <tr>
+                        <td>@q.QuestionText</td>
+                        <td>@q.QuestionType</td>
+                        <td>
+                            <ul>
+                                @foreach (var o in q.Options)
+                                {
+                                    <li>
+                                        @o.OptionText
+                                        @if (o.IsCorrect)
+                                        {
+                                            <strong>(✔)</strong>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                        <td class="d-flex gap-2">
+                            <a asp-action="Edit" asp-controller="QuizQuestions" asp-route-id="@q.Id" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <form asp-action="Delete" asp-controller="QuizQuestions" asp-route-id="@q.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this question?')">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
                 }
-    </tbody>
-</table>
+            </tbody>
+        </table>
 
-<a asp-action="Details" asp-controller="Courses" asp-route-id="@courseId" class="btn btn-secondary mt-3">← Back to Course</a>
+        <a asp-action="Details" asp-controller="Courses" asp-route-id="@courseId" class="btn btn-outline-red mt-3">
+            <i class="bi bi-arrow-left-circle"></i> Back to Course
+        </a>
+    </div>
+</div>

@@ -168,6 +168,7 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+
         //CLASSROOMS:
         public DbSet<ClassroomTemplate> ClassroomTemplates { get; set; }
         public DbSet<ClassroomInstance> ClassroomInstances { get; set; }

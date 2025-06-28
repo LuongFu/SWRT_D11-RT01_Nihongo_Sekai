@@ -1,0 +1,467 @@
+﻿
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Press - Nihongo Sekai";
+    // ViewData["Description"] = "Press resources for Nihongo Sekai. Download media kit, press releases, company information, and high-resolution assets for media coverage.";
+}
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Press - Nihongo Sekai</title>
+    <meta name="description"
+          content="Press resources for Nihongo Sekai. Download media kit, press releases, company information, and high-resolution assets for media coverage." />
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/press.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+}
+
+<!-- Main Content -->
+<main>
+    <!-- Hero Section -->
+    <section class="press-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Press & Media</h1>
+                <p class="hero-description">
+                    Resources for journalists, bloggers, and media professionals
+                    covering Nihongo Sekai. Download our media kit, access
+                    high-resolution assets, and get the latest company information.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" onclick="downloadMediaKit()">
+                        Download Media Kit
+                    </button>
+                    <a href="contact.html" class="btn btn-outline">Contact Press Team</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Facts -->
+    <section class="facts-section">
+        <div class="container">
+            <h2 class="section-title">Company at a Glance</h2>
+            <div class="facts-grid">
+                <div class="fact-card">
+                    <div class="fact-number">50,000+</div>
+                    <div class="fact-label">Students Worldwide</div>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-number">200+</div>
+                    <div class="fact-label">Expert Teachers</div>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-number">2018</div>
+                    <div class="fact-label">Founded in Tokyo</div>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-number">120+</div>
+                    <div class="fact-label">Countries Served</div>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-number">95%</div>
+                    <div class="fact-label">Student Success Rate</div>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-number">$15M</div>
+                    <div class="fact-label">Series A Funding</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent News -->
+    <section class="news-section">
+        <div class="container">
+            <h2 class="section-title">Recent Press Releases</h2>
+            <div class="news-grid">
+                <article class="news-item featured">
+                    <div class="news-date">March 15, 2024</div>
+                    <h3 class="news-title">
+                        Nihongo Sekai Announces $15M Series A Funding Round
+                    </h3>
+                    <p class="news-excerpt">
+                        Leading EdTech company Nihongo Sekai raises Series A funding to
+                        expand AI-powered Japanese learning platform globally, with
+                        investment from prominent VCs in Japan and Silicon Valley.
+                    </p>
+                    <div class="news-tags">
+                        <span class="news-tag">Funding</span>
+                        <span class="news-tag">Growth</span>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="readPressRelease('series-a')">
+                        Read Full Release
+                    </button>
+                </article>
+
+                <article class="news-item">
+                    <div class="news-date">February 28, 2024</div>
+                    <h3 class="news-title">
+                        Partnership with Japan Foundation for Cultural Exchange Program
+                    </h3>
+                    <p class="news-excerpt">
+                        Nihongo Sekai partners with Japan Foundation to launch
+                        comprehensive cultural exchange program connecting international
+                        students with Japanese culture.
+                    </p>
+                    <div class="news-tags">
+                        <span class="news-tag">Partnership</span>
+                        <span class="news-tag">Culture</span>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="readPressRelease('japan-foundation')">
+                        Read More
+                    </button>
+                </article>
+
+                <article class="news-item">
+                    <div class="news-date">January 20, 2024</div>
+                    <h3 class="news-title">
+                        Nihongo Sekai Wins 'Best Language Learning Platform' Award
+                    </h3>
+                    <p class="news-excerpt">
+                        Platform recognized for innovation in cultural immersion and
+                        personalized learning at the 2024 EdTech Excellence Awards in
+                        San Francisco.
+                    </p>
+                    <div class="news-tags">
+                        <span class="news-tag">Award</span>
+                        <span class="news-tag">Recognition</span>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="readPressRelease('edtech-award')">
+                        Read More
+                    </button>
+                </article>
+
+                <article class="news-item">
+                    <div class="news-date">December 10, 2023</div>
+                    <h3 class="news-title">50,000 Students Milestone Reached</h3>
+                    <p class="news-excerpt">
+                        Nihongo Sekai celebrates reaching 50,000 active students
+                        worldwide, demonstrating strong global demand for quality
+                        Japanese language education.
+                    </p>
+                    <div class="news-tags">
+                        <span class="news-tag">Milestone</span>
+                        <span class="news-tag">Growth</span>
+                    </div>
+                    <button class="btn btn-outline"
+                            onclick="readPressRelease('50k-milestone')">
+                        Read More
+                    </button>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Media Assets -->
+    <section class="assets-section">
+        <div class="container">
+            <h2 class="section-title">Media Assets</h2>
+            <div class="assets-grid">
+                <div class="asset-category">
+                    <h3 class="asset-title">Logos & Branding</h3>
+                    <div class="asset-items">
+                        <div class="asset-item">
+                            <div class="asset-preview logo-preview">
+                                <span class="brand-icon">日</span>
+                                <span class="brand-text">Nihongo Sekai</span>
+                            </div>
+                            <div class="asset-info">
+                                <div class="asset-name">Primary Logo</div>
+                                <div class="asset-formats">PNG, SVG, EPS</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline"
+                                    onclick="downloadAsset('logo-primary')">
+                                Download
+                            </button>
+                        </div>
+                        <div class="asset-item">
+                            <div class="asset-preview logo-preview dark">
+                                <span class="brand-icon">日</span>
+                                <span class="brand-text">Nihongo Sekai</span>
+                            </div>
+                            <div class="asset-info">
+                                <div class="asset-name">Dark Logo</div>
+                                <div class="asset-formats">PNG, SVG, EPS</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline"
+                                    onclick="downloadAsset('logo-dark')">
+                                Download
+                            </button>
+                        </div>
+                        <div class="asset-item">
+                            <div class="asset-preview icon-preview">
+                                <span class="brand-icon">日</span>
+                            </div>
+                            <div class="asset-info">
+                                <div class="asset-name">Icon Only</div>
+                                <div class="asset-formats">PNG, SVG, ICO</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline"
+                                    onclick="downloadAsset('icon-only')">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="asset-category">
+                    <h3 class="asset-title">Product Screenshots</h3>
+                    <div class="asset-items">
+                        <div class="asset-item">
+                            <div class="asset-preview screenshot-preview">
+                                <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&h=200&fit=crop"
+                                     alt="Dashboard" />
+                            </div>
+                            <div class="asset-info">
+                                <div class="asset-name">Student Dashboard</div>
+                                <div class="asset-formats">High-res PNG, JPG</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline"
+                                    onclick="downloadAsset('dashboard')">
+                                Download
+                            </button>
+                        </div>
+                        <div class="asset-item">
+                            <div class="asset-preview screenshot-preview">
+                                <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=300&h=200&fit=crop"
+                                     alt="Classroom" />
+                            </div>
+                            <div class="asset-info">
+                                <div class="asset-name">Live Classroom</div>
+                                <div class="asset-formats">High-res PNG, JPG</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline"
+                                    onclick="downloadAsset('classroom')">
+                                Download
+                            </button>
+                        </div>
+                        <div class="asset-item">
+                            <div class="asset-preview screenshot-preview">
+                                <img src="https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=300&h=200&fit=crop"
+                                     alt="Mobile App" />
+                            </div>
+                            <div class="asset-info">
+                                <div class="asset-name">Mobile App</div>
+                                <div class="asset-formats">High-res PNG, JPG</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline"
+                                    onclick="downloadAsset('mobile-app')">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="asset-category">
+                    <h3 class="asset-title">Team Photos</h3>
+                    <div class="asset-items">
+                        <div class="asset-item">
+                            <div class="asset-preview photo-preview">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=HiroshiTanaka&backgroundColor=b6e3f4&clothesType=BlazerShirt"
+                                     alt="Hiroshi Tanaka" />
+                            </div>
+                            <div class="asset-info">
+                                <div class="asset-name">Hiroshi Tanaka, CEO</div>
+                                <div class="asset-formats">High-res JPG</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline"
+                                    onclick="downloadAsset('ceo-photo')">
+                                Download
+                            </button>
+                        </div>
+                        <div class="asset-item">
+                            <div class="asset-preview photo-preview">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SarahKim&backgroundColor=ffd93d&clothesType=BlazerShirt"
+                                     alt="Sarah Kim" />
+                            </div>
+                            <div class="asset-info">
+                                <div class="asset-name">Sarah Kim, CPO</div>
+                                <div class="asset-formats">High-res JPG</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline"
+                                    onclick="downloadAsset('cpo-photo')">
+                                Download
+                            </button>
+                        </div>
+                        <div class="asset-item">
+                            <div class="asset-preview photo-preview">
+                                <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=200&h=200&fit=crop&crop=face"
+                                     alt="Team Photo" />
+                            </div>
+                            <div class="asset-info">
+                                <div class="asset-name">Team Photo</div>
+                                <div class="asset-formats">High-res JPG</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline"
+                                    onclick="downloadAsset('team-photo')">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Press Coverage -->
+    <section class="coverage-section">
+        <div class="container">
+            <h2 class="section-title">Press Coverage</h2>
+            <div class="coverage-grid">
+                <div class="coverage-item">
+                    <div class="coverage-source">TechCrunch</div>
+                    <h3 class="coverage-headline">
+                        "Nihongo Sekai is revolutionizing Japanese language learning
+                        with AI"
+                    </h3>
+                    <div class="coverage-date">March 2024</div>
+                    <a href="#" class="coverage-link">Read Article →</a>
+                </div>
+                <div class="coverage-item">
+                    <div class="coverage-source">The Japan Times</div>
+                    <h3 class="coverage-headline">
+                        "EdTech startup bridges cultural gap through language education"
+                    </h3>
+                    <div class="coverage-date">February 2024</div>
+                    <a href="#" class="coverage-link">Read Article →</a>
+                </div>
+                <div class="coverage-item">
+                    <div class="coverage-source">EdTech Magazine</div>
+                    <h3 class="coverage-headline">
+                        "The future of language learning is cultural immersion"
+                    </h3>
+                    <div class="coverage-date">January 2024</div>
+                    <a href="#" class="coverage-link">Read Article →</a>
+                </div>
+                <div class="coverage-item">
+                    <div class="coverage-source">Nikkei Asia</div>
+                    <h3 class="coverage-headline">
+                        "Japanese language demand surges globally as startup scales"
+                    </h3>
+                    <div class="coverage-date">December 2023</div>
+                    <a href="#" class="coverage-link">Read Article →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Executive Bios -->
+    <section class="bios-section">
+        <div class="container">
+            <h2 class="section-title">Executive Team</h2>
+            <div class="bios-grid">
+                <div class="bio-card">
+                    <div class="bio-photo">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=HiroshiTanaka&backgroundColor=b6e3f4&clothesType=BlazerShirt"
+                             alt="Hiroshi Tanaka" />
+                    </div>
+                    <div class="bio-content">
+                        <h3 class="bio-name">Hiroshi Tanaka</h3>
+                        <div class="bio-title">Co-Founder & CEO</div>
+                        <p class="bio-description">
+                            Former professor at Tokyo University with 15+ years in
+                            language education. Expert in Japanese pedagogy and cultural
+                            studies. Holds PhD in Applied Linguistics from Waseda
+                            University. Published researcher on Japanese language
+                            acquisition.
+                        </p>
+                        <div class="bio-contact">
+                            <a href="mailto:hiroshi@nihongosekai.com">hiroshi@nihongosekai.com</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bio-card">
+                    <div class="bio-photo">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SarahKim&backgroundColor=ffd93d&clothesType=BlazerShirt"
+                             alt="Sarah Kim" />
+                    </div>
+                    <div class="bio-content">
+                        <h3 class="bio-name">Sarah Kim</h3>
+                        <div class="bio-title">Co-Founder & Chief Product Officer</div>
+                        <p class="bio-description">
+                            EdTech innovator with passion for cross-cultural education.
+                            Previously led product teams at major language learning
+                            platforms. Stanford MBA, former Google product manager. Speaks
+                            fluent Japanese and Korean.
+                        </p>
+                        <div class="bio-contact">
+                            <a href="mailto:sarah@nihongosekai.com">sarah@nihongosekai.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Information -->
+    <section class="press-contact-section">
+        <div class="container">
+            <div class="contact-content">
+                <h2 class="section-title">Press Inquiries</h2>
+                <p class="contact-description">
+                    For press inquiries, interview requests, or additional
+                    information, please contact our media relations team.
+                </p>
+
+                <div class="contact-cards">
+                    <div class="contact-card">
+                        <h3 class="contact-name">Media Relations</h3>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <strong>Email:</strong> press@nihongosekai.com
+                            </div>
+                            <div class="contact-item">
+                                <strong>Phone:</strong> +1 (555) 123-4567
+                            </div>
+                            <div class="contact-item">
+                                <strong>Response Time:</strong> Within 24 hours
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <h3 class="contact-name">Partnership Inquiries</h3>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <strong>Email:</strong> partnerships@nihongosekai.com
+                            </div>
+                            <div class="contact-item">
+                                <strong>Phone:</strong> +1 (555) 123-4568
+                            </div>
+                            <div class="contact-item">
+                                <strong>Focus:</strong> Strategic partnerships and
+                                collaborations
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script src="~/js/press.js"></script>
+    <script src="~/js/script.js"></script>
+    <script>
+        function downloadMediaKit() {
+          showToast('Media kit download started. Check your downloads folder.', 'success');
+        }
+        function downloadAsset(assetType) {
+          showToast(`${assetType} asset download started.`, 'success');
+        }
+        function readPressRelease(releaseId) {
+          showToast(`Opening press release: ${releaseId}`, 'info');
+        }
+    </script>
+}

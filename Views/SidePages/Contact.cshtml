@@ -1,0 +1,322 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Contact Us - Nihongo Sekai";
+    ViewData["Description"] = "Get in touch with Nihongo Sekai. Contact our support team, visit our office, or connect with us through multiple channels.";
+}
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+          content="Get in touch with Nihongo Sekai. Contact our support team, visit our office, or connect with us through multiple channels." />
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/contact.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+}
+
+<main>
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Contact Us</h1>
+            <p class="page-subtitle">
+                We're here to help you on your Japanese learning journey. Reach out
+                to us anytime!
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Options -->
+    <section class="contact-options-section">
+        <div class="container">
+            <div class="contact-grid">
+                <!-- Live Chat -->
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                    </div>
+                    <h3 class="contact-title">Live Chat</h3>
+                    <p class="contact-description">
+                        Chat with our support team in real-time. Available 24/7 for
+                        urgent matters.
+                    </p>
+                    <button class="btn btn-primary" onclick="openLiveChat()">Start Chat</button>
+                </div>
+
+                <!-- Email Support -->
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                    </div>
+                    <h3 class="contact-title">Email Support</h3>
+                    <p class="contact-description">
+                        Send us a detailed message and we'll respond within 24 hours.
+                    </p>
+                    <a href="mailto:support@nihongosekai.com" class="btn btn-outline">Send Email</a>
+                </div>
+
+                <!-- Phone Support -->
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                        </svg>
+                    </div>
+                    <h3 class="contact-title">Phone Support</h3>
+                    <p class="contact-description">
+                        Call our support team for immediate assistance with technical
+                        issues.
+                    </p>
+                    <a href="tel:+15554644664" class="btn btn-outline">+1 (555) NIHONGO</a>
+                </div>
+
+                <!-- Office Visit -->
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                        </svg>
+                    </div>
+                    <h3 class="contact-title">Visit Our Office</h3>
+                    <p class="contact-description">
+                        Schedule a visit to our Tokyo headquarters or our San Francisco
+                        office.
+                    </p>
+                    <button class="btn btn-outline" onclick="showOfficeLocations()">View Locations</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="contact-form-section">
+        <div class="container">
+            <div class="form-content">
+                <div class="form-header">
+                    <h2 class="section-title">Send us a Message</h2>
+                    <p class="section-subtitle">
+                        Fill out the form below and we'll get back to you as soon as
+                        possible.
+                    </p>
+                </div>
+
+                <form class="contact-form" id="contactForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName" class="form-label">First Name *</label>
+                            <input type="text"
+                                   id="firstName"
+                                   name="firstName"
+                                   class="form-input"
+                                   required />
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="form-label">Last Name *</label>
+                            <input type="text"
+                                   id="lastName"
+                                   name="lastName"
+                                   class="form-input"
+                                   required />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address *</label>
+                        <input type="email"
+                               id="email"
+                               name="email"
+                               class="form-input"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Subject *</label>
+                        <select id="subject"
+                                name="subject"
+                                class="form-select"
+                                required>
+                            <option value="">Please select a topic</option>
+                            <option value="technical">Technical Support</option>
+                            <option value="billing">Billing & Payments</option>
+                            <option value="courses">Course Questions</option>
+                            <option value="teachers">Teacher Applications</option>
+                            <option value="partnerships">Business Partnerships</option>
+                            <option value="feedback">Feedback & Suggestions</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message" class="form-label">Message *</label>
+                        <textarea id="message"
+                                  name="message"
+                                  rows="6"
+                                  class="form-textarea"
+                                  placeholder="Please describe your question or concern in detail..."
+                                  required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="newsletter" name="newsletter" />
+                            <span class="checkbox-checkmark"></span>
+                            I'd like to receive updates about new courses and features
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Office Locations -->
+    <section class="office-locations-section" id="officeLocations">
+        <div class="container">
+            <h2 class="section-title">Our Offices</h2>
+            <div class="offices-grid">
+                <div class="office-card">
+                    <div class="office-image">
+                        <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&h=400&fit=crop"
+                             alt="Tokyo Office" />
+                    </div>
+                    <div class="office-info">
+                        <h3 class="office-title">Tokyo Headquarters</h3>
+                        <div class="office-address">
+                            <p>〒150-0001 Tokyo, Shibuya City</p>
+                            <p>Jingumae 3-15-7, Level 12</p>
+                            <p>Tokyo 150-0001, Japan</p>
+                        </div>
+                        <div class="office-hours">
+                            <h4>Office Hours</h4>
+                            <p>Monday - Friday: 9:00 AM - 6:00 PM JST</p>
+                            <p>Saturday: 10:00 AM - 4:00 PM JST</p>
+                            <p>Sunday: Closed</p>
+                        </div>
+                        <div class="office-contact">
+                            <p>Phone: +81 3-1234-5678</p>
+                            <p>Email: tokyo@nihongosekai.com</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="office-card">
+                    <div class="office-image">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop"
+                             alt="San Francisco Office" />
+                    </div>
+                    <div class="office-info">
+                        <h3 class="office-title">San Francisco Office</h3>
+                        <div class="office-address">
+                            <p>123 Market Street, Suite 2100</p>
+                            <p>San Francisco, CA 94105</p>
+                            <p>United States</p>
+                        </div>
+                        <div class="office-hours">
+                            <h4>Office Hours</h4>
+                            <p>Monday - Friday: 9:00 AM - 5:00 PM PST</p>
+                            <p>Weekend: By appointment only</p>
+                        </div>
+                        <div class="office-contact">
+                            <p>Phone: +1 (415) 555-JAPAN</p>
+                            <p>Email: sf@nihongosekai.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="contact-faq-section">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3 class="faq-question">How quickly do you respond to inquiries?</h3>
+                    <p class="faq-answer">
+                        We typically respond to emails within 24 hours during business
+                        days. Live chat and phone support are available for urgent
+                        matters.
+                    </p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Can I schedule a demo or trial lesson?</h3>
+                    <p class="faq-answer">
+                        Yes! Contact us to schedule a free 30-minute trial lesson with
+                        one of our certified teachers. This helps you experience our
+                        teaching style before committing to a course.
+                    </p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Do you offer corporate training programs?</h3>
+                    <p class="faq-answer">
+                        We provide customized Japanese training programs for businesses.
+                        Contact our partnerships team to discuss your company's specific
+                        needs.
+                    </p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">What languages do you provide support in?</h3>
+                    <p class="faq-answer">
+                        Our support team is available in English, Japanese, Mandarin,
+                        Korean, and Spanish. Please specify your preferred language when
+                        contacting us.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script src="~/js/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          initializeContactForm();
+        });
+
+        function initializeContactForm() {
+          const form = document.getElementById("contactForm");
+          form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await handleContactFormSubmission(form);
+          });
+          form.querySelectorAll("input, textarea, select")
+              .forEach(i => i.addEventListener("blur", () => validateInput(i)));
+        }
+
+        async function handleContactFormSubmission(form) {
+          try {
+            showLoading();
+            // simulate API call
+            await new Promise(r => setTimeout(r, 1500));
+            window.NihongoSekai.showToast("Message sent successfully! We'll get back to you within 24 hours.", "success");
+            form.reset();
+          } catch {
+            window.NihongoSekai.showToast("Failed to send message. Please try again.", "error");
+          } finally {
+            hideLoading();
+          }
+        }
+
+        function openLiveChat() {
+          window.NihongoSekai.showToast("Live chat feature coming soon! Please use email or phone for now.", "info");
+        }
+
+        function showOfficeLocations() {
+          document.getElementById("officeLocations").scrollIntoView({ behavior: "smooth" });
+        }
+    </script>
+}

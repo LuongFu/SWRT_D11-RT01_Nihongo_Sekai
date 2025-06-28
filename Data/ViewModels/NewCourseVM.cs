@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace JapaneseLearningPlatform.Models
 {
-    public class NewCourseVM
+    public class NewCourseVM : IValidatableObject
     {
         public int Id { get; set; }
 
@@ -25,6 +25,14 @@ namespace JapaneseLearningPlatform.Models
         [Display(Name = "Discount Percent")]
         [Required(ErrorMessage = "Discount Percent is required. If you want, you can set to 0%.")]
         public int? DiscountPercent { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (DiscountPercent < 0 || DiscountPercent > 99)
+            {
+                yield return new ValidationResult("Discount must be between 0% and 99%.", new[] { "DiscountPercent" });
+            }
+        }
 
         [Display(Name = "Course start date")]
         [Required(ErrorMessage = "Start date is required")]
