@@ -78,21 +78,30 @@ namespace JapaneseLearningPlatform.Controllers
             var instance = await _context.ClassroomInstances
                 .Include(i => i.Template)
                 .Include(i => i.Enrollments)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(i => i.Template.Partner)
+                .FirstOrDefaultAsync(i => i.Id == id);
 
             if (instance == null) return NotFound();
 
-            var isPartner = User.IsInRole(UserRoles.Partner);
-            var isAdmin = User.IsInRole(UserRoles.Admin);
-
-            if (isPartner && instance.Template.PartnerId != _userManager.GetUserId(User))
+            // Ẩn lớp DRAFT khỏi Learner/Guest
+            if (instance.Status == ClassroomStatus.Draft &&
+                (!User.Identity.IsAuthenticated || User.IsInRole(UserRoles.Learner)))
+            {
                 return Forbid();
+            }
 
-            if (!isAdmin && !isPartner && instance.Status == ClassroomStatus.Draft)
-                return NotFound(); // Guest/Learner không xem được lớp chưa công bố
+            var vm = new ClassroomInstanceDetailVM
+            {
+                Instance = instance,
+                Template = instance.Template,
+                EnrollmentCount = instance.Enrollments?.Count ?? 0,
+                IsPaid = instance.IsPaid,
+                PartnerName = instance.Template?.Partner?.FullName
+            };
 
-            return View(instance);
+            return View(vm);
         }
+
 
 
         // GET: ClassroomInstances/Create

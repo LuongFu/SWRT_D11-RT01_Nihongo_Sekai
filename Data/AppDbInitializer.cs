@@ -3,6 +3,7 @@ using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.WebRequestMethods;
 
 namespace JapaneseLearningPlatform.Data
 {
@@ -391,14 +392,16 @@ namespace JapaneseLearningPlatform.Data
                     Title = "Beginner Japanese Conversation",
                     Description = "Focus on daily life dialogues for beginners.",
                     LanguageLevel = LanguageLevel.N5,
-                    PartnerId = partner.Id
+                    PartnerId = partner.Id,
+                    ImageURL = "https://eclectic-homeschool.com/wp-content/uploads/2014/09/beginningjapanese.jpg"
                 },
                 new ClassroomTemplate
                 {
                     Title = "Intermediate Listening Practice",
                     Description = "Listen and discuss JLPT N4-level audios.",
                     LanguageLevel = LanguageLevel.N4,
-                    PartnerId = partner.Id
+                    PartnerId = partner.Id,
+                    ImageURL = "https://static.vecteezy.com/system/resources/previews/009/385/472/original/school-desk-clipart-design-illustration-free-png.png"
                 }
             });
 

@@ -40,9 +40,9 @@
         {
             <div class="col">
                 <div class="card h-100 shadow-sm border-0">
-                    @if (!string.IsNullOrEmpty(item.ThumbnailURL))
+                    @if (!string.IsNullOrEmpty(item.ImageURL))
                     {
-                        <img src="@item.ThumbnailURL" class="card-img-top" alt="@item.Title" style="object-fit: cover; height: 200px;">
+                        <img src="@item.ImageURL" class="card-img-top" alt="@item.Title" style="object-fit: cover; height: 200px;">
                     }
                     else
                     {

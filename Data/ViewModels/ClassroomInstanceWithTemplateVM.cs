@@ -13,7 +13,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public bool IsFull => Instance != null && EnrollmentCount >= Instance.MaxCapacity;
         // Convenience fields (đã tách từ Instance)
         public string Title => Template?.Title ?? "Untitled";
-        public string? ThumbnailURL => Template?.ImageUrl;
+        public string? ImageURL => Template?.ImageURL;
         public ClassroomStatus Status => Instance.Status;
         public bool IsPaid => Instance.IsPaid;
         public decimal Price => Instance.Price;
