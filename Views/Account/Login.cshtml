@@ -1,70 +1,355 @@
-@using JapaneseLearningPlatform.Data.ViewModels
+﻿@using JapaneseLearningPlatform.Data.ViewModels
 @model LoginVM
 
 @{
-    ViewData["Title"] = "Log in to your account";
+    ViewData["Title"] = "Sign In - Nihongo Sekai";
     Layout = "_Layout";
     ViewData["HideNavbar"] = true;
     ViewData["HideFooter"] = true;
 }
 
-<div class="container d-flex align-items-center justify-content-center vh-100">
-    <div class="col-md-6 col-lg-5 shadow-lg p-5 rounded-4 bg-white">
-        <div class="mb-4 text-center">
-            <h3 class="fw-bold">Welcome!</h3>
-            <p class="text-muted">Login to your NihongoSekai account</p>
-        </div>
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In - Nihongo Sekai</title>
+    <meta name="description"
+          content="Sign in to your Nihongo Sekai account and continue your Japanese learning journey with expert courses and live classrooms." />
+}
 
-        @if (TempData["Error"] != null)
-        {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Sorry!</strong> @TempData["Error"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Global Stylesheet -->
+    <link rel="stylesheet" href="/css/styles.css" />
+    <!-- Page-Specific CSS -->
+    <style>
+        /* Layout Containers */
+        .auth-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-secondary-50) 100%);
+            display: flex;
         }
 
-        <form asp-action="Login" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+        .auth-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-3xl) var(--spacing-lg);
+        }
 
-            <div class="mb-3">
-                <label asp-for="EmailAddress" class="form-label"></label>
-                <input asp-for="EmailAddress" class="form-control input-gradient" />
-                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+        .auth-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1000px;
+            width: 100%;
+            background: #fff;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+
+        /* Form Column */
+        .auth-form-column {
+            padding: var(--spacing-3xl);
+        }
+
+        .auth-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xl);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+            .auth-brand .brand-icon {
+                font-size: 2rem;
+                color: var(--color-primary-600);
+            }
+
+        .auth-title {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            text-align: center;
+        }
+
+        .auth-subtitle {
+            color: var(--color-gray-600);
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--color-gray-700);
+            margin-bottom: var(--spacing-sm);
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            padding: var(--spacing-lg);
+            border: 2px solid var(--color-gray-200);
+            border-radius: var(--radius-lg);
+        }
+
+            .form-control:focus {
+                border-color: var(--color-primary-600);
+                box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+            }
+
+        .auth-form-column .text-end {
+            text-align: center !important;
+        }
+
+        /* Password Input with Eye Toggle */
+        .password-input-wrapper {
+            position: relative;
+        }
+
+            .password-input-wrapper .form-control {
+                /* shrink input to accommodate toggle */
+                width: calc(100% - 3rem);
+                padding-right: 3rem;
+            }
+
+        /* Eye toggle button styling */
+        .password-toggle {
+            position: absolute;
+            /* adjust horizontal offset as needed (e.g., 5% from the right edge of the wrapper) */
+            right: 1%;
+            top: 60%;
+            transform: translateY(-50%);
+            background: white;
+            border: none;
+            color: var(--color-gray-400);
+            cursor: pointer;
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-sm);
+            transition: color 0.3s ease;
+        }
+
+            .password-toggle:hover {
+                color: var(--color-gray-600);
+            }
+
+            .password-toggle svg {
+                width: 25px;
+                height: 25px;
+            }
+        /* Buttons & Links */
+        .btn-danger {
+            background-color: var(--color-primary-600);
+            border-color: var(--color-primary-600);
+        }
+
+        .btn-outline-danger {
+            color: var(--color-primary-600);
+            border-color: var(--color-primary-600);
+        }
+
+        .text-danger {
+            color: var(--color-primary-600) !important;
+        }
+
+        .text-decoration-none {
+            text-decoration: none !important;
+        }
+
+        /* Benefits Column */
+        .auth-benefits-column {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* gradient chính */
+            background: linear-gradient( 135deg, var(--color-primary-600), var(--color-secondary-600) );
+            color: #fff;
+            padding: var(--spacing-3xl);
+            /* bo góc bên phải của cả card */
+            border-top-right-radius: var(--radius-xl);
+            border-bottom-right-radius: var(--radius-xl);
+        }
+
+            /* chấm bi pattern */
+            .auth-benefits-column::before {
+                content: "";
+                position: absolute;
+                inset: 0; /* top:0; right:0; bottom:0; left:0; */
+                pointer-events: none; /* không chắn click */
+                background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M20 20c0 11.046-8.954 20-20 20v20h40V20H20z'/%3E%3C/g%3E%3C/svg%3E");
+                background-repeat: repeat;
+                background-position: center center;
+            }
+
+            /* đảm bảo nội dung luôn trên layer chấm bi */
+            .auth-benefits-column > * {
+                position: relative;
+                z-index: 1;
+            }
+
+
+        .benefits-list .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .benefit-icon {
+            width: 100px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+    </style>
+}
+
+<div class="auth-page">
+    <main class="auth-main">
+        <div class="auth-card">
+            <!-- Left: Sign-in Form -->
+            <div class="auth-form-column">
+                <div class="auth-brand">
+                    <span class="brand-icon">日</span>
+                    <span class="brand-nihongo">Nihongo</span>
+                    <span class="brand-sekai">Sekai</span>
+                </div>
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to continue your Japanese learning journey</p>
+
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Sorry!</strong> @TempData["Error"]
+                    </div>
+                }
+
+                <form asp-action="Login" method="post" id="loginForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="EmailAddress" class="form-label">Email Address</label>
+                        <input asp-for="EmailAddress" class="form-control" placeholder="Enter your email" />
+                        <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 password-input-wrapper">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
+                        <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                <line x1="1" y1="1" x2="23" y2="23" />
+                            </svg>
+                        </button>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100 mb-3" id="loginButton">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                    </button>
+
+                    <div class="text-center text-muted mb-3">or continue with</div>
+
+                    <a asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Google"
+                       class="btn btn-outline-danger w-100 mb-3 d-flex justify-content-center align-items-center">
+                        <i class="bi bi-google me-2"></i> Continue with Google
+                    </a>
+
+                    <div class="text-end mb-2">
+                        <a asp-action="ForgotPassword" class="text-danger text-decoration-none">Forgot your password?</a>
+                    </div>
+                    <div class="text-center small mb-4">
+                        Don't have an account? <a asp-action="Register" class="text-danger text-decoration-none">Create one</a>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <a asp-controller="Home" asp-action="Index" class="text-muted small"><i class="bi bi-arrow-left-circle"></i> Back to Home</a>
+                    </div>
+                </form>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" type="password" class="form-control input-gradient" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+            <!-- Right: Benefits Column -->
+            <div class="auth-benefits-column">
+                <h2>Master Japanese with Confidence</h2>
+                <p>Join thousands of learners on their journey to Japanese fluency with our comprehensive platform</p>
+                <ul class="list-unstyled benefits-list">
+                    <li class="benefit-item">
+                        <div class="benefit-icon">📚</div>
+                        <div><h5>Expert-Led Courses</h5><p class="small">Learn from native speakers and certified teachers with structured, progressive lessons</p></div>
+                    </li>
+                    <li class="benefit-item">
+                        <div class="benefit-icon">💬</div>
+                        <div><h5>Live Conversation Practice</h5><p class="small">Join interactive classrooms and practice speaking with real people in real-time</p></div>
+                    </li>
+                    <li class="benefit-item">
+                        <div class="benefit-icon">📊</div>
+                        <div><h5>Track Your Progress</h5><p class="small">Monitor your learning journey with detailed analytics and personalized recommendations</p></div>
+                    </li>
+                    <li class="benefit-item">
+                        <div class="benefit-icon">🌍</div>
+                        <div><h5>Global Community</h5><p class="small">Connect with learners worldwide and immerse yourself in Japanese culture</p></div>
+                    </li>
+                </ul>
             </div>
-
-            <button type="submit" class="btn w-100 gradient-outline-btn">
-                <i class="bi bi-box-arrow-in-right me-1"></i> Log in
-            </button>
-
-            <a asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Google"
-               class="btn btn-outline-danger w-100 d-flex justify-content-center align-items-center mt-3">
-                <i class="bi bi-google me-2"></i> Continue with Google
-            </a>
-
-            <div class="text-center mt-2">
-                <a asp-action="ForgotPassword">Forgot your password?</a>
-            </div>
-
-            <hr />
-
-            <p class="text-center">Don't have an account? <a asp-action="Register">Create one</a></p>
-
-            <div class="mt-4 text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-muted small">
-                    <i class="bi bi-arrow-left-circle"></i> Back to Home
-                </a>
-            </div>
-        </form>
-
-    </div>
+        </div>
+    </main>
 </div>
 
+<!-- Scripts -->
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Password visibility toggle
+          const passwordToggle = document.getElementById("passwordToggle");
+          const passwordInput  = document.getElementById("Password");
+          if (passwordToggle && passwordInput) {
+            passwordToggle.addEventListener("click", function () {
+              const eyeIcon    = this.querySelector(".eye-icon");
+              const eyeOffIcon = this.querySelector(".eye-off-icon");
+
+              if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.style.display    = "none";
+                eyeOffIcon.style.display = "block";
+              } else {
+                passwordInput.type = "password";
+                eyeIcon.style.display    = "block";
+                eyeOffIcon.style.display = "none";
+              }
+            });
+          }
+
+          // (Tùy chọn) Hiển thị thông báo bảo mật nếu có element #securityNotification
+          const securityNotification = document.getElementById("securityNotification");
+          if (securityNotification) {
+            // Giả sử server có set 1 class "show-security" để trigger JS
+            if (securityNotification.classList.contains("show-security")) {
+              securityNotification.style.display   = "flex";
+              securityNotification.style.animation = "slideInFromTop 0.5s ease";
+              setTimeout(() => {
+                securityNotification.style.animation = "slideOutToTop 0.5s ease";
+                setTimeout(() => securityNotification.style.display = "none", 500);
+              }, 3000);
+            }
+          }
+        });
+    </script>
 }
+
