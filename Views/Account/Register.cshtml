@@ -1,4 +1,4 @@
-@using JapaneseLearningPlatform.Data.ViewModels
+﻿@using JapaneseLearningPlatform.Data.ViewModels
 @model RegisterVM
 
 @{
@@ -8,101 +8,1058 @@
     ViewData["HideFooter"] = true;
 }
 
-
 @section Head {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Up - Nihongo Sekai</title>
+    <title>@ViewData["Title"]</title>
     <meta name="description"
           content="Create your Nihongo Sekai account and start your Japanese learning journey today." />
 }
 
 @section Styles {
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet" />
     <!-- Global Stylesheet -->
-    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
     <!-- Page-Specific CSS -->
     <style>
-        
+        /* ==================== RESPONSIVE LAYOUT ==================== */
+
+        /* Auth Page Layout */
+        .auth-page {
+            min-height: 100vh;
+            background: linear-gradient( 135deg, var(--color-primary-50) 0%, var(--color-secondary-50) 100% );
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Centering the card */
+        .auth-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-3xl) var(--spacing-lg);
+        }
+
+        /* Two-Column Auth Card */
+        .auth-card {
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        /* Left (Form) Column */
+        .auth-form-column {
+            padding: var(--spacing-3xl);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Header */
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .auth-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xl);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+            .auth-brand .brand-icon {
+                font-size: 2rem;
+                color: var(--color-primary-600);
+            }
+
+        .auth-title {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .auth-subtitle {
+            color: var(--color-gray-600);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Form */
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--color-gray-700);
+            margin-bottom: var(--spacing-sm);
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            padding: var(--spacing-lg);
+            border: 2px solid var(--color-gray-200);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--color-white);
+        }
+
+            .form-input:focus {
+                outline: none;
+                border-color: var(--color-primary-600);
+                box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+                transform: translateY(-1px);
+            }
+
+            .form-input::placeholder {
+                color: var(--color-gray-400);
+            }
+
+        /* Password wrapper */
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: var(--spacing-lg);
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--color-gray-400);
+            cursor: pointer;
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-sm);
+            transition: color 0.3s ease;
+        }
+
+            .password-toggle:hover {
+                color: var(--color-gray-600);
+            }
+
+            .password-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+
+        /* Strength bar */
+        .password-strength {
+            margin-top: var(--spacing-md);
+        }
+
+        .strength-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-gray-700);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .strength-bar {
+            height: 6px;
+            background: var(--color-gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .strength-text {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+
+        /* Requirements */
+        .password-requirements {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--color-gray-50);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-gray-200);
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            font-size: 0.875rem;
+            color: var(--color-gray-600);
+            transition: color 0.3s ease;
+        }
+
+        .req-icon {
+            font-weight: 600;
+            width: 16px;
+            text-align: center;
+            color: var(--color-gray-400);
+        }
+
+        /* CTA Button */
+        .auth-button {
+            background: var(--color-primary-600);
+            color: var(--color-white);
+            border: none;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-lg);
+        }
+
+            .auth-button:hover {
+                background: var(--color-primary-700);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+            }
+
+            .auth-button:disabled {
+                background: var(--color-gray-400);
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .auth-button .spinner {
+                width: 20px;
+                height: 20px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-top: 2px solid white;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+        @@keyframes spin {
+            to
+
+        {
+            transform: rotate(360deg);
+        }
+
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--color-gray-300);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+
+            .file-upload:hover,
+            .file-upload.dragover {
+                border-color: var(--color-primary-600);
+                background: var(--color-primary-50);
+            }
+
+        .file-upload-icon {
+            font-size: 2rem;
+            color: var(--color-gray-400);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .file-upload-text {
+            font-weight: 500;
+            color: var(--color-gray-700);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .file-upload-hint {
+            font-size: 0.875rem;
+            color: var(--color-gray-500);
+        }
+
+        .file-list {
+            margin-top: var(--spacing-md);
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm);
+            background: var(--color-gray-50);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .file-remove {
+            color: var(--color-error);
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: transform .1s ease;
+        }
+
+            .file-remove:hover {
+                transform: scale(1.2);
+            }
+
+        /* Specializations */
+        .specializations-grid {
+            display: grid;
+            gap: var(--spacing-md);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            margin-top: var(--spacing-sm);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            transition: background .2s ease;
+            cursor: pointer;
+        }
+
+            .checkbox-group:hover {
+                background: var(--color-gray-50);
+            }
+
+        .checkbox-input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--color-primary-600);
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 0.875rem;
+            color: var(--color-gray-700);
+            cursor: pointer;
+        }
+
+
+        /* Social Login */
+        .social-login {
+            margin-top: var(--spacing-xl);
+        }
+
+        .social-divider {
+            display: flex;
+            align-items: center;
+            margin: var(--spacing-xl) 0;
+            color: var(--color-gray-500);
+            font-size: 0.875rem;
+        }
+
+            .social-divider::before,
+            .social-divider::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: var(--color-gray-200);
+            }
+
+            .social-divider::before {
+                margin-right: var(--spacing-lg);
+            }
+
+            .social-divider::after {
+                margin-left: var(--spacing-lg);
+            }
+
+        .social-buttons {
+            display: flex;
+            width: 100%; /* bắt buộc để flex:1 hoạt động */
+        }
+
+        .social-button {
+            flex: 1; /* chiếm full hàng */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 2px solid var(--color-gray-200);
+            border-radius: var(--radius-lg);
+            background: var(--color-white);
+            color: var(--color-gray-700);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+            .social-button:hover {
+                border-color: var(--color-gray-300);
+                background: var(--color-gray-50);
+                transform: translateY(-1px);
+            }
+
+            .social-button img {
+                width: 20px;
+                height: 20px;
+            }
+
+        /* Right (Benefits) Column */
+        /* Benefits Column */
+        .auth-benefits-column {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* gradient chính */
+            background: linear-gradient( 135deg, var(--color-primary-600), var(--color-secondary-600) );
+            color: #fff;
+            padding: var(--spacing-3xl);
+            /* bo góc bên phải của cả card */
+            border-top-right-radius: var(--radius-xl);
+            border-bottom-right-radius: var(--radius-xl);
+        }
+
+            /* chấm bi pattern */
+            .auth-benefits-column::before {
+                content: "";
+                position: absolute;
+                inset: 0; /* top:0; right:0; bottom:0; left:0; */
+                pointer-events: none; /* không chắn click */
+                background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M20 20c0 11.046-8.954 20-20 20v20h40V20H20z'/%3E%3C/g%3E%3C/svg%3E");
+                background-repeat: repeat;
+                background-position: center center;
+            }
+
+            /* đảm bảo nội dung luôn trên layer chấm bi */
+            .auth-benefits-column > * {
+                position: relative;
+                z-index: 1;
+            }
+        /* .auth-benefits-column {
+            background: linear-gradient(135deg, var(--color-primary-600), var(--color-secondary-600) );
+            color: var(--color-white);
+            padding: var(--spacing-3xl);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .auth-benefits-column::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: url("data:image/svg+xml,%3Csvg width='40' height='40' ...%3E") repeat;
+            } */
+
+        .benefits-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .benefits-header {
+            text-align: center;
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .benefits-title {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.2;
+        }
+
+        .benefits-subtitle {
+            font-size: 1.125rem;
+            opacity: .9;
+            line-height: 1.5;
+        }
+
+        .benefits-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-lg);
+        }
+
+        .benefit-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .benefit-content h3 {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            font-size: 1.125rem;
+        }
+
+        .benefit-content p {
+            opacity: .9;
+            line-height: 1.5;
+            font-size: .9rem;
+        }
+
+        /* Auth Links */
+        .auth-links {
+            text-align: center;
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--color-gray-200);
+        }
+
+        .auth-link {
+            color: var(--color-primary-600);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color .3s ease;
+        }
+
+            .auth-link:hover {
+                color: var(--color-primary-700);
+                text-decoration: underline;
+            }
+
+        /* Error/Success Message */
+        .auth-message {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: .875rem;
+            font-weight: 500;
+        }
+
+            .auth-message.error {
+                background: #fef2f2;
+                color: #dc2626;
+                border: 1px solid #fecaca;
+            }
+        /* ==== partnerExtra spacing tweaks ==== */
+
+        /* bump space under the “Years of Experience” group */
+        #partnerExtra .form-group:nth-of-type(1) {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* bump space under the “Specializations” group */
+        #partnerExtra .form-group:nth-of-type(2) {
+            margin-bottom: var(--spacing-lg);
+        }
+
+
     </style>
 }
 
-@* <div class="row">
-     <div class="col-md-6 col-lg-5 shadow-lg p-5 rounded-4 bg-white">
-        <div class="col-md-6 offset-3">
-            <h4>Sign up for a new account</h4> *@
-<div class="container d-flex align-items-center justify-content-center vh-100">
-    <div class="col-md-6 col-lg-5 shadow-lg p-5 rounded-4 bg-white">
-        <div class="mb-4 text-center">
-            <h3 class="fw-bold">Welcome!</h3>
-            <p class="text-muted">Register a NihongoSekai account</p>
+<div class="auth-page">
+  <div class="auth-main">
+    <div class="auth-card">
+      <!-- Left Column: Form -->
+      <div class="auth-form-column">
+        <div class="auth-header">
+          <div class="auth-brand">
+            <span class="brand-icon">日</span>
+            <span class="brand-text">Nihongo Sekai</span>
+          </div>
+          <h1 class="auth-title">Start Your Journey</h1>
+          <p class="auth-subtitle">
+            Create your account and begin mastering Japanese today
+          </p>
         </div>
 
-            @if (TempData["Error"] != null)
-            {
-                <div class="alert alert-danger">
-                    <b>Sorry!</b> @TempData["Error"]
-                </div>
-            }
+        @* Hiển thị lỗi chung nếu có *@
+        @if (TempData["Error"] != null)
+        {
+          <div class="auth-message error">
+            @TempData["Error"]
+          </div>
+        }
 
-            <form asp-action="Register" method="post" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        @* Role Selection *@
+        <div class="role-selection">
+          <label class="form-label">Choose your role</label>
+          <div class="role-options">
+            <div class="role-option selected" data-role="Learner">
+              <div class="role-icon">🎓</div>
+              <h3 class="role-title">Learner</h3>
+              <p class="role-description">
+                Learn Japanese through courses and live classrooms
+              </p>
+            </div>
+            <div class="role-option" data-role="Partner">
+              <div class="role-icon">🏫</div>
+              <h3 class="role-title">Partner</h3>
+              <p class="role-description">
+                Share your expertise and teach Japanese to students worldwide
+              </p>
+            </div>
+          </div>
+        </div>
 
-                <div class="mb-3">
-                    <label asp-for="FullName" class="form-label"></label>
-                    <input asp-for="FullName" class="form-control input-gradient" />
-                    <span asp-validation-for="FullName" class="text-danger"></span>
+        <form asp-action="Register"
+              method="post"
+              enctype="multipart/form-data"
+              class="auth-form"
+              id="registerForm">
+          <input type="hidden" id="Role" name="Role" value="Learner" />
+
+          <div class="form-group">
+            <label asp-for="FullName" class="form-label">Full Name</label>
+            <input asp-for="FullName"
+                   class="form-input"
+                   placeholder="Enter your full name" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+          </div>
+
+          <div class="form-group">
+            <label asp-for="EmailAddress" class="form-label">
+              Email Address
+            </label>
+            <input asp-for="EmailAddress"
+                   type="email"
+                   class="form-input"
+                   placeholder="Enter your email address" />
+            <span asp-validation-for="EmailAddress" class="text-danger"></span>
+          </div>
+
+          <div class="form-group">
+            <label asp-for="Password" class="form-label">Password</label>
+            <div class="password-input-wrapper">
+              <input asp-for="Password"
+                     type="password"
+                     id="password"
+                     class="form-input"
+                     placeholder="Create a strong password"
+                     minlength="8" />
+              <button type="button"
+                      class="password-toggle"
+                      onclick="togglePassword('password')"
+                      aria-label="Toggle password visibility">
+                <svg id="eyeIcon"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Strength & Requirements -->
+            <div class="password-strength" id="passwordStrength">
+              <div class="strength-label">Password Strength:</div>
+              <div class="strength-bar">
+                <div id="strengthFill" class="strength-fill"></div>
+              </div>
+              <div id="strengthText" class="strength-text">
+                Enter password
+              </div>
+            </div>
+            <div class="password-requirements">
+              <div id="req-length" class="requirement">
+                <span class="req-icon">○</span>At least 8 characters
+              </div>
+              <div id="req-uppercase" class="requirement">
+                <span class="req-icon">○</span>One uppercase letter
+              </div>
+              <div id="req-lowercase" class="requirement">
+                <span class="req-icon">○</span>One lowercase letter
+              </div>
+              <div id="req-number" class="requirement">
+                <span class="req-icon">○</span>One number
+              </div>
+              <div id="req-symbol" class="requirement">
+                <span class="req-icon">○</span>One symbol (!@@#$%^&*)
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label asp-for="ConfirmPassword" class="form-label">
+              Confirm Password
+            </label>
+            <div class="password-input-wrapper">
+              <input asp-for="ConfirmPassword"
+                     type="password"
+                     id="confirmPassword"
+                     class="form-input"
+                     placeholder="Confirm your password" />
+              <button type="button"
+                      class="password-toggle"
+                      onclick="togglePassword('confirmPassword')"
+                      aria-label="Toggle confirm password visibility">
+                <svg id="eyeIcon2"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+          </div>
+
+          @* Chỉ hiện khi chọn Partner
+          <div id="partnerUploadSection"
+               class="form-group"
+               style="display:none;">
+            <label asp-for="PartnerDocument" class="form-label">
+              Upload verification document
+            </label>
+            <input asp-for="PartnerDocument"
+                   type="file"
+                   accept=".pdf,.jpg,.png"
+                   class="form-input" />
+            <span asp-validation-for="PartnerDocument"
+                  class="text-danger"></span>
+          </div> *@
+
+        <!-- Chỉ hiện khi chọn Partner -->
+        <div id="partnerExtra" style="display:none;">
+
+            <!-- Years of Experience (chỉ hiển thị, không bind) -->
+            <div class="form-group">
+                <label class="form-label" for="Experience">Years of Experience *</label>
+                <!-- bỏ asp-for và name để giá trị không được gửi lên server -->
+                <select id="Experience" class="form-input">
+                    <option value="">Select experience</option>
+                    <option>1-2 years</option>
+                    <option>3-5 years</option>
+                    <option>6-10 years</option>
+                    <option>10+ years</option>
+                </select>
+            </div>
+
+            <!-- Specializations (chỉ hiển thị, không bind) -->
+            <div class="form-group">
+                <label class="form-label">Specializations</label>
+                <div class="specializations-grid">
+                    <label class="checkbox-group">
+                        <!-- bỏ name để browser không gửi checkbox này -->
+                        <input type="checkbox" class="checkbox-input" value="conversation" />
+                        <span class="checkbox-label">Conversation Practice</span>
+                    </label>
+                    <label class="checkbox-group">
+                        <input type="checkbox" class="checkbox-input" value="business" />
+                        <span class="checkbox-label">Business Japanese</span>
+                    </label>
+                    <label class="checkbox-group">
+                        <input type="checkbox" class="checkbox-input" value="jlpt" />
+                        <span class="checkbox-label">JLPT Preparation</span>
+                    </label>
+                    <label class="checkbox-group">
+                        <input type="checkbox" class="checkbox-input" value="grammar" />
+                        <span class="checkbox-label">Grammar</span>
+                    </label>
+                    <label class="checkbox-group">
+                        <input type="checkbox" class="checkbox-input" value="culture" />
+                        <span class="checkbox-label">Cultural Studies</span>
+                    </label>
+                    <label class="checkbox-group">
+                        <input type="checkbox" class="checkbox-input" value="pronunciation" />
+                        <span class="checkbox-label">Pronunciation</span>
+                    </label>
                 </div>
-                <div class="mb-3">
-                    <label asp-for="EmailAddress" class="form-label"></label>
-                    <input asp-for="EmailAddress" class="form-control input-gradient" />
-                    <span asp-validation-for="EmailAddress" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="Password" class="form-label"></label>
-                    <input asp-for="Password" type="password" class="form-control input-gradient" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="ConfirmPassword" class="form-label"></label>
-                    <input asp-for="ConfirmPassword" type="password" class="form-control input-gradient" />
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+      <!-- Certificates & Qualifications -->
+      <div class="form-group">
+        <label class="form-label">Certificates & Qualifications</label>
+        <div class="file-upload" id="certificateUpload">
+          <div class="file-upload-icon">📁</div>
+          <div class="file-upload-text">Upload your certificates</div>
+          <div class="file-upload-hint">PDF, DOC, or images up to 10MB each</div>
+          <input type="file"
+                 id="PartnerDocument"
+                 name="PartnerDocument"
+                 multiple
+                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                 style="display:none;" />
+        </div>
+        <div id="fileList" class="file-list"></div>
+        <span asp-validation-for="PartnerDocument" class="text-danger"></span>
+      </div>
+    </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <input asp-for="AgreeTerms"
+                     type="checkbox" />
+              I agree to the
+              <a href="~/terms" class="auth-link" target="_blank">
+                Terms of Service
+              </a>
+              and
+              <a href="~/privacy" class="auth-link" target="_blank">
+                Privacy Policy
+              </a>
+            </label>
+            <span asp-validation-for="AgreeTerms"
+                  class="text-danger"></span>
+          </div>
+
+          <button type="submit"
+                  id="registerButton"
+                  class="auth-button">
+            <span id="registerButtonText">Create Account</span>
+            <div id="registerSpinner"
+                 class="spinner"
+                 style="display:none;"></div>
+          </button>
+        </form>
+
+                <!-- Social Login -->
+                <div class="social-login">
+                    <div class="social-divider">Or sign up with</div>
+                    <div class="social-buttons">
+                        <button type="button" class="social-button" onclick="signupWithGoogle()">
+                            <!-- Dùng logo gốc Google từ URL của họ -->
+                            <img src="https://developers.google.com/identity/images/g-logo.png"
+                                 alt="Google" />
+                            Google
+                        </button>
+                    </div>
                 </div>
 
-                <div class="form-check mb-3">
-                    <input asp-for="ApplyAsPartner" class="form-check-input" type="checkbox" id="applyPartnerCheck" />
-                    <label class="form-check-label" for="applyPartnerCheck">Apply as a Partner</label>
-                </div>
+        <!-- Auth Links -->
+        <div class="auth-links">
+          <p>
+            Already have an account?
+            <a asp-action="Login" class="auth-link">
+              Sign in here
+            </a>
+          </p>
+        </div>
+      </div>
 
-                <div class="mb-3" id="partnerDocumentSection" style="display:none;">
-                    <label asp-for="PartnerDocument">Upload verification document</label>
-                    <input asp-for="PartnerDocument" class="form-control-file" accept=".pdf,.jpg,.png" />
-                    <span asp-validation-for="PartnerDocument" class="text-danger"></span>
-                </div>
-
-                <button type="submit" class="btn gradient-outline-btn w-100">
-                    <i class="bi bi-person-plus"></i> Sign up
-                </button>
-
-                <p class="mt-3 text-center">
-                    Already have an account? <a asp-action="Login">Log in</a>
+      <!-- Right Column: Benefits -->
+      <div class="auth-benefits-column">
+        <div class="benefits-content">
+          <div class="benefits-header">
+            <h2 class="benefits-title">Join Our Community</h2>
+            <p class="benefits-subtitle">
+              Become part of a global community passionate about Japanese language and culture
+            </p>
+          </div>
+          <div class="benefits-list">
+            <div class="benefit-item">
+              <div class="benefit-icon">🚀</div>
+              <div class="benefit-content">
+                <h3>Start Learning Immediately</h3>
+                <p>
+                  Access our beginner-friendly courses right after signing up and start your journey today
                 </p>
-            <div class="mt-4 text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-muted small">
-                    <i class="bi bi-arrow-left-circle"></i> Back to Home
-                </a>
+              </div>
             </div>
-            </form>
+            <div class="benefit-item">
+              <div class="benefit-icon">🎯</div>
+              <div class="benefit-content">
+                <h3>Personalized Learning Path</h3>
+                <p>
+                  Get customized course recommendations based on your level and learning goals
+                </p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">👥</div>
+              <div class="benefit-content">
+                <h3>Connect with Others</h3>
+                <p>
+                  Join study groups, practice with peers, and get support from our community
+                </p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">🏆</div>
+              <div class="benefit-content">
+                <h3>Track Your Achievements</h3>
+                <p>
+                  Earn certificates, unlock badges, and celebrate your milestones along the way
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-            </div>
+      </div>
+    </div><!-- /.auth-card -->
+  </div><!-- /.auth-main -->
+</div><!-- /.auth-page -->
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
-        document.getElementById("applyPartnerCheck").addEventListener("change", function () {
-            document.getElementById("partnerDocumentSection").style.display = this.checked ? "block" : "none";
+        document.addEventListener("DOMContentLoaded", () => {
+          // 1) Role selection & Partner-extra toggle
+          document.querySelectorAll('.role-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+              document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+              opt.classList.add('selected');
+              document.getElementById('Role').value = opt.dataset.role;
+
+              const isPartner = opt.dataset.role === 'Partner';
+              // only toggle the new partnerExtra section
+              document.getElementById('partnerExtra').style.display = isPartner ? 'block' : 'none';
+            });
+          });
+
+          // 2) Password visibility toggle (unchanged)
+          window.togglePassword = (id) => {
+            const inp  = document.getElementById(id),
+                  icon = document.getElementById(id === 'password' ? 'eyeIcon' : 'eyeIcon2');
+            if (inp.type === 'password') {
+              inp.type = 'text';
+              icon.innerHTML = '<path d="M1.05 12 ..."/><path d="M4.27 4.27 ..."/>';
+            } else {
+              inp.type = 'password';
+              icon.innerHTML = '<path d="M1 12s4-8 ..."/><circle cx="12" cy="12" r="3"/>';
+            }
+          };
+
+          // 3) Password strength meter (unchanged)
+          const pwd  = document.getElementById('password'),
+                cf   = document.getElementById('confirmPassword'),
+                reqs = {
+                  length:    document.getElementById('req-length'),
+                  uppercase: document.getElementById('req-uppercase'),
+                  lowercase: document.getElementById('req-lowercase'),
+                  number:    document.getElementById('req-number'),
+                  symbol:    document.getElementById('req-symbol')
+                },
+                fill = document.getElementById('strengthFill'),
+                txt  = document.getElementById('strengthText');
+
+          pwd.addEventListener('input', () => {
+            const v = pwd.value;
+            const checks = {
+              length:    v.length >= 8,
+              uppercase: /[A-Z]/.test(v),
+              lowercase: /[a-z]/.test(v),
+              number:    /\d/.test(v),
+              symbol:    /[!@@#$%^&*]/.test(v)
+            };
+            let score = 0;
+            Object.keys(checks).forEach(k => {
+              if (checks[k]) {
+                reqs[k].style.color = 'var(--color-success)';
+                reqs[k].querySelector('.req-icon').textContent = '✓';
+                score++;
+              } else {
+                reqs[k].style.color = 'var(--color-gray-600)';
+                reqs[k].querySelector('.req-icon').textContent = '○';
+              }
+            });
+            const levels = [
+              { w: '20%',  t: 'Very Weak', c: '#ef4444' },
+              { w: '40%',  t: 'Weak',      c: '#f59e0b' },
+              { w: '60%',  t: 'Fair',      c: '#eab308' },
+              { w: '80%',  t: 'Good',      c: '#22c55e' },
+              { w: '100%', t: 'Strong',    c: '#16a34a' }
+            ];
+            if (!v) {
+              fill.style.width = '0';
+              fill.style.background = '#e5e7eb';
+              txt.textContent = 'Enter password';
+            } else {
+              const lv = levels[Math.min(score, 4)];
+              fill.style.width = lv.w;
+              fill.style.background = lv.c;
+              txt.textContent = lv.t;
+            }
+          });
+
+          cf.addEventListener('input', () => {
+            cf.setCustomValidity(cf.value !== pwd.value ? 'Passwords do not match' : '');
+          });
+
+          // 4) File-upload for Certificates & Qualifications
+          const upload = document.getElementById('certificateUpload'),
+                input  = document.getElementById('PartnerDocument'),
+                list   = document.getElementById('fileList');
+
+          if (upload && input && list) {
+            // click to open picker
+            upload.addEventListener('click', () => input.click());
+
+            // drag & drop + click
+            ['dragover','dragleave','drop'].forEach(evt => {
+              upload.addEventListener(evt, e => {
+                e.preventDefault();
+                upload.classList.toggle('dragover', evt === 'dragover');
+                if (evt === 'drop') Array.from(e.dataTransfer.files).forEach(addFile);
+              });
+            });
+
+            input.addEventListener('change', () => {
+              Array.from(input.files).forEach(addFile);
+            });
+          }
+
+          function addFile(file) {
+            if (file.size > 10 * 1024 * 1024) {
+              return alert('File quá lớn (max 10MB): ' + file.name);
+            }
+            const row = document.createElement('div');
+            row.className = 'file-item';
+            row.innerHTML = `
+              <span>${file.name} (${(file.size/1024/1024).toFixed(2)} MB)</span>
+              <span class="file-remove">×</span>
+            `;
+            row.querySelector('.file-remove').onclick = () => row.remove();
+            list.appendChild(row);
+          }
         });
+
+        function signupWithGoogle() {
+          alert('Google signup integration coming soon!');
+        }
     </script>
 }
+
+
