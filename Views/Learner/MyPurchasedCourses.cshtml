@@ -6,12 +6,12 @@
     ViewData["HideFooter"] = false;
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">My Purchased Courses</h2>
+<div class="container py-5">
+    <h2 class="mb-4 text-danger fw-bold text-center">My Purchased Courses</h2>
 
     @if (!Model.Any())
     {
-        <div class="alert alert-warning">You haven't purchased any courses yet.</div>
+        <div class="alert alert-warning text-center">You haven't purchased any courses yet.</div>
     }
     else
     {
@@ -19,40 +19,79 @@
             @foreach (var course in Model)
             {
                 <div class="col">
-                    <div class="card h-100 shadow-sm border-0 rounded-4">
-                        <img src="@course.ImageURL" class="card-img-top" alt="@course.Name" style="height: 220px; object-fit: cover;" />
+                    <div class="card h-100 shadow-sm border-0 course-card rounded-4">
+                        <img src="@(!string.IsNullOrEmpty(course.ImageURL) ? course.ImageURL : "/uploads/course/default.jpg")"
+                             class="card-img-top course-thumbnail"
+                             alt="@course.Name" />
 
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">@course.Name</h5>
-                            <p class="card-text text-muted small">@course.Description?.Substring(0, Math.Min(100, course.Description.Length))...</p>
+                            <h5 class="card-title fw-semibold">@course.Name</h5>
+                            <p class="card-text text-muted small">
+                                @(string.IsNullOrEmpty(course.Description)
+                                                        ? ""
+                                                        : course.Description.Substring(0, Math.Min(100, course.Description.Length)) + "...")
+                    </p>
 
                             <div class="mt-auto">
-                                <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.Id" class="btn btn-success w-100">
+                                <a asp-controller="Courses"
+                                   asp-action="Details"
+                                   asp-route-id="@course.Id"
+                                   class="btn btn-danger w-100 fw-semibold">
                                     <i class="bi bi-play-btn"></i> Start Learning
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
-            }
+                }
         </div>
     }
 </div>
 
-<div class="d-flex justify-content-center mt-4">
-    <nav aria-label="Pagination">
-        <ul class="pagination">
-            @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
-            {
-                <li class="page-item @(i == (int)ViewBag.CurrentPage ? "active" : "")">
-                    <a class="page-link"
-                       asp-controller="Learner"
-                       asp-action="MyPurchasedCourses"
-                       asp-route-page="@i">
-                        @i
-                    </a>
-                </li>
+@if ((int)ViewBag.TotalPages > 1)
+{
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Pagination">
+            <ul class="pagination">
+                @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == (int)ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-controller="Learner"
+                           asp-action="MyPurchasedCourses"
+                           asp-route-page="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+}
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const totalPetals = 20;
+        const half = totalPetals / 2;
+
+        for (let i = 0; i < totalPetals; i++) {
+            const petal = document.createElement("div");
+            petal.classList.add("sakura-petal");
+            if (i < half) {
+                petal.style.left = (Math.random() * 50) + "vw";
+            } else {
+                petal.style.left = (50 + Math.random() * 50) + "vw";
             }
-        </ul>
-    </nav>
-</div>
+            const rotate = Math.random() * 360;
+            petal.style.transform = `rotate(${rotate}deg)`;
+            petal.style.animationDelay = (Math.random() * 5) + "s";
+            petal.style.animationDuration = (5 + Math.random() * 5) + "s";
+
+            document.body.appendChild(petal);
+        }
+    });
+</script>

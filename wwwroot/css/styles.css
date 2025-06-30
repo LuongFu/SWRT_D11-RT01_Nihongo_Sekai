@@ -616,10 +616,10 @@ input:checked + .slider:before {
   font-weight: 600;
 }
 
-.plan-header {
+/*.plan-header {
   text-align: center;
   margin-bottom: var(--spacing-xl);
-}
+}*/
 
 .plan-name {
   font-family: var(--font-heading);
@@ -7145,3 +7145,4 @@ a:focus {
     border: 1px solid #ccc;
   }
 }
+

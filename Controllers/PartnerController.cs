@@ -1,4 +1,5 @@
 ﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -12,12 +13,24 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _env;
+        private readonly ICoursesService _coursesService;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public PartnerController(AppDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env)
+        public PartnerController(AppDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, ICoursesService coursesService, SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
             _userManager = userManager;
             _env = env;
+            _coursesService = coursesService;
+            _signInManager = signInManager;
+        }
+
+        // ✅ Trang mặc định khi truy cập /Partner
+        [Authorize(Roles = "Partner")]
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return RedirectToAction("Profile");
         }
 
         // 👤 Trang hồ sơ đối tác
@@ -56,32 +69,48 @@ namespace JapaneseLearningPlatform.Controllers
         // 🔒 Đặt lại mật khẩu
         [Authorize(Roles = "Partner")]
         [HttpGet]
-        public IActionResult ResetPassword()
+        public IActionResult ChangePassword()
         {
-            return View("~/Views/Partner/ResetPassword.cshtml");
+            return View();
         }
 
-        [Authorize(Roles = "Partner")]
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordVM model)
         {
             if (!ModelState.IsValid)
-                return View("~/Views/Partner/ResetPassword.cshtml", model);
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound();
-
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
-
-            if (!result.Succeeded)
             {
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
-                return View("~/Views/Partner/ResetPassword.cshtml", model);
+                TempData["ChangePasswordError"] = "Vui lòng kiểm tra lại thông tin.";
+                return RedirectToAction("ChangePassword");
             }
 
-            return RedirectToAction("Profile");
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["ChangePasswordError"] = "Không tìm thấy tài khoản.";
+                return RedirectToAction("ChangePassword");
+            }
+
+            var checkOldPassword = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
+            if (!checkOldPassword)
+            {
+                TempData["ChangePasswordError"] = "Mật khẩu hiện tại sai.";
+                return RedirectToAction("ChangePassword");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                TempData["ChangePasswordError"] = string.Join(" ", result.Errors.Select(e => e.Description));
+                return RedirectToAction("ChangePassword");
+            }
+
+            // ✅ Thành công → hiển thị thông báo và chờ redirect
+            TempData["PasswordChangeSuccess"] = "Thay đổi mật khẩu thành công.";
+            TempData["ShouldRedirectToLogin"] = true;
+            await _signInManager.SignOutAsync();
+
+            return View(); // đảm bảo luôn có return
         }
 
         // 📷 Tải lên ảnh đại diện
