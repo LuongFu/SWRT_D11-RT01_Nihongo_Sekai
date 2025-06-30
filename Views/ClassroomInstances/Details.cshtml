@@ -29,10 +29,6 @@
 
             <p><strong>Enrollments:</strong> @Model.EnrollmentCount / @Model.Instance.MaxCapacity</p>
 
-            @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Learner))
-            {
-                <a href="#" class="btn btn-success w-100">Join this class</a>
-            }
         </div>
     </div>
     <div class="mt-5 border-top pt-4 d-flex justify-content-center gap-3">
@@ -45,9 +41,9 @@
             if (!Model.IsEnrolled)
             {
                 <form asp-action="JoinClassroom" asp-route-id="@Model.Instance.Id" method="post">
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-person-plus"></i> Join this class
-                    </button>
+                    <a class="btn btn-success" asp-controller="ClassroomInstances" asp-action="PayWithPaypal" asp-route-id="@Model.Instance.Id">
+                        Join & Pay with PayPal
+                    </a>
                 </form>
             }
             else

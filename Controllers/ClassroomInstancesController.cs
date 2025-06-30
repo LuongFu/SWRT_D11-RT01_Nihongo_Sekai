@@ -270,5 +270,54 @@ namespace JapaneseLearningPlatform.Controllers
 
             return View(vm);
         }
+
+        [Authorize(Roles = UserRoles.Learner)]
+        public async Task<IActionResult> PayWithPaypal(int id)
+        {
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Template)
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (instance == null || !instance.IsPaid) return NotFound();
+
+            var vm = new ClassroomPaymentVM
+            {
+                InstanceId = instance.Id,
+                Title = instance.Template?.Title,
+                Price = instance.Price,
+                Currency = "USD"
+            };
+
+            return View(vm); // View chứa paypal button cho lớp học cụ thể
+        }
+
+        [Authorize(Roles = UserRoles.Learner)]
+        public async Task<IActionResult> CompletePayment(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Enrollments)
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (instance == null) return NotFound();
+
+            // Kiểm tra đã đăng ký chưa
+            bool isEnrolled = instance.Enrollments.Any(e => e.LearnerId == userId);
+            if (!isEnrolled)
+            {
+                _context.ClassroomEnrollments.Add(new ClassroomEnrollment
+                {
+                    LearnerId = userId,
+                    InstanceId = id,
+                    IsPaid = true,
+                    EnrolledAt = DateTime.UtcNow
+                });
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", new { id });
+        }
+
     }
 }

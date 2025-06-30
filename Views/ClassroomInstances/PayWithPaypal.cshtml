@@ -1,0 +1,43 @@
+﻿@model JapaneseLearningPlatform.Data.ViewModels.ClassroomPaymentVM
+
+@{
+    ViewData["Title"] = "Payment for Classroom";
+}
+
+<h2>Confirm payment for @Model.Title</h2>
+<p>Price: $@Model.Price</p>
+
+<div id="paypal-button"></div>
+
+@section Scripts {
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+    <script>
+        paypal.Button.render({
+            env: 'sandbox',
+            client: {
+                sandbox: 'AcKRtgL4i68EZ2ZYuYUx3ilihAg2YhL5dtF_m19A8MjBWVOn6ewNS4M_uV8gA3xi98zTcUq38gUHbVFx'
+            },
+            locale: 'en_US',
+            style: {
+                size: 'small',
+                color: 'gold',
+                shape: 'pill'
+            },
+            payment: function (data, actions) {
+                return actions.payment.create({
+                    transactions: [{
+                        amount: {
+                            total: '@Model.Price',
+                            currency: '@Model.Currency'
+                        }
+                    }]
+                });
+            },
+            onAuthorize: function (data, actions) {
+                return actions.payment.execute().then(function () {
+                    window.location.href = '@Url.Action("CompletePayment", "ClassroomInstances", new { id = Model.InstanceId })';
+                });
+            }
+        }, '#paypal-button');
+    </script>
+}
