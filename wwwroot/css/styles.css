@@ -97,6 +97,24 @@ body {
   min-height: 100vh;
 }
 
+/* ===============================================
+   Scroll-On-Scroll Animation
+   =============================================== */
+
+/* 1) Khởi trạng thái ban đầu: tàng hình và hơi dịch xuống */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s var(--transition-normal), transform 0.6s var(--transition-normal);
+}
+
+    /* 2) Khi element được IntersectionObserver phát hiện: bật visible */
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+
 /* ==================== LEGAL PAGES STYLING ==================== */
 
 /* Legal Page Layout */

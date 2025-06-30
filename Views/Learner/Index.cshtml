@@ -5,11 +5,201 @@
     ViewData["Title"] = "Home";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nihongo Sekai - Japanese Learning Platform</title>
+    <meta name="description"
+          content="Master Japanese through immersive conversations, cultural insights, and personalized learning paths with native speakers." />
 }
 
-<section class="hero">
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+    <style>
+        /* ==================== SECTION HEADER — XẾP DỌC, CĂN GIỮA ==================== */
+        .section-header {
+            display: flex !important;
+            flex-direction: column; /* Ép xếp dọc */
+            align-items: center; /* Căn giữa theo trục ngang */
+            text-align: center; /* Căn chữ giữa */
+            gap: var(--spacing-md); /* Khoảng cách giữa các dòng */
+            margin-bottom: var(--spacing-2xl);
+        }
+
+            /* Reset margin mặc định */
+            .section-header h2,
+            .section-header p,
+            .section-header .btn {
+                margin: 0;
+            }
+
+            /* Nếu có nút .btn trong header, đẩy xuống xa hơn */
+            .section-header .btn {
+                margin-top: var(--spacing-lg);
+            }
+
+
+        /* Ở mobile: ép xuống hàng, căn giữa */
+        @@media (max-width: 768px) {
+            .section-header
+
+        {
+            flex-direction: column !important;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-size: 1.75rem;
+        }
+
+        .section-header p {
+            font-size: 1rem;
+        }
+
+        .section-header .btn {
+            margin-top: var(--spacing-md);
+        }
+
+        }
+        /* Why Choose Section */
+        .why-choose {
+            padding: var(--spacing-3xl) 0;
+            background: var(--color-gray-50);
+        }
+
+        .learn-more-btn {
+            color: #fafafa;
+            transition: color var(--transition-base);
+        }
+
+            .learn-more-btn:hover {
+                color: #ffffff;
+            }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-2xl);
+        }
+
+        .feature-card {
+            background: var(--color-white);
+            padding: var(--spacing-2xl);
+            border-radius: var(--radius-xl);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-gray-200);
+            transition: all var(--transition-base);
+        }
+
+            .feature-card:hover {
+                transform: translateY(-4px);
+                box-shadow: var(--shadow-lg);
+            }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-lg);
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-gray-900);
+        }
+
+        .feature-card p {
+            color: var(--color-gray-600);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: var(--spacing-3xl) 0;
+            background: var(--color-white);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-2xl);
+        }
+
+        .testimonial-card {
+            background: var(--color-white);
+            padding: var(--spacing-2xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-gray-200);
+            transition: all var(--transition-base);
+        }
+
+            .testimonial-card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-lg);
+            }
+
+        .testimonial-content {
+            margin-bottom: var(--spacing-xl);
+        }
+
+            .testimonial-content p {
+                font-style: italic;
+                font-size: 1.125rem;
+                line-height: 1.6;
+                color: var(--color-gray-700);
+                margin: 0;
+            }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+            .author-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .author-info h4 {
+            font-size: 1.125rem;
+            margin: 0 0 var(--spacing-xs) 0;
+            color: var(--color-gray-900);
+        }
+
+        .author-info p {
+            font-size: 0.875rem;
+            color: var(--color-gray-600);
+            margin: 0 0 var(--spacing-sm) 0;
+        }
+
+        .author-rating {
+            color: var(--color-accent-600);
+            font-size: 0.875rem;
+        }
+
+    </style>
+}
+
+<section class="hero animate-on-scroll">
     <div class="container hero-content">
         <div class="hero-text">
             <h1 class="hero-title">
@@ -38,7 +228,7 @@
     </div>
 </section>
 
-<section class="section bg-light py-5">
+<section class="section bg-light py-5 animate-on-scroll">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4 px-3 py-2 bg-white rounded shadow-sm">
             <h2 class="fw-bold m-0">Featured Courses</h2>
@@ -78,7 +268,7 @@
         <div class="classrooms-grid" id="popularClassrooms"></div>
     </div>
 </section> *@
-
+@* 
 <section class="section py-5" style="background-color: #FEF3F4;">
     <div class="container">
         <div class="text-center mb-5 bg-white p-4 rounded shadow-sm">
@@ -124,9 +314,160 @@
             </div>
         </div>
     </div>
+</section> *@
+
+
+<!-- Why Choose Nihongo Sekai -->
+<section class="why-choose animate-on-scroll" id="features">
+    <div class="container">
+        <div class="section-header">
+            <h2>
+                Why Nihongo Sekai Is Your Ultimate Japanese Learning Partner
+            </h2>
+            <p>
+                Interactive courses, live native-speaker sessions, and
+                personalized paths—all in one place.
+            </p>
+            <a href="about.html" class="btn btn-primary learn-more-btn">Learn More</a>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">💬</div>
+                <h3>Live Conversations</h3>
+                <p>
+                    Practice with native speakers in real-time video sessions
+                    tailored to your level.
+                </p>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">📚</div>
+                <h3>Structured Courses</h3>
+                <p>
+                    Comprehensive curriculum from beginner to advanced, designed by
+                    language experts.
+                </p>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🎯</div>
+                <h3>Personalized Learning</h3>
+                <p>
+                    AI-powered recommendations and custom learning paths based on
+                    your goals.
+                </p>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🏆</div>
+                <h3>Cultural Immersion</h3>
+                <p>
+                    Learn beyond language with cultural insights and real-world
+                    context.
+                </p>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">📱</div>
+                <h3>Learn Anywhere</h3>
+                <p>
+                    Access your lessons on any device, continue learning on the go.
+                </p>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🌟</div>
+                <h3>Expert Teachers</h3>
+                <p>
+                    Learn from qualified native speakers and certified Japanese
+                    instructors.
+                </p>
+            </div>
+        </div>
+    </div>
 </section>
 
-<section class="cta-section text-center"
+<!-- Testimonials -->
+<section class="testimonials animate-on-scroll">
+    <div class="container">
+        <div class="section-header">
+            <h2>What Our Students Say</h2>
+            <p>
+                Join thousands of learners who've transformed their Japanese
+                skills
+            </p>
+        </div>
+
+        <div class="testimonials-grid">
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-content">
+                    <p>
+                        "Nihongo Sekai transformed my Japanese learning experience.
+                        The live conversations with native speakers gave me confidence
+                        I never had before."
+                    </p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah"
+                             alt="Sarah Kim" />
+                    </div>
+                    <div class="author-info">
+                        <h4>Sarah Kim</h4>
+                        <p>Software Engineer</p>
+                        <div class="author-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-content">
+                    <p>
+                        "The structured approach and cultural insights made learning
+                        Japanese enjoyable and effective. I went from zero to
+                        conversational in 6 months!"
+                    </p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mike"
+                             alt="Mike Chen" />
+                    </div>
+                    <div class="author-info">
+                        <h4>Mike Chen</h4>
+                        <p>Business Analyst</p>
+                        <div class="author-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-content">
+                    <p>
+                        "The flexibility to learn at my own pace while having access
+                        to live teachers when needed is exactly what I was looking
+                        for."
+                    </p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Emma"
+                             alt="Emma Rodriguez" />
+                    </div>
+                    <div class="author-info">
+                        <h4>Emma Rodriguez</h4>
+                        <p>Marketing Manager</p>
+                        <div class="author-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section text-center animate-on-scroll"
          style="background: linear-gradient(135deg, #e02424, #ec4899); padding: 100px 0 80px 0; margin-bottom: 0;">
     <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
         <h2 class="fw-bold mb-3 display-6" style="color: #0F172A;">
@@ -150,9 +491,160 @@
 
 @section Scripts {
     <script>
+        /**
+         * Home Page JavaScript
+         * Handles featured content, animations, and page-specific functionality
+         */
         document.addEventListener("DOMContentLoaded", function () {
             loadFeaturedCourses();
             loadPopularClassrooms();
         });
+         
+        class HomePage {
+          constructor() {
+            this.init();
+          }
+
+          init() {
+            this.initializeAnimations();
+            this.setupSakuraEffect();
+          }
+
+          initializeAnimations() {
+            // Add intersection observer for scroll animations
+            const observerOptions = {
+              threshold: 0.1,
+              rootMargin: "0px 0px -50px 0px",
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  entry.target.style.animationPlayState = "running";
+                  observer.unobserve(entry.target);
+                }
+              });
+            }, observerOptions);
+
+            // Observe all animated elements
+            document.querySelectorAll(".animate-on-scroll").forEach((el) => {
+              observer.observe(el);
+            });
+
+            // Stagger feature cards animation
+            const featureCards = document.querySelectorAll(".feature-card");
+            featureCards.forEach((card, index) => {
+              card.style.animationDelay = `${index * 0.2}s`;
+            });
+
+            // Stagger testimonial cards animation
+            const testimonialCards = document.querySelectorAll(".testimonial-card");
+            testimonialCards.forEach((card, index) => {
+              card.style.animationDelay = `${index * 0.3}s`;
+            });
+          }
+
+          setupSakuraEffect() {
+            const container = document.getElementById("sakuraContainer");
+            if (!container) return;
+
+            const createSakuraPetal = () => {
+              const petal = document.createElement("div");
+              petal.className = "sakura-petal";
+
+              // Random horizontal position
+              petal.style.left = Math.random() * 100 + "%";
+
+              // Random size
+              const size = Math.random() * 8 + 6;
+              petal.style.width = size + "px";
+              petal.style.height = size + "px";
+
+              // Random animation duration
+              const duration = Math.random() * 10 + 15;
+              petal.style.animationDuration = duration + "s";
+
+              // Random delay
+              petal.style.animationDelay = Math.random() * 5 + "s";
+
+              container.appendChild(petal);
+
+              // Remove petal after animation
+              setTimeout(
+                () => {
+                  if (petal.parentNode) {
+                    petal.parentNode.removeChild(petal);
+                  }
+                },
+                (duration + 5) * 1000,
+              );
+            };
+
+            // Create initial petals
+            for (let i = 0; i < 15; i++) {
+              setTimeout(createSakuraPetal, i * 1000);
+            }
+
+            // Continuously create new petals
+            setInterval(createSakuraPetal, 3000);
+          }
+        }
+
+        // Initialize home page when DOM is loaded
+        let homePage;
+
+        document.addEventListener("DOMContentLoaded", () => {
+          homePage = new HomePage();
+
+          // Add smooth scrolling for internal links
+          document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+            anchor.addEventListener("click", function (e) {
+              e.preventDefault();
+              const target = document.querySelector(this.getAttribute("href"));
+              if (target) {
+                target.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
+            });
+          });
+
+          // Add parallax effect to hero background
+          let ticking = false;
+
+          function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            const heroBackground = document.querySelector(".hero-background");
+
+            if (heroBackground) {
+              heroBackground.style.transform = `translateY(${rate}px)`;
+            }
+
+            ticking = false;
+          }
+
+          function requestTick() {
+            if (!ticking) {
+              requestAnimationFrame(updateParallax);
+              ticking = true;
+            }
+          }
+
+          window.addEventListener("scroll", requestTick, { passive: true });
+        });
+
+        // Handle window resize for responsive adjustments
+        window.addEventListener(
+          "resize",
+          Utils.debounce(() => {
+            // Refresh animations and layouts if needed
+            if (homePage) {
+              homePage.addCardAnimations();
+            }
+          }, 250),
+        );
+
     </script>
 }

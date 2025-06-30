@@ -2,10 +2,30 @@
 @model RegisterVM
 
 @{
-    ViewData["Title"] = "Sign up for a new account";
+    ViewData["Title"] = "Sign Up - Nihongo Sekai";
     Layout = "_Layout";
     ViewData["HideNavbar"] = true;
     ViewData["HideFooter"] = true;
+}
+
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - Nihongo Sekai</title>
+    <meta name="description"
+          content="Create your Nihongo Sekai account and start your Japanese learning journey today." />
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Global Stylesheet -->
+    <link rel="stylesheet" href="/css/styles.css" />
+    <!-- Page-Specific CSS -->
+    <style>
+        
+    </style>
 }
 
 @* <div class="row">
