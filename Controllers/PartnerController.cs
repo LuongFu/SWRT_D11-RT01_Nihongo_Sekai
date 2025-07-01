@@ -27,7 +27,7 @@ namespace JapaneseLearningPlatform.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
-            return View("~/Views/Partner/Profile.cshtml", user);
+            return View("~/Views/Partners/Profile.cshtml", user);
         }
 
         // ✏️ Sửa hồ sơ
@@ -37,7 +37,7 @@ namespace JapaneseLearningPlatform.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
-            return View("~/Views/Partner/EditProfile.cshtml", user);
+            return View("~/Views/Partners/EditProfile.cshtml", user);
         }
 
         [Authorize(Roles = "Partner")]
@@ -58,7 +58,7 @@ namespace JapaneseLearningPlatform.Controllers
         [HttpGet]
         public IActionResult ResetPassword()
         {
-            return View("~/Views/Partner/ResetPassword.cshtml");
+            return View("~/Views/Partners/ResetPassword.cshtml");
         }
 
         [Authorize(Roles = "Partner")]
@@ -66,7 +66,7 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
         {
             if (!ModelState.IsValid)
-                return View("~/Views/Partner/ResetPassword.cshtml", model);
+                return View("~/Views/Partners/ResetPassword.cshtml", model);
 
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
@@ -78,7 +78,7 @@ namespace JapaneseLearningPlatform.Controllers
             {
                 foreach (var error in result.Errors)
                     ModelState.AddModelError(string.Empty, error.Description);
-                return View("~/Views/Partner/ResetPassword.cshtml", model);
+                return View("~/Views/Partners/ResetPassword.cshtml", model);
             }
 
             return RedirectToAction("Profile");
@@ -108,6 +108,14 @@ namespace JapaneseLearningPlatform.Controllers
             user.ProfilePicturePath = $"/uploads/profile/{fileName}";
             await _userManager.UpdateAsync(user);
 
+            return RedirectToAction("Profile");
+        }
+
+        // ✅ Trang mặc định khi truy cập /Partner
+        [Authorize(Roles = "Partner")]
+        [HttpGet]
+        public IActionResult Index()
+        {
             return RedirectToAction("Profile");
         }
     }
