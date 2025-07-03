@@ -9,5 +9,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public int EnrollmentCount { get; set; }
         public bool IsPaid { get; set; }
         public string? PartnerName { get; set; }
+        // 👇 Thêm để phục vụ kiểm tra đã đăng ký hay chưa
+        public bool IsEnrolled { get; set; }
     }
 }

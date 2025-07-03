@@ -1,10 +1,35 @@
 @model int;
+<style>
+    .hover-cart:hover {
+        background-color: #e53935;
+        color: white !important;
+        border-color: #e53935;
+    }
+
+        .hover-cart:hover i {
+            color: white;
+        }
+
+    li {
+        list-style: none;
+    }
+</style>
 
 @if (Model > 0)
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-controller="Orders" asp-action="ShoppingCart">
-            <i class="bi bi-cart4"></i> @Model
+    @* Navbar Cart Item *@
+    <li class="nav-item position-relative">
+        <a class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded-pill border border-danger text-danger fw-semibold hover-cart"
+           asp-controller="Orders" asp-action="ShoppingCart" style="transition: 0.3s;">
+            <i class="bi bi-cart3 fs-5"></i>
+            @if ((int)Model > 0)
+            {
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      style="font-size: 0.75rem;">
+                    @Model
+                </span>
+            }
         </a>
     </li>
+
 }

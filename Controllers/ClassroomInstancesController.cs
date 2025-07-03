@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {
-    [Authorize(Roles = "Admin,Partner")]
     public class ClassroomInstancesController : Controller
     {
         private readonly AppDbContext _context;
@@ -25,7 +25,7 @@ namespace JapaneseLearningPlatform.Controllers
             _userManager = userManager;
         }
 
-        // GET: ClassroomInstances
+        // PUBLIC - Allow everyone
         [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 9)
         {
@@ -68,8 +68,7 @@ namespace JapaneseLearningPlatform.Controllers
             return View(model);
         }
 
-
-        // GET: ClassroomInstances/Details/5
+        // PUBLIC - Learner or Guest allowed
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
@@ -77,17 +76,24 @@ namespace JapaneseLearningPlatform.Controllers
 
             var instance = await _context.ClassroomInstances
                 .Include(i => i.Template)
+                    .ThenInclude(t => t.Partner)
                 .Include(i => i.Enrollments)
-                .Include(i => i.Template.Partner)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             if (instance == null) return NotFound();
 
-            // Ẩn lớp DRAFT khỏi Learner/Guest
             if (instance.Status == ClassroomStatus.Draft &&
                 (!User.Identity.IsAuthenticated || User.IsInRole(UserRoles.Learner)))
             {
                 return Forbid();
+            }
+
+            bool isEnrolled = false;
+
+            if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Learner))
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                isEnrolled = instance.Enrollments.Any(e => e.LearnerId == userId && !e.HasLeft);
             }
 
             var vm = new ClassroomInstanceDetailVM
@@ -96,31 +102,29 @@ namespace JapaneseLearningPlatform.Controllers
                 Template = instance.Template,
                 EnrollmentCount = instance.Enrollments?.Count ?? 0,
                 IsPaid = instance.IsPaid,
-                PartnerName = instance.Template?.Partner?.FullName
+                PartnerName = instance.Template?.Partner?.FullName,
+                IsEnrolled = isEnrolled
             };
 
             return View(vm);
         }
 
-
-
-        // GET: ClassroomInstances/Create
+        // ADMIN + PARTNER ONLY
+        [Authorize(Roles = "Admin,Partner")]
         public async Task<IActionResult> Create()
         {
             var userId = _userManager.GetUserId(User);
-
             var templates = await _context.ClassroomTemplates
                 .Where(t => User.IsInRole("Admin") || t.PartnerId == userId)
                 .ToListAsync();
 
             ViewBag.Templates = new SelectList(templates, "Id", "Title");
-
             return View();
         }
 
-        // POST: ClassroomInstances/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Partner")]
         public async Task<IActionResult> Create(ClassroomInstance instance)
         {
             var userId = _userManager.GetUserId(User);
@@ -137,7 +141,8 @@ namespace JapaneseLearningPlatform.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: ClassroomInstances/Edit/5
+        // ADMIN + PARTNER ONLY
+        [Authorize(Roles = "Admin,Partner")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -160,9 +165,9 @@ namespace JapaneseLearningPlatform.Controllers
             return View(instance);
         }
 
-        // POST: ClassroomInstances/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Partner")]
         public async Task<IActionResult> Edit(int id, ClassroomInstance instance)
         {
             if (id != instance.Id) return NotFound();
@@ -187,11 +192,11 @@ namespace JapaneseLearningPlatform.Controllers
 
             _context.Entry(existing).CurrentValues.SetValues(instance);
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: ClassroomInstances/Delete/5
+        // ADMIN + PARTNER ONLY
+        [Authorize(Roles = "Admin,Partner")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -208,9 +213,9 @@ namespace JapaneseLearningPlatform.Controllers
             return View(instance);
         }
 
-        // POST: ClassroomInstances/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Partner")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var instance = await _context.ClassroomInstances
@@ -226,6 +231,44 @@ namespace JapaneseLearningPlatform.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        // LEARNER ONLY
+        [Authorize(Roles = "Learner")]
+        public async Task<IActionResult> Content(int id)
+        {
+            var instance = await _context.ClassroomInstances
+                .Include(c => c.Template)
+                .Include(c => c.Assessments)
+                .Include(c => c.Enrollments)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (instance == null) return NotFound();
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isEnrolled = instance.Enrollments.Any(e => e.LearnerId == userId && !e.HasLeft);
+            if (!isEnrolled) return Forbid();
+
+            var finalAssessment = instance.Assessments?.FirstOrDefault();
+            AssessmentSubmission? submission = null;
+            if (finalAssessment != null)
+            {
+                submission = await _context.AssessmentSubmissions
+                    .FirstOrDefaultAsync(s => s.FinalAssessmentId == finalAssessment.Id && s.LearnerId == userId);
+            }
+            var reviewed = await _context.ClassroomEvaluations
+     .AnyAsync(e => e.InstanceId == id && e.LearnerId == userId);
+            var vm = new ClassroomContentVM
+            {
+                Instance = instance,
+                Template = instance.Template,
+                PartnerName = instance.Template.Partner?.FullName,
+                FinalAssessment = finalAssessment,
+                Submission = submission,
+                HasSubmitted = submission != null,
+                HasReviewed = reviewed
+            };
+
+            return View(vm);
+        }
     }
 }
-

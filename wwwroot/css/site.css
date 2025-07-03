@@ -607,6 +607,7 @@ footer.footer {
     border-radius: 6px;
 }
 
+
 /*Change password*/
 .change-password-wrapper {
     background: linear-gradient(135deg, #f43f5e, #f9a8d4, #fdf2f8);
@@ -780,6 +781,32 @@ footer.footer {
     }
 
     100% {
+
+/* loading */
+.loader-container {
+    text-align: center;
+    color: white;
+}
+
+.spinner {
+    width: 80px;
+    height: 80px;
+    border: 8px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+
+.loading-text {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    animation: colorShift 3s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
         transform: rotate(360deg);
     }
 }
@@ -810,4 +837,28 @@ footer.footer {
     object-fit: cover;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
+
+@keyframes colorShift {
+    0% {
+        color: #ffffff;
+    }
+
+    50% {
+        color: #ffdeeb;
+    }
+
+    100% {
+        color: #ffffff;
+    }
+}
+
+.card .card-body p {
+    font-size: 15px;
+}
+
+.badge {
+    font-size: 13px;
+    padding: 5px 10px;
+    border-radius: 6px;
+
 }

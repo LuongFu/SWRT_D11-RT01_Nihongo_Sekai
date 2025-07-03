@@ -1,94 +1,153 @@
-@using JapaneseLearningPlatform.Data.ViewModels;
+﻿@using JapaneseLearningPlatform.Data.ViewModels;
 @model ShoppingCartVM
 
 @{
-    ViewData["Title"] = "Shopping cart summary";
+    ViewData["Title"] = "Shopping Cart";
     ViewData["HideNavbar"] = false;
     ViewData["HideFooter"] = false;
 }
 
-<div class="row">
-    <div class="col-md-8 offset-2">
-        <div class="text-center">
-            <h2>Your shopping cart summary</h2>
-        </div>
+<style>
+    .cart-container {
+        max-width: 1140px;
+        margin: 0 auto;
+        display: flex;
+        gap: 2rem;
+    }
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Selected amount</th>
-                    <th>Course</th>
-                    <th>Price</th>
-                    <th>Subtotal</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
-                {
-                    <tr>
-                        <td class="align-middle">@item.Amount</td>
-                        <td class="align-middle">@item.Course.Name</td>
-                        <td class="align-middle">@item.Course.FinalPrice.ToString("c")</td>
-                        <td class="align-middle">@((item.Amount*item.Course.FinalPrice).ToString("c"))</td>
-                        <td class="align-middle">
-                            <a class="text-danger" asp-controller="Orders" asp-action="RemoveItemFromShoppingCart"
-                               asp-route-id="@item.Course.Id">
-                                <i class="bi bi-cart-dash"></i>
-                            </a>
-                            |
-                            @* <a class="text-success" asp-controller="Orders" asp-action="AddItemToShoppingCart"
-                               asp-route-id="@item.Course.Id">
-                                <i class="bi bi-cart-plus"></i>
-                            </a> *@
-                        </td>
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2"></td>
-                    <td><b>Total:</b></td>
-                    <td>
-                        @Model.ShoppingCartTotal.ToString("c")
-                    </td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
+    .cart-left {
+        flex: 2;
+    }
 
-        <div class="text-right">
-            <div class="btn-group">
-                @*<a class="btn btn-outline-primary" asp-action="CompleteOrder">
-                        Complete order
-                    </a>*@
-                <div id="paypal-btn"></div>
-                <span style="padding:5px"></span>
-                <a class="btn btn-outline-success" asp-controller="Courses" asp-action="Index">
-                    Add more items
-                </a>
+    .cart-right {
+        flex: 1;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 1.5rem;
+        background-color: #f9f9f9;
+        height: fit-content;
+    }
+
+    .cart-header {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-top: 1px solid #ddd;
+    }
+
+        .cart-item img {
+            width: 100px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 1rem;
+        }
+
+    .cart-course-title {
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    .cart-remove {
+        color: #e53935;
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+    .cart-right h4 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .btn-checkout {
+        background-color: #e53935;
+        color: #fff;
+        border: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 5px;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        .btn-checkout:hover {
+            background-color: #c62828;
+        }
+
+    .btn-secondary {
+        background-color: transparent;
+        color: #e53935;
+        border: 1px solid #e53935;
+        padding: 0.6rem 1.5rem;
+        border-radius: 5px;
+        font-weight: 500;
+    }
+
+        .btn-secondary:hover {
+            background-color: #e53935;
+            color: #fff;
+        }
+
+    #paypal-btn > div {
+        width: 100% !important;
+    }
+
+    #paypal-btn iframe {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+</style>
+
+<div class="cart-container">
+    <div class="cart-left">
+        <div class="cart-header">Shopping Cart</div>
+        <p>@Model.ShoppingCart.ShoppingCartItems.Count course(s) in cart</p>
+
+        @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
+        {
+            <div class="cart-item">
+                <div class="d-flex align-items-center">
+                    <img src="@item.Course.ImageURL" alt="@item.Course.Name" />
+                    <div>
+                        <div class="cart-course-title">@item.Course.Name</div>
+                        <div class="text-muted">@item.Course.FinalPrice.ToString("c")</div>
+                        <a class="cart-remove" asp-controller="Orders" asp-action="RemoveItemFromShoppingCart" asp-route-id="@item.Course.Id">Remove</a>
+                    </div>
+                </div>
+                <div class="fw-bold">@((item.Amount * item.Course.FinalPrice).ToString("c"))</div>
             </div>
-        </div>
+        }
+    </div>
 
+    <div class="cart-right">
+        <h4>Total: @Model.ShoppingCartTotal.ToString("c")</h4>
+
+            <!-- Nút PayPal to -->
+            <div id="paypal-btn" class="mb-3 w-200"></div>
+
+            <!-- Nút thêm khóa học -->
+            <a class="btn-secondary d-block text-center" asp-controller="Courses" asp-action="Index">Add more items</a>
     </div>
 </div>
 
-@section Scripts{
-
+@section Scripts {
     <script src="https://www.paypalobjects.com/api/checkout.js"></script>
-
     <script>
-
         let _total = @Html.Raw(Model.ShoppingCartTotal);
 
         paypal.Button.render({
-            //Configure environment
             env: 'sandbox',
             client: {
                 sandbox: 'AcKRtgL4i68EZ2ZYuYUx3ilihAg2YhL5dtF_m19A8MjBWVOn6ewNS4M_uV8gA3xi98zTcUq38gUHbVFx'
             },
-
-            //Customize button
             locale: 'en_US',
             style: {
                 size: 'small',
@@ -96,8 +155,6 @@
                 shape: 'pill'
             },
             commit: true,
-
-            //Set up a payment
             payment: function (data, actions) {
                 return actions.payment.create({
                     transactions: [{
@@ -108,15 +165,12 @@
                     }]
                 });
             },
-
-            //Execute the payment
             onAuthorize: function (data, actions) {
                 return actions.payment.execute().then(function () {
                     var url = '@Url.Action("CompleteOrder", "Orders", new { })';
                     window.location.href = url;
                 });
             }
-
         }, '#paypal-btn')
     </script>
 }
