@@ -264,5 +264,29 @@ namespace JapaneseLearningPlatform.Controllers
         {
             return View("~/Views/Learner/MyClassroom.cshtml");
         }
+
+        [Authorize(Roles = UserRoles.Learner)]
+        public async Task<IActionResult> MyEnrolledClassrooms()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var enrollments = await _context.ClassroomEnrollments
+                .Where(e => e.LearnerId == userId && e.IsPaid && !e.HasLeft)
+                .Include(e => e.Instance)
+                    .ThenInclude(i => i.Template)
+                .ToListAsync();
+
+            var model = enrollments.Select(e => new EnrolledClassroomVM
+            {
+                EnrollmentId = e.Id,
+                InstanceId = e.InstanceId,
+                ClassTitle = e.Instance?.Template?.Title ?? "(Unknown)",
+                StartDate = e.Instance.StartDate,
+                HasLeft = e.HasLeft
+            }).ToList();
+
+            return View(model);
+        }
+
     }
 }

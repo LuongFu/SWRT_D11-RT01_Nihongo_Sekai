@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Shared\Topnav\" />
     <Folder Include="wwwroot\uploads\profile\" />
   </ItemGroup>
 

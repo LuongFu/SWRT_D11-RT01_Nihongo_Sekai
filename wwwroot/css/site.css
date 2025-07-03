@@ -181,8 +181,6 @@ html, body {
     color: #a71d2a;
 }
 
-}
-
 /* ACTION BUTTONS */
 .nav-actions {
     display: flex;
@@ -575,7 +573,6 @@ footer.footer {
     font-weight: bold;
     animation: colorShift 3s ease-in-out infinite;
 }
-}
 
 @keyframes spin {
     to {
@@ -862,3 +859,24 @@ footer.footer {
     border-radius: 6px;
 
 }
+
+/*.bg-gradient-danger {
+    background: linear-gradient(87deg, #f5365c 0, #f56036 100%) !important;
+}*/
+
+#sidenav-main .nav-link.active {
+    background-color: rgba(255,255,255,0.15);
+    border-radius: 0.5rem;
+    font-weight: 600;
+}
+
+.navbar-nav .nav-link {
+    border-radius: 0.375rem;
+    transition: background-color 0.2s ease;
+}
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.2);
+        font-weight: 600;
+    }

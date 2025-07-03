@@ -1,6 +1,7 @@
 ﻿using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

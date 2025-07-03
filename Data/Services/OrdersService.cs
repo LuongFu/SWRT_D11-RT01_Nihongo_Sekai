@@ -33,18 +33,45 @@ namespace JapaneseLearningPlatform.Data.Services
         }
 
 
+        //public async Task StoreOrderAsync(List<ShoppingCartItem> items, string userId, string userEmailAddress)
+        //{
+        //    var order = new Order()
+        //    {
+        //        UserId = userId,
+        //        Email = userEmailAddress
+        //    };
+        //    await _context.Orders.AddAsync(order);
+        //    await _context.SaveChangesAsync();
+
+        //    foreach (var item in items)
+        //    {
+        //        var orderItem = new OrderItem()
+        //        {
+        //            Amount = item.Amount,
+        //            CourseId = item.Course.Id,
+        //            OrderId = order.Id,
+        //            Price = item.Course.FinalPrice
+        //        };
+        //        await _context.OrderItems.AddAsync(orderItem);
+        //    }
+        //    await _context.SaveChangesAsync();
+        //}
         public async Task StoreOrderAsync(List<ShoppingCartItem> items, string userId, string userEmailAddress)
         {
             var order = new Order()
             {
                 UserId = userId,
-                Email = userEmailAddress
+                Email = userEmailAddress,
+                OrderDate = DateTime.Now
             };
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
 
+            decimal orderTotal = 0;
+
             foreach (var item in items)
             {
+                var price = (decimal)item.Course.FinalPrice;
                 var orderItem = new OrderItem()
                 {
                     Amount = item.Amount,
@@ -52,9 +79,15 @@ namespace JapaneseLearningPlatform.Data.Services
                     OrderId = order.Id,
                     Price = item.Course.FinalPrice
                 };
+
+                orderTotal += price * item.Amount;
+
                 await _context.OrderItems.AddAsync(orderItem);
             }
+
+            order.TotalAmount = orderTotal;
             await _context.SaveChangesAsync();
         }
+
     }
 }
