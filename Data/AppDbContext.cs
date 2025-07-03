@@ -1,5 +1,4 @@
-﻿using JapaneseLearningPlatform.Data.ViewModels;
-using JapaneseLearningPlatform.Models;
+﻿using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

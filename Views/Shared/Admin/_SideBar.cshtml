@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+<!-- Toggle button -->
+<!-- Sidebar Toggle Button -->
+<button id="toggleSidebar" class="btn btn-danger btn-sm mb-3 ms-2 mt-2">
+    <i class="bi bi-list"></i>
+</button>
+
+<!-- Sidebar -->
+<nav class="navbar navbar-vertical navbar-expand-xs navbar-dark bg-gradient-danger" id="sidenav-main" style="min-height: 100vh; width: 250px;">
+    <div class="scrollbar-inner w-100">
+
+        <!-- Brand Header -->
+        <div class="sidenav-header text-center py-4">
+            
+        </div>
+        <div class="text-center mb-4">
+            <div class="footer-brand">
+                <span class="brand-icon">日</span>
+                <span class="brand-text">Nihongo Sekai</span>
+            </div>
+        </div>
+        <!-- Navigation -->
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white d-flex align-items-center" href="@Url.Action("Index", "Admin")>
+                    <i class="bi bi-house me-2"></i> Home
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white d-flex align-items-center" href="@Url.Action("Index", "Courses")>
+                    <i class="bi bi-display me-2"></i> Courses
+                </a>
+            </li>
+            
+            <!-- Dropdown -->
+            <li class="nav-item">
+                <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#exploreCollapse" role="button">
+                    <span><i class="bi bi-compass me-2"></i> Support</span>
+                    <i class="bi bi-chevron-down small"></i>
+                </a>
+                <ul class="collapse ps-4 list-unstyled" id="exploreCollapse">
+                    <li><a class="nav-link text-white" href="#">Help Center</a></li>
+                    <li><a class="nav-link text-white" href="#">Contact Us</a></li>
+                    <li><a class="nav-link text-white" href="#">Blog</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="navbar-inner">
+
+            <hr class="my-3 border-light mx-3" />
+            <ul class="navbar-nav px-3">
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white d-flex align-items-center" href="@Url.Action("Users", "Account")>
+                        <i class="bi bi-journal-text me-2"></i> User List
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white d-flex align-items-center" href="@Url.Action("Users", "Account")>
+                        <i class="bi bi-journal-text me-2"></i> Video List
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav px-3">
+                <li class="nav-item">
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center">
+                            <i class="ni ni-button-power me-2"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
