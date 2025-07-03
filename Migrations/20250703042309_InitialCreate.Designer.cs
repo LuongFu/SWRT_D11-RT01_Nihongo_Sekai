@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250703041124_AddTotalAmountToOrder")]
-    partial class AddTotalAmountToOrder
+    [Migration("20250703042309_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

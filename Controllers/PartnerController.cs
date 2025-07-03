@@ -40,7 +40,7 @@ namespace JapaneseLearningPlatform.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
-            return View("~/Views/Partner/Profile.cshtml", user);
+            return View("~/Views/Partners/Profile.cshtml", user);
         }
 
         // ✏️ Sửa hồ sơ
@@ -50,7 +50,7 @@ namespace JapaneseLearningPlatform.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
-            return View("~/Views/Partner/EditProfile.cshtml", user);
+            return View("~/Views/Partners/EditProfile.cshtml", user);
         }
 
         [Authorize(Roles = "Partner")]
@@ -66,12 +66,12 @@ namespace JapaneseLearningPlatform.Controllers
             return RedirectToAction("Profile");
         }
 
-        // 🔒 Đặt lại mật khẩu
+        // 🔒 Đổi mật khẩu
         [Authorize(Roles = "Partner")]
         [HttpGet]
         public IActionResult ChangePassword()
         {
-            return View();
+            return View("~/Views/Partners/ResetPassword.cshtml");
         }
 
         [HttpPost]
@@ -81,7 +81,7 @@ namespace JapaneseLearningPlatform.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["ChangePasswordError"] = "Vui lòng kiểm tra lại thông tin.";
-                return RedirectToAction("ChangePassword");
+                return View("~/Views/Partners/ResetPassword.cshtml", model);
             }
 
             var user = await _userManager.GetUserAsync(User);
@@ -105,12 +105,11 @@ namespace JapaneseLearningPlatform.Controllers
                 return RedirectToAction("ChangePassword");
             }
 
-            // ✅ Thành công → hiển thị thông báo và chờ redirect
             TempData["PasswordChangeSuccess"] = "Thay đổi mật khẩu thành công.";
             TempData["ShouldRedirectToLogin"] = true;
             await _signInManager.SignOutAsync();
 
-            return View(); // đảm bảo luôn có return
+            return View("~/Views/Partners/ResetPassword.cshtml");
         }
 
         // 📷 Tải lên ảnh đại diện
