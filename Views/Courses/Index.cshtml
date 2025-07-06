@@ -103,15 +103,6 @@
     </form>
 </div>
 
-
-    @* Admin Create Button *@
-    @if (isAdmin)
-    {
-        <div class="text-end mb-3 animate-on-scroll">
-            @await Html.PartialAsync("_CreateItem", "Courses")
-        </div>
-    }
-
     <div class="row row-cols-1 row-cols-md-3 g-4 animate-on-scroll">
         @foreach (var item in Model)
         {
