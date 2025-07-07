@@ -9,20 +9,17 @@
 }
 
 @section Head {
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>@ViewData["Title"]</title>
-    <meta name="description"
-          content="Create your Nihongo Sekai account and start your Japanese learning journey today." />
+    <meta content="Create your Nihongo Sekai account and start your Japanese learning journey today." name="description" />
 }
 
 @section Styles {
     <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <!-- Global Stylesheet -->
-    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+    <link asp-append-version="true" href="~/css/styles.css" rel="stylesheet" />
     <!-- Page-Specific CSS -->
     <style>
         /* ==================== RESPONSIVE LAYOUT ==================== */
@@ -46,29 +43,37 @@
 
         /* Two-Column Auth Card */
         .auth-card {
-            background: var(--color-white);
-            border-radius: var(--radius-xl);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            overflow: hidden;
+            display: flex;
+            flex-direction: column; /* thay vì grid 2 cột */
             max-width: 1000px;
             width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            min-height: 600px;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            background: var(--color-white);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
-        /* Left (Form) Column */
+        .form-split {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap; /* responsive fallback */
+        }
+
+            .form-split .form-group {
+                flex: 1 1 48%; /* 2 cột */
+                min-width: 220px; /* đảm bảo không vỡ khi thu nhỏ */
+            }
+
         .auth-form-column {
-            padding: var(--spacing-3xl);
+            padding: 2.5rem 2rem; /* thay vì 3rem 3rem */
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
-        /* Header */
         .auth-header {
             text-align: center;
-            margin-bottom: var(--spacing-3xl);
+            margin-bottom: 8px; /* giảm khoảng cách */
         }
 
         .auth-brand {
@@ -76,7 +81,6 @@
             align-items: center;
             justify-content: center;
             gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-xl);
             font-size: 1.5rem;
             font-weight: 700;
         }
@@ -104,26 +108,39 @@
         .auth-form {
             display: flex;
             flex-direction: column;
-            gap: var(--spacing-lg);
+            gap: 8px; /* giảm spacing */
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
+            margin-bottom: 1rem; /* giảm bớt khoảng cách giữa các field */
         }
+
+        .form-group.password{
+            margin-bottom: 0;
+        }
+
+            .form-group.compact {
+                margin-bottom: 0.75rem; /* nếu cần sát hơn nữa */
+            }
 
         .form-label {
             font-weight: 600;
             color: var(--color-gray-700);
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: 2px;
             font-size: 0.875rem;
         }
 
+        .form-label.agreeTerms{
+                margin: -8px 0;
+            }
+
         .form-input {
-            padding: var(--spacing-lg);
+            padding: var(--spacing-md); /* giảm chiều cao */
             border: 2px solid var(--color-gray-200);
             border-radius: var(--radius-lg);
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-family: inherit;
             transition: all 0.3s ease;
             background: var(--color-white);
@@ -170,7 +187,7 @@
 
         /* Strength bar */
         .password-strength {
-            margin-top: var(--spacing-md);
+            margin-top: 0.25rem;
         }
 
         .strength-label {
@@ -203,11 +220,11 @@
 
         /* Requirements */
         .password-requirements {
-            margin-top: var(--spacing-md);
-            padding: var(--spacing-md);
+            margin-top: 0.25rem;
             background: var(--color-gray-50);
             border-radius: var(--radius-md);
             border: 1px solid var(--color-gray-200);
+            
         }
 
         .requirement {
@@ -232,9 +249,9 @@
             background: var(--color-primary-600);
             color: var(--color-white);
             border: none;
-            padding: var(--spacing-lg) var(--spacing-xl);
+            padding: var(--spacing-md) var(--spacing-lg); /* gọn lại */
             border-radius: var(--radius-lg);
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -242,7 +259,8 @@
             align-items: center;
             justify-content: center;
             gap: var(--spacing-sm);
-            margin-top: var(--spacing-lg);
+            margin-top: 4px;
+            margin-bottom: 4px;
         }
 
             .auth-button:hover {
@@ -266,13 +284,11 @@
                 border-radius: 50%;
                 animation: spin 1s linear infinite;
             }
+
         @@keyframes spin {
-            to
-
-        {
-            transform: rotate(360deg);
-        }
-
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* File Upload */
@@ -371,13 +387,13 @@
 
         /* Social Login */
         .social-login {
-            margin-top: var(--spacing-xl);
+            margin-top: 1.25rem; /* giảm bớt từ 2rem */
         }
 
         .social-divider {
             display: flex;
             align-items: center;
-            margin: var(--spacing-xl) 0;
+            margin: 0 0 8px;
             color: var(--color-gray-500);
             font-size: 0.875rem;
         }
@@ -409,12 +425,13 @@
             align-items: center;
             justify-content: center;
             gap: var(--spacing-sm);
-            padding: var(--spacing-md) var(--spacing-lg);
+            padding: 0.5rem 1.25rem; /* gọn hơn */
             border: 2px solid var(--color-gray-200);
             border-radius: var(--radius-lg);
             background: var(--color-white);
             color: var(--color-gray-700);
             font-weight: 500;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -465,22 +482,22 @@
                 z-index: 1;
             }
         /* .auth-benefits-column {
-            background: linear-gradient(135deg, var(--color-primary-600), var(--color-secondary-600) );
-            color: var(--color-white);
-            padding: var(--spacing-3xl);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
+                    background: linear-gradient(135deg, var(--color-primary-600), var(--color-secondary-600) );
+                    color: var(--color-white);
+                    padding: var(--spacing-3xl);
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    position: relative;
+                    overflow: hidden;
+                }
 
-            .auth-benefits-column::before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                background: url("data:image/svg+xml,%3Csvg width='40' height='40' ...%3E") repeat;
-            } */
+                    .auth-benefits-column::before {
+                        content: "";
+                        position: absolute;
+                        inset: 0;
+                        background: url("data:image/svg+xml,%3Csvg width='40' height='40' ...%3E") repeat;
+                    } */
 
         .benefits-content {
             position: relative;
@@ -545,8 +562,8 @@
         /* Auth Links */
         .auth-links {
             text-align: center;
-            margin-top: var(--spacing-xl);
-            padding-top: var(--spacing-xl);
+            margin-top: var(--spacing-sm);
+            padding-top: var(--spacing-sm);
             border-top: 1px solid var(--color-gray-200);
         }
 
@@ -591,349 +608,388 @@
             margin-bottom: var(--spacing-lg);
         }
 
+        /*Sửa form - hoàng*/
+
+        .role-options {
+            display: flex;
+            justify-content: space-between;
+            gap: var(--spacing-md); /* giữ khoảng cách giữa 2 ô */
+            width: 100%;
+        }
+
+        .role-option {
+            flex: 1 1 0;
+            padding: var(--spacing-md);
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid var(--color-gray-300);
+            border-radius: var(--radius-lg);
+            background: var(--color-white);
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+            .role-option.selected {
+                border-color: var(--color-primary-600);
+                background: var(--color-primary-50);
+            }
+
+        .role-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem; /* khoảng cách giữa icon và text */
+        }
+
+        .role-icon {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .role-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .role-options.horizontal{
+            margin-bottom:0;
+        }
+
+        /* Ẩn phần mô tả */
+        .role-description {
+            display: none;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+        }
+
+            .password-input-wrapper .form-input {
+                width: 100%; /* sửa lại là full */
+                padding-right: 2.5rem; /* đủ chỗ cho toggle eye icon */
+            }
+
+        .partner-extra-columns {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+            .partner-extra-columns .form-group-group {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+
+            .partner-extra-columns .form-group {
+                flex: 1;
+            }
+
+        .specializations-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+        }
+
+        .center-align {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
     </style>
 }
 
 <div class="auth-page">
-  <div class="auth-main">
-    <div class="auth-card">
-      <!-- Left Column: Form -->
-      <div class="auth-form-column">
-        <div class="auth-header">
-          <div class="auth-brand">
-            <span class="brand-icon">日</span>
-            <span class="brand-text">Nihongo Sekai</span>
-          </div>
-          <h1 class="auth-title">Start Your Journey</h1>
-          <p class="auth-subtitle">
-            Create your account and begin mastering Japanese today
-          </p>
-        </div>
-
-        @* Hiển thị lỗi chung nếu có *@
-        @if (TempData["Error"] != null)
-        {
-          <div class="auth-message error">
-            @TempData["Error"]
-          </div>
-        }
-
-        @* Role Selection *@
-        <div class="role-selection">
-          <label class="form-label">Choose your role</label>
-          <div class="role-options">
-            <div class="role-option selected" data-role="Learner">
-              <div class="role-icon">🎓</div>
-              <h3 class="role-title">Learner</h3>
-              <p class="role-description">
-                Learn Japanese through courses and live classrooms
-              </p>
-            </div>
-            <div class="role-option" data-role="Partner">
-              <div class="role-icon">🏫</div>
-              <h3 class="role-title">Partner</h3>
-              <p class="role-description">
-                Share your expertise and teach Japanese to students worldwide
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <form asp-action="Register"
-              method="post"
-              enctype="multipart/form-data"
-              class="auth-form"
-              id="registerForm">
-          <input type="hidden" id="Role" name="Role" value="Learner" />
-
-          <div class="form-group">
-            <label asp-for="FullName" class="form-label">Full Name</label>
-            <input asp-for="FullName"
-                   class="form-input"
-                   placeholder="Enter your full name" />
-            <span asp-validation-for="FullName" class="text-danger"></span>
-          </div>
-
-          <div class="form-group">
-            <label asp-for="EmailAddress" class="form-label">
-              Email Address
-            </label>
-            <input asp-for="EmailAddress"
-                   type="email"
-                   class="form-input"
-                   placeholder="Enter your email address" />
-            <span asp-validation-for="EmailAddress" class="text-danger"></span>
-          </div>
-
-          <div class="form-group">
-            <label asp-for="Password" class="form-label">Password</label>
-            <div class="password-input-wrapper">
-              <input asp-for="Password"
-                     type="password"
-                     id="password"
-                     class="form-input"
-                     placeholder="Create a strong password"
-                     minlength="8" />
-              <button type="button"
-                      class="password-toggle"
-                      onclick="togglePassword('password')"
-                      aria-label="Toggle password visibility">
-                <svg id="eyeIcon"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-              </button>
-            </div>
-
-            <!-- Strength & Requirements -->
-            <div class="password-strength" id="passwordStrength">
-              <div class="strength-label">Password Strength:</div>
-              <div class="strength-bar">
-                <div id="strengthFill" class="strength-fill"></div>
-              </div>
-              <div id="strengthText" class="strength-text">
-                Enter password
-              </div>
-            </div>
-            <div class="password-requirements">
-              <div id="req-length" class="requirement">
-                <span class="req-icon">○</span>At least 8 characters
-              </div>
-              <div id="req-uppercase" class="requirement">
-                <span class="req-icon">○</span>One uppercase letter
-              </div>
-              <div id="req-lowercase" class="requirement">
-                <span class="req-icon">○</span>One lowercase letter
-              </div>
-              <div id="req-number" class="requirement">
-                <span class="req-icon">○</span>One number
-              </div>
-              <div id="req-symbol" class="requirement">
-                <span class="req-icon">○</span>One symbol (!@@#$%^&*)
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label asp-for="ConfirmPassword" class="form-label">
-              Confirm Password
-            </label>
-            <div class="password-input-wrapper">
-              <input asp-for="ConfirmPassword"
-                     type="password"
-                     id="confirmPassword"
-                     class="form-input"
-                     placeholder="Confirm your password" />
-              <button type="button"
-                      class="password-toggle"
-                      onclick="togglePassword('confirmPassword')"
-                      aria-label="Toggle confirm password visibility">
-                <svg id="eyeIcon2"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-              </button>
-            </div>
-            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-          </div>
-
-          @* Chỉ hiện khi chọn Partner
-          <div id="partnerUploadSection"
-               class="form-group"
-               style="display:none;">
-            <label asp-for="PartnerDocument" class="form-label">
-              Upload verification document
-            </label>
-            <input asp-for="PartnerDocument"
-                   type="file"
-                   accept=".pdf,.jpg,.png"
-                   class="form-input" />
-            <span asp-validation-for="PartnerDocument"
-                  class="text-danger"></span>
-          </div> *@
-
-        <!-- Chỉ hiện khi chọn Partner -->
-        <div id="partnerExtra" style="display:none;">
-
-            <!-- Years of Experience (chỉ hiển thị, không bind) -->
-            <div class="form-group">
-                <label class="form-label" for="Experience">Years of Experience *</label>
-                <!-- bỏ asp-for và name để giá trị không được gửi lên server -->
-                <select id="Experience" class="form-input">
-                    <option value="">Select experience</option>
-                    <option>1-2 years</option>
-                    <option>3-5 years</option>
-                    <option>6-10 years</option>
-                    <option>10+ years</option>
-                </select>
-            </div>
-
-            <!-- Specializations (chỉ hiển thị, không bind) -->
-            <div class="form-group">
-                <label class="form-label">Specializations</label>
-                <div class="specializations-grid">
-                    <label class="checkbox-group">
-                        <!-- bỏ name để browser không gửi checkbox này -->
-                        <input type="checkbox" class="checkbox-input" value="conversation" />
-                        <span class="checkbox-label">Conversation Practice</span>
-                    </label>
-                    <label class="checkbox-group">
-                        <input type="checkbox" class="checkbox-input" value="business" />
-                        <span class="checkbox-label">Business Japanese</span>
-                    </label>
-                    <label class="checkbox-group">
-                        <input type="checkbox" class="checkbox-input" value="jlpt" />
-                        <span class="checkbox-label">JLPT Preparation</span>
-                    </label>
-                    <label class="checkbox-group">
-                        <input type="checkbox" class="checkbox-input" value="grammar" />
-                        <span class="checkbox-label">Grammar</span>
-                    </label>
-                    <label class="checkbox-group">
-                        <input type="checkbox" class="checkbox-input" value="culture" />
-                        <span class="checkbox-label">Cultural Studies</span>
-                    </label>
-                    <label class="checkbox-group">
-                        <input type="checkbox" class="checkbox-input" value="pronunciation" />
-                        <span class="checkbox-label">Pronunciation</span>
-                    </label>
+    <div class="auth-main">
+        <div class="auth-card">
+            <!-- Left Column: Form -->
+            <div class="auth-form-column">
+                <div class="auth-header">
+                    <div class="auth-brand" style="margin-bottom:1rem;">
+                        <span class="brand-icon">日</span>
+                        <span class="brand-text">Nihongo Sekai</span>
+                    </div>
+                    <h1 class="auth-title" style="margin-bottom:1rem;">Start Your Journey</h1>
+                    <p class="auth-subtitle" style="margin-bottom:1rem;">
+                        Create your account and begin mastering Japanese today
+                    </p>
                 </div>
-            </div>
 
-      <!-- Certificates & Qualifications -->
-      <div class="form-group">
-        <label class="form-label">Certificates & Qualifications</label>
-        <div class="file-upload" id="certificateUpload">
-          <div class="file-upload-icon">📁</div>
-          <div class="file-upload-text">Upload your certificates</div>
-          <div class="file-upload-hint">PDF, DOC, or images up to 10MB each</div>
-          <input type="file"
-                 id="PartnerDocument"
-                 name="PartnerDocument"
-                 multiple
-                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                 style="display:none;" />
-        </div>
-        <div id="fileList" class="file-list"></div>
-        <span asp-validation-for="PartnerDocument" class="text-danger"></span>
-      </div>
-    </div>
+                @* Hiển thị lỗi chung nếu có *@
+                @if (TempData["Error"] != null)
+                {
+                    <div class="auth-message error">
+                        @TempData["Error"]
+                    </div>
+                }
 
-          <div class="form-group">
-            <label class="form-label">
-              <input asp-for="AgreeTerms"
-                     type="checkbox" />
-              I agree to the
-              <a href="~/terms" class="auth-link" target="_blank">
-                Terms of Service
-              </a>
-              and
-              <a href="~/privacy" class="auth-link" target="_blank">
-                Privacy Policy
-              </a>
-            </label>
-            <span asp-validation-for="AgreeTerms"
-                  class="text-danger"></span>
-          </div>
+                @* Role Selection *@
+                <div class="role-selection" style="margin-bottom:1rem;">
+                    <label class="form-label">Choose your role</label>
+                    <div class="role-options horizontal">
+                        <div class="role-option selected" data-role="Learner">
+                            <div class="role-label">
+                                <span class="role-icon">🎓</span>
+                                <span class="role-title">Learner</span>
+                                <p class="role-description">
+                                    Learn Japanese through courses and live classrooms
+                                </p>
+                            </div>
+                        </div>
+                        <div class="role-option" data-role="Partner">
+                            <div class="role-label">
+                                <span class="role-icon">🏫</span>
+                                <span class="role-title">Partner</span>
+                                <p class="role-description">
+                                    Share your expertise and teach Japanese to students worldwide
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form asp-action="Register" class="auth-form" enctype="multipart/form-data" id="registerForm" method="post">
+                    <input id="Role" name="Role" type="hidden" value="Learner" />
+                    <div class="form-split">
+                        <div class="form-group compact" style="margin-bottom:1rem;">
+                            <label asp-for="FullName" class="form-label">Full Name</label>
+                            <input asp-for="FullName" class="form-input" placeholder="Enter your full name" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group compact" style="margin-bottom:1rem;">
+                            <label asp-for="EmailAddress" class="form-label">Email Address</label>
+                            <input asp-for="EmailAddress" class="form-input" placeholder="Enter your email address" type="email" />
+                            <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- Password + Confirm Password nằm cùng hàng -->
+                    <div class="form-split">
+                        <!-- Password -->
+                        <div class="form-group compact" style="margin-bottom:1rem;">
+                            <label asp-for="Password" class="form-label">Password</label>
+                            <div class="password-input-wrapper">
+                                <input asp-for="Password" class="form-input" id="password" minlength="8" placeholder="Create a strong password" type="password" />
+                                <button aria-label="Toggle password visibility" class="password-toggle" onclick="togglePassword('password')" type="button">
+                                    <svg fill="none" id="eyeIcon" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <!-- Confirm Password -->
+                        <div class="form-group compact" style="margin-bottom:1rem;">
+                            <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                            <div class="password-input-wrapper">
+                                <input asp-for="ConfirmPassword" class="form-input" id="confirmPassword" placeholder="Confirm your password" type="password" />
+                                <button aria-label="Toggle confirm password visibility" class="password-toggle" onclick="togglePassword('confirmPassword')" type="button">
+                                    <svg fill="none" id="eyeIcon2" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- Password Strength and Requirements (xuống dòng riêng) -->
+                    <div class="form-group password" style="margin-bottom:1rem;">
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-label">Password Strength:</div>
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText">
+                                Enter password
+                            </div>
+                        </div>
+                        <div class="password-requirements" style="margin-bottom:1rem;">
+                            <div class="requirement" id="req-length">
+                                <span class="req-icon">○</span> At least 8 characters
+                            </div>
+                            <div class="requirement" id="req-uppercase">
+                                <span class="req-icon">○</span> One uppercase letter
+                            </div>
+                            <div class="requirement" id="req-lowercase">
+                                <span class="req-icon">○</span> One lowercase letter
+                            </div>
+                            <div class="requirement" id="req-number">
+                                <span class="req-icon">○</span> One number
+                            </div>
+                            <div class="requirement" id="req-symbol">
+                                <span class="req-icon">○</span> One symbol (!@@#$%^&amp;*)
+                            </div>
+                        </div>
+                    </div>
 
-          <button type="submit"
-                  id="registerButton"
-                  class="auth-button">
-            <span id="registerButtonText">Create Account</span>
-            <div id="registerSpinner"
-                 class="spinner"
-                 style="display:none;"></div>
-          </button>
-        </form>
+                    @* Chỉ hiện khi chọn Partner *@
+                    <div id="partnerExtra" style="display:none;">
+                        <div class="form-split partner-extra-columns">
+                            <!-- LEFT: Years of Experience + Specializations -->
+                            <div class="form-group-group">
+                                <!-- Years of Experience -->
+                                <div class="form-group">
+                                    <label class="form-label" for="Experience">Years of Experience *</label>
+                                    <select id="Experience" class="form-input">
+                                        <option value="">Select experience</option>
+                                        <option>1-2 years</option>
+                                        <option>3-5 years</option>
+                                        <option>6-10 years</option>
+                                        <option>10+ years</option>
+                                    </select>
+                                </div>
+
+                                <!-- Specializations -->
+                                <div class="form-group">
+                                    <label class="form-label">Specializations</label>
+                                    <div class="specializations-grid">
+                                        <label class="checkbox-group">
+                                            <input type="checkbox" class="checkbox-input" value="conversation" />
+                                            <span class="checkbox-label">Conversation Practice</span>
+                                        </label>
+                                        <label class="checkbox-group">
+                                            <input type="checkbox" class="checkbox-input" value="business" />
+                                            <span class="checkbox-label">Business Japanese</span>
+                                        </label>
+                                        <label class="checkbox-group">
+                                            <input type="checkbox" class="checkbox-input" value="jlpt" />
+                                            <span class="checkbox-label">JLPT Preparation</span>
+                                        </label>
+                                        <label class="checkbox-group">
+                                            <input type="checkbox" class="checkbox-input" value="grammar" />
+                                            <span class="checkbox-label">Grammar</span>
+                                        </label>
+                                        <label class="checkbox-group">
+                                            <input type="checkbox" class="checkbox-input" value="culture" />
+                                            <span class="checkbox-label">Cultural Studies</span>
+                                        </label>
+                                        <label class="checkbox-group">
+                                            <input type="checkbox" class="checkbox-input" value="pronunciation" />
+                                            <span class="checkbox-label">Pronunciation</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RIGHT: Certificates -->
+                            <div class="form-group">
+                                <label class="form-label">Certificates &amp; Qualifications</label>
+                                <div class="file-upload" id="certificateUpload">
+                                    <div class="file-upload-icon">📁</div>
+                                    <div class="file-upload-text">Upload your certificates</div>
+                                    <div class="file-upload-hint">PDF, DOC, or images up to 10MB each</div>
+                                    <input type="file"
+                                           id="PartnerDocument"
+                                           name="PartnerDocument"
+                                           multiple
+                                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                           style="display:none;" />
+                                </div>
+                                <div id="fileList" class="file-list"></div>
+                                <span asp-validation-for="PartnerDocument" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group center-align" style="margin-bottom:1rem;">
+                        <label class="form-label agreeTerms">
+                            <input asp-for="AgreeTerms" type="checkbox" />
+                            I agree to the
+                            <a class="auth-link" href="~/terms" target="_blank">Terms of Service</a>
+                            and
+                            <a class="auth-link" href="~/privacy" target="_blank">Privacy Policy</a>
+                        </label>
+                        <span asp-validation-for="AgreeTerms" class="text-danger"></span>
+                    </div>
+                    <button class="auth-button" id="registerButton" style="margin-bottom:1rem;" type="submit">
+                        <span id="registerButtonText">Create Account</span>
+                        <div class="spinner" id="registerSpinner" style="display:none;"></div>
+                    </button>
+                </form>
 
                 <!-- Social Login -->
                 <div class="social-login">
                     <div class="social-divider">Or sign up with</div>
                     <div class="social-buttons">
-                        <button type="button" class="social-button" onclick="signupWithGoogle()">
-                            <!-- Dùng logo gốc Google từ URL của họ -->
-                            <img src="https://developers.google.com/identity/images/g-logo.png"
-                                 alt="Google" />
+                        <button class="social-button" onclick="signupWithGoogle()" type="button">
+                            <img alt="Google" src="https://developers.google.com/identity/images/g-logo.png" />
                             Google
                         </button>
                     </div>
                 </div>
-
-        <!-- Auth Links -->
-        <div class="auth-links">
-          <p>
-            Already have an account?
-            <a asp-action="Login" class="auth-link">
-              Sign in here
-            </a>
-          </p>
-        </div>
+                <!-- Back to Home -->
                 <div class="mt-4 text-center">
-                    <a asp-controller="Home" asp-action="Index" class="text-muted small"><i class="bi bi-arrow-left-circle"></i> Back to Home</a>
+                    <a asp-action="Index" asp-controller="Home" class="text-muted small">
+                        <i class="bi bi-arrow-left-circle"></i> Back to Home
+                    </a>
                 </div>
-      </div>
-
-      <!-- Right Column: Benefits -->
-      <div class="auth-benefits-column">
-        <div class="benefits-content">
-          <div class="benefits-header">
-            <h2 class="benefits-title">Join Our Community</h2>
-            <p class="benefits-subtitle">
-              Become part of a global community passionate about Japanese language and culture
-            </p>
-          </div>
-          <div class="benefits-list">
-            <div class="benefit-item">
-              <div class="benefit-icon">🚀</div>
-              <div class="benefit-content">
-                <h3>Start Learning Immediately</h3>
-                <p>
-                  Access our beginner-friendly courses right after signing up and start your journey today
-                </p>
-              </div>
+                <!-- Auth Links -->
+                <div class="auth-links">
+                    <p>
+                        Already have an account?
+                        <a asp-action="Login" class="auth-link">Sign in here</a>
+                    </p>
+                </div>
             </div>
-            <div class="benefit-item">
-              <div class="benefit-icon">🎯</div>
-              <div class="benefit-content">
-                <h3>Personalized Learning Path</h3>
-                <p>
-                  Get customized course recommendations based on your level and learning goals
-                </p>
-              </div>
+            <!-- Right Column: Benefits -->
+            <div class="auth-benefits-column">
+                <div class="benefits-content">
+                    <div class="benefits-header">
+                        <h2 class="benefits-title">Join Our Community</h2>
+                        <p class="benefits-subtitle">
+                            Become part of a global community passionate about Japanese language and culture
+                        </p>
+                    </div>
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <div class="benefit-icon">🚀</div>
+                            <div class="benefit-content">
+                                <h3>Start Learning Immediately</h3>
+                                <p>
+                                    Access our beginner-friendly courses right after signing up and start your journey today
+                                </p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">🎯</div>
+                            <div class="benefit-content">
+                                <h3>Personalized Learning Path</h3>
+                                <p>
+                                    Get customized course recommendations based on your level and learning goals
+                                </p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">👥</div>
+                            <div class="benefit-content">
+                                <h3>Connect with Others</h3>
+                                <p>
+                                    Join study groups, practice with peers, and get support from our community
+                                </p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">🏆</div>
+                            <div class="benefit-content">
+                                <h3>Track Your Achievements</h3>
+                                <p>
+                                    Earn certificates, unlock badges, and celebrate your milestones along the way
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="benefit-item">
-              <div class="benefit-icon">👥</div>
-              <div class="benefit-content">
-                <h3>Connect with Others</h3>
-                <p>
-                  Join study groups, practice with peers, and get support from our community
-                </p>
-              </div>
-            </div>
-            <div class="benefit-item">
-              <div class="benefit-icon">🏆</div>
-              <div class="benefit-content">
-                <h3>Track Your Achievements</h3>
-                <p>
-                  Earn certificates, unlock badges, and celebrate your milestones along the way
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div><!-- /.auth-card -->
-  </div><!-- /.auth-main -->
+        </div><!-- /.auth-card -->
+    </div><!-- /.auth-main -->
 </div><!-- /.auth-page -->
-
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
