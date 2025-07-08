@@ -232,31 +232,59 @@ namespace JapaneseLearningPlatform.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // LEARNER ONLY
-        [Authorize(Roles = "Learner")]
+        // View CLASSROOM CONTENT
+        [Authorize(Roles = "Learner,Partner")]
         public async Task<IActionResult> Content(int id)
         {
             var instance = await _context.ClassroomInstances
+                .AsQueryable()
                 .Include(c => c.Template)
-                .Include(c => c.Assessments)
-                .Include(c => c.Enrollments)
+                .Include(c => c.Assessments!)
+                    .ThenInclude(a => a.Submissions!)
+                        .ThenInclude(s => s.Learner)
+                .Include(c => c.Enrollments!)
+                    .ThenInclude(e => e.Learner)
                 .FirstOrDefaultAsync(c => c.Id == id);
+
 
             if (instance == null) return NotFound();
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isLearner = User.IsInRole(UserRoles.Learner);
+            var isPartner = User.IsInRole(UserRoles.Partner);
+            var isAdmin = User.IsInRole(UserRoles.Admin);
+
             var isEnrolled = instance.Enrollments.Any(e => e.LearnerId == userId && !e.HasLeft);
-            if (!isEnrolled) return Forbid();
+            var isOwnerPartner = isPartner && instance.Template.PartnerId == userId;
+
+            if (isLearner && !isEnrolled)
+                return Forbid();
+
+            if (isPartner && !isOwnerPartner)
+                return Forbid();
 
             var finalAssessment = instance.Assessments?.FirstOrDefault();
+
             AssessmentSubmission? submission = null;
+            List<AssessmentSubmission>? allSubmissions = null;
+
             if (finalAssessment != null)
             {
-                submission = await _context.AssessmentSubmissions
-                    .FirstOrDefaultAsync(s => s.FinalAssessmentId == finalAssessment.Id && s.LearnerId == userId);
+                if (isLearner)
+                {
+                    submission = await _context.AssessmentSubmissions
+                        .FirstOrDefaultAsync(s => s.FinalAssessmentId == finalAssessment.Id && s.LearnerId == userId);
+                }
+
+                if (isPartner && instance.Assessments.First().Submissions != null)
+                {
+                    allSubmissions = instance.Assessments.First().Submissions.ToList();
+                }
             }
+
             var reviewed = await _context.ClassroomEvaluations
-     .AnyAsync(e => e.InstanceId == id && e.LearnerId == userId);
+                .AnyAsync(e => e.InstanceId == id && e.LearnerId == userId);
+
             var vm = new ClassroomContentVM
             {
                 Instance = instance,
@@ -265,11 +293,13 @@ namespace JapaneseLearningPlatform.Controllers
                 FinalAssessment = finalAssessment,
                 Submission = submission,
                 HasSubmitted = submission != null,
-                HasReviewed = reviewed
+                HasReviewed = reviewed,
+                AllSubmissions = allSubmissions
             };
 
             return View(vm);
         }
+
 
         [Authorize(Roles = UserRoles.Learner)]
         public async Task<IActionResult> PayWithPaypal(int id)

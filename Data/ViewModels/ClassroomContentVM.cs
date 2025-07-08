@@ -9,6 +9,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public string? PartnerName { get; set; }
         public FinalAssessment? FinalAssessment { get; set; }
         public AssessmentSubmission? Submission { get; set; }
+        public List<AssessmentSubmission>? AllSubmissions { get; set; }
         public bool HasSubmitted { get; set; }
         public bool HasReviewed { get; set; }
     }
