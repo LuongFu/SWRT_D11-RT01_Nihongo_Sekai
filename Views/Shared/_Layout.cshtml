@@ -41,7 +41,8 @@
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" ? "active-tab" : "")" asp-controller="Admin" asp-action="Index">Home</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active-tab" : "")" asp-controller="Account" asp-action="Users">User List</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")" asp-controller="Courses" asp-action="Index">Courses</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Videos" ? "active-tab" : "")" asp-controller="Videos" asp-action="Index">Videos</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Classroom" ? "active-tab" : "")" asp-controller="ClassroomInstances" asp-action="Index">Classroom</a></li>
+                            @* <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Videos" ? "active-tab" : "")" asp-controller="Videos" asp-action="Index">Videos</a></li> *@
                         }
                         else if (User.Identity.IsAuthenticated && User.IsInRole("Partner"))
                         {
@@ -68,6 +69,7 @@
         }
 
         <main class="flex-grow-1">
+            @await Component.InvokeAsync("DailyWordPopup")
             @RenderBody()
             @*Chat bot*@
             <iframe id="chatbot-iframe"

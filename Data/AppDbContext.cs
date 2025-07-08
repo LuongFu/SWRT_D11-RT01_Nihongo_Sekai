@@ -176,5 +176,7 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<AssessmentSubmission> AssessmentSubmissions { get; set; }
         public DbSet<ClassroomEvaluation> ClassroomEvaluations { get; set; }
 
+        // Word of the day
+        public DbSet<DailyWord> DailyWords { get; set; }
     }
 }

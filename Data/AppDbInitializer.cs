@@ -366,8 +366,37 @@ namespace JapaneseLearningPlatform.Data
                     context.CourseContentItems.AddRange(contentItem1, contentItem2);
                     context.SaveChanges();
                 }
-                
-                
+
+                // Word of the day
+                if (!context.DailyWords.Any())
+                {
+                    context.DailyWords.AddRange(new List<DailyWord>
+    {
+        new DailyWord { JapaneseWord = "勉強", Romanji = "benkyou", Description = "Học tập, học hành (Study)", ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZtHBysJ4mTeiU03nAn9XJgr4_doYLAoudFA&s"},
+        new DailyWord { JapaneseWord = "友達", Romanji = "tomodachi", Description = "Bạn bè (Friend)", ImageUrl = "https://media.istockphoto.com/id/541995888/photo/japanese-friends-group-selfie.jpg?s=612x612&w=0&k=20&c=easi1Getsu3m04cyY2vuGtznh1fTeiMJQ0AHauY7C70="},
+        new DailyWord { JapaneseWord = "仕事", Romanji = "shigoto", Description = "Công việc (Career)", ImageUrl = "https://unlockjapan.jp/wp-content/uploads/2024/11/job-fair.png"},
+        new DailyWord { JapaneseWord = "先生", Romanji = "sensei", Description = "Giáo viên (Teacher)", ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhqIn41d5l8hQq57u8gav9dbcQFuRAQcxtlg&s"},
+        new DailyWord { JapaneseWord = "時間", Romanji = "jikan", Description = "Thời gian (Time)", ImageUrl = "https://m.media-amazon.com/images/I/51wRuQHNHJL.jpg"},
+        new DailyWord { JapaneseWord = "家族", Romanji = "kazoku", Description = "Gia đình (Family)", ImageUrl = "https://kated.com/wp-content/uploads/2020/03/JPN59a-Be-A-Guest-Of-A-Japanese-Family.jpg"},
+        new DailyWord { JapaneseWord = "食べ物", Romanji = "tabemono", Description = "Thức ăn, món ăn (Food)", ImageUrl = "https://rimage.gnst.jp/livejapan.com/public/article/detail/a/00/02/a0002670/img/basic/a0002670_main.jpg"},
+        new DailyWord { JapaneseWord = "飲み物", Romanji = "nomimono", Description = "Đồ uống (Drink)", ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0-ReVo2VLbWu9tOAwKREJ4HNdhcWoz2sX5g&s"},
+        new DailyWord { JapaneseWord = "学校", Romanji = "gakkou", Description = "Trường học (School)", ImageUrl = "https://web-japan.org/kidsweb/explore/calendar/assets/img/april/schoolyear01.jpg"},
+        new DailyWord { JapaneseWord = "天気", Romanji = "tenki", Description = "Thời tiết (Weather)", ImageUrl = "https://rimage.gnst.jp/livejapan.com/public/article/detail/a/00/00/a0000213/img/basic/a0000213_main.jpg"},
+        new DailyWord { JapaneseWord = "旅行", Romanji = "ryokou", Description = "Du lịch (Travel)", ImageUrl = "https://img.freepik.com/free-photo/woman-traveler-with-backpack-fushimi-inari-taisha-shrine-kyoto-japan_335224-88.jpg?semt=ais_hybrid&w=740"},
+        new DailyWord { JapaneseWord = "音楽", Romanji = "ongaku", Description = "Âm nhạc (Music)", ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Japanese_music_icon.png/1200px-Japanese_music_icon.png"},
+        new DailyWord { JapaneseWord = "本", Romanji = "hon", Description = "Sách (Book)", ImageUrl = "https://jtalkonline.com/wp-content/uploads/2020/11/Where-to-Get-Japanese-Novels-Outside-of-Japan-light-novels-scaled.jpg"},
+        new DailyWord { JapaneseWord = "映画", Romanji = "eiga", Description = "Phim ảnh (Movie)", ImageUrl = "https://preview.redd.it/whats-your-favorite-film-from-japan-v0-elnpvoybgtad1.jpeg?width=1080&crop=smart&auto=webp&s=aa8a6dfc2aa7a118e02f59fa96db7396bd4e8f8e"},
+        new DailyWord { JapaneseWord = "買い物", Romanji = "kaimono", Description = "Mua sắm (Shopping)", ImageUrl = "https://retailnext.net/_next/image?url=https%3A%2F%2Fimages.ctfassets.net%2Fuskqevaodrls%2F5JeL2yfgYL9POZSsLwdsnD%2Fee2260e2d93c439e30e80b8e0082cc94%2Fshutterstock_2294474927__2_.jpg&w=3840&q=75"},
+        new DailyWord { JapaneseWord = "電話", Romanji = "denwa", Description = "Điện thoại (Mobile Phone)", ImageUrl = "https://www.japan-guide.com/g20/2223_02.jpg"},
+        new DailyWord { JapaneseWord = "料理", Romanji = "ryouri", Description = "Nấu ăn, món ăn (Cook)", ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzWjhP5PayWx3eRbHLf6YJxgh7cpXCT3_ozQ&s"},
+        new DailyWord { JapaneseWord = "誕生日", Romanji = "tanjoubi", Description = "Sinh nhật (Birthday)", ImageUrl = "https://cdn.shopify.com/s/files/1/1083/2612/files/shutterstock_1240909954_480x480.jpg?v=1663330108"},
+        new DailyWord { JapaneseWord = "動物", Romanji = "doubutsu", Description = "Động vật (Animal)", ImageUrl = "https://mlyhahhwafqm.i.optimole.com/cb:5ksX~4cf46/w:640/h:423/q:75/f:best/ig:avif/https://interacnetwork.com/the-content/cream/wp-content/uploads/2021/11/image8.jpg"},
+        new DailyWord { JapaneseWord = "遊び", Romanji = "asobi", Description = "Chơi đùa, giải trí (Play, Entertainment)", ImageUrl = "https://d3c8ah58dul3sf.cloudfront.net/wp-content/uploads/2022/04/B5447956-8F73-4813-9A73-5BA0BF2DF186.jpeg"},
+    });
+
+                    context.SaveChanges();
+                }
+
 
             }
 

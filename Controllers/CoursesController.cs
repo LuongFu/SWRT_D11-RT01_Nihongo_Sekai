@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Cart;
+using JapaneseLearningPlatform.Data.Enums;
+using JapaneseLearningPlatform.Data.Services;
+using JapaneseLearningPlatform.Data.Static;
+using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using JapaneseLearningPlatform.Data.ViewModels;
-using JapaneseLearningPlatform.Data;
-using JapaneseLearningPlatform.Data.Enums;
-using JapaneseLearningPlatform.Data.Cart;
-using JapaneseLearningPlatform.Data.Services;
-using JapaneseLearningPlatform.Data.Static;
-using JapaneseLearningPlatform.Models;
+using System.ComponentModel;
 using System.Security.Claims;
 
 namespace JapaneseLearningPlatform.Controllers
@@ -21,7 +22,6 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrdersService _orderService;
-
         public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService)
         {
             _service = service;

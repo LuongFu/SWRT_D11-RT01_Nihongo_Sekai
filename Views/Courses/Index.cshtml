@@ -36,6 +36,7 @@
         src="~/js/script.js"
         asp-append-version="true">
     </script>
+    <script src="~/js/wordOfTheDay.js"></script>
 }
 <!-- Enhanced Hero Section with Gradient & Sakura Petals -->
 @if (!currentUser)
@@ -74,9 +75,11 @@
     </div>
 </section>
 }
+<!-- Courses Section -->
 <div class="container mt-4 animate-on-scroll">
     <h2 class="fw-bold mb-4 text-center">Explore All Courses</h2>
 </div>
+<div id="wordOfTheDayContainer"></div>
 <div class="container animate-on-scroll">
     <div class="mb-4">
     <form asp-action="Filter" method="get" class="row g-2 align-items-center">
