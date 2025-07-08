@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250626160749_AddLanguageLevelToClassroomTemplate")]
-    partial class AddLanguageLevelToClassroomTemplate
+    [Migration("20250703042309_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -83,70 +83,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("CourseSections");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Data.ViewModels.QuizResult", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("QuizId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TotalQuestions")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuizResults");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Data.ViewModels.QuizResultDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuizResultId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SelectedOptionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("QuizResultId");
-
-                    b.HasIndex("SelectedOptionId");
-
-                    b.ToTable("QuizResultDetails");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ApplicationUser", b =>
@@ -489,6 +425,12 @@ namespace JapaneseLearningPlatform.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -527,6 +469,70 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResult", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TotalQuestions")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuizId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("QuizResults");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResultDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuizResultId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SelectedOptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("QuizResultId");
+
+                    b.HasIndex("SelectedOptionId");
+
+                    b.ToTable("QuizResultDetails");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ShoppingCartItem", b =>
@@ -831,51 +837,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Data.ViewModels.QuizResult", b =>
-                {
-                    b.HasOne("Quiz", "Quiz")
-                        .WithMany()
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Data.ViewModels.QuizResultDetail", b =>
-                {
-                    b.HasOne("QuizQuestion", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("JapaneseLearningPlatform.Data.ViewModels.QuizResult", "QuizResult")
-                        .WithMany("Details")
-                        .HasForeignKey("QuizResultId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("QuizOption", "SelectedOption")
-                        .WithMany()
-                        .HasForeignKey("SelectedOptionId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Question");
-
-                    b.Navigation("QuizResult");
-
-                    b.Navigation("SelectedOption");
-                });
-
             modelBuilder.Entity("JapaneseLearningPlatform.Models.AssessmentSubmission", b =>
                 {
                     b.HasOne("JapaneseLearningPlatform.Models.FinalAssessment", "Assessment")
@@ -994,6 +955,51 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResult", b =>
+                {
+                    b.HasOne("Quiz", "Quiz")
+                        .WithMany()
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Quiz");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResultDetail", b =>
+                {
+                    b.HasOne("QuizQuestion", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("JapaneseLearningPlatform.Models.QuizResult", "QuizResult")
+                        .WithMany("Details")
+                        .HasForeignKey("QuizResultId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("QuizOption", "SelectedOption")
+                        .WithMany()
+                        .HasForeignKey("SelectedOptionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Question");
+
+                    b.Navigation("QuizResult");
+
+                    b.Navigation("SelectedOption");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ShoppingCartItem", b =>
@@ -1115,11 +1121,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("ContentItems");
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Data.ViewModels.QuizResult", b =>
-                {
-                    b.Navigation("Details");
-                });
-
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomInstance", b =>
                 {
                     b.Navigation("Assessments");
@@ -1147,6 +1148,11 @@ namespace JapaneseLearningPlatform.Migrations
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResult", b =>
+                {
+                    b.Navigation("Details");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Video", b =>

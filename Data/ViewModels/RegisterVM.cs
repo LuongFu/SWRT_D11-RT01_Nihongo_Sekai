@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace JapaneseLearningPlatform.Data.ViewModels
 {
@@ -28,5 +28,11 @@ namespace JapaneseLearningPlatform.Data.ViewModels
 
         [Display(Name = "Verification File")]
         public IFormFile? PartnerDocument { get; set; }  // Required only if ApplyAsPartner = true
+
+        [Required(ErrorMessage = "You need to respect our terms!")]
+        public bool AgreeTerms { get; set; }
+
+        // Dùng để nhận file upload khi role = Partner
+        //public IFormFile PartnerDocument { get; set; }
     }
 }

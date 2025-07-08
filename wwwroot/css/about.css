@@ -170,10 +170,10 @@
     background: var(--color-white);
 }
 
-.section-header {
+/*.section-header {
     text-align: center;
     margin-bottom: var(--spacing-2xl);
-}
+}*/
 
 .section-subtitle {
     color: var(--color-gray-600);

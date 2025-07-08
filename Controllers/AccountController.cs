@@ -160,7 +160,39 @@ namespace JapaneseLearningPlatform.Controllers
             return View(new ResetPasswordVM { Token = token, Email = email });
         }
 
- 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return View();
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+        [HttpGet] //ResetPasswordConfirmation
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
 
         // GOOGLE LOGIN
         [HttpGet]

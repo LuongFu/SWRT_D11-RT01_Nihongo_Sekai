@@ -1,4 +1,6 @@
 ﻿@model JapaneseLearningPlatform.Data.ViewModels.TakeQuizVM
+@using JapaneseLearningPlatform.Data.Enums
+
 @{
     ViewData["Title"] = "Quiz Result";
     var correctAnswers = ViewBag.CorrectAnswers as int? ?? 0;
@@ -18,39 +20,44 @@
         @for (int i = 0; i < Model.Questions.Count; i++)
         {
             var question = Model.Questions[i];
-            var selected = question.SelectedOptionId;
+            var selectedSingle = question.SelectedOptionId;
+            var selectedMultiple = question.SelectedOptionIds ?? new List<int>();
 
             <div class="mb-4">
                 <h5>Question @(i + 1): @question.QuestionText</h5>
 
                 @foreach (var option in question.Options)
                 {
-                    var isSelected = option.OptionId == selected;
-                    var isCorrect = option.IsCorrect;
+                    bool isSelected = question.QuestionType == QuestionType.SingleChoice
+                    ? option.OptionId == selectedSingle
+                    : selectedMultiple.Contains(option.OptionId);
+
+                    bool isCorrect = option.IsCorrect;
 
                     string bgClass = "";
+                    string icon = "";
+
                     if (isSelected && isCorrect)
                     {
                         bgClass = "bg-success text-white";
+                        icon = "bi bi-check-circle-fill";
                     }
                     else if (isSelected && !isCorrect)
                     {
                         bgClass = "bg-danger text-white";
+                        icon = "bi bi-x-circle-fill";
                     }
                     else if (!isSelected && isCorrect)
                     {
                         bgClass = "bg-success bg-opacity-25";
+                        icon = "bi bi-check-circle";
                     }
 
-                    <div class="p-2 rounded mb-1 @bgClass">
-                        @option.OptionText
-                        @if (isCorrect)
+                    <div class="p-2 rounded mb-1 @bgClass d-flex justify-content-between align-items-center">
+                        <span>@option.OptionText</span>
+                        @if (!string.IsNullOrEmpty(icon))
                         {
-                            <i class="bi bi-check-circle-fill ms-2"></i>
-                        }
-                        else if (isSelected)
-                        {
-                            <i class="bi bi-x-circle-fill ms-2"></i>
+                            <i class="@icon"></i>
                         }
                     </div>
                 }
@@ -59,13 +66,9 @@
         }
 
         <div class="mt-4">
-            @* <a asp-controller="Courses" asp-action="Index" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left-circle"></i> Back to Courses
-            </a> *@
-            <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId"
-   class="btn btn-outline-secondary mt-3">
-    <i class="bi bi-arrow-left-circle"></i> Back to Course
-</a>
+            <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-outline-secondary mt-3">
+                <i class="bi bi-arrow-left-circle"></i> Back to Course
+            </a>
         </div>
     </div>
 </div>
