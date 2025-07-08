@@ -188,6 +188,8 @@
 }
 
 <!-- Enhanced Hero Section -->
+@if (!User.Identity.IsAuthenticated)
+{
 <section class="enhanced-hero ">
     <div class="sakura-container" id="sakuraContainer"></div>
     <div class="container">
@@ -215,7 +217,7 @@
         </div>
     </div>
 </section>
-
+}
 <div class="container mt-4">
     <h2 class="fw-bold mb-4 text-center">Browse Classroom Sessions</h2>
 

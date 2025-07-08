@@ -760,26 +760,8 @@ footer.footer {
         font-weight: 600;
         color: #be123c; /* đỏ pastel đậm nhẹ */
     }
-/*Loading*/
-.spinner {
-    width: 60px;
-    height: 60px;
-    border: 6px solid rgba(255, 255, 255, 0.2);
-    border-top: 6px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
-}
 
-/* Animation xoay */
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-
-/* loading */
+/* Loading spinner styles */
 .loader-container {
     text-align: center;
     color: white;
@@ -795,13 +777,6 @@ footer.footer {
     margin: auto;
 }
 
-.loading-text {
-    margin-top: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    animation: colorShift 3s ease-in-out infinite;
-}
-
 @keyframes spin {
     to {
         transform: rotate(360deg);
@@ -809,12 +784,14 @@ footer.footer {
 }
 
 .loading-text {
-    text-align: center;
-    color: #ffe4ea;
-    font-weight: 600;
     margin-top: 20px;
-    font-size: 18px;
+    font-size: 24px;
+    font-weight: bold;
+    animation: colorShift 3s ease-in-out infinite;
+    color: #ffe4ea;
+    text-align: center;
 }
+
 
 /*My purchase course*/
 .course-card {
