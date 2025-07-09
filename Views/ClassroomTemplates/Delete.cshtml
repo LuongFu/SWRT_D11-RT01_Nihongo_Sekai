@@ -1,0 +1,47 @@
+﻿@model JapaneseLearningPlatform.Data.ViewModels.ClassroomTemplateVM
+
+@{
+    ViewData["Title"] = "Xác nhận xóa lớp học";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-danger">Xóa Template</h2>
+<h4 class="mb-3">Bạn có chắc chắn muốn xóa lớp học sau không?</h4>
+
+<hr />
+
+<div class="card border-danger p-4 mb-4">
+    <dl class="row">
+        <dt class="col-sm-3">Tiêu đề</dt>
+        <dd class="col-sm-9">@Model.Title</dd>
+
+        <dt class="col-sm-3">Mô tả</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+
+        <dt class="col-sm-3">Trình độ ngôn ngữ</dt>
+        <dd class="col-sm-9">@Model.LanguageLevel</dd>
+
+        <dt class="col-sm-3">Thời lượng buổi học</dt>
+        <dd class="col-sm-9">@Model.SessionTime giờ</dd>
+
+        <dt class="col-sm-3">Ngày bắt đầu</dt>
+        <dd class="col-sm-9">@Model.StartDate.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-3">Ngày kết thúc</dt>
+        <dd class="col-sm-9">@Model.EndDate.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-3">Trạng thái</dt>
+        <dd class="col-sm-9">@Model.Status</dd>
+
+        <dt class="col-sm-3">Giá</dt>
+        <dd class="col-sm-9">@Model.Price.ToString("C0")</dd>
+    </dl>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </div>
+</form>

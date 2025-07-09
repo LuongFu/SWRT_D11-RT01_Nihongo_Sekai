@@ -1,163 +1,168 @@
-﻿using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data.Services;
+using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Helpers;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace JapaneseLearningPlatform.Controllers
 {
-    [Authorize(Roles = "Admin,Partner")]
+    [Authorize(Roles = "Partner,Admin")]
     public class ClassroomTemplatesController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IClassroomTemplateService _templateService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _env;
 
-        public ClassroomTemplatesController(AppDbContext context, UserManager<ApplicationUser> userManager)
+        public ClassroomTemplatesController(
+            IClassroomTemplateService templateService,
+            UserManager<ApplicationUser> userManager,
+            IWebHostEnvironment env)
         {
-            _context = context;
+            _templateService = templateService;
             _userManager = userManager;
+            _env = env;
         }
 
-        // GET: ClassroomTemplates
+        // GET: /ClassroomTemplates/
         public async Task<IActionResult> Index()
         {
-            var templates = await _context.ClassroomTemplates
-                .Include(t => t.Partner)
-                .ToListAsync();
-            return View(templates);
-        }
-
-        // GET: ClassroomTemplates/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var template = await _context.ClassroomTemplates
-                .Include(t => t.Partner)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (template == null) return NotFound();
-
             if (User.IsInRole("Partner"))
             {
-                var userId = _userManager.GetUserId(User);
-                if (template.PartnerId != userId)
-                    return Forbid();
+                var partnerId = _userManager.GetUserId(User);
+                var templates = await _templateService.GetByPartnerIdAsync(partnerId);
+                return View("Index", templates.Select(t => t.ToVM()));
             }
 
-            return View(template);
+            var allTemplates = await _templateService.GetAllAsync();
+            return View("Index", allTemplates.Select(t => t.ToVM()));
         }
 
-        // GET: ClassroomTemplates/Create
+        // GET: /ClassroomTemplates/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            var template = await _templateService.GetByIdAsync(id);
+            if (template == null) return NotFound();
+
+            if (User.IsInRole("Partner") && template.PartnerId != _userManager.GetUserId(User))
+                return Forbid();
+
+            return View("Detail", template.ToVM());
+        }
+
+        // GET: /ClassroomTemplates/Create
         public IActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
-        // POST: ClassroomTemplates/Create
+        // POST: /ClassroomTemplates/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ClassroomTemplate template)
+        public async Task<IActionResult> Create(ClassroomTemplateVM vm)
         {
-            if (!ModelState.IsValid) return View(template);
+            if (!ModelState.IsValid)
+                return View("Create", vm);
 
-            // Set PartnerId for Partner role
-            if (User.IsInRole("Partner"))
+            string partnerId = _userManager.GetUserId(User);
+            string? imagePath = null;
+
+            if (vm.ImageFile != null)
             {
-                var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name)?.Id;
-                if (userId != null)
-                    template.PartnerId = userId;
+                var uploads = Path.Combine(_env.WebRootPath, "uploads/templates");
+                Directory.CreateDirectory(uploads);
+                var fileName = Guid.NewGuid() + Path.GetExtension(vm.ImageFile.FileName);
+                var filePath = Path.Combine(uploads, fileName);
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await vm.ImageFile.CopyToAsync(stream);
+                imagePath = "/uploads/templates/" + fileName;
             }
 
-            _context.Add(template);
-            await _context.SaveChangesAsync();
+            var entity = vm.ToEntity(partnerId, imagePath);
+            await _templateService.AddAsync(entity);
             return RedirectToAction(nameof(Index));
         }
-        // GET: ClassroomTemplates/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null) return NotFound();
 
-            var template = await _context.ClassroomTemplates.FindAsync(id);
+        // GET: /ClassroomTemplates/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
 
-            if (User.IsInRole("Partner"))
-            {
-                var userId = _userManager.GetUserId(User);
-                if (template.PartnerId != userId)
-                    return Forbid();
-            }
+            if (User.IsInRole("Partner") && template.PartnerId != _userManager.GetUserId(User))
+                return Forbid();
 
-            return View(template);
+            return View("Edit", template.ToVM());
         }
-        // POST: ClassroomTemplates/Edit/5
+
+        // POST: /ClassroomTemplates/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ClassroomTemplate template)
+        public async Task<IActionResult> Edit(ClassroomTemplateVM vm)
         {
-            if (id != template.Id) return NotFound();
+            if (!ModelState.IsValid)
+                return View("Edit", vm);
 
-            if (User.IsInRole("Partner"))
+            var existing = await _templateService.GetByIdAsync(vm.Id);
+            if (existing == null) return NotFound();
+
+            if (User.IsInRole("Partner") && existing.PartnerId != _userManager.GetUserId(User))
+                return Forbid();
+
+            string? imagePath = existing.ImageURL;
+
+            if (vm.ImageFile != null)
             {
-                var userId = _userManager.GetUserId(User);
-                var existing = await _context.ClassroomTemplates.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
-                if (existing == null || existing.PartnerId != userId)
-                    return Forbid();
+                var uploads = Path.Combine(_env.WebRootPath, "uploads/templates");
+                Directory.CreateDirectory(uploads);
+                var fileName = Guid.NewGuid() + Path.GetExtension(vm.ImageFile.FileName);
+                var filePath = Path.Combine(uploads, fileName);
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await vm.ImageFile.CopyToAsync(stream);
+                imagePath = "/uploads/templates/" + fileName;
             }
 
-            if (!ModelState.IsValid) return View(template);
+            // Update fields
+            existing.Title = vm.Title;
+            existing.Description = vm.Description;
+            existing.ImageURL = imagePath;
+            existing.LanguageLevel = vm.LanguageLevel;
+            existing.StartDate = vm.StartDate;
+            existing.EndDate = vm.EndDate;
+            existing.SessionTime = vm.SessionTime;
+            existing.Status = vm.Status;
+            existing.Price = vm.Price;
 
-            _context.Update(template);
-            await _context.SaveChangesAsync();
+            await _templateService.UpdateAsync(existing);
             return RedirectToAction(nameof(Index));
         }
-        // GET: ClassroomTemplates/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null) return NotFound();
 
-            var template = await _context.ClassroomTemplates
-                .Include(t => t.Partner)
-                .FirstOrDefaultAsync(m => m.Id == id);
+        // GET: /ClassroomTemplates/Delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
 
-            if (User.IsInRole("Partner"))
-            {
-                var userId = _userManager.GetUserId(User);
-                if (template.PartnerId != userId)
-                    return Forbid();
-            }
+            if (User.IsInRole("Partner") && template.PartnerId != _userManager.GetUserId(User))
+                return Forbid();
 
-            return View(template);
+            return View("Delete", template.ToVM());
         }
-        // POST: ClassroomTemplates/Delete/5
+
+        // POST: /ClassroomTemplates/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var template = await _context.ClassroomTemplates.FindAsync(id);
+            var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
 
-            if (User.IsInRole("Partner"))
-            {
-                var userId = _userManager.GetUserId(User);
-                if (template.PartnerId != userId)
-                    return Forbid();
-            }
+            if (User.IsInRole("Partner") && template.PartnerId != _userManager.GetUserId(User))
+                return Forbid();
 
-            _context.ClassroomTemplates.Remove(template);
-            await _context.SaveChangesAsync();
-
+            await _templateService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-        public async Task<IActionResult> MyTemplates()
-        {
-            var userId = _userManager.GetUserId(User);
-            var templates = await _context.ClassroomTemplates
-                .Where(t => t.PartnerId == userId)
-                .ToListAsync();
-
-            return View("Index", templates); // Reuse Index view
         }
     }
 }

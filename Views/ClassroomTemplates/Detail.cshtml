@@ -1,0 +1,18 @@
+﻿@model JapaneseLearningPlatform.Data.ViewModels.ClassroomTemplateVM
+@{
+    ViewData["Title"] = "Template Details";
+}
+
+<h2>@Model.Title</h2>
+
+<p><strong>Description:</strong> @Model.Description</p>
+<p><strong>Level:</strong> @Model.LanguageLevel</p>
+<p><strong>Session Time:</strong> @Model.SessionTime</p>
+<p><strong>Duration:</strong> @Model.StartDate.ToShortDateString() - @Model.EndDate.ToShortDateString()</p>
+<p><strong>Price:</strong> @Model.Price.ToString("C")</p>
+<p><strong>Status:</strong> @Model.Status</p>
+
+@if (!string.IsNullOrEmpty(Model.ImageURL))
+{
+    <img src="@Model.ImageURL" class="img-fluid mt-3" style="max-width: 400px;" />
+}

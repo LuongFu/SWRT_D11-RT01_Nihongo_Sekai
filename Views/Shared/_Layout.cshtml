@@ -45,9 +45,26 @@
                         }
                         else if (User.Identity.IsAuthenticated && User.IsInRole("Partner"))
                         {
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Partner" ? "active-tab" : "")" asp-controller="Partner" asp-action="Index">Home</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")" asp-controller="ClassroomInstances" asp-action="Index">Classrooms</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")" asp-controller="Schedule" asp-action="Index">Schedule</a></li>
+                            <li>
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Partner" ? "active-tab" : "")"
+                                   asp-controller="Partner" asp-action="Index">Home</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle @((ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomTemplates" || ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances") ? "active-tab" : "")"
+                                   href="#" id="classroomDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Classrooms
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="classroomDropdown">
+                                    <li><a class="dropdown-item" asp-controller="ClassroomInstances" asp-action="Index">My Sessions</a></li>
+                                    <li><a class="dropdown-item" asp-controller="ClassroomTemplates" asp-action="Index">My Templates</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")"
+                                   asp-controller="Schedule" asp-action="Index">Schedule</a>
+                            </li>
                         }
                         else
                         {
