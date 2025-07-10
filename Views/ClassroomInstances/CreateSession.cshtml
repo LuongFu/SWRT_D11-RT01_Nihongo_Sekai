@@ -4,17 +4,17 @@
 @model ClassroomInstanceVM
 
 @{
-    ViewData["Title"] = "Tạo phiên lớp học";
+    ViewData["Title"] = "Create a new Session";
 }
 
-<h2 class="mb-4">Tạo phiên mới từ Template</h2>
+<h2 class="mb-4">Create a new Session from a Template</h2>
 
 @if (!string.IsNullOrEmpty(Model.TemplateTitle))
 {
     <div class="alert alert-light border mb-4">
         <h5 class="mb-2">@Model.TemplateTitle</h5>
         <p>@Model.TemplateDescription</p>
-        <p><strong>Trình độ:</strong> @Model.LanguageLevel</p>
+        <p><strong>Level:</strong> @Model.LanguageLevel</p>
 
         @* Nếu có tài liệu *@
         @if (!string.IsNullOrEmpty(Model.DocumentURL))

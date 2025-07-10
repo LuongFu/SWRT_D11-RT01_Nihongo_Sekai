@@ -1,21 +1,22 @@
 ﻿@model IEnumerable<JapaneseLearningPlatform.Data.ViewModels.ClassroomTemplateVM>
 
 @{
-    ViewData["Title"] = "Mẫu lớp học của tôi";
+    ViewData["Title"] = "My Classroom Templates";
 }
+<div class="container mt-4">
 
-<h2 class="mb-4">Mẫu lớp học của tôi</h2>
+<h2 class="mb-4">My Classroom Templates</h2>
 
 <div class="mb-3 text-end">
     <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-circle me-1"></i> Tạo mẫu lớp học mới
+        <i class="bi bi-plus-circle me-1"></i> Create a new Classroom Template
     </a>
 </div>
 
 @if (!Model.Any())
 {
     <div class="alert alert-warning text-center">
-        <i class="bi bi-exclamation-circle me-2"></i> Chưa có mẫu lớp học nào.
+        <i class="bi bi-exclamation-circle me-2"></i> No Templates yet.
     </div>
 }
 else
@@ -23,10 +24,10 @@ else
     <table class="table table-bordered table-striped align-middle">
         <thead class="table-light">
             <tr>
-                <th style="width:100px">Ảnh</th>
-                <th>Tiêu đề</th>
-                <th>Trình độ</th>
-                <th style="width:170px" class="text-center">Hành động</th>
+                <th style="width:100px">Thumbnail</th>
+                <th>Title</th>
+                <th>Level</th>
+                <th style="width:170px" class="text-center">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -63,3 +64,4 @@ else
         </tbody>
     </table>
 }
+</div> <!-- End container -->

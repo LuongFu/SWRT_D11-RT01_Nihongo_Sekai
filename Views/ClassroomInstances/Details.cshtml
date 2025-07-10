@@ -62,16 +62,25 @@
     </div>
 
     <div class="mt-5 d-flex justify-content-center gap-3 border-top pt-4">
-        <a asp-action="MySession" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back to My Sessions
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
         </a>
 
         @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Learner))
         {
-            if (!Model.IsEnrolled)
+            @if (!Model.IsEnrolled)
             {
                 <a class="btn btn-success" asp-controller="ClassroomInstances" asp-action="PayWithPaypal" asp-route-id="@Model.Instance.Id">
                     <i class="bi bi-credit-card"></i> Tham gia & Thanh toán PayPal
+                </a>
+            }
+            else if (Model.IsEnrolled && !Model.HasPaid)
+            {
+                <div class="alert alert-warning">
+                    🟡 Bạn đã đăng ký lớp học này nhưng chưa thanh toán.
+                </div>
+                <a class="btn btn-success" asp-controller="ClassroomInstances" asp-action="PayWithPaypal" asp-route-id="@Model.Instance.Id">
+                    <i class="bi bi-credit-card"></i> Thanh toán PayPal
                 </a>
             }
             else
