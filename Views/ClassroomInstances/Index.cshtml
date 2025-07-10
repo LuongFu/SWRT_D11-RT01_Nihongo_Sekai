@@ -4,8 +4,48 @@
     ViewData["Title"] = "Các lớp học hiện có";
 }
 
-<div class="container py-4">
-    <h2 class="mb-4 text-center text-primary">Các lớp học đang mở</h2>
+@if (!User.Identity.IsAuthenticated)
+{
+    <section class="enhanced-hero">
+        <div class="sakura-container" id="sakuraContainer"></div>
+        <div class="container">
+            <div class="enhanced-hero-content">
+                <h1 class="enhanced-hero-title">Live Japanese Classrooms</h1>
+                <p class="enhanced-hero-subtitle">
+                    Join interactive live sessions with certified native speakers.
+                    Practice real conversation, get instant feedback, and learn with
+                    fellow students from around the world.
+                </p>
+                <div class="enhanced-hero-stats">
+                    <div class="enhanced-stat">
+                        <span class="enhanced-stat-number">5</span>
+                        <span class="enhanced-stat-label">Live Sessions</span>
+                    </div>
+                    <div class="enhanced-stat">
+                        <span class="enhanced-stat-number">50+</span>
+                        <span class="enhanced-stat-label">Active Students</span>
+                    </div>
+                    <div class="enhanced-stat">
+                        <span class="enhanced-stat-number">15</span>
+                        <span class="enhanced-stat-label">Hours Weekly</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4 text-center">Browse Classroom Sessions</h2>
+
+    @if (ViewBag.IsPartner == true) // Nếu controller chưa set, bạn cần bổ sung ViewBag.IsPartner = User.IsInRole(...)
+    {
+        <div class="text-end mb-3">
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New Session
+            </a>
+        </div>
+    }
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach (var item in Model)
@@ -30,10 +70,32 @@
                         <h5 class="card-title fw-semibold">@item.TemplateTitle</h5>
                         <p class="card-text text-muted">@item.TemplateDescription</p>
 
-                        <div class="mt-auto d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-danger">@item.Price.ToString("N0") VNĐ</span>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
-                        </div>
+                        @if (ViewBag.IsPartner == true)
+                        {
+                            <div class="mt-auto">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary w-100 mb-2">
+                                    <i class="bi bi-info-circle"></i> Details
+                                </a>
+                                <a asp-action="Content" asp-route-id="@item.Id" class="btn btn-outline-primary w-100 mb-2">
+                                    <i class="bi bi-journal-bookmark"></i> View Contents
+                                </a>
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning w-50">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger w-50">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-danger">@item.Price.ToString("N0") VNĐ</span>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+                            </div>
+                        }
                     </div>
 
                     <div class="card-footer text-muted small">
@@ -65,47 +127,172 @@
 </div>
 
 @section Styles {
+    <link rel="stylesheet"
+          href="~/css/styles.css"
+          asp-append-version="true" />
     <style>
-        .card-template {
-            border: none;
-            transition: transform 0.2s ease;
-        }
-
-            .card-template:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            }
-
-        .card-img-top-wrapper {
+        /* Enhanced Hero Section */
+        .enhanced-hero {
             position: relative;
-            height: 180px;
-            background-color: #f4f4f4;
+            min-height: 60vh; /* cao 60% viewport */
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: var(--spacing-3xl) var(--spacing-lg);
+            background: linear-gradient( 135deg, #f0f9ff 0%, #e0f2fe 50%, #fef2f2 100% );
             overflow: hidden;
         }
 
-            .card-img-top-wrapper img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
+        /* nếu bạn có hiệu ứng hoa rơi (sakura) */
+        .sakura-container {
+            position: absolute;
+            inset: 0; /* top:0; right:0; bottom:0; left:0; */
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .enhanced-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .enhanced-hero-title {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: var(--spacing-lg);
+            color: var(--color-gray-900);
+            line-height: 1.2;
+        }
+
+        .enhanced-hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--color-gray-600);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-2xl);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .enhanced-hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-2xl);
+            flex-wrap: wrap;
+            margin-top: var(--spacing-xl);
+        }
+
+        .enhanced-stat {
+            text-align: center;
+        }
+
+        .enhanced-stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primary-600);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .enhanced-stat-label {
+            font-size: 0.875rem;
+            color: var(--color-gray-600);
+            font-weight: 500;
+        }
+
+        /* Sakura petals */
+        /* Sakura Petal Animation */
+        @@keyframes sakuraPetals {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
             }
 
-        .img-placeholder {
-            font-size: 2rem;
-            color: #ccc;
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
         }
 
-        .badge-level {
+        .sakura-container {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: #6c63ff;
-            color: white;
-            padding: 0.4em 0.6em;
-            border-radius: 5px;
-            font-size: 0.75rem;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
         }
+
+        .sakura-petal {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #ffc0cb; /* màu hoa hồng tươi */
+            /* background: #ff6f91; /* hồng san hô */ */ border-radius: 50% 0 50% 0;
+            will-change: transform, opacity;
+            animation: sakuraPetals linear infinite;
+        }
+
+            /* Mỗi cánh hoa 1 chút khác biệt về vị trí, tốc độ và độ trễ */
+            .sakura-petal:nth-child(1) {
+                left: 10%;
+                animation-duration: 8s;
+                animation-delay: 0s;
+            }
+
+            .sakura-petal:nth-child(2) {
+                left: 20%;
+                animation-duration: 10s;
+                animation-delay: 1s;
+            }
+
+            .sakura-petal:nth-child(3) {
+                left: 30%;
+                animation-duration: 7s;
+                animation-delay: 2s;
+            }
+
+            .sakura-petal:nth-child(4) {
+                left: 40%;
+                animation-duration: 9s;
+                animation-delay: 0.5s;
+            }
+
+            .sakura-petal:nth-child(5) {
+                left: 50%;
+                animation-duration: 11s;
+                animation-delay: 1.5s;
+            }
+
+            .sakura-petal:nth-child(6) {
+                left: 60%;
+                animation-duration: 8s;
+                animation-delay: 2.5s;
+            }
+
+            .sakura-petal:nth-child(7) {
+                left: 70%;
+                animation-duration: 12s;
+                animation-delay: 3s;
+            }
+
+            .sakura-petal:nth-child(8) {
+                left: 80%;
+                animation-duration: 9s;
+                animation-delay: 0.8s;
+            }
+
+            .sakura-petal:nth-child(9) {
+                left: 90%;
+                animation-duration: 10s;
+                animation-delay: 1.8s;
+            }
     </style>
 }

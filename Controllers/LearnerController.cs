@@ -109,7 +109,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // 👤 Trang hồ sơ người học
-        [Authorize(Roles = "Learner")]
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
@@ -119,7 +118,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // ✏️ Sửa thông tin hồ sơ
-        [Authorize(Roles = "Learner")]
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
@@ -142,7 +140,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // 🔐 Đổi mật khẩu Learner
-        [Authorize(Roles = "Learner")]
         [HttpGet]
         public IActionResult ChangePassword()
         {
@@ -198,7 +195,6 @@ namespace JapaneseLearningPlatform.Controllers
 
 
         // 📷 Tải lên ảnh đại diện
-        [Authorize(Roles = "Learner")]
         [HttpPost]
         public async Task<IActionResult> UploadProfilePicture(IFormFile profilePicture)
         {
@@ -258,7 +254,6 @@ namespace JapaneseLearningPlatform.Controllers
 
 
         // 📚 Lớp học của tôi (hiển thị thời khóa biểu và partner)
-        [Authorize(Roles = "Learner")]
         [HttpGet]
         public async Task<IActionResult> MyClassroom()
         {

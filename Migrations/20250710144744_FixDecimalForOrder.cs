@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JapaneseLearningPlatform.Migrations
 {
     /// <inheritdoc />
-    public partial class InitAgain : Migration
+    public partial class FixDecimalForOrder : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -74,6 +74,22 @@ namespace JapaneseLearningPlatform.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Courses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DailyWords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    JapaneseWord = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Romanji = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DailyWords", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -833,6 +849,9 @@ namespace JapaneseLearningPlatform.Migrations
 
             migrationBuilder.DropTable(
                 name: "CourseContentItems");
+
+            migrationBuilder.DropTable(
+                name: "DailyWords");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");

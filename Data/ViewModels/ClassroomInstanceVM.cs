@@ -18,11 +18,10 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public DateTime EndDate { get; set; }
 
         [Required(ErrorMessage = "Thời lượng mỗi buổi học là bắt buộc")]
-        [Range(1, 12, ErrorMessage = "Thời lượng mỗi buổi học phải từ 1 đến 12 giờ")]
+        [Range(1, 24, ErrorMessage = "Thời lượng mỗi buổi học phải từ 1 đến 24 giờ")]
         public int SessionDurationHours { get; set; }
 
         [Required(ErrorMessage = "Giá là bắt buộc")]
-        [Range(0, 10000, ErrorMessage = "Giá phải từ 0 đến 10,000")]
         public decimal Price { get; set; }
 
         public string? GoogleMeetLink { get; set; }
