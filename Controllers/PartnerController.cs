@@ -26,7 +26,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // ✅ Trang mặc định khi truy cập /Partner
-        [Authorize(Roles = "Partner")]
         [HttpGet]
         public IActionResult Index()
         {
@@ -34,7 +33,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // 👤 Trang hồ sơ đối tác
-        [Authorize(Roles = "Partner")]
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
@@ -44,7 +42,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // ✏️ Sửa hồ sơ
-        [Authorize(Roles = "Partner")]
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
@@ -53,7 +50,6 @@ namespace JapaneseLearningPlatform.Controllers
             return View("~/Views/Partners/EditProfile.cshtml", user);
         }
 
-        [Authorize(Roles = "Partner")]
         [HttpPost]
         public async Task<IActionResult> EditProfile(ApplicationUser updatedUser)
         {
@@ -67,7 +63,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // 🔒 Đổi mật khẩu
-        [Authorize(Roles = "Partner")]
         [HttpGet]
         public IActionResult ChangePassword()
         {
@@ -113,7 +108,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // 📷 Tải lên ảnh đại diện
-        [Authorize(Roles = "Partner")]
         [HttpPost]
         public async Task<IActionResult> UploadProfilePicture(IFormFile profilePicture)
         {

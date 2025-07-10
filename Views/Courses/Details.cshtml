@@ -159,7 +159,7 @@
             {
                 <a class="btn btn-nihongo mt-2"
                    asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Course.Id">
-                    <i class="bi bi-cart-plus"></i> Buy for @Model.Course.Price.ToString("c")
+                    <i class="bi bi-cart-plus"></i> Buy for @Model.Course.FinalPrice.ToString("c")
                 </a>
             }
             else if (Model.IsInCart)

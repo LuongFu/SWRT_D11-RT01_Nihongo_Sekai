@@ -1,5 +1,6 @@
 ﻿using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Cart;
+using JapaneseLearningPlatform.Data.Seeds;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -100,13 +101,14 @@ namespace JapaneseLearningPlatform
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             // Seed database
-            AppDbInitializer.Seed(app);
-            await AppDbInitializer.SeedUsersAndRolesAsync(app);
-            await AppDbInitializer.SeedClassroomTemplatesAsync(app);
-            await AppDbInitializer.SeedClassroomInstancesAsync(app);
-            await AppDbInitializer.SeedClassroomTestEnrollmentsAsync(app);
-            await AppDbInitializer.SeedClassroomAssessmentsAsync(app);
+            //AppDbInitializer.Seed(app);
+            //await AppDbInitializer.SeedUsersAndRolesAsync(app);
+            //await AppDbInitializer.SeedClassroomTemplatesAsync(app);
+            //await AppDbInitializer.SeedClassroomInstancesAsync(app);
+            //await AppDbInitializer.SeedClassroomTestEnrollmentsAsync(app);
+            //await AppDbInitializer.SeedClassroomAssessmentsAsync(app);
 
+            await SeedManager.SeedAllAsync(app); // Seed all data using the SeedManager
             app.Run();
         }
     }
