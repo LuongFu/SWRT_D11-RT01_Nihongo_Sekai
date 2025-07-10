@@ -74,7 +74,6 @@ namespace JapaneseLearningPlatform
             });
             // add api connect
             builder.Services.AddHttpClient<DictionaryController>();
-            builder.Services.AddHttpClient<TranslateService>();
             builder.Services.AddMemoryCache();
             builder.Services.AddSession();
             builder.Services.AddControllersWithViews();
