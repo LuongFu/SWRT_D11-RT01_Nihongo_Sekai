@@ -1,0 +1,56 @@
+﻿@model List<DictionaryWord>
+@{
+    ViewData["Title"] = "Từ Vựng JLPT";
+}
+
+<div class="container my-4">
+
+    <h2 class="mb-4 text-center text-primary">JLPT Vocabulary Dictionary</h2>
+
+    <form method="get" asp-controller="Dictionary" asp-action="Search" class="row g-3 align-items-center justify-content-center mb-4">
+        <div class="col-md-5">
+            <input type="text" name="keyword" class="form-control" placeholder="Enter Japanese word..." value="@ViewBag.Keyword" />
+        </div>
+        <div class="col-md-3">
+            <select name="level" class="form-select">
+                <option value="">-- JLPT Level --</option>
+                <option value="5" selected="@(ViewBag.Level?.ToString() == "5")">N5</option>
+                <option value="4" selected="@(ViewBag.Level?.ToString() == "4")">N4</option>
+                <option value="3" selected="@(ViewBag.Level?.ToString() == "3")">N3</option>
+                <option value="2" selected="@(ViewBag.Level?.ToString() == "2")">N2</option>
+                <option value="1" selected="@(ViewBag.Level?.ToString() == "1")">N1</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @foreach (var w in Model)
+            {
+                <div class="col">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-danger fw-bold">@w.Word</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@w.Romaji</h6>
+                            <p class="card-text">
+                                <strong>Furigana:</strong> @w.Furigana <br />
+                                <strong>Meaning:</strong> @w.Meaning <br />
+                                <span class="badge bg-danger">JLPT N-@w.Level</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (ViewBag.Keyword != null || ViewBag.Level != null)
+    {
+        <div class="alert alert-warning text-center mt-4">
+            Không tìm thấy kết quả nào phù hợp.
+        </div>
+    }
+</div>
