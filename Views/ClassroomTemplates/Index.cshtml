@@ -1,37 +1,65 @@
 ﻿@model IEnumerable<JapaneseLearningPlatform.Data.ViewModels.ClassroomTemplateVM>
+
 @{
-    ViewData["Title"] = "My Templates";
+    ViewData["Title"] = "Mẫu lớp học của tôi";
 }
 
-<h2>My Templates</h2>
-<a class="btn btn-primary mb-3" asp-action="Create">+ Create New Template</a>
+<h2 class="mb-4">Mẫu lớp học của tôi</h2>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Level</th>
-            <th>Price</th>
-            <th>Start - End</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="mb-3 text-end">
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Tạo mẫu lớp học mới
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning text-center">
+        <i class="bi bi-exclamation-circle me-2"></i> Chưa có mẫu lớp học nào.
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-light">
             <tr>
-                <td>@item.Title</td>
-                <td>@item.LanguageLevel</td>
-                <td>@item.Price.ToString("C")</td>
-                <td>@item.StartDate.ToShortDateString() - @item.EndDate.ToShortDateString()</td>
-                <td>@item.Status</td>
-                <td>
-                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id">View</a>
-                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                <th style="width:100px">Ảnh</th>
+                <th>Tiêu đề</th>
+                <th>Trình độ</th>
+                <th style="width:170px" class="text-center">Hành động</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ImageURL))
+                        {
+                            <img src="@item.ImageURL" class="img-thumbnail" style="width:80px; height:80px; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="width:80px; height:80px;">
+                                <i class="bi bi-image" style="font-size:1.5rem;"></i>
+                            </div>
+                        }
+                    </td>
+                    <td>@item.Title</td>
+                    <td>@item.LanguageLevel</td>
+                    <td class="text-center">
+                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-info me-1" title="Xem chi tiết">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1" title="Chỉnh sửa">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Xóa">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

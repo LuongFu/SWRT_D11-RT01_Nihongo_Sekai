@@ -422,33 +422,30 @@ namespace JapaneseLearningPlatform.Data
                 if (template != null)
                 {
                     context.ClassroomInstances.AddRange(new List<ClassroomInstance>
-            {
-                new ClassroomInstance
-                {
-                    TemplateId = template.Id,
-                    StartDate = DateTime.Today.AddDays(3),
-                    EndDate = DateTime.Today.AddDays(33),
-                    ClassTime = new TimeSpan(19, 0, 0),
-                    MaxCapacity = 10,
-                    Price = 120000,
-                    IsPaid = true,
-                    GoogleMeetLink = "https://meet.google.com/test-class1",
-                    Status = ClassroomStatus.Published
-                },
-                new ClassroomInstance
-                {
-                    TemplateId = template.Id,
-                    StartDate = DateTime.Today.AddDays(-10),
-                    EndDate = DateTime.Today.AddDays(20),
-                    ClassTime = new TimeSpan(20, 0, 0),
-                    MaxCapacity = 8,
-                    Price = 0,
-                    IsPaid = false,
-                    GoogleMeetLink = "https://meet.google.com/free-class",
-                    Status = ClassroomStatus.InProgress
-                }
-            });
-
+{
+    new ClassroomInstance
+    {
+        TemplateId = template.Id,
+        StartDate = DateTime.Today.AddDays(3),
+        EndDate = DateTime.Today.AddDays(33),
+        ClassTime = new TimeSpan(19, 0, 0),
+        MaxCapacity = 10,
+        Price = 120000,
+        GoogleMeetLink = "https://meet.google.com/test-class1",
+        Status = ClassroomStatus.Published
+    },
+    new ClassroomInstance
+    {
+        TemplateId = template.Id,
+        StartDate = DateTime.Today.AddDays(-10),
+        EndDate = DateTime.Today.AddDays(20),
+        ClassTime = new TimeSpan(20, 0, 0),
+        MaxCapacity = 8,
+        Price = 0, // miễn phí => IsPaid = false
+        GoogleMeetLink = "https://meet.google.com/free-class",
+        Status = ClassroomStatus.InProgress
+    }
+});
                     await context.SaveChangesAsync();
                 }
             }

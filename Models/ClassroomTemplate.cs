@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using JapaneseLearningPlatform.Data.Enums;
 
 namespace JapaneseLearningPlatform.Models
@@ -7,32 +8,25 @@ namespace JapaneseLearningPlatform.Models
     {
         public int Id { get; set; }
 
-        public string Title { get; set; }                  // Tên lớp học
-        public string Description { get; set; }            // Mô tả chi tiết lớp học
-        public string? ImageURL { get; set; }              // Ảnh đại diện lớp học
-
-        public LanguageLevel LanguageLevel { get; set; }
+        [Required]
+        public string Title { get; set; }              // Tên lớp học
 
         [Required]
-        public double SessionTime { get; set; } // Ví dụ: 30 = 30 giờ
+        public string Description { get; set; }        // Mô tả chi tiết lớp học
+
+        public string? ImageURL { get; set; }          // Ảnh đại diện lớp học
+
+        public string? DocumentURL { get; set; }       // Tài liệu đính kèm (PDF, slides, v.v.)
 
         [Required]
-        [DataType(DataType.Date)]
-        public DateTime StartDate { get; set; }            // 🆕 Ngày bắt đầu lớp
+        public LanguageLevel LanguageLevel { get; set; }  // Trình độ ngôn ngữ
+        public double SessionTime { get; set; } // Số giờ học mỗi buổi
 
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime EndDate { get; set; }              // 🆕 Ngày kết thúc lớp
-
-        [Required]
-        [Range(0, 10000000)]
-        public decimal Price { get; set; }                 // 🆕 Giá tiền lớp học
-
-        public string Status { get; set; } = "Draft";      // 🆕 Trạng thái (Draft / Published)
-
-        public string PartnerId { get; set; }              // Người tạo lớp học
+        // Quan hệ đến Partner
+        public string PartnerId { get; set; }
         public ApplicationUser Partner { get; set; }
 
+        // Danh sách các phiên học sử dụng Template này
         public List<ClassroomInstance>? Instances { get; set; }
     }
 }

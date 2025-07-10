@@ -13,28 +13,21 @@ namespace JapaneseLearningPlatform.Helpers
                 Title = entity.Title,
                 Description = entity.Description,
                 ImageURL = entity.ImageURL,
-                LanguageLevel = entity.LanguageLevel,
-                SessionTime = entity.SessionTime,
-                StartDate = entity.StartDate,
-                EndDate = entity.EndDate,
-                Price = entity.Price,
-                Status = entity.Status
+                DocumentURL = entity.DocumentURL, 
+                LanguageLevel = entity.LanguageLevel
             };
         }
 
-        public static ClassroomTemplate ToEntity(this ClassroomTemplateVM vm, string partnerId, string? imagePath = null)
+        public static ClassroomTemplate ToEntity(this ClassroomTemplateVM vm, string partnerId, string? imagePath = null, string? documentPath = null)
         {
             return new ClassroomTemplate
             {
+                Id = vm.Id,
                 Title = vm.Title,
                 Description = vm.Description,
                 ImageURL = imagePath,
+                DocumentURL = documentPath,
                 LanguageLevel = vm.LanguageLevel,
-                SessionTime = vm.SessionTime,
-                StartDate = vm.StartDate,
-                EndDate = vm.EndDate,
-                Price = vm.Price,
-                Status = vm.Status,
                 PartnerId = partnerId
             };
         }

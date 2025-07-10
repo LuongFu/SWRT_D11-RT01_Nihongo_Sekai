@@ -1,4 +1,6 @@
-﻿using JapaneseLearningPlatform.Data.Enums;
+﻿using System;
+using System.Collections.Generic;
+using JapaneseLearningPlatform.Data.Enums;
 
 namespace JapaneseLearningPlatform.Models
 {
@@ -9,13 +11,12 @@ namespace JapaneseLearningPlatform.Models
         public ClassroomTemplate Template { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public TimeSpan ClassTime { get; set; }             // Giờ học mỗi buổi
-        public int MaxCapacity { get; set; }                // Số lượng học viên tối đa
-        public decimal Price { get; set; }                  // Giá lớp học
-        public bool IsPaid { get; set; }                    // Miễn phí hay tính phí
-
-        public string? GoogleMeetLink { get; set; }         // Link lớp học
-        public ClassroomStatus Status { get; set; }         // Upcoming, Ongoing, Completed, Cancelled
+        public TimeSpan ClassTime { get; set; }
+        public int MaxCapacity { get; set; } = 20; 
+        public decimal Price { get; set; }
+        public bool IsPaid => Price > 0;
+        public string? GoogleMeetLink { get; set; }
+        public ClassroomStatus Status { get; set; } = ClassroomStatus.Draft;
         public ICollection<ClassroomEnrollment> Enrollments { get; set; } = new List<ClassroomEnrollment>();
         public List<FinalAssessment>? Assessments { get; set; }
     }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JapaneseLearningPlatform.Migrations
 {
     /// <inheritdoc />
-    public partial class ChangeSessionTimeToDouble : Migration
+    public partial class InitAgain : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -205,12 +205,9 @@ namespace JapaneseLearningPlatform.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DocumentURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LanguageLevel = table.Column<int>(type: "int", nullable: false),
                     SessionTime = table.Column<double>(type: "float", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PartnerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -343,7 +340,6 @@ namespace JapaneseLearningPlatform.Migrations
                     ClassTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     MaxCapacity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
-                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
                     GoogleMeetLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },

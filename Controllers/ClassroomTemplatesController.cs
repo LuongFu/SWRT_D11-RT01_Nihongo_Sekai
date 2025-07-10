@@ -1,4 +1,5 @@
 ﻿using JapaneseLearningPlatform.Data.Services;
+using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Helpers;
 using JapaneseLearningPlatform.Models;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JapaneseLearningPlatform.Controllers
 {
-    [Authorize(Roles = "Partner,Admin")]
+    [Authorize(Roles = UserRoles.Partner + "," + UserRoles.Admin)]
     public class ClassroomTemplatesController : Controller
     {
         private readonly IClassroomTemplateService _templateService;
@@ -28,34 +29,28 @@ namespace JapaneseLearningPlatform.Controllers
         // GET: /ClassroomTemplates/
         public async Task<IActionResult> Index()
         {
-            if (User.IsInRole("Partner"))
-            {
-                var partnerId = _userManager.GetUserId(User);
-                var templates = await _templateService.GetByPartnerIdAsync(partnerId);
-                return View("Index", templates.Select(t => t.ToVM()));
-            }
+            var partnerId = _userManager.GetUserId(User);
+            var templates = User.IsInRole(UserRoles.Partner)
+                ? await _templateService.GetByPartnerIdAsync(partnerId)
+                : await _templateService.GetAllAsync();
 
-            var allTemplates = await _templateService.GetAllAsync();
-            return View("Index", allTemplates.Select(t => t.ToVM()));
+            var vmList = templates.Select(t => ClassroomTemplateVM.FromEntity(t));
+            return View(vmList);
         }
 
         // GET: /ClassroomTemplates/Details/5
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
-
-            if (User.IsInRole("Partner") && template.PartnerId != _userManager.GetUserId(User))
+            if (User.IsInRole(UserRoles.Partner) && template.PartnerId != _userManager.GetUserId(User))
                 return Forbid();
 
-            return View("Detail", template.ToVM());
+            return View(template.ToVM());
         }
 
         // GET: /ClassroomTemplates/Create
-        public IActionResult Create()
-        {
-            return View("Create");
-        }
+        public IActionResult Create() => View();
 
         // POST: /ClassroomTemplates/Create
         [HttpPost]
@@ -63,23 +58,18 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> Create(ClassroomTemplateVM vm)
         {
             if (!ModelState.IsValid)
-                return View("Create", vm);
+                return View(vm);
 
-            string partnerId = _userManager.GetUserId(User);
-            string? imagePath = null;
+            var partnerId = _userManager.GetUserId(User);
+            var imageUrl = vm.ImageFile != null
+                ? await SaveFileAsync(vm.ImageFile, "templates/images")
+                : vm.ImageURL;
 
-            if (vm.ImageFile != null)
-            {
-                var uploads = Path.Combine(_env.WebRootPath, "uploads/templates");
-                Directory.CreateDirectory(uploads);
-                var fileName = Guid.NewGuid() + Path.GetExtension(vm.ImageFile.FileName);
-                var filePath = Path.Combine(uploads, fileName);
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await vm.ImageFile.CopyToAsync(stream);
-                imagePath = "/uploads/templates/" + fileName;
-            }
+            var documentUrl = vm.DocumentFile != null
+                ? await SaveFileAsync(vm.DocumentFile, "templates/docs")
+                : null;
 
-            var entity = vm.ToEntity(partnerId, imagePath);
+            var entity = vm.ToEntity(partnerId, imageUrl, documentUrl);
             await _templateService.AddAsync(entity);
             return RedirectToAction(nameof(Index));
         }
@@ -89,50 +79,34 @@ namespace JapaneseLearningPlatform.Controllers
         {
             var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
-
-            if (User.IsInRole("Partner") && template.PartnerId != _userManager.GetUserId(User))
+            if (User.IsInRole(UserRoles.Partner) && template.PartnerId != _userManager.GetUserId(User))
                 return Forbid();
 
-            return View("Edit", template.ToVM());
+            return View(template.ToVM());
         }
 
         // POST: /ClassroomTemplates/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ClassroomTemplateVM vm)
+        public async Task<IActionResult> Edit(int id, ClassroomTemplateVM vm)
         {
-            if (!ModelState.IsValid)
-                return View("Edit", vm);
+            if (id != vm.Id) return BadRequest();
+            if (!ModelState.IsValid) return View(vm);
 
-            var existing = await _templateService.GetByIdAsync(vm.Id);
+            var existing = await _templateService.GetByIdAsync(id);
             if (existing == null) return NotFound();
-
-            if (User.IsInRole("Partner") && existing.PartnerId != _userManager.GetUserId(User))
+            if (User.IsInRole(UserRoles.Partner) && existing.PartnerId != _userManager.GetUserId(User))
                 return Forbid();
 
-            string? imagePath = existing.ImageURL;
-
             if (vm.ImageFile != null)
-            {
-                var uploads = Path.Combine(_env.WebRootPath, "uploads/templates");
-                Directory.CreateDirectory(uploads);
-                var fileName = Guid.NewGuid() + Path.GetExtension(vm.ImageFile.FileName);
-                var filePath = Path.Combine(uploads, fileName);
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await vm.ImageFile.CopyToAsync(stream);
-                imagePath = "/uploads/templates/" + fileName;
-            }
+                existing.ImageURL = await SaveFileAsync(vm.ImageFile, "templates/images");
 
-            // Update fields
+            if (vm.DocumentFile != null)
+                existing.DocumentURL = await SaveFileAsync(vm.DocumentFile, "templates/docs");
+
             existing.Title = vm.Title;
             existing.Description = vm.Description;
-            existing.ImageURL = imagePath;
             existing.LanguageLevel = vm.LanguageLevel;
-            existing.StartDate = vm.StartDate;
-            existing.EndDate = vm.EndDate;
-            existing.SessionTime = vm.SessionTime;
-            existing.Status = vm.Status;
-            existing.Price = vm.Price;
 
             await _templateService.UpdateAsync(existing);
             return RedirectToAction(nameof(Index));
@@ -143,11 +117,10 @@ namespace JapaneseLearningPlatform.Controllers
         {
             var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
-
-            if (User.IsInRole("Partner") && template.PartnerId != _userManager.GetUserId(User))
+            if (User.IsInRole(UserRoles.Partner) && template.PartnerId != _userManager.GetUserId(User))
                 return Forbid();
 
-            return View("Delete", template.ToVM());
+            return View(template.ToVM());
         }
 
         // POST: /ClassroomTemplates/Delete/5
@@ -157,12 +130,25 @@ namespace JapaneseLearningPlatform.Controllers
         {
             var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
-
-            if (User.IsInRole("Partner") && template.PartnerId != _userManager.GetUserId(User))
+            if (User.IsInRole(UserRoles.Partner) && template.PartnerId != _userManager.GetUserId(User))
                 return Forbid();
 
             await _templateService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        // ✅ UTILITY: Internal helper for saving file
+        private async Task<string> SaveFileAsync(IFormFile file, string folder)
+        {
+            var uploads = Path.Combine(_env.WebRootPath, "uploads", folder);
+            Directory.CreateDirectory(uploads);
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(uploads, fileName);
+
+            await using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return $"/uploads/{folder}/{fileName}";
         }
     }
 }
