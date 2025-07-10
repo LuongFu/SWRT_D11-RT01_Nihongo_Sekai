@@ -57,7 +57,7 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="classroomDropdown">
                                     <li><a class="dropdown-item" asp-controller="ClassroomInstances" asp-action="MySession">My Sessions</a></li>
-                                    <li><a class="dropdown-item" asp-controller="ClassroomTemplates" asp-action="Index">My Templates</a></li>
+                                    <li><a class="dropdown-item" asp-controller="ClassroomTemplates" asp-action="MyTemplate">My Templates</a></li>
                                 </ul>
                             </li>
 
@@ -70,7 +70,7 @@
                         {
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active-tab" : "")" asp-controller="Learner" asp-action="Index">Home</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")" asp-controller="Courses" asp-action="Index">Courses</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" && ViewContext.RouteData.Values["action"]?.ToString() == "Classroom" ? "active-tab" : "")" asp-controller="ClassroomInstances" asp-action="Browse">Classrooms</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" && ViewContext.RouteData.Values["action"]?.ToString() == "Classroom" ? "active-tab" : "")" asp-controller="ClassroomInstances" asp-action="Index">Classrooms</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")"asp-controller="Schedule" asp-action="Index">Schedule</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" && ViewContext.RouteData.Values["action"]?.ToString() == "Classroom" ? "active-tab" : "")" asp-controller="SidePages" asp-action="About">About</a></li>
                             

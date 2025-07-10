@@ -29,54 +29,33 @@ namespace JapaneseLearningPlatform.Controllers
             _logger = logger;
         }
 
-        // PUBLIC: Browse all sessions
-        //[AllowAnonymous]
-        //public async Task<IActionResult> Index(int page = 1, int pageSize = 9)
-        //{
-        //    var query = _context.ClassroomInstances
-        //        .Include(i => i.Template)
-        //        .AsQueryable();
-
-        //    if (User.IsInRole(UserRoles.Partner))
-        //    {
-        //        var userId = _userManager.GetUserId(User);
-        //        query = query.Where(i => i.Template.PartnerId == userId);
-        //    }
-
-        //    int total = await query.CountAsync();
-        //    var sessions = await query
-        //        .OrderByDescending(i => i.StartDate)
-        //        .Skip((page - 1) * pageSize)
-        //        .Take(pageSize)
-        //        .ToListAsync();
-
-        //    var vmList = sessions
-        //        .Select(i => ClassroomInstanceMapper.ToVM(i))
-        //        .ToList();
-
-        //    ViewBag.CurrentPage = page;
-        //    ViewBag.TotalPages = (int)Math.Ceiling(total / (double)pageSize);
-        //    return View(vmList);
-        //}
-
-        // Browse - chỉ hiển thị lớp đã công bố
-        [Authorize(Roles = UserRoles.Learner)]
-        public async Task<IActionResult> Browse()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 9)
         {
             var userId = _userManager.GetUserId(User);
-            var sessions = await _context.ClassroomInstances
+
+            var query = _context.ClassroomInstances
                 .Include(i => i.Template)
                 .Include(i => i.Enrollments)
-                .Where(i => i.Status == ClassroomStatus.Published) // ✅ Chỉ Published mới hiển thị
+                .Where(i => i.Status == ClassroomStatus.Published)
                 .OrderByDescending(i => i.StartDate)
+                .AsQueryable();
+
+            int total = await query.CountAsync();
+            var sessions = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
             var vmList = sessions.Select(i =>
             {
                 var vm = ClassroomInstanceMapper.ToVM(i);
-                vm.IsEnrolled = i.Enrollments.Any(e => e.LearnerId == userId && !e.HasLeft);
+                vm.IsEnrolled = userId != null && i.Enrollments.Any(e => e.LearnerId == userId && !e.HasLeft);
                 return vm;
             }).ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling(total / (double)pageSize);
 
             return View(vmList);
         }

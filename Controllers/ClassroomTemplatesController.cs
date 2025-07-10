@@ -27,7 +27,7 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // GET: /ClassroomTemplates/
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> MyTemplate()
         {
             var partnerId = _userManager.GetUserId(User);
             var templates = User.IsInRole(UserRoles.Partner)
