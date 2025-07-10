@@ -151,45 +151,56 @@
                             </div>
                         }
 
-                        @if (Model.FinalAssessment?.DueDate != null && Model.FinalAssessment.DueDate <= DateTime.Now)
+                        @if (Model.HasSubmitted)
                         {
-                            <p class="text-danger">⛔ You cannot submit. The deadline has passed.</p>
+                            <p class="text-success">✅ You have already submitted your assessment.</p>
+                            <p><strong>Score:</strong> @(Model.Submission?.Score?.ToString() ?? "-")</p>
+                            <p><strong>Feedback:</strong> @(Model.Submission?.Feedback ?? "Not reviewed yet")</p>
+
+                            <div class="mb-3 mt-4">
+                                <label class="form-label fw-bold">Your Previous Answer:</label>
+                                <textarea class="form-control" rows="5" readonly>@Model.Submission?.AnswerText</textarea>
+                            </div>
+                        }
+
+                        @if (Model.Submission?.Score != null)
+                        {
+                            <p class="text-danger mt-3">✅ Your submission has already been graded. You cannot modify it.</p>
+                        }
+                        else if (Model.FinalAssessment?.DueDate != null && Model.FinalAssessment.DueDate <= DateTime.Now)
+                        {
+                            <p class="text-danger mt-3">⛔ You cannot submit. The deadline has passed.</p>
                         }
                         else
                         {
-                            if (Model.HasSubmitted)
-                            {
-                                <p class="text-success">✅ You have already submitted your assessment.</p>
-                                <p><strong>Score:</strong> @(Model.Submission?.Score?.ToString() ?? "-")</p>
-                                <p><strong>Feedback:</strong> @(Model.Submission?.Feedback ?? "Not reviewed yet")</p>
-
-                                <div class="mb-3 mt-4">
-                                    <label class="form-label fw-bold">Your Previous Answer:</label>
-                                    <textarea class="form-control" rows="5" readonly>@Model.Submission?.AnswerText</textarea>
-                                </div>
-
-                                <p class="text-muted">🔄 You can resubmit before the deadline.</p>
-                            }
-
                             <!-- Form for new or resubmission -->
-                            <form asp-action="SubmitAssessment" asp-controller="Assessments" asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
+                            <form id="assessmentForm" asp-action="SubmitAssessment" asp-controller="Assessments" asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label for="AnswerText" class="form-label fw-bold">Your New Answer (optional)</label>
-                                    <textarea name="answerText" rows="5" class="form-control" placeholder="Write your updated answer here..."></textarea>
+                                    <textarea id="answerText" name="answerText" rows="5" class="form-control" placeholder="Write your updated answer here..."></textarea>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="submission" class="form-label fw-bold">Upload a new file (optional)</label>
-                                    <input type="file" name="SubmissionFile" class="form-control" />
+                                    <input id="submissionFile" type="file" name="SubmissionFile" class="form-control" />
                                 </div>
 
                                 <button type="submit" class="btn btn-success">@(Model.HasSubmitted ? "Resubmit" : "Submit")</button>
                             </form>
                         }
-
                     }
+
                     else if (User.IsInRole("Partner"))  //Partner View
                     {
+                        <form asp-action="UpdateDeadline" asp-controller="Assessments" asp-route-assessmentId="@Model.FinalAssessment.Id" method="post" class="d-flex align-items-center gap-2 mt-2">
+                            <input type="text" id="newDueDate" name="newDueDate" class="form-control" required placeholder="-- Select a new due date --" />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Update Deadline</button>
+                        </form>
+
+                        @if (TempData["DeadlineMessage"] != null)
+                        {
+                            <div class="alert alert-info mt-2">@TempData["DeadlineMessage"]</div>
+                        }
                         @if (Model.AllSubmissions == null || !Model.AllSubmissions.Any())
                         {
                             <p class="text-muted mt-3">No learners have submitted their assessments yet.</p>
@@ -280,12 +291,47 @@
     </div>
 </div>
 
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- Hỗ trợ set deadline mới cho partner -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    flatpickr("#newDueDate", {
+        enableTime: true,
+        dateFormat: "d/m/Y H:i"
+    });
+</script>
+
+<!-- Điều hướng -->
+<script>
+    window.onload = function () {
         const hash = window.location.hash;
         if (hash) {
-            const triggerEl = document.querySelector(`a[data-bs-toggle="tab"][href="${hash}"]`);
-            if (triggerEl) new bootstrap.Tab(triggerEl).show();
+            const triggerEl =
+                document.querySelector(`button[data-bs-toggle="tab"][data-bs-target="${hash}"]`) ||
+                document.querySelector(`a[data-bs-toggle="tab"][href="${hash}"]`);
+            if (triggerEl) {
+                new bootstrap.Tab(triggerEl).show();
+            }
+        }
+    };
+</script>
+
+<!-- Chặn nếu learner không submit bất kỳ loại đáp án nào -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("assessmentForm");
+        if (form) {
+            form.addEventListener("submit", function (e) {
+                const answerText = document.getElementById("answerText")?.value?.trim();
+                const fileInput = document.getElementById("submissionFile");
+                const fileSelected = fileInput?.files?.length > 0;
+
+                if (!answerText && !fileSelected) {
+                    e.preventDefault(); // ❌ chặn submit
+                    alert("⛔ Please enter an answer or upload a file before submitting.");
+                }
+            });
         }
     });
 </script>
+

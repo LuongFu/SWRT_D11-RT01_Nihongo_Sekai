@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -41,6 +42,12 @@ namespace JapaneseLearningPlatform.Controllers
                 return BadRequest("The assessment deadline has passed.");
             }
 
+            if (string.IsNullOrWhiteSpace(answerText) && (SubmissionFile == null || SubmissionFile.Length == 0))
+            {
+                TempData["Message"] = "❌ Please enter an answer or upload a file before submitting.";
+                return Redirect($"/ClassroomInstances/Content/{instanceId}#assessment");
+            }
+
             string? filePath = null;
 
             if (SubmissionFile != null && SubmissionFile.Length > 0)
@@ -63,6 +70,13 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (existing != null)
             {
+                // ⚠️ Nếu đã được chấm điểm thì không cho sửa
+                if (existing.Score != null)
+                {
+                    TempData["Message"] = "❌ You cannot update your submission after it has been graded.";
+                    return Redirect($"/ClassroomInstances/Content/{instanceId}#assessment");
+                }
+
                 // Xóa file cũ nếu có và có file mới upload
                 if (!string.IsNullOrEmpty(existing.FilePath) && filePath != null)
                 {
@@ -161,6 +175,41 @@ namespace JapaneseLearningPlatform.Controllers
             TempData["Message"] = "Graded successfully!";
 
             return Redirect($"/ClassroomInstances/Content/{vm.InstanceId}#assessment");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Partner")]
+        public async Task<IActionResult> UpdateDeadline(int assessmentId, string newDueDate)
+        {
+            var assessment = await _context.FinalAssessments
+                .Include(a => a.Instance)
+                    .ThenInclude(i => i.Template)
+                .FirstOrDefaultAsync(a => a.Id == assessmentId);
+
+            if (assessment == null) return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            if (assessment.Instance.Template.PartnerId != userId)
+                return Forbid();
+
+            if (!DateTime.TryParseExact(newDueDate, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDueDate))
+            {
+                TempData["DeadlineMessage"] = "❌ Invalid date format.";
+                return Redirect($"/ClassroomInstances/Content/{assessment.ClassroomInstanceId}#assessment");
+            }
+
+            //kiểm tra tính tương lai của deadline mới
+            if (parsedDueDate <= assessment.DueDate)
+            {
+                TempData["DeadlineMessage"] = "❌ New deadline must be later than the current one.";
+                return Redirect($"/ClassroomInstances/Content/{assessment.ClassroomInstanceId}#assessment");
+            }
+
+            assessment.DueDate = parsedDueDate;
+            await _context.SaveChangesAsync();
+
+            TempData["DeadlineMessage"] = "✅ Deadline updated successfully.";
+            return Redirect($"/ClassroomInstances/Content/{assessment.ClassroomInstanceId}#assessment");
         }
 
     }
