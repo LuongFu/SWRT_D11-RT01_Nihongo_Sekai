@@ -22,6 +22,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public int SessionDurationHours { get; set; }
 
         [Required(ErrorMessage = "Giá là bắt buộc")]
+        [Range(1, 99999999, ErrorMessage = "Giá quá cao, vui lòng nhập giá thấp hơn 99tr")]
         public decimal Price { get; set; }
 
         public string? GoogleMeetLink { get; set; }
