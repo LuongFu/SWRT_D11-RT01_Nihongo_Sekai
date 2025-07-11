@@ -124,7 +124,7 @@
                             <p class="text-danger">
                                 <del>@item.Course.Price.ToString("C")</del>
                                 <strong>@item.Course.FinalPrice.ToString("C")</strong>
-                                <span class="badge bg-danger">@item.Course.DiscountPercent% OFF</span>
+                                <span class="badge bg-danger text-white">@item.Course.DiscountPercent% OFF</span>
                             </p>
                         }
                         else
@@ -146,7 +146,7 @@
                                     <a asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-outline-primary w-100">
                                 <i class="bi bi-info-circle"></i> Details
                             </a>
-                                    <button class="btn btn-warning w-100 mt-2" disabled>
+                                    <button asp-controller="Orders" asp-action="ShoppingCart" class="btn btn-warning w-100 mt-2">
                                         <i class="bi bi-cart-check"></i> In Cart
                                     </button>
                                 }
