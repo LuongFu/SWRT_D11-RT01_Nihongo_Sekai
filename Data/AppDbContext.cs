@@ -1,5 +1,7 @@
-﻿using JapaneseLearningPlatform.Data.ViewModels;
+﻿using JapaneseLearningPlatform.Data.Enums;
+using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
+using JapaneseLearningPlatform.Models.Partner;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -151,6 +153,32 @@ namespace JapaneseLearningPlatform.Data
             modelBuilder.Entity<Video_Course>().HasOne(m => m.Course).WithMany(am => am.Videos_Courses).HasForeignKey(m => m.CourseId);
             modelBuilder.Entity<Video_Course>().HasOne(m => m.Video).WithMany(am => am.Videos_Courses).HasForeignKey(m => m.VideoId);
 
+            // 1) Mối quan hệ 1 PartnerProfile có nhiều PartnerDocument,
+            //    nhưng khi xóa profile thì không tự động xóa document (Restrict)
+            modelBuilder.Entity<PartnerDocument>()
+              .HasOne(d => d.Profile)
+              .WithMany(p => p.Documents)
+              .HasForeignKey(d => d.PartnerProfileId)
+              .OnDelete(DeleteBehavior.Restrict);
+
+            // 2) Mối quan hệ 1-1 PartnerProfile ↔ ApplicationUser,
+            //    nhưng khi xóa user thì không tự động xóa profile (Restrict)
+            modelBuilder.Entity<PartnerProfile>()
+              .HasOne(p => p.User)
+              .WithOne(u => u.PartnerProfile)
+              .HasForeignKey<PartnerProfile>(p => p.UserId)
+              .OnDelete(DeleteBehavior.Restrict);
+
+            // ---- MỚI: cấu hình enum Status và DecisionAt ----
+            modelBuilder.Entity<PartnerProfile>()
+            .Property(p => p.Status)
+            .HasConversion<int>()
+            .HasDefaultValue(PartnerStatus.Pending);
+            
+            modelBuilder.Entity<PartnerProfile>()
+            .Property(p => p.DecisionAt)
+            .IsRequired(false);
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -176,6 +204,13 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<FinalAssessment> FinalAssessments { get; set; }
         public DbSet<AssessmentSubmission> AssessmentSubmissions { get; set; }
         public DbSet<ClassroomEvaluation> ClassroomEvaluations { get; set; }
+
+        //public DbSet<PartnerDocument> PartnerCertificates { get; set; }
+
+        public DbSet<PartnerProfile> PartnerProfiles { get; set; }
+        public DbSet<PartnerSpecialization> PartnerSpecializations { get; set; }
+        public DbSet<PartnerDocument> PartnerDocuments { get; set; }
+
 
     }
 }

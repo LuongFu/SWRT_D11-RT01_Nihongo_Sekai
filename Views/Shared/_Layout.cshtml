@@ -40,6 +40,7 @@
                         {
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" ? "active-tab" : "")" asp-controller="Admin" asp-action="Index">Home</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active-tab" : "")" asp-controller="Account" asp-action="Users">User List</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["action"]?.ToString() == "PartnerApplications" ? "active-tab" : "")" asp-controller="Admin" asp-action="PartnerApplications">Partner Applications</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")" asp-controller="Courses" asp-action="Index">Courses</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Videos" ? "active-tab" : "")" asp-controller="Videos" asp-action="Index">Videos</a></li>
                         }

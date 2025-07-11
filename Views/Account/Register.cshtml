@@ -1,4 +1,5 @@
 ﻿@using JapaneseLearningPlatform.Data.ViewModels
+@using JapaneseLearningPlatform.Data.Enums
 @model RegisterVM
 
 @{
@@ -644,13 +645,13 @@
               enctype="multipart/form-data"
               class="auth-form"
               id="registerForm">
-          <input type="hidden" id="Role" name="Role" value="Learner" />
+        <input asp-for="ApplyAsPartner" type="hidden" id="ApplyAsPartner" value="false" />
 
           <div class="form-group">
             <label asp-for="FullName" class="form-label">Full Name</label>
             <input asp-for="FullName"
                    class="form-input"
-                   placeholder="Enter your full name" />
+                   placeholder="Enter your full name" required autofocus />
             <span asp-validation-for="FullName" class="text-danger"></span>
           </div>
 
@@ -661,7 +662,7 @@
             <input asp-for="EmailAddress"
                    type="email"
                    class="form-input"
-                   placeholder="Enter your email address" />
+                    placeholder="Enter your email address" required />
             <span asp-validation-for="EmailAddress" class="text-danger"></span>
           </div>
 
@@ -673,7 +674,7 @@
                      id="password"
                      class="form-input"
                      placeholder="Create a strong password"
-                     minlength="8" />
+                     minlength="8" required />
               <button type="button"
                       class="password-toggle"
                       onclick="togglePassword('password')"
@@ -727,7 +728,7 @@
                      type="password"
                      id="confirmPassword"
                      class="form-input"
-                     placeholder="Confirm your password" />
+                     placeholder="Confirm your password" required />
               <button type="button"
                       class="password-toggle"
                       onclick="togglePassword('confirmPassword')"
@@ -762,110 +763,100 @@
 
         <!-- Chỉ hiện khi chọn Partner -->
         <div id="partnerExtra" style="display:none;">
-
-            <!-- Years of Experience (chỉ hiển thị, không bind) -->
+            <!-- Years of Experience -->
             <div class="form-group">
-                <label class="form-label" for="Experience">Years of Experience *</label>
-                <!-- bỏ asp-for và name để giá trị không được gửi lên server -->
-                <select id="Experience" class="form-input">
+                <label asp-for="YearsOfExperience" class="form-label"></label>
+                <select asp-for="YearsOfExperience"
+                        class="form-input"
+                        asp-items="Html.GetEnumSelectList<YearsOfExperience>()">
                     <option value="">Select experience</option>
-                    <option>1-2 years</option>
-                    <option>3-5 years</option>
-                    <option>6-10 years</option>
-                    <option>10+ years</option>
                 </select>
+                <span asp-validation-for="YearsOfExperience"
+                        class="text-danger"></span>
             </div>
 
-            <!-- Specializations (chỉ hiển thị, không bind) -->
+            <!-- Specializations -->
             <div class="form-group">
-                <label class="form-label">Specializations</label>
+                <label asp-for="Specializations" class="form-label"></label>
                 <div class="specializations-grid">
-                    <label class="checkbox-group">
-                        <!-- bỏ name để browser không gửi checkbox này -->
-                        <input type="checkbox" class="checkbox-input" value="conversation" />
-                        <span class="checkbox-label">Conversation Practice</span>
-                    </label>
-                    <label class="checkbox-group">
-                        <input type="checkbox" class="checkbox-input" value="business" />
-                        <span class="checkbox-label">Business Japanese</span>
-                    </label>
-                    <label class="checkbox-group">
-                        <input type="checkbox" class="checkbox-input" value="jlpt" />
-                        <span class="checkbox-label">JLPT Preparation</span>
-                    </label>
-                    <label class="checkbox-group">
-                        <input type="checkbox" class="checkbox-input" value="grammar" />
-                        <span class="checkbox-label">Grammar</span>
-                    </label>
-                    <label class="checkbox-group">
-                        <input type="checkbox" class="checkbox-input" value="culture" />
-                        <span class="checkbox-label">Cultural Studies</span>
-                    </label>
-                    <label class="checkbox-group">
-                        <input type="checkbox" class="checkbox-input" value="pronunciation" />
-                        <span class="checkbox-label">Pronunciation</span>
-                    </label>
+                    @foreach (SpecializationType spec in Enum.GetValues(typeof(SpecializationType)))
+                    {
+                        <label class="checkbox-group">
+                            <input type="checkbox"
+                                    name="Specializations"
+                                    value="@spec"
+                                    class="checkbox-input"
+                                    @(Model.Specializations?.Contains(spec) == true ? "checked" : "") />
+                            <span class="checkbox-label">
+                                @Html.DisplayFor(_ => spec)
+                            </span>
+                        </label>
+                    }
                 </div>
+                <span asp-validation-for="Specializations"
+                        class="text-danger"></span>
             </div>
 
-      <!-- Certificates & Qualifications -->
-      <div class="form-group">
-        <label class="form-label">Certificates & Qualifications</label>
-        <div class="file-upload" id="certificateUpload">
-          <div class="file-upload-icon">📁</div>
-          <div class="file-upload-text">Upload your certificates</div>
-          <div class="file-upload-hint">PDF, DOC, or images up to 10MB each</div>
-          <input type="file"
-                 id="PartnerDocument"
-                 name="PartnerDocument"
-                 multiple
-                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                 style="display:none;" />
+            <!-- Certificates & Qualifications -->
+            <div class="form-group">
+                <label asp-for="PartnerDocument" class="form-label"></label>
+                <div class="file-upload" id="certificateUpload">
+                    <div class="file-upload-icon">📁</div>
+                    <div class="file-upload-text">Upload your certificates</div>
+                    <div class="file-upload-hint">
+                        PDF, DOC, or images up to 10MB each
+                    </div>
+                    <input type="file"
+                            name="PartnerDocument"
+                            id="PartnerDocument"
+                            multiple
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            style="display:none;" />
+                </div>
+                <div id="fileList" class="file-list"></div>
+                <span asp-validation-for="PartnerDocument"
+                        class="text-danger"></span>
+            </div>
         </div>
-        <div id="fileList" class="file-list"></div>
-        <span asp-validation-for="PartnerDocument" class="text-danger"></span>
-      </div>
-    </div>
 
-          <div class="form-group">
+
+        <!-- ↓ đây: AgreeTerms -->
+        <div class="form-group">
             <label class="form-label">
-              <input asp-for="AgreeTerms"
-                     type="checkbox" />
-              I agree to the
-              <a href="~/terms" class="auth-link" target="_blank">
-                Terms of Service
-              </a>
-              and
-              <a href="~/privacy" class="auth-link" target="_blank">
-                Privacy Policy
-              </a>
+                <input asp-for="AgreeTerms"
+                        type="checkbox"
+                        id="AgreeTerms"
+                        disabled />
+                I agree to the
+                <a href="~/terms" class="auth-link" target="_blank">Terms of Service</a>
+                and
+                <a href="~/privacy" class="auth-link" target="_blank">Privacy Policy</a>
             </label>
-            <span asp-validation-for="AgreeTerms"
-                  class="text-danger"></span>
-          </div>
+            <span asp-validation-for="AgreeTerms" class="text-danger"></span>
+        </div>
 
-          <button type="submit"
-                  id="registerButton"
-                  class="auth-button">
+        <!-- ↓ đây: nút submit -->
+        <button type="submit"
+                id="registerButton"
+                class="auth-button"
+                disabled>
             <span id="registerButtonText">Create Account</span>
-            <div id="registerSpinner"
-                 class="spinner"
-                 style="display:none;"></div>
-          </button>
+            <div id="registerSpinner" class="spinner" style="display:none;"></div>
+        </button>
         </form>
 
-                <!-- Social Login -->
-                <div class="social-login">
-                    <div class="social-divider">Or sign up with</div>
-                    <div class="social-buttons">
-                        <button type="button" class="social-button" onclick="signupWithGoogle()">
-                            <!-- Dùng logo gốc Google từ URL của họ -->
-                            <img src="https://developers.google.com/identity/images/g-logo.png"
-                                 alt="Google" />
-                            Google
-                        </button>
-                    </div>
-                </div>
+        <!-- Social Login -->
+        <div class="social-login">
+            <div class="social-divider">Or sign up with</div>
+            <div class="social-buttons">
+                <button type="button" class="social-button" onclick="signupWithGoogle()">
+                    <!-- Dùng logo gốc Google từ URL của họ -->
+                    <img src="https://developers.google.com/identity/images/g-logo.png"
+                            alt="Google" />
+                    Google
+                </button>
+            </div>
+        </div>
 
         <!-- Auth Links -->
         <div class="auth-links">
@@ -876,9 +867,9 @@
             </a>
           </p>
         </div>
-                <div class="mt-4 text-center">
-                    <a asp-controller="Home" asp-action="Index" class="text-muted small"><i class="bi bi-arrow-left-circle"></i> Back to Home</a>
-                </div>
+            <div class="mt-4 text-center">
+                <a asp-controller="Home" asp-action="Index" class="text-muted small"><i class="bi bi-arrow-left-circle"></i> Back to Home</a>
+            </div>
       </div>
 
       <!-- Right Column: Benefits -->
@@ -937,131 +928,175 @@
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          // 1) Role selection & Partner-extra toggle
-          document.querySelectorAll('.role-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-              document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
-              opt.classList.add('selected');
-              document.getElementById('Role').value = opt.dataset.role;
+    document.addEventListener("DOMContentLoaded", () => {
+      // --- ELEMENT REFERENCES ---
+      const form          = document.getElementById('registerForm');
+      const roleHidden    = document.getElementById('ApplyAsPartner');
+      const partnerExtra  = document.getElementById('partnerExtra');
+      const yearsSelect   = document.getElementById('YearsOfExperience');
+      const certInput     = document.getElementById('PartnerDocument');
+      const certList      = document.getElementById('fileList');
+      const specsEls      = () => Array.from(document.querySelectorAll('input[name="Specializations"]'));
+      const chkTerms      = document.getElementById('AgreeTerms');
+      const btnSubmit     = document.getElementById('registerButton');
+      const btnText       = document.getElementById('registerButtonText');
 
-              const isPartner = opt.dataset.role === 'Partner';
-              // only toggle the new partnerExtra section
-              document.getElementById('partnerExtra').style.display = isPartner ? 'block' : 'none';
-            });
-          });
+      // --- 1) ROLE TOGGLE & DYNAMIC REQUIRED ---
+      document.querySelectorAll('.role-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          // visual
+          document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
 
-          // 2) Password visibility toggle (unchanged)
-          window.togglePassword = (id) => {
-            const inp  = document.getElementById(id),
-                  icon = document.getElementById(id === 'password' ? 'eyeIcon' : 'eyeIcon2');
-            if (inp.type === 'password') {
-              inp.type = 'text';
-              icon.innerHTML = '<path d="M1.05 12 ..."/><path d="M4.27 4.27 ..."/>';
-            } else {
-              inp.type = 'password';
-              icon.innerHTML = '<path d="M1 12s4-8 ..."/><circle cx="12" cy="12" r="3"/>';
-            }
-          };
+          // state
+          const isPartner = opt.dataset.role === 'Partner';
+          roleHidden.value = isPartner ? 'true' : 'false';
+          btnText.textContent = isPartner ? 'Request Account' : 'Create Account';
+          partnerExtra.style.display = isPartner ? 'block' : 'none';
 
-          // 3) Password strength meter (unchanged)
-          const pwd  = document.getElementById('password'),
-                cf   = document.getElementById('confirmPassword'),
-                reqs = {
-                  length:    document.getElementById('req-length'),
-                  uppercase: document.getElementById('req-uppercase'),
-                  lowercase: document.getElementById('req-lowercase'),
-                  number:    document.getElementById('req-number'),
-                  symbol:    document.getElementById('req-symbol')
-                },
-                fill = document.getElementById('strengthFill'),
-                txt  = document.getElementById('strengthText');
-
-          pwd.addEventListener('input', () => {
-            const v = pwd.value;
-            const checks = {
-              length:    v.length >= 8,
-              uppercase: /[A-Z]/.test(v),
-              lowercase: /[a-z]/.test(v),
-              number:    /\d/.test(v),
-              symbol:    /[!@@#$%^&*]/.test(v)
-            };
-            let score = 0;
-            Object.keys(checks).forEach(k => {
-              if (checks[k]) {
-                reqs[k].style.color = 'var(--color-success)';
-                reqs[k].querySelector('.req-icon').textContent = '✓';
-                score++;
-              } else {
-                reqs[k].style.color = 'var(--color-gray-600)';
-                reqs[k].querySelector('.req-icon').textContent = '○';
-              }
-            });
-            const levels = [
-              { w: '20%',  t: 'Very Weak', c: '#ef4444' },
-              { w: '40%',  t: 'Weak',      c: '#f59e0b' },
-              { w: '60%',  t: 'Fair',      c: '#eab308' },
-              { w: '80%',  t: 'Good',      c: '#22c55e' },
-              { w: '100%', t: 'Strong',    c: '#16a34a' }
-            ];
-            if (!v) {
-              fill.style.width = '0';
-              fill.style.background = '#e5e7eb';
-              txt.textContent = 'Enter password';
-            } else {
-              const lv = levels[Math.min(score, 4)];
-              fill.style.width = lv.w;
-              fill.style.background = lv.c;
-              txt.textContent = lv.t;
-            }
-          });
-
-          cf.addEventListener('input', () => {
-            cf.setCustomValidity(cf.value !== pwd.value ? 'Passwords do not match' : '');
-          });
-
-          // 4) File-upload for Certificates & Qualifications
-          const upload = document.getElementById('certificateUpload'),
-                input  = document.getElementById('PartnerDocument'),
-                list   = document.getElementById('fileList');
-
-          if (upload && input && list) {
-            // click to open picker
-            upload.addEventListener('click', () => input.click());
-
-            // drag & drop + click
-            ['dragover','dragleave','drop'].forEach(evt => {
-              upload.addEventListener(evt, e => {
-                e.preventDefault();
-                upload.classList.toggle('dragover', evt === 'dragover');
-                if (evt === 'drop') Array.from(e.dataTransfer.files).forEach(addFile);
-              });
-            });
-
-            input.addEventListener('change', () => {
-              Array.from(input.files).forEach(addFile);
-            });
+          // toggle required attrs
+          if (isPartner) {
+            yearsSelect.setAttribute('required','');
+            certInput.setAttribute('required','');
+          } else {
+            yearsSelect.removeAttribute('required');
+            certInput.removeAttribute('required');
           }
 
-          function addFile(file) {
-            if (file.size > 10 * 1024 * 1024) {
-              return alert('File quá lớn (max 10MB): ' + file.name);
-            }
-            const row = document.createElement('div');
-            row.className = 'file-item';
-            row.innerHTML = `
-              <span>${file.name} (${(file.size/1024/1024).toFixed(2)} MB)</span>
-              <span class="file-remove">×</span>
-            `;
-            row.querySelector('.file-remove').onclick = () => row.remove();
-            list.appendChild(row);
+          updateEnableState();
+        });
+      });
+
+      // --- 2) PASSWORD VISIBILITY TOGGLE ---
+      window.togglePassword = (id) => {
+        const inp  = document.getElementById(id),
+              icon = document.getElementById(id === 'password' ? 'eyeIcon' : 'eyeIcon2');
+        if (inp.type === 'password') {
+          inp.type = 'text';
+          icon.innerHTML = '<path d="M1.05 12 ..."/><path d="M4.27 4.27 ..."/>'; // your eye-off SVG
+        } else {
+          inp.type = 'password';
+          icon.innerHTML = '<path d="M1 12s4-8 ..."/><circle cx="12" cy="12" r="3"/>'; // original eye SVG
+        }
+      };
+
+      // --- 3) PASSWORD STRENGTH METER ---
+      const pwd = document.getElementById('password'),
+            cf  = document.getElementById('confirmPassword'),
+            reqs = {
+              length:    document.getElementById('req-length'),
+              uppercase: document.getElementById('req-uppercase'),
+              lowercase: document.getElementById('req-lowercase'),
+              number:    document.getElementById('req-number'),
+              symbol:    document.getElementById('req-symbol')
+            },
+            fill = document.getElementById('strengthFill'),
+            txt  = document.getElementById('strengthText');
+
+      pwd.addEventListener('input', () => {
+        const v = pwd.value;
+        const checks = {
+          length:    v.length >= 8,
+          uppercase: /[A-Z]/.test(v),
+          lowercase: /[a-z]/.test(v),
+          number:    /\d/.test(v),
+          symbol:    /[!@@#$%^&*]/.test(v)
+        };
+        let score = 0;
+        Object.entries(checks).forEach(([k, ok]) => {
+          if (ok) {
+            reqs[k].style.color = 'var(--color-success)';
+            reqs[k].querySelector('.req-icon').textContent = '✓';
+            score++;
+          } else {
+            reqs[k].style.color = 'var(--color-gray-600)';
+            reqs[k].querySelector('.req-icon').textContent = '○';
           }
         });
-
-        function signupWithGoogle() {
-          alert('Google signup integration coming soon!');
+        const levels = [
+          { w: '20%',  t: 'Very Weak', c: '#ef4444' },
+          { w: '40%',  t: 'Weak',      c: '#f59e0b' },
+          { w: '60%',  t: 'Fair',      c: '#eab308' },
+          { w: '80%',  t: 'Good',      c: '#22c55e' },
+          { w: '100%', t: 'Strong',    c: '#16a34a' }
+        ];
+        if (!v) {
+          fill.style.width = '0';
+          fill.style.background = '#e5e7eb';
+          txt.textContent = 'Enter password';
+        } else {
+          const lv = levels[Math.min(score, 4)];
+          fill.style.width = lv.w;
+          fill.style.background = lv.c;
+          txt.textContent = lv.t;
         }
+      });
+      cf.addEventListener('input', () => {
+        cf.setCustomValidity(cf.value !== pwd.value ? 'Passwords do not match' : '');
+      });
+
+      // --- 4) FILE UPLOAD with DataTransfer ---
+      const uploadZone = document.getElementById('certificateUpload');
+      const dt         = new DataTransfer();
+
+      uploadZone.addEventListener('click', () => certInput.click());
+      ['dragover','dragleave','drop'].forEach(evt => {
+        uploadZone.addEventListener(evt, e => {
+          e.preventDefault();
+          uploadZone.classList.toggle('dragover', evt === 'dragover');
+          if (evt === 'drop')
+            Array.from(e.dataTransfer.files).forEach(addFile);
+        });
+      });
+      certInput.addEventListener('change', () =>
+        Array.from(certInput.files).forEach(addFile)
+      );
+
+      function addFile(file) {
+        if (file.size > 10 * 1024 * 1024)
+          return alert('File quá lớn (max 10MB): ' + file.name);
+
+        dt.items.add(file);
+        certInput.files = dt.files;
+
+        const row = document.createElement('div');
+        row.className = 'file-item';
+        row.innerHTML = `
+          <span>${file.name} (${(file.size/1024/1024).toFixed(2)} MB)</span>
+          <span class="file-remove">×</span>
+        `;
+        row.querySelector('.file-remove').onclick = () => {
+          for (let i = 0; i < dt.items.length; i++) {
+            if (dt.items[i].getAsFile().name === file.name) {
+              dt.items.remove(i);
+              break;
+            }
+          }
+          certInput.files = dt.files;
+          row.remove();
+          updateEnableState();
+        };
+        certList.appendChild(row);
+        updateEnableState();
+      }
+
+      // --- 5) TERMS & SUBMIT ENABLE LOGIC ---
+      function updateEnableState() {
+        const baseValid = form.checkValidity();
+        let partnerOk = true;
+        if (roleHidden.value === 'true') {
+          partnerOk =
+            yearsSelect.value !== '' &&
+            specsEls().some(ch => ch.checked) &&
+            certList.children.length > 0;
+        }
+        chkTerms.disabled  = !(baseValid && partnerOk);
+        btnSubmit.disabled = chkTerms.disabled || !chkTerms.checked;
+      }
+      form.addEventListener('input',  updateEnableState);
+      form.addEventListener('change', updateEnableState);
+      updateEnableState();
+    });
     </script>
 }
-
 

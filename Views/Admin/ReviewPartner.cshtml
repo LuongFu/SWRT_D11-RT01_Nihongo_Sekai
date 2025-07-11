@@ -1,0 +1,251 @@
+﻿@using JapaneseLearningPlatform.Data.Enums
+@using JapaneseLearningPlatform.Helpers
+@model JapaneseLearningPlatform.Data.ViewModels.ReviewPartnerVM
+
+<!-- Animate on Scroll (AOS) init script; place once in your layout -->
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+    <script>
+        document.addEventListener('DOMContentLoaded', () => AOS.init({ once: true, offset: 120 }));
+    </script>
+}
+
+<div class="container mt-5" data-aos="fade-up" data-aos-duration="600">
+    <div class="row">
+        <!-- LEFT SIDEBAR: PROFILE CARD -->
+        <div class="col-lg-4 mb-4">
+            <div class="card review-card shadow-sm p-0">
+                <!-- Banner + Avatar -->
+                <div class="position-relative">
+                    <div class="w-100" style="
+               height:120px;
+               background:url('https://via.placeholder.com/600x120/cccccc/ffffff?text=Profile+Banner')
+                         center/cover no-repeat;"></div>
+                    <img src="@( Model.Profile.User.ProfilePicturePath
+                                                ?? "https://www.vectorstock.com/royalty-free-vector/gray-human-icon-profile-placeholder-vector-35850819" )"
+                         alt="Avatar"
+                         class="review-avatar position-absolute top-100 start-50 translate-middle border border-white"
+                         style="background:#fff;" />
+                </div>
+
+                <!-- Profile Details -->
+                <div class="card-body text-center mt-5">
+                    <h4 class="mb-1">@Model.Profile.User.FullName</h4>
+                    <p class="text-muted mb-3">@Model.Profile.User.Email</p>
+
+                    <p class="mb-2">
+                        <strong>Experience:</strong><br />
+                        @Model.Profile.YearsOfExperience.GetDisplayName()
+                    </p>
+
+                    <div>
+                        @foreach (var spec in Model.Profile.Specializations)
+                        {
+                            <span class="badge bg-primary me-1 mb-1">@spec.Specialization</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card-footer text-center bg-white">
+                    <button class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                        Reject
+                    </button>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
+                        Approve
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT CONTENT: DOCUMENT THUMBNAILS -->
+        <div class="col-lg-8">
+            <h5 class="mb-3">Uploaded Documents</h5>
+            <div class="row g-3">
+                @foreach (var doc in Model.Profile.Documents)
+                {
+                    <div class="col-sm-6">
+                        <div class="card doc-thumb h-100">
+                            <a href="@doc.FilePath" target="_blank">
+                                <img src="@doc.FilePath"
+                                     alt="Document thumbnail"
+                                     class="card-img-top" />
+                            </a>
+                            <div class="card-body p-2 text-center text-truncate">
+                                <a href="@doc.FilePath" target="_blank" class="doc-link small">
+                                    @System.IO.Path.GetFileName(doc.FilePath)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- APPROVE CONFIRM MODAL -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form asp-action="ApprovePartner" method="post" class="modal-content">
+            <input type="hidden" name="id" value="@Model.Profile.Id" />
+            <div class="modal-header">
+                <h5 class="modal-title text-success">Confirm Approval</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to <strong>approve</strong>
+                <em>@Model.Profile.User.FullName</em>’s application?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-success">
+                    Yes, Approve
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- REJECT CONFIRM MODAL -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form asp-action="RejectPartner" method="post" class="modal-content">
+            <input type="hidden" name="id" value="@Model.Profile.Id" />
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">Confirm Rejection</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to <strong>reject</strong>
+                <em>@Model.Profile.User.FullName</em>’s application?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-danger">
+                    Yes, Reject
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<p>
+    <a asp-action="PartnerApplications" asp-controller="Admin" class="btn btn-link">
+        Back to list
+    </a>
+</p>
+
+<!-- CUSTOM CSS (add to site.css or a new admin.css) -->
+<style>
+    .review-avatar {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 4px solid #E53935;
+        transition: transform .3s ease, box-shadow .3s ease;
+        background: #fff;
+    }
+
+        .review-avatar:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+    .review-card {
+        transition: transform .25s ease, box-shadow .25s ease;
+        overflow: visible;
+    }
+
+        .review-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+    /* 2) Document thumbnail overlay: cover link text fully */
+    .doc-thumb {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+        .doc-thumb img {
+            display: block;
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            transition: transform .3s ease;
+        }
+
+        .doc-thumb:hover img {
+            transform: scale(1.1);
+        }
+
+        .doc-thumb .overlay {
+            position: absolute;
+            inset: 0; /* top:0; right:0; bottom:0; left:0 */
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity .3s ease;
+        }
+
+        .doc-thumb:hover .overlay {
+            opacity: 1;
+        }
+        /* Ensure the <a> stays clickable even though overlay sits on top */
+        .doc-thumb .overlay,
+        .doc-thumb img {
+            pointer-events: none;
+        }
+
+        .doc-thumb a {
+            display: block;
+            position: relative;
+            z-index: 1; /* keep the <a> above the overlay layer for click events */
+        }
+
+    .btn-approve {
+        background: #43A047;
+        border-color: #388E3C;
+    }
+
+    .btn-reject {
+        color: #E53935;
+    }
+
+    /* Modal scale-in */
+    .modal.fade .modal-dialog {
+        transform: translateY(-30px) scale(0.97);
+        transition: transform .2s ease-out;
+    }
+
+    .modal.show .modal-dialog {
+        transform: translateY(0) scale(1);
+    }
+
+    /* Link tên file: ẩn khi hover */
+    /* luôn ẩn phần tên file */
+    .doc-link {
+        display: none !important;
+    }
+
+    .doc-link {
+        transition: opacity .3s ease;
+    }
+
+    .doc-thumb:hover .doc-link {
+        opacity: 0;
+    }
+
+</style>

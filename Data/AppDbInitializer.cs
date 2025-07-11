@@ -169,7 +169,7 @@ namespace JapaneseLearningPlatform.Data
                         context.QuizQuestions.AddRange(questions);
                         context.SaveChanges();
 
-                        context.CourseContentItems.AddRange(new List<CourseContentItem>
+                      context.CourseContentItems.AddRange(new List<CourseContentItem>
         {
             new CourseContentItem
             {

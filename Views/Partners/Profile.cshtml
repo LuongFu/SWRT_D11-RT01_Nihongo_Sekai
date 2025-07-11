@@ -9,13 +9,14 @@
 
     <div class="row">
         <div class="col-md-4">
+            @* Avatar upload *@
             @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
             {
-                <img src="@Model.ProfilePicturePath" alt="Avatar" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;" />
+                <img src="@Model.ProfilePicturePath" alt="Avatar" class="rounded-circle img-thumbnail" style="width:150px; height:150px; object-fit:cover;" />
             }
             else
             {
-                <img src="/images/default-avatar.png" alt="Default Avatar" class="rounded-circle img-thumbnail" style="width: 150px;" />
+                <img src="/images/default-avatar.png" alt="Default Avatar" class="rounded-circle img-thumbnail" style="width:150px; height:150px;" />
             }
 
             <form asp-action="UploadProfilePicture" asp-controller="Partner" method="post" enctype="multipart/form-data" class="mt-3">
@@ -25,32 +26,60 @@
         </div>
 
         <div class="col-md-8">
+            @* Basic info *@
             <dl class="row">
                 <dt class="col-sm-4">Full Name</dt>
                 <dd class="col-sm-8">@Model.FullName</dd>
-
                 <dt class="col-sm-4">Email</dt>
                 <dd class="col-sm-8">@Model.Email</dd>
             </dl>
 
+            @* Quick actions *@
             <h4 class="mt-4">Quick Actions</h4>
-            <ul class="list-group">
+            <ul class="list-group mb-4">
                 <li class="list-group-item">
-                    <a href="#">
-                        <i class="bi bi-easel"></i> My Classroom <span class="text-muted small">(coming soon)</span>
-                    </a>
+                    <a href="#"><i class="bi bi-easel"></i> My Classroom <span class="text-muted small">(coming soon)</span></a>
                 </li>
                 <li class="list-group-item">
-                    <a asp-controller="Partner" asp-action="EditProfile">
-                        <i class="bi bi-pencil-square"></i> Edit Profile
-                    </a>
+                    <a asp-action="EditProfile"><i class="bi bi-pencil-square"></i> Edit Profile</a>
                 </li>
                 <li class="list-group-item">
-                    <a asp-controller="Partner" asp-action="ResetPassword">
-                        <i class="bi bi-shield-lock"></i> Reset Password
-                    </a>
+                    <a asp-action="ResetPassword"><i class="bi bi-shield-lock"></i> Reset Password</a>
                 </li>
             </ul>
+
+            @* ==== Partner Documents section ==== *@
+            <h4>Your Uploaded Documents</h4>
+            @if (Model.PartnerProfile?.Documents?.Any() == true)
+            {
+                <ul class="list-group mb-3">
+                    @foreach (var d in Model.PartnerProfile.Documents)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="@d.FilePath" target="_blank">
+                                @System.IO.Path.GetFileName(d.FilePath)
+                            </a>
+                            <form asp-action="DeleteDocument" method="post" class="m-0">
+                                <input type="hidden" name="id" value="@d.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-muted">You haven’t uploaded any documents yet.</p>
+            }
+
+            @* Upload new document *@
+            <form asp-action="UploadDocument" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="file" class="form-label">Add a new document</label>
+                    <input type="file" name="file" id="file" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-primary">Upload Document</button>
+            </form>
         </div>
     </div>
 </div>
