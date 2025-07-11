@@ -250,13 +250,16 @@ namespace JapaneseLearningPlatform.Controllers
                 .Include(i => i.Enrollments)
                 .FirstOrDefaultAsync(i => i.Id == id);
             if (instance == null) return NotFound();
-
+            var userId = _userManager.GetUserId(User); // 👈 Bổ sung dòng này
+            var enrollment = instance.Enrollments.FirstOrDefault(e => e.LearnerId == userId && !e.HasLeft);
             var vm = new ClassroomInstanceDetailVM
             {
                 Instance = instance,
                 Template = instance.Template,
                 EnrollmentCount = instance.Enrollments.Count,
-                PartnerName = instance.Template.Partner.FullName
+                PartnerName = instance.Template.Partner.FullName,
+                IsEnrolled = enrollment != null,
+                HasPaid = enrollment?.IsPaid == true // ✅ thêm dòng này
             };
             return View(vm);
         }
