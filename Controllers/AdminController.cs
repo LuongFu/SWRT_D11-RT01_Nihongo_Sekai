@@ -47,7 +47,7 @@ namespace JapaneseLearningPlatform.Controllers
                                     .Include(o => o.User)
                                     .Include(o => o.OrderItems)
                                     .OrderByDescending(o => o.OrderDate)
-                                    .Take(5)
+                                    .Take(10)
                                     .ToList();
 
             var monthLabels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };

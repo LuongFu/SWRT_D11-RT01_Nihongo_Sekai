@@ -105,10 +105,10 @@
         max-width: 100% !important;
     }
 </style>
-
+<div class="cart-header text-center">Shopping Cart</div>
 <div class="cart-container">
     <div class="cart-left">
-        <div class="cart-header">Shopping Cart</div>
+        
         <p>@Model.ShoppingCart.ShoppingCartItems.Count course(s) in cart</p>
 
         @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
@@ -137,7 +137,30 @@
             <a class="btn-secondary d-block text-center" asp-controller="Courses" asp-action="Index">Add more items</a>
     </div>
 </div>
-
+@if (Model.RecommendedCourses != null && Model.RecommendedCourses.Any())
+{
+    <div class="mt-5">
+        <h4 class ="cart-header text-center">Recommended for you</h4>
+        <div class="row">
+            @foreach (var item in Model.RecommendedCourses)
+            {
+                <div class="col-md-3">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="@item.CoverImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;" />
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Name</h5>
+                            <p class="card-text">@item.Description</p>
+                            <p class="fw-bold text-danger">@item.Tuition.ToString("c")</p>
+                            <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId" class="btn btn-danger w-100 mt-2">
+                                View Course
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
 @section Scripts {
     <script src="https://www.paypalobjects.com/api/checkout.js"></script>
     <script>

@@ -1,93 +1,110 @@
 ﻿@using JapaneseLearningPlatform.Data.ViewModels
 @using JapaneseLearningPlatform.Data.Enums
-
 @model ClassroomInstanceVM
 
 @{
-    ViewData["Title"] = "Create a new Session";
+    ViewData["Title"] = "Create a New Session";
 }
 
-<h2 class="mb-4">Create a new Session from a Template</h2>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    <h2 class="mb-4 text-center text-primary">
+                        <i class="bi bi-calendar-plus me-2"></i>Create a New Session from Template
+                    </h2>
 
-@if (!string.IsNullOrEmpty(Model.TemplateTitle))
-{
-    <div class="alert alert-light border mb-4">
-        <h5 class="mb-2">@Model.TemplateTitle</h5>
-        <p>@Model.TemplateDescription</p>
-        <p><strong>Level:</strong> @Model.LanguageLevel</p>
+                    @if (!string.IsNullOrEmpty(Model.TemplateTitle))
+                    {
+                        <div class="alert alert-light border mb-4">
+                            <h5 class="mb-2 text-dark fw-bold">@Model.TemplateTitle</h5>
+                            <p class="mb-1">@Model.TemplateDescription</p>
+                            <p><strong>Level:</strong> @Model.LanguageLevel</p>
 
-        @* Nếu có tài liệu *@
-        @if (!string.IsNullOrEmpty(Model.DocumentURL))
-        {
-            <p>
-                <strong>Tài liệu đính kèm:</strong>
-                <a href="@Model.DocumentURL" target="_blank" class="btn btn-outline-info btn-sm ms-2">
-                    <i class="bi bi-file-earmark-text me-1"></i>Xem tài liệu
-                </a>
-            </p>
-        }
+                            @if (!string.IsNullOrEmpty(Model.DocumentURL))
+                            {
+                                <p class="mb-0">
+                                    <strong>Attached Document:</strong>
+                                    <a href="@Model.DocumentURL" target="_blank" class="btn btn-outline-info btn-sm ms-2">
+                                        <i class="bi bi-file-earmark-text me-1"></i>View Document
+                                    </a>
+                                </p>
+                            }
+                        </div>
+                    }
+
+                    <form asp-action="CreateSession" method="post">
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                        <div class="mb-3">
+                            <label asp-for="TemplateId" class="form-label fw-semibold">Template</label>
+                            <select asp-for="TemplateId" asp-items="ViewBag.TemplateList" class="form-select">
+                                <option value="">-- Select a template --</option>
+                            </select>
+                            <span asp-validation-for="TemplateId" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StartDate" class="form-label fw-semibold"></label>
+                                <input asp-for="StartDate" type="date" class="form-control" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="EndDate" class="form-label fw-semibold"></label>
+                                <input asp-for="EndDate" type="date" class="form-control" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="SessionDurationHours" class="form-label fw-semibold"></label>
+                            <input asp-for="SessionDurationHours" type="number" class="form-control" min="1" max="12" />
+                            <span asp-validation-for="SessionDurationHours" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Price" class="form-label fw-semibold"></label>
+                            <input asp-for="Price" class="form-control" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="GoogleMeetLink" class="form-label fw-semibold"></label>
+                            <input asp-for="GoogleMeetLink" class="form-control" />
+                            <span asp-validation-for="GoogleMeetLink" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Status" class="form-label fw-semibold"></label>
+                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<ClassroomStatus>()"></select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Create Session
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-}
-
-<form asp-action="CreateSession" method="post">
-    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-
-    <div class="mb-3">
-        <label asp-for="TemplateId" class="form-label"></label>
-        <select asp-for="TemplateId" asp-items="ViewBag.TemplateList" class="form-control">
-            <option value="">-- Chọn mẫu lớp --</option>
-        </select>
-        <span asp-validation-for="TemplateId" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="StartDate" class="form-label"></label>
-        <input asp-for="StartDate" type="date" class="form-control" />
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="EndDate" class="form-label"></label>
-        <input asp-for="EndDate" type="date" class="form-control" />
-        <span asp-validation-for="EndDate" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="SessionDurationHours" class="form-label"></label>
-        <input asp-for="SessionDurationHours" type="number" class="form-control" min="1" max="12" />
-        <span asp-validation-for="SessionDurationHours" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Price" class="form-label"></label>
-        <input asp-for="Price" class="form-control" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="GoogleMeetLink" class="form-label"></label>
-        <input asp-for="GoogleMeetLink" class="form-control" />
-        <span asp-validation-for="GoogleMeetLink" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Status" class="form-label"></label>
-        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<ClassroomStatus>()"></select>
-        <span asp-validation-for="Status" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Tạo phiên</button>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelector('[name="TemplateId"]').addEventListener('change', function () {
+            const id = this.value;
+            if (id) {
+                window.location.href = `/ClassroomInstances/CreateSession?templateId=${id}`;
+            }
+        });
+    </script>
 }
-
-<script>
-    document.querySelector('[name="TemplateId"]').addEventListener('change', function () {
-        const id = this.value;
-        if (id) {
-            window.location.href = `/ClassroomInstances/CreateSession?templateId=${id}`;
-        }
-    });
-</script>
