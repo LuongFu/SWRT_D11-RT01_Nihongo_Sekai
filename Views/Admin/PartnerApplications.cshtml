@@ -54,6 +54,12 @@
             border-radius: .5rem;
             font-size: .875rem;
         }
+
+        .approved-date {
+            font-style: italic;
+            font-size: 0.85rem;
+        }
+
     </style>
 }
 
@@ -119,6 +125,14 @@
                                 }
                     </div>
                 </div>
+                @* ────────── INSERT APPROVAL DATE HERE ────────── *@
+                @if (current == PartnerStatus.Approved && p.DecisionAt.HasValue)
+                {
+                    <div class="approved-date text-muted small mb-2">
+                    Approved on @p.DecisionAt.Value.ToString("MMMM d, yyyy")
+                
+                    </div>
+                }
 
                 <div class="mt-auto">
                     <a asp-action="ReviewPartner" asp-route-id="@p.Id"
