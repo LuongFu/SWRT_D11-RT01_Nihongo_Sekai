@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Cart;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace JapaneseLearningPlatform.Controllers
@@ -33,19 +34,38 @@ namespace JapaneseLearningPlatform.Controllers
             return View(orders);
         }
 
-        public IActionResult ShoppingCart()
+        //public IActionResult ShoppingCart()
+        //{
+        //    var items = _shoppingCart.GetShoppingCartItems();
+        //    _shoppingCart.ShoppingCartItems = items;
+
+        //    var response = new ShoppingCartVM()
+        //    {
+        //        ShoppingCart = _shoppingCart,
+        //        ShoppingCartTotal = _shoppingCart.GetShoppingCartTotal()
+        //    };
+
+        //    return View(response);
+        //}
+        public async Task<IActionResult> ShoppingCart()
         {
             var items = _shoppingCart.GetShoppingCartItems();
             _shoppingCart.ShoppingCartItems = items;
 
+            //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var recommendedCourses = await _coursesService.GetRecommendedCoursesAsync(userId);
+
             var response = new ShoppingCartVM()
             {
                 ShoppingCart = _shoppingCart,
-                ShoppingCartTotal = _shoppingCart.GetShoppingCartTotal()
+                ShoppingCartTotal = _shoppingCart.GetShoppingCartTotal(),
+                RecommendedCourses = (await _coursesService.GetRecommendedCoursesAsync(userId)).ToList()
             };
 
             return View(response);
         }
+
 
         public async Task<IActionResult> AddItemToShoppingCart(int id)
         {
@@ -69,6 +89,17 @@ namespace JapaneseLearningPlatform.Controllers
             return RedirectToAction(nameof(ShoppingCart));
         }
 
+        //public async Task<IActionResult> CompleteOrder()
+        //{
+        //    var items = _shoppingCart.GetShoppingCartItems();
+        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
+
+        //    await _ordersService.StoreOrderAsync(items, userId, userEmailAddress);
+        //    await _shoppingCart.ClearShoppingCartAsync();
+
+        //    return View("OrderCompleted");
+        //}
         public async Task<IActionResult> CompleteOrder()
         {
             var items = _shoppingCart.GetShoppingCartItems();
@@ -78,7 +109,17 @@ namespace JapaneseLearningPlatform.Controllers
             await _ordersService.StoreOrderAsync(items, userId, userEmailAddress);
             await _shoppingCart.ClearShoppingCartAsync();
 
-            return View("OrderCompleted");
+            var recommendedCourses = await _coursesService.GetRecommendedCoursesAsync(userId);
+
+            var vm = new ShoppingCartVM
+            {
+                ShoppingCart = _shoppingCart,
+                ShoppingCartTotal = 0, // Đã thanh toán xong
+                RecommendedCourses = recommendedCourses.ToList()
+            };
+
+            return View("OrderCompleted", vm);
         }
+
     }
 }
