@@ -287,13 +287,18 @@
                     <div class="alert alert-success">@TempData["Success"]</div>
                 }
 
-                @if (TempData["Error"] != null)
+                @* @if (TempData["Error"] != null)
                 {
                     <div class="alert alert-danger" role="alert">
                         <strong>Sorry!</strong> @TempData["Error"]
                     </div>
+                } *@
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @TempData["ErrorMessage"]
+                    </div>
                 }
-
                 <form asp-action="Login" method="post" id="loginForm">
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
