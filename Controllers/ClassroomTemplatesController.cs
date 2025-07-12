@@ -1,163 +1,154 @@
-﻿using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data.Services;
+using JapaneseLearningPlatform.Data.Static;
+using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Helpers;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace JapaneseLearningPlatform.Controllers
 {
-    [Authorize(Roles = "Admin,Partner")]
+    [Authorize(Roles = UserRoles.Partner + "," + UserRoles.Admin)]
     public class ClassroomTemplatesController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IClassroomTemplateService _templateService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _env;
 
-        public ClassroomTemplatesController(AppDbContext context, UserManager<ApplicationUser> userManager)
+        public ClassroomTemplatesController(
+            IClassroomTemplateService templateService,
+            UserManager<ApplicationUser> userManager,
+            IWebHostEnvironment env)
         {
-            _context = context;
+            _templateService = templateService;
             _userManager = userManager;
+            _env = env;
         }
 
-        // GET: ClassroomTemplates
-        public async Task<IActionResult> Index()
+        // GET: /ClassroomTemplates/
+        public async Task<IActionResult> MyTemplate()
         {
-            var templates = await _context.ClassroomTemplates
-                .Include(t => t.Partner)
-                .ToListAsync();
-            return View(templates);
+            var partnerId = _userManager.GetUserId(User);
+            var templates = User.IsInRole(UserRoles.Partner)
+                ? await _templateService.GetByPartnerIdAsync(partnerId)
+                : await _templateService.GetAllAsync();
+
+            var vmList = templates.Select(t => ClassroomTemplateVM.FromEntity(t));
+            return View(vmList);
         }
 
-        // GET: ClassroomTemplates/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: /ClassroomTemplates/Details/5
+        public async Task<IActionResult> Detail(int id)
         {
-            if (id == null) return NotFound();
-
-            var template = await _context.ClassroomTemplates
-                .Include(t => t.Partner)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
+            if (User.IsInRole(UserRoles.Partner) && template.PartnerId != _userManager.GetUserId(User))
+                return Forbid();
 
-            if (User.IsInRole("Partner"))
-            {
-                var userId = _userManager.GetUserId(User);
-                if (template.PartnerId != userId)
-                    return Forbid();
-            }
-
-            return View(template);
+            return View(template.ToVM());
         }
 
-        // GET: ClassroomTemplates/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        // GET: /ClassroomTemplates/Create
+        public IActionResult Create() => View();
 
-        // POST: ClassroomTemplates/Create
+        // POST: /ClassroomTemplates/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ClassroomTemplate template)
+        public async Task<IActionResult> Create(ClassroomTemplateVM vm)
         {
-            if (!ModelState.IsValid) return View(template);
+            if (!ModelState.IsValid)
+                return View(vm);
 
-            // Set PartnerId for Partner role
-            if (User.IsInRole("Partner"))
-            {
-                var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name)?.Id;
-                if (userId != null)
-                    template.PartnerId = userId;
-            }
+            var partnerId = _userManager.GetUserId(User);
+            var imageUrl = vm.ImageFile != null
+                ? await SaveFileAsync(vm.ImageFile, "templates/images")
+                : vm.ImageURL;
 
-            _context.Add(template);
-            await _context.SaveChangesAsync();
+            var documentUrl = vm.DocumentFile != null
+                ? await SaveFileAsync(vm.DocumentFile, "templates/docs")
+                : null;
+
+            var entity = vm.ToEntity(partnerId, imageUrl, documentUrl);
+            await _templateService.AddAsync(entity);
             return RedirectToAction(nameof(Index));
         }
-        // GET: ClassroomTemplates/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+
+        // GET: /ClassroomTemplates/Edit/5
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-
-            var template = await _context.ClassroomTemplates.FindAsync(id);
+            var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
+            if (User.IsInRole(UserRoles.Partner) && template.PartnerId != _userManager.GetUserId(User))
+                return Forbid();
 
-            if (User.IsInRole("Partner"))
-            {
-                var userId = _userManager.GetUserId(User);
-                if (template.PartnerId != userId)
-                    return Forbid();
-            }
-
-            return View(template);
+            return View(template.ToVM());
         }
-        // POST: ClassroomTemplates/Edit/5
+
+        // POST: /ClassroomTemplates/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ClassroomTemplate template)
+        public async Task<IActionResult> Edit(int id, ClassroomTemplateVM vm)
         {
-            if (id != template.Id) return NotFound();
+            if (id != vm.Id) return BadRequest();
+            if (!ModelState.IsValid) return View(vm);
 
-            if (User.IsInRole("Partner"))
-            {
-                var userId = _userManager.GetUserId(User);
-                var existing = await _context.ClassroomTemplates.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
-                if (existing == null || existing.PartnerId != userId)
-                    return Forbid();
-            }
+            var existing = await _templateService.GetByIdAsync(id);
+            if (existing == null) return NotFound();
+            if (User.IsInRole(UserRoles.Partner) && existing.PartnerId != _userManager.GetUserId(User))
+                return Forbid();
 
-            if (!ModelState.IsValid) return View(template);
+            if (vm.ImageFile != null)
+                existing.ImageURL = await SaveFileAsync(vm.ImageFile, "templates/images");
 
-            _context.Update(template);
-            await _context.SaveChangesAsync();
+            if (vm.DocumentFile != null)
+                existing.DocumentURL = await SaveFileAsync(vm.DocumentFile, "templates/docs");
+
+            existing.Title = vm.Title;
+            existing.Description = vm.Description;
+            existing.LanguageLevel = vm.LanguageLevel;
+
+            await _templateService.UpdateAsync(existing);
             return RedirectToAction(nameof(Index));
         }
-        // GET: ClassroomTemplates/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+
+        // GET: /ClassroomTemplates/Delete/5
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null) return NotFound();
-
-            var template = await _context.ClassroomTemplates
-                .Include(t => t.Partner)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
+            if (User.IsInRole(UserRoles.Partner) && template.PartnerId != _userManager.GetUserId(User))
+                return Forbid();
 
-            if (User.IsInRole("Partner"))
-            {
-                var userId = _userManager.GetUserId(User);
-                if (template.PartnerId != userId)
-                    return Forbid();
-            }
-
-            return View(template);
+            return View(template.ToVM());
         }
-        // POST: ClassroomTemplates/Delete/5
+
+        // POST: /ClassroomTemplates/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var template = await _context.ClassroomTemplates.FindAsync(id);
+            var template = await _templateService.GetByIdAsync(id);
             if (template == null) return NotFound();
+            if (User.IsInRole(UserRoles.Partner) && template.PartnerId != _userManager.GetUserId(User))
+                return Forbid();
 
-            if (User.IsInRole("Partner"))
-            {
-                var userId = _userManager.GetUserId(User);
-                if (template.PartnerId != userId)
-                    return Forbid();
-            }
-
-            _context.ClassroomTemplates.Remove(template);
-            await _context.SaveChangesAsync();
-
+            await _templateService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> MyTemplates()
-        {
-            var userId = _userManager.GetUserId(User);
-            var templates = await _context.ClassroomTemplates
-                .Where(t => t.PartnerId == userId)
-                .ToListAsync();
 
-            return View("Index", templates); // Reuse Index view
+        // ✅ UTILITY: Internal helper for saving file
+        private async Task<string> SaveFileAsync(IFormFile file, string folder)
+        {
+            var uploads = Path.Combine(_env.WebRootPath, "uploads", folder);
+            Directory.CreateDirectory(uploads);
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var filePath = Path.Combine(uploads, fileName);
+
+            await using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return $"/uploads/{folder}/{fileName}";
         }
     }
 }

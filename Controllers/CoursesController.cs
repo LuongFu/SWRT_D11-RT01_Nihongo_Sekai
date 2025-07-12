@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Cart;
+using JapaneseLearningPlatform.Data.Enums;
+using JapaneseLearningPlatform.Data.Services;
+using JapaneseLearningPlatform.Data.Static;
+using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using JapaneseLearningPlatform.Data.ViewModels;
-using JapaneseLearningPlatform.Data;
-using JapaneseLearningPlatform.Data.Enums;
-using JapaneseLearningPlatform.Data.Cart;
-using JapaneseLearningPlatform.Data.Services;
-using JapaneseLearningPlatform.Data.Static;
-using JapaneseLearningPlatform.Models;
+using System.ComponentModel;
 using System.Security.Claims;
 
 namespace JapaneseLearningPlatform.Controllers
@@ -21,14 +22,15 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrdersService _orderService;
-
-        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService)
+        private readonly ICoursesService _courseService;
+        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService, ICoursesService courseService)
         {
             _service = service;
             _shoppingCart = shoppingCart;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _orderService = orderService;
+            _courseService = courseService;
         }
 
         [AllowAnonymous]
@@ -133,11 +135,10 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, int? videoId = null)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cartId = _shoppingCart.ShoppingCartId; // fix an toàn dựa trên session
-
             var courseHierarchy = await _service.GetCourseHierarchyAsync(id, userId, cartId);
             if (courseHierarchy == null || courseHierarchy.Course == null) return View("NotFound");
 

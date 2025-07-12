@@ -59,7 +59,6 @@
             align-items: center;
             justify-content: center;
             gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-xl);
             font-size: 1.5rem;
             font-weight: 700;
         }
@@ -199,7 +198,7 @@
             display: flex;
             align-items: flex-start;
             gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
         }
 
         .benefit-icon {
@@ -211,6 +210,61 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
+        }
+
+        /* ============ LOGIN PAGE OPTIMIZED ============ */
+        .auth-card {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .auth-form-column,
+        .auth-benefits-column {
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+
+        .auth-title {
+            font-size: 1.6rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .auth-subtitle {
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-control {
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            border-radius: var(--radius-md);
+        }
+
+        .btn,
+        .btn-outline-danger {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+
+        .mb-3 {
+            margin-bottom: var(--spacing-md);
+        }
+
+        @@media (max-width: 768px) {
+            .auth-card
+
+        {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-form-column {
+            order: 1; /* Form hiển thị trước */
+        }
+
+        .auth-benefits-column {
+            order: 2; /* Benefit hiển thị sau */
+        }
+
         }
     </style>
 }

@@ -1,0 +1,66 @@
+﻿@model JapaneseLearningPlatform.Models.DailyWord
+<style>
+    #word-popup-button {
+        position: fixed;
+        right: 20px;
+        bottom: 100px;
+        cursor: pointer;
+        z-index: 999;
+    }
+
+    .word-modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0,0,0,0.6);
+    }
+
+    .word-content {
+        background: white;
+        padding: 30px;
+        margin: 100px auto;
+        width: 350px;
+        border-radius: 15px;
+        text-align: center;
+    }
+
+    .close-btn {
+        float: right;
+        font-size: 20px;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function showWordPopup() {
+        document.getElementById("word-popup-modal").style.display = "block";
+    }
+
+    function hideWordPopup() {
+        document.getElementById("word-popup-modal").style.display = "none";
+    }
+</script>
+
+@if (Model != null)
+{
+    <div id="word-popup-button" onclick="showWordPopup()">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ3nZSdeR7qYgRKdrK7mJ8r-Vu2aC92y1BRQ&s" width="60px" height="60px" style="border-radius:50px;" alt="Word of the Day" />
+    </div>
+
+    <div id="word-popup-modal" style="display:none;" class="word-modal">
+        <div class="word-content">
+            <span class="close-btn" onclick="hideWordPopup()">&times;</span>
+            <h2> WORD OF THE DAY</h2>
+            <h2>@Model.JapaneseWord</h2>
+            <h4>@Model.Romanji</h4>
+            <p>@Model.Description</p>
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" width="300px" height="200px" alt="word image" />
+            }
+        </div>
+    </div>
+}

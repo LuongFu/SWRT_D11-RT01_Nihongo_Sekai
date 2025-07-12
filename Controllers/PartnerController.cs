@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using JapaneseLearningPlatform.Models.Partner;
@@ -19,19 +20,19 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _env;
+        private readonly ICoursesService _coursesService;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public PartnerController(
-            AppDbContext context,
-            UserManager<ApplicationUser> userManager,
-            IWebHostEnvironment env)
+        public PartnerController(AppDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, ICoursesService coursesService, SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
             _userManager = userManager;
             _env = env;
+            _coursesService = coursesService;
+            _signInManager = signInManager;
         }
 
         // ✅ Default landing for /Partner
-        [Authorize(Roles = "Partner")]
         [HttpGet]
         public IActionResult Index() =>
             RedirectToAction(nameof(Profile));
@@ -61,7 +62,6 @@ namespace JapaneseLearningPlatform.Controllers
             return View("~/Views/Partners/EditProfile.cshtml", user);
         }
 
-        [Authorize(Roles = "Partner")]
         [HttpPost]
         public async Task<IActionResult> EditProfile(ApplicationUser updatedUser)
         {
@@ -81,27 +81,42 @@ namespace JapaneseLearningPlatform.Controllers
         public IActionResult ResetPassword() =>
             View("~/Views/Partners/ResetPassword.cshtml");
 
-        [Authorize(Roles = "Partner")]
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordVM model)
         {
             if (!ModelState.IsValid)
-                return View("~/Views/Partners/ResetPassword.cshtml", model);
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound();
-
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword!);
-
-            if (!result.Succeeded)
             {
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
+                TempData["ChangePasswordError"] = "Vui lòng kiểm tra lại thông tin.";
                 return View("~/Views/Partners/ResetPassword.cshtml", model);
             }
 
-            return RedirectToAction(nameof(Profile));
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["ChangePasswordError"] = "Không tìm thấy tài khoản.";
+                return RedirectToAction("ChangePassword");
+            }
+
+            var checkOldPassword = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
+            if (!checkOldPassword)
+            {
+                TempData["ChangePasswordError"] = "Mật khẩu hiện tại sai.";
+                return RedirectToAction("ChangePassword");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                TempData["ChangePasswordError"] = string.Join(" ", result.Errors.Select(e => e.Description));
+                return RedirectToAction("ChangePassword");
+            }
+
+            TempData["PasswordChangeSuccess"] = "Thay đổi mật khẩu thành công.";
+            TempData["ShouldRedirectToLogin"] = true;
+            await _signInManager.SignOutAsync();
+
+            return View("~/Views/Partners/ResetPassword.cshtml");
         }
 
         // 📷 Upload Profile Picture
@@ -188,5 +203,8 @@ namespace JapaneseLearningPlatform.Controllers
 
             return RedirectToAction(nameof(Profile));
         }
+
+        // Word of the day
+        public DbSet<DailyWord> DailyWords { get; set; }
     }
 }

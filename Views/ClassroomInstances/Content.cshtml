@@ -19,16 +19,32 @@
     <!-- 🔸 Tabs -->
     <ul class="nav nav-tabs mb-3" id="classTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button">Overview</button>
+            <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab">
+                Overview
+            </a>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="resources-tab" data-bs-toggle="tab" data-bs-target="#resources" type="button">Resources</button>
+            @if (User.IsInRole("Partner") || User.IsInRole("Admin"))
+            {
+                <a class="nav-link" id="learners-tab" data-bs-toggle="tab" href="#learners" role="tab">
+                    Learners
+                </a>
+            }
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="assessment-tab" data-bs-toggle="tab" data-bs-target="#assessment" type="button">Final Assessment</button>
+            <a class="nav-link" id="resources-tab" data-bs-toggle="tab" href="#resources" role="tab">
+                Resources
+            </a>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="review-tab" data-bs-toggle="tab" data-bs-target="#review" type="button">Feedback</button>
+            <a class="nav-link" id="assessment-tab" data-bs-toggle="tab" href="#assessment" role="tab">
+                Final Assessment
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="review-tab" data-bs-toggle="tab" href="#review" role="tab">
+                Feedback
+            </a>
         </li>
     </ul>
 
@@ -46,6 +62,50 @@
                 *@
             </div>
         </div>
+        <!-- 🔸 Learners List -->
+        @if (User.IsInRole("Partner") || User.IsInRole("Admin"))
+        {
+            <div class="tab-pane fade" id="learners" role="tabpanel" aria-labelledby="learners-tab">
+                <div class="p-3">
+                    <h5 class="fw-bold mb-3">Enrolled Learners</h5>
+
+                    @if (Model.Instance.Enrollments == null || !Model.Instance.Enrollments.Any())
+                    {
+                        <p class="text-muted">No learners have enrolled in this class yet.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 5%">#</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Enrolled At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int index = 1;
+                                    foreach (var enrollment in Model.Instance.Enrollments)
+                                    {
+                                        <tr>
+                                            <td>@index</td>
+                                            <td>@enrollment.Learner?.FullName</td>
+                                            <td>@enrollment.Learner?.Email</td>
+                                            <td>@enrollment.EnrolledAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                        </tr>
+                                        index++;
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        }
+
 
         <!-- 🔹 Resources -->
         <div class="tab-pane fade" id="resources" role="tabpanel">
@@ -71,26 +131,123 @@
         <div class="tab-pane fade" id="assessment" role="tabpanel">
             <div class="p-3">
                 <h5 class="fw-bold">Final Assignment</h5>
+
                 @if (Model.FinalAssessment != null)
                 {
                     <p><strong>Instructions:</strong></p>
                     <p>@Html.Raw(Model.FinalAssessment.Instructions)</p>
 
-                    @if (!Model.HasSubmitted)
+                    @if (Model.FinalAssessment?.DueDate != null)
                     {
-                        <form asp-action="SubmitAssessment" asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
-                            <div class="mb-3">
-                                <label for="submission" class="form-label">Upload your file</label>
-                                <input type="file" name="SubmissionFile" class="form-control" required />
-                            </div>
-                            <button type="submit" class="btn btn-success">Submit</button>
-                        </form>
+                        <p><strong>Due Date:</strong> @Model.FinalAssessment.DueDate.Value.ToString("dd/MM/yyyy HH:mm")</p>
                     }
-                    else
+
+                    @if (User.IsInRole("Learner")) // Learner View
                     {
-                        <p class="text-success">✅ You have submitted your assessment.</p>
-                        <p><strong>Score:</strong> @Model.Submission?.Score ?? "-"</p>
-                        <p><strong>Feedback:</strong> @Model.Submission?.Feedback ?? "Not reviewed yet"</p>
+                        @if (TempData["Message"] != null)
+                        {
+                            <div class="alert alert-success">
+                                @TempData["Message"]
+                            </div>
+                        }
+
+                        @if (Model.HasSubmitted)
+                        {
+                            <p class="text-success">✅ You have already submitted your assessment.</p>
+                            <p><strong>Score:</strong> @(Model.Submission?.Score?.ToString() ?? "-")</p>
+                            <p><strong>Feedback:</strong> @(Model.Submission?.Feedback ?? "Not reviewed yet")</p>
+
+                            <div class="mb-3 mt-4">
+                                <label class="form-label fw-bold">Your Previous Answer:</label>
+                                <textarea class="form-control" rows="5" readonly>@Model.Submission?.AnswerText</textarea>
+                            </div>
+                        }
+
+                        @if (Model.Submission?.Score != null)
+                        {
+                            <p class="text-danger mt-3">✅ Your submission has already been graded. You cannot modify it.</p>
+                        }
+                        else if (Model.FinalAssessment?.DueDate != null && Model.FinalAssessment.DueDate <= DateTime.Now)
+                        {
+                            <p class="text-danger mt-3">⛔ You cannot submit. The deadline has passed.</p>
+                        }
+                        else
+                        {
+                            <!-- Form for new or resubmission -->
+                            <form id="assessmentForm" asp-action="SubmitAssessment" asp-controller="Assessments" asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="AnswerText" class="form-label fw-bold">Your New Answer (optional)</label>
+                                    <textarea id="answerText" name="answerText" rows="5" class="form-control" placeholder="Write your updated answer here..."></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="submission" class="form-label fw-bold">Upload a new file (optional)</label>
+                                    <input id="submissionFile" type="file" name="SubmissionFile" class="form-control" />
+                                </div>
+
+                                <button type="submit" class="btn btn-success">@(Model.HasSubmitted ? "Resubmit" : "Submit")</button>
+                            </form>
+                        }
+                    }
+
+                    else if (User.IsInRole("Partner"))  //Partner View
+                    {
+                        <form asp-action="UpdateDeadline" asp-controller="Assessments" asp-route-assessmentId="@Model.FinalAssessment.Id" method="post" class="d-flex align-items-center gap-2 mt-2">
+                            <input type="text" id="newDueDate" name="newDueDate" class="form-control" required placeholder="-- Select a new due date --" />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Update Deadline</button>
+                        </form>
+
+                        @if (TempData["DeadlineMessage"] != null)
+                        {
+                            <div class="alert alert-info mt-2">@TempData["DeadlineMessage"]</div>
+                        }
+                        @if (Model.AllSubmissions == null || !Model.AllSubmissions.Any())
+                        {
+                            <p class="text-muted mt-3">No learners have submitted their assessments yet.</p>
+                        }
+                        else
+                        {
+                            <table class="table table-bordered table-hover mt-4">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 5%">#</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Submitted At</th>
+                                        <th>Score</th>
+                                        <th>Feedback</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody><!--Đã set local time rồi nên không sửa ở đây-->
+                                    @{
+                                        int index = 1;
+                                        foreach (var submission in Model.AllSubmissions)
+                                        {
+                                            var scoreStatus = submission.Score.HasValue ? submission.Score.ToString() : "Not graded";
+                                            var feedbackStatus = !string.IsNullOrWhiteSpace(submission.Feedback) ? submission.Feedback : "Not reviewed";
+                                            var actionLabel = submission.Score.HasValue ? "Edit" : "Grade";
+                                            <tr>
+                                                <td>@index</td>
+                                                <td>@submission.Learner?.FullName</td>
+                                                <td>@submission.Learner?.Email</td>
+                                                <td>@submission.SubmittedAt.ToString("dd/MM/yyyy HH:mm")</td> 
+                                                <td>@scoreStatus</td>
+                                                <td>@feedbackStatus</td>
+                                                <td>
+                                                    <a asp-controller="Assessments" asp-action="Grade"
+                                                       asp-route-submissionId="@submission.Id"
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        @actionLabel
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            index++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
                     }
                 }
                 else
@@ -99,6 +256,7 @@
                 }
             </div>
         </div>
+
 
         <!-- 🔹 Feedback -->
         <div class="tab-pane fade" id="review" role="tabpanel">
@@ -132,3 +290,48 @@
         </button>
     </div>
 </div>
+
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- Hỗ trợ set deadline mới cho partner -->
+<script>
+    flatpickr("#newDueDate", {
+        enableTime: true,
+        dateFormat: "d/m/Y H:i"
+    });
+</script>
+
+<!-- Điều hướng -->
+<script>
+    window.onload = function () {
+        const hash = window.location.hash;
+        if (hash) {
+            const triggerEl =
+                document.querySelector(`button[data-bs-toggle="tab"][data-bs-target="${hash}"]`) ||
+                document.querySelector(`a[data-bs-toggle="tab"][href="${hash}"]`);
+            if (triggerEl) {
+                new bootstrap.Tab(triggerEl).show();
+            }
+        }
+    };
+</script>
+
+<!-- Chặn nếu learner không submit bất kỳ loại đáp án nào -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("assessmentForm");
+        if (form) {
+            form.addEventListener("submit", function (e) {
+                const answerText = document.getElementById("answerText")?.value?.trim();
+                const fileInput = document.getElementById("submissionFile");
+                const fileSelected = fileInput?.files?.length > 0;
+
+                if (!answerText && !fileSelected) {
+                    e.preventDefault(); // ❌ chặn submit
+                    alert("⛔ Please enter an answer or upload a file before submitting.");
+                }
+            });
+        }
+    });
+</script>
+

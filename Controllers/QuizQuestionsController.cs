@@ -1,7 +1,8 @@
-﻿using JapaneseLearningPlatform.Data.Services;
+﻿using JapaneseLearningPlatform.Data.Enums;
+using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -45,7 +46,25 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> Save(QuizQuestionFormVM vm)
         {
             if (!ModelState.IsValid)
+            {
+                if (vm.QuestionType == QuestionType.SingleChoice)
+                {
+                    int correctCount = vm.Options.Count(o => o.IsCorrect);
+                    if (correctCount != 1)
+                    {
+                        ModelState.AddModelError("", "Single Choice question must have exactly one correct answer.");
+                    }
+                }
+                if (vm.QuestionType == QuestionType.MultipleChoice)
+                {
+                    int correctCount = vm.Options.Count(o => o.IsCorrect);
+                    if (correctCount < 1)
+                    {
+                        ModelState.AddModelError("", "Multiple Choice question must have at least one correct answer.");
+                    }
+                }
                 return View("Edit", vm);
+            }
 
             await _service.SaveQuestionAsync(vm);
 

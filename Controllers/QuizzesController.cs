@@ -1,6 +1,8 @@
 ﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +54,7 @@ namespace JapaneseLearningPlatform.Controllers
                 {
                     QuestionId = q.Id,
                     QuestionText = q.QuestionText,
+                    QuestionType = q.QuestionType, // <-- THIS
                     Options = q.Options.Select(o => new QuizOptionVM
                     {
                         OptionId = o.Id,
@@ -88,35 +91,55 @@ namespace JapaneseLearningPlatform.Controllers
 
             foreach (var question in model.Questions)
             {
-                QuizOption selectedOption = null;
                 bool isCorrect = false;
 
-                if (question.SelectedOptionId != null)
+                if (question.QuestionType == QuestionType.SingleChoice)
                 {
-                    selectedOption = await _context.QuizOptions
-                        .Include(o => o.Question)
-                        .FirstOrDefaultAsync(o => o.Id == question.SelectedOptionId);
+                    if (question.SelectedOptionId != null)
+                    {
+                        var selectedOption = await _context.QuizOptions
+                            .FirstOrDefaultAsync(o => o.Id == question.SelectedOptionId);
+                        isCorrect = selectedOption?.IsCorrect ?? false;
+                        if (isCorrect) correctAnswers++;
 
-                    isCorrect = selectedOption != null && selectedOption.IsCorrect;
+                        result.Details.Add(new QuizResultDetail
+                        {
+                            QuestionId = question.QuestionId,
+                            SelectedOptionId = selectedOption?.Id,
+                            IsCorrect = isCorrect
+                        });
+                    }
+                }
+                else if (question.QuestionType == QuestionType.MultipleChoice)
+                {
+                    var selectedIds = question.SelectedOptionIds ?? new List<int>();
+                    var correctOptionIds = await _context.QuizOptions
+                        .Where(o => o.QuestionId == question.QuestionId && o.IsCorrect)
+                        .Select(o => o.Id)
+                        .ToListAsync();
 
-                    if (isCorrect)
-                        correctAnswers++;
+                    isCorrect = selectedIds.Count == correctOptionIds.Count &&
+                                !selectedIds.Except(correctOptionIds).Any();
+
+                    if (isCorrect) correctAnswers++;
+
+                    result.Details.Add(new QuizResultDetail
+                    {
+                        QuestionId = question.QuestionId,
+                        // Lưu null nếu nhiều lựa chọn (nhiều sẽ lưu riêng bảng detail sau này nếu muốn)
+                        SelectedOptionId = null,
+                        IsCorrect = isCorrect
+                    });
                 }
 
-                result.Details.Add(new QuizResultDetail
-                {
-                    QuestionId = question.QuestionId,
-                    SelectedOptionId = selectedOption?.Id,
-                    IsCorrect = isCorrect
-                });
-
-                // Optional: cập nhật lại IsCorrect trong ViewModel để highlight UI
+                // Gán lại IsCorrect để hiển thị UI
                 foreach (var opt in question.Options)
                 {
                     var correct = await _context.QuizOptions.FindAsync(opt.OptionId);
                     opt.IsCorrect = correct?.IsCorrect ?? false;
                 }
             }
+
 
             result.Score = correctAnswers;
             _context.QuizResults.Add(result);

@@ -198,7 +198,9 @@ namespace JapaneseLearningPlatform.Controllers
         {
             return View(new ResetPasswordVM { Token = token, Email = email });
         }
-        
+
+ 
+
         // GOOGLE LOGIN
         [HttpGet]
         public IActionResult ExternalLogin(string provider, string? returnUrl = null)

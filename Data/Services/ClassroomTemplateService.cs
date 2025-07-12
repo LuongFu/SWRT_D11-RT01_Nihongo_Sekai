@@ -1,7 +1,5 @@
 ﻿using JapaneseLearningPlatform.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Data.Services
 {
@@ -14,25 +12,9 @@ namespace JapaneseLearningPlatform.Data.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<ClassroomTemplate>> GetAllAsync()
-        {
-            return await _context.ClassroomTemplates.ToListAsync();
-        }
-
-        public async Task<ClassroomTemplate?> GetByIdAsync(int id)
-        {
-            return await _context.ClassroomTemplates.FirstOrDefaultAsync(ct => ct.Id == id);
-        }
-
         public async Task AddAsync(ClassroomTemplate template)
         {
-            await _context.ClassroomTemplates.AddAsync(template);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateAsync(ClassroomTemplate template)
-        {
-            _context.ClassroomTemplates.Update(template);
+            _context.ClassroomTemplates.Add(template);
             await _context.SaveChangesAsync();
         }
 
@@ -48,7 +30,39 @@ namespace JapaneseLearningPlatform.Data.Services
 
         public async Task<bool> ExistsAsync(int id)
         {
-            return await _context.ClassroomTemplates.AnyAsync(c => c.Id == id);
+            return await _context.ClassroomTemplates.AnyAsync(t => t.Id == id);
+        }
+
+        public async Task<IEnumerable<ClassroomTemplate>> GetAllAsync()
+        {
+            return await _context.ClassroomTemplates
+                .Include(t => t.Partner)
+                .ToListAsync();
+        }
+
+        public async Task<ClassroomTemplate?> GetByIdAsync(int id)
+        {
+            return await _context.ClassroomTemplates.FindAsync(id);
+        }
+
+        public async Task<ClassroomTemplate?> GetByIdWithPartnerAsync(int id)
+        {
+            return await _context.ClassroomTemplates
+                .Include(t => t.Partner)
+                .FirstOrDefaultAsync(t => t.Id == id);
+        }
+
+        public async Task<IEnumerable<ClassroomTemplate>> GetByPartnerIdAsync(string partnerId)
+        {
+            return await _context.ClassroomTemplates
+                .Where(t => t.PartnerId == partnerId)
+                .ToListAsync();
+        }
+
+        public async Task UpdateAsync(ClassroomTemplate template)
+        {
+            _context.ClassroomTemplates.Update(template);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,15 +1,17 @@
-﻿using JapaneseLearningPlatform.Data;
-using JapaneseLearningPlatform.Data.Enums;
-using JapaneseLearningPlatform.Data.Static;
-using JapaneseLearningPlatform.Data.ViewModels;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using JapaneseLearningPlatform.Data;                    // AppDbContext
+using JapaneseLearningPlatform.Data.Enums;              // PartnerStatus
+using JapaneseLearningPlatform.Data.Static;             // UserRoles
+using JapaneseLearningPlatform.Data.ViewModels;         // ReviewPartnerVM
 using JapaneseLearningPlatform.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using JapaneseLearningPlatform.Models.Partner;           // PartnerProfile, PartnerDocument...
+using Microsoft.AspNetCore.Authorization;               // [Authorize]
+using Microsoft.AspNetCore.Identity;                    // UserManager<>, SignInManager<>
+using Microsoft.AspNetCore.Identity.UI.Services;        // IEmailSender
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using JapaneseLearningPlatform.Models.Partner;  // for PartnerStatus
 
 
 namespace JapaneseLearningPlatform.Controllers
@@ -18,24 +20,51 @@ namespace JapaneseLearningPlatform.Controllers
     public class AdminController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly IEmailSender _emailSender;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;  // <-- thêm
+        private readonly IEmailSender _emailSender;  // <-- thêm
 
         public AdminController(
-            UserManager<ApplicationUser> userManager,
             AppDbContext context,
+            UserManager<ApplicationUser> userManager,
             IEmailSender emailSender)
         {
-            _userManager = userManager;
             _context = context;
+            _userManager = userManager;
             _emailSender = emailSender;
         }
 
-        // GET: AdminController
         public IActionResult Index()
         {
+            ViewBag.TotalUsers = _context.Users.Count();
+            ViewBag.TotalOrders = _context.Orders.Count();
+            ViewBag.TotalRevenue = _context.Orders.Sum(o => o.TotalAmount);
+            ViewBag.TotalClassrooms = _context.ClassroomInstances.Count();
+            ViewBag.RecentOrders = _context.Orders
+                                    .Include(o => o.User)
+                                    .Include(o => o.OrderItems)
+                                    .OrderByDescending(o => o.OrderDate)
+                                    .Take(5)
+                                    .ToList();
+
+            var monthLabels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+            ViewBag.MonthLabels = monthLabels;
+
+            ViewBag.MonthlyRevenue = Enumerable.Range(1, 12)
+                .Select(m => _context.Orders.Where(o => o.OrderDate.Month == m).Sum(o => o.TotalAmount))
+                .ToList();
+
+            ViewBag.MonthlyOrders = Enumerable.Range(1, 12)
+                .Select(m => _context.Orders.Count(o => o.OrderDate.Month == m))
+                .ToList();
+
             return View();
         }
+
+        // GET: AdminController
+        //public ActionResult Index()
+        //{
+        //    return View();
+        //}
 
         // GET: AdminController/Details/5
         public IActionResult Details(int id)
@@ -178,6 +207,9 @@ namespace JapaneseLearningPlatform.Controllers
 
             profile.Status = PartnerStatus.Approved;
             profile.DecisionAt = DateTime.UtcNow;
+
+            profile.User.IsApproved = true;
+
             await _context.SaveChangesAsync();
 
             // Generate confirmation link

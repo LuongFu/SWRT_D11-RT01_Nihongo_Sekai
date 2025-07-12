@@ -205,8 +205,8 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<AssessmentSubmission> AssessmentSubmissions { get; set; }
         public DbSet<ClassroomEvaluation> ClassroomEvaluations { get; set; }
 
+        public DbSet<DailyWord> DailyWords { get; set; }
         //public DbSet<PartnerDocument> PartnerCertificates { get; set; }
-
         public DbSet<PartnerProfile> PartnerProfiles { get; set; }
         public DbSet<PartnerSpecialization> PartnerSpecializations { get; set; }
         public DbSet<PartnerDocument> PartnerDocuments { get; set; }

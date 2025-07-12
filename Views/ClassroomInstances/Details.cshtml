@@ -1,8 +1,8 @@
 ﻿@using JapaneseLearningPlatform.Data.ViewModels
 @using JapaneseLearningPlatform.Data.Static
-
-
+@using JapaneseLearningPlatform.Data.Enums
 @model ClassroomInstanceDetailVM
+
 @{
     ViewData["Title"] = Model.Template.Title;
     ViewData["HideNavbar"] = false;
@@ -10,50 +10,83 @@
 }
 
 <div class="container mt-4">
-    <h2 class="fw-bold text-center">@Model.Template.Title</h2>
+    <h2 class="fw-bold text-center mb-4">@Model.Template.Title</h2>
 
-    <div class="row mt-4">
-        <div class="col-md-7">
+    <div class="row">
+        <!-- LEFT: Image -->
+        <div class="col-md-6">
             <img src="@Model.Template.ImageURL" alt="Thumbnail" class="img-fluid rounded shadow" />
+            @if (!string.IsNullOrEmpty(Model.Template.DocumentURL))
+            {
+                <div class="mt-3">
+                    <a href="@Model.Template.DocumentURL" target="_blank" class="btn btn-outline-info w-100">
+                        <i class="bi bi-file-earmark-text me-2"></i> Tài liệu đính kèm
+                    </a>
+                </div>
+            }
         </div>
 
-        <div class="col-md-5">
-            <p><strong>Description:</strong> @Model.Template.Description</p>
-            <p><strong>Language Level:</strong> @Model.Template.LanguageLevel</p>
-            <p><strong>Session Time:</strong> @($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</p>
-            <p><strong>Start:</strong> @Model.Instance.StartDate.ToShortDateString()</p>
-            <p><strong>End:</strong> @Model.Instance.EndDate.ToShortDateString()</p>
-            <p><strong>Partner:</strong> @Model.PartnerName</p>
-            <p><strong>Status:</strong> @Model.Instance.Status</p>
-            <p><strong>Price:</strong> @(Model.IsPaid? Model.Instance.Price.ToString("C") : "Free")</p>
+        <!-- RIGHT: Info -->
+        <div class="col-md-6">
+            <dl class="row">
+                <dt class="col-sm-5">Mô tả:</dt>
+                <dd class="col-sm-7">@Model.Template.Description</dd>
 
-            <p><strong>Enrollments:</strong> @Model.EnrollmentCount / @Model.Instance.MaxCapacity</p>
+                <dt class="col-sm-5">Trình độ ngôn ngữ:</dt>
+                <dd class="col-sm-7">@Model.Template.LanguageLevel</dd>
 
+                <dt class="col-sm-5">Thời gian mỗi buổi:</dt>
+                <dd class="col-sm-7">@($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</dd>
+
+                <dt class="col-sm-5">Ngày bắt đầu:</dt>
+                <dd class="col-sm-7">@Model.Instance.StartDate.ToShortDateString()</dd>
+
+                <dt class="col-sm-5">Ngày kết thúc:</dt>
+                <dd class="col-sm-7">@Model.Instance.EndDate.ToShortDateString()</dd>
+
+                <dt class="col-sm-5">Người hướng dẫn:</dt>
+                <dd class="col-sm-7">@Model.PartnerName</dd>
+
+                <dt class="col-sm-5">Trạng thái lớp học:</dt>
+                <dd class="col-sm-7">@Model.Instance.Status</dd>
+
+                <dt class="col-sm-5">Giá:</dt>
+                <dd class="col-sm-7">
+                    @(Model.IsPaid? Model.Instance.Price.ToString("C") : "Miễn phí")
+                </dd>
+
+                <dt class="col-sm-5">Số lượng học viên:</dt>
+                <dd class="col-sm-7">@Model.EnrollmentCount / @Model.Instance.MaxCapacity</dd>
+            </dl>
         </div>
     </div>
-    <div class="mt-5 border-top pt-4 d-flex justify-content-center gap-3">
-        <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Classrooms
+
+    <div class="mt-5 d-flex justify-content-center gap-3 border-top pt-4">
+        <a asp-action="MySession" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to My Sessions
         </a>
 
         @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Learner))
         {
             if (!Model.IsEnrolled)
             {
-                <form asp-action="JoinClassroom" asp-route-id="@Model.Instance.Id" method="post">
-                    <a class="btn btn-success" asp-controller="ClassroomInstances" asp-action="PayWithPaypal" asp-route-id="@Model.Instance.Id">
-                        Join & Pay with PayPal
-                    </a>
-                </form>
+                <a class="btn btn-success" asp-controller="ClassroomInstances" asp-action="PayWithPaypal" asp-route-id="@Model.Instance.Id">
+                    <i class="bi bi-credit-card"></i> Tham gia & Thanh toán PayPal
+                </a>
             }
             else
             {
                 <a asp-controller="ClassroomInstances" asp-action="Content" asp-route-id="@Model.Instance.Id" class="btn btn-primary">
-                    <i class="bi bi-journal-bookmark"></i> View Contents
+                    <i class="bi bi-journal-bookmark-fill"></i> Vào lớp học
                 </a>
-
             }
+        }
+
+        @if (User.IsInRole(UserRoles.Partner))
+        {
+            <a asp-controller="ClassroomInstances" asp-action="Content" asp-route-id="@Model.Instance.Id" class="btn btn-primary">
+                <i class="bi bi-journal-bookmark"></i> View Contents
+            </a>
         }
     </div>
 </div>
-

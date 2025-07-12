@@ -1,16 +1,130 @@
-﻿@using JapaneseLearningPlatform.Data.ViewModels
-@using JapaneseLearningPlatform.Data.Static
-@using JapaneseLearningPlatform.Data.Enums
-@model IEnumerable<ClassroomInstanceWithTemplateVM>
+﻿@model IEnumerable<JapaneseLearningPlatform.Data.ViewModels.ClassroomInstanceVM>
 
 @{
-    ViewData["Title"] = "Classroom Sessions";
-    ViewData["HideNavbar"] = false;
-    ViewData["HideFooter"] = false;
-
-    var isPartner = User.IsInRole(UserRoles.Partner);
-    var isAuthenticated = User.Identity.IsAuthenticated;
+    ViewData["Title"] = "Các lớp học hiện có";
 }
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <section class="enhanced-hero">
+        <div class="sakura-container" id="sakuraContainer"></div>
+        <div class="container">
+            <div class="enhanced-hero-content">
+                <h1 class="enhanced-hero-title">Live Japanese Classrooms</h1>
+                <p class="enhanced-hero-subtitle">
+                    Join interactive live sessions with certified native speakers.
+                    Practice real conversation, get instant feedback, and learn with
+                    fellow students from around the world.
+                </p>
+                <div class="enhanced-hero-stats">
+                    <div class="enhanced-stat">
+                        <span class="enhanced-stat-number">5</span>
+                        <span class="enhanced-stat-label">Live Sessions</span>
+                    </div>
+                    <div class="enhanced-stat">
+                        <span class="enhanced-stat-number">50+</span>
+                        <span class="enhanced-stat-label">Active Students</span>
+                    </div>
+                    <div class="enhanced-stat">
+                        <span class="enhanced-stat-number">15</span>
+                        <span class="enhanced-stat-label">Hours Weekly</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4 text-center">Browse Classroom Sessions</h2>
+
+    @if (ViewBag.IsPartner == true) // Nếu controller chưa set, bạn cần bổ sung ViewBag.IsPartner = User.IsInRole(...)
+    {
+        <div class="text-end mb-3">
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New Session
+            </a>
+        </div>
+    }
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm card-template">
+                    <div class="card-img-top-wrapper">
+                        @if (!string.IsNullOrEmpty(item.TemplateImageURL))
+                        {
+                            <img src="@item.TemplateImageURL" class="card-img-top" alt="Class Image" />
+                        }
+                        else
+                        {
+                            <div class="img-placeholder">
+                                <i class="bi bi-image"></i>
+                            </div>
+                        }
+                        <span class="badge badge-level">Trình độ: @item.LanguageLevel</span>
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-semibold">@item.TemplateTitle</h5>
+                        <p class="card-text text-muted">@item.TemplateDescription</p>
+
+                        @if (ViewBag.IsPartner == true)
+                        {
+                            <div class="mt-auto">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary w-100 mb-2">
+                                    <i class="bi bi-info-circle"></i> Details
+                                </a>
+                                <a asp-action="Content" asp-route-id="@item.Id" class="btn btn-outline-primary w-100 mb-2">
+                                    <i class="bi bi-journal-bookmark"></i> View Contents
+                                </a>
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning w-50">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger w-50">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-danger">@item.Price.ToString("N0") VNĐ</span>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="card-footer text-muted small">
+                        @item.StartDate.ToString("dd/MM/yyyy") - @item.EndDate.ToString("dd/MM/yyyy")
+                        <br />
+                        @if (item.IsEnrolled)
+                        {
+                            <span class="text-success">Đã tham gia</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == (int)ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
 
 @section Styles {
     <link rel="stylesheet"
@@ -94,18 +208,15 @@
         /* Sakura petals */
         /* Sakura Petal Animation */
         @@keyframes sakuraPetals {
-            0%
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
 
-        {
-            transform: translateY(-100vh) rotate(0deg);
-            opacity: 1;
-        }
-
-        100% {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
-        }
-
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
         }
 
         .sakura-container {
@@ -124,8 +235,7 @@
             width: 12px;
             height: 12px;
             background: #ffc0cb; /* màu hoa hồng tươi */
-            /* background: #ff6f91; /* hồng san hô */ */
-            border-radius: 50% 0 50% 0;
+            /* background: #ff6f91; /* hồng san hô */ */ border-radius: 50% 0 50% 0;
             will-change: transform, opacity;
             animation: sakuraPetals linear infinite;
         }
@@ -185,148 +295,4 @@
                 animation-delay: 1.8s;
             }
     </style>
-}
-
-<!-- Enhanced Hero Section -->
-<section class="enhanced-hero ">
-    <div class="sakura-container" id="sakuraContainer"></div>
-    <div class="container">
-        <div class="enhanced-hero-content">
-            <h1 class="enhanced-hero-title">Live Japanese Classrooms</h1>
-            <p class="enhanced-hero-subtitle">
-                Join interactive live sessions with certified native speakers.
-                Practice real conversation, get instant feedback, and learn with
-                fellow students from around the world.
-            </p>
-            <div class="enhanced-hero-stats">
-                <div class="enhanced-stat">
-                    <span class="enhanced-stat-number">5</span>
-                    <span class="enhanced-stat-label">Live Sessions</span>
-                </div>
-                <div class="enhanced-stat">
-                    <span class="enhanced-stat-number">50+</span>
-                    <span class="enhanced-stat-label">Active Students</span>
-                </div>
-                <div class="enhanced-stat">
-                    <span class="enhanced-stat-number">15</span>
-                    <span class="enhanced-stat-label">Hours Weekly</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="container mt-4">
-    <h2 class="fw-bold mb-4 text-center">Browse Classroom Sessions</h2>
-
-    @if (isPartner)
-    {
-        <div class="text-end mb-3">
-            <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Create New Session
-            </a>
-        </div>
-    }
-
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-            @if (!Model.Any())
-    {
-        <div class="col-12">
-            <div class="alert alert-warning text-center">
-                <i class="bi bi-exclamation-circle me-2"></i>
-                No classroom sessions found.
-            </div>
-        </div>
-    }
-    else
-    {
-        @foreach (var item in Model)
-        {
-            <div class="col">
-                <div class="card h-100 shadow-sm border-0">
-                    @if (!string.IsNullOrEmpty(item.ImageURL))
-                    {
-                        <img src="@item.ImageURL" class="card-img-top" alt="@item.Title" style="object-fit: cover; height: 200px;">
-                    }
-                    else
-                    {
-                        <div class="bg-secondary text-white text-center d-flex align-items-center justify-content-center" style="height:200px;">
-                            <i class="bi bi-camera-video" style="font-size: 2rem;"></i>
-                        </div>
-                    }
-
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">@item.Title</h5>
-                        <p class="card-text">
-                            <strong>Time:</strong> @item.StartDate.ToString("yyyy-MM-dd") → @item.EndDate.ToString("yyyy-MM-dd")<br />
-                            <strong>Session Time:</strong> @($"{item.ClassTime.Hours:D2}:{item.ClassTime.Minutes:D2}")<br />
-                            <strong>Status:</strong> @item.Status<br />
-                            <strong>Enrollments:</strong> @item.EnrollmentCount / @item.Instance.MaxCapacity<br />
-                            <strong>Price:</strong> @(item.IsPaid? item.Price.ToString("C0") : "Free")
-                        </p>
-
-                        <div class="mt-auto">
-                            <a asp-action="Details" asp-route-id="@item.Instance.Id" class="btn btn-outline-primary w-100 mb-2">
-                                <i class="bi bi-info-circle"></i> Details
-                            </a>
-
-                            @if (isPartner)
-                            {
-                                <div class="d-flex gap-2">
-                                    <a asp-action="Edit" asp-route-id="@item.Instance.Id" class="btn btn-sm btn-outline-warning w-50">
-                                        <i class="bi bi-pencil-square"></i> Edit
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Instance.Id" class="btn btn-sm btn-outline-danger w-50">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </a>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    }
-    </div>
-
-    @* Pagination *@
-    <div class="mt-4 text-center">
-        <nav>
-            <ul class="pagination justify-content-center">
-                @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
-                {
-                    <li class="page-item @(i == (int)ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-                    </li>
-                }
-            </ul>
-        </nav>
-    </div>
-</div>
-
-@section Scripts {
-    @* script gốc của bạn *@
-    <script src="~/js/script.js" asp-append-version="true"></script>
-
-    @* Sáu dòng bên dưới khởi tạo hoa sakura *@
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const container = document.getElementById("sakuraContainer");
-          if (!container) return;
-
-          // Tạo 9 cánh hoa với vị trí & tốc độ ngẫu nhiên
-          for (let i = 0; i < 9; i++) {
-            const petal = document.createElement("div");
-            petal.className = "sakura-petal";
-            // Thiết lập biến CSS để random vị trí
-            const startX = Math.random() * 100 + "vw";
-            const endX   = (Math.random() * 100 - 50) + "vw";
-            const duration = 5 + Math.random() * 5 + "s";
-            petal.style.setProperty("--start-x", startX);
-            petal.style.setProperty("--end-x", endX);
-            petal.style.animationDuration = duration;
-            container.appendChild(petal);
-          }
-        });
-    </script>
 }

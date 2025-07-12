@@ -8,5 +8,4 @@
         Completed = 3,     // Đã kết thúc
         Cancelled = 4      // Bị hủy
     }
-
 }

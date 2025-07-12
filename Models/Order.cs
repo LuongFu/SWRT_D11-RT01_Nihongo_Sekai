@@ -13,6 +13,8 @@ namespace JapaneseLearningPlatform.Models
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
         public ApplicationUser User { get; set; }
+        public DateTime OrderDate { get; set; }
+        public decimal TotalAmount { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }
     }

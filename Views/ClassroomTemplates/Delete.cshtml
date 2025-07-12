@@ -1,0 +1,25 @@
+﻿@using JapaneseLearningPlatform.Data.ViewModels
+@model ClassroomTemplateVM
+
+@{
+    ViewData["Title"] = "Xóa mẫu lớp";
+}
+
+<h2>Xác nhận xóa mẫu lớp</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">Tiêu đề</dt>
+    <dd class="col-sm-10">@Model.Title</dd>
+
+    <dt class="col-sm-2">Mô tả</dt>
+    <dd class="col-sm-10">@Model.Description</dd>
+
+    <dt class="col-sm-2">Trình độ</dt>
+    <dd class="col-sm-10">@Model.LanguageLevel</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

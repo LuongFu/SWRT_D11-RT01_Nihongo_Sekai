@@ -1,5 +1,7 @@
-﻿using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Controllers;
+using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Cart;
+using JapaneseLearningPlatform.Data.Seeds;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -74,7 +76,8 @@ namespace JapaneseLearningPlatform
                 options.ClientSecret = googleAuthNSection["ClientSecret"]
                                       ?? throw new InvalidOperationException("Missing Authentication:Google:ClientSecret");
             });
-
+            // add api connect
+            builder.Services.AddHttpClient<DictionaryController>();
             builder.Services.AddMemoryCache();
             builder.Services.AddSession();
             builder.Services.AddControllersWithViews();
@@ -106,13 +109,7 @@ namespace JapaneseLearningPlatform
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             // Seed database
-            AppDbInitializer.Seed(app);
-            await AppDbInitializer.SeedUsersAndRolesAsync(app);
-            await AppDbInitializer.SeedClassroomTemplatesAsync(app);
-            await AppDbInitializer.SeedClassroomInstancesAsync(app);
-            await AppDbInitializer.SeedClassroomTestEnrollmentsAsync(app);
-            await AppDbInitializer.SeedClassroomAssessmentsAsync(app);
-
+            await SeedManager.SeedAllAsync(app); // Seed all data using the SeedManager
             app.Run();
         }
     }

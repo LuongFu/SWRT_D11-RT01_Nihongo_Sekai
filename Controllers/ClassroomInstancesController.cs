@@ -1,16 +1,18 @@
-﻿using JapaneseLearningPlatform.Data;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Helpers;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -18,127 +20,260 @@ namespace JapaneseLearningPlatform.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<ClassroomInstancesController> _logger;
 
-        public ClassroomInstancesController(AppDbContext context, UserManager<ApplicationUser> userManager)
+        public ClassroomInstancesController(AppDbContext context, UserManager<ApplicationUser> userManager, ILogger<ClassroomInstancesController> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
-        // PUBLIC - Allow everyone
         [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 9)
         {
+            var userId = _userManager.GetUserId(User);
+
             var query = _context.ClassroomInstances
                 .Include(i => i.Template)
                 .Include(i => i.Enrollments)
+                .Where(i => i.Status == ClassroomStatus.Published)
+                .OrderByDescending(i => i.StartDate)
                 .AsQueryable();
 
-            var isPartner = User.IsInRole(UserRoles.Partner);
-            var isAdmin = User.IsInRole(UserRoles.Admin);
-
-            if (isPartner)
-            {
-                var userId = _userManager.GetUserId(User);
-                query = query.Where(i => i.Template.PartnerId == userId);
-            }
-            else if (!isAdmin) // Guest hoặc Learner
-            {
-                query = query.Where(i => i.Status != ClassroomStatus.Draft);
-            }
-
-            int totalItems = await query.CountAsync();
-
-            var items = await query
-                .OrderByDescending(i => i.StartDate)
+            int total = await query.CountAsync();
+            var sessions = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            var model = items.Select(i => new ClassroomInstanceWithTemplateVM
+            var vmList = sessions.Select(i =>
             {
-                Instance = i,
-                Template = i.Template,
-                EnrollmentCount = i.Enrollments?.Count ?? 0
+                var vm = ClassroomInstanceMapper.ToVM(i);
+                vm.IsEnrolled = userId != null && i.Enrollments.Any(e => e.LearnerId == userId && !e.HasLeft);
+                return vm;
             }).ToList();
 
             ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.TotalPages = (int)Math.Ceiling(total / (double)pageSize);
 
-            return View(model);
+            return View(vmList);
         }
 
-        // PUBLIC - Learner or Guest allowed
-        [AllowAnonymous]
-        public async Task<IActionResult> Details(int? id)
+        // PARTNER: My sessions
+        [Authorize(Roles = UserRoles.Partner)]
+        public async Task<IActionResult> MySession(int page = 1)
         {
-            if (id == null) return NotFound();
-
-            var instance = await _context.ClassroomInstances
+            var userId = _userManager.GetUserId(User);
+            var query = _context.ClassroomInstances
                 .Include(i => i.Template)
-                    .ThenInclude(t => t.Partner)
-                .Include(i => i.Enrollments)
-                .FirstOrDefaultAsync(i => i.Id == id);
+                .Where(i => i.Template.PartnerId == userId)
+                .OrderByDescending(i => i.StartDate);
 
-            if (instance == null) return NotFound();
+            int total = await query.CountAsync();
+            var sessions = await query
+                .Skip((page - 1) * 6)
+                .Take(6)
+                .ToListAsync();
 
-            if (instance.Status == ClassroomStatus.Draft &&
-                (!User.Identity.IsAuthenticated || User.IsInRole(UserRoles.Learner)))
+            var vmList = sessions.Select(ClassroomInstanceMapper.ToVM).ToList();
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling(total / 6.0);
+            return View(vmList); // ✅ Dùng IEnumerable<ClassroomInstanceVM>
+        }
+
+
+        // PARTNER: GET Create session form
+        [HttpGet]
+        [Authorize(Roles = UserRoles.Partner)]
+        public async Task<IActionResult> CreateSession(int? templateId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var templates = await _context.ClassroomTemplates
+                .Where(t => t.PartnerId == userId)
+                .ToListAsync();
+
+            ViewBag.TemplateList = new SelectList(templates, "Id", "Title", templateId);
+
+            var vm = new ClassroomInstanceVM();
+
+            if (templateId.HasValue)
             {
-                return Forbid();
+                vm.TemplateId = templateId.Value;
+                await PopulateTemplateData(vm); // ✅ Load info từ template được chọn
             }
-
-            bool isEnrolled = false;
-
-            if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Learner))
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                isEnrolled = instance.Enrollments.Any(e => e.LearnerId == userId && !e.HasLeft);
-            }
-
-            var vm = new ClassroomInstanceDetailVM
-            {
-                Instance = instance,
-                Template = instance.Template,
-                EnrollmentCount = instance.Enrollments?.Count ?? 0,
-                IsPaid = instance.IsPaid,
-                PartnerName = instance.Template?.Partner?.FullName,
-                IsEnrolled = isEnrolled
-            };
 
             return View(vm);
         }
 
-        // ADMIN + PARTNER ONLY
-        [Authorize(Roles = "Admin,Partner")]
-        public async Task<IActionResult> Create()
-        {
-            var userId = _userManager.GetUserId(User);
-            var templates = await _context.ClassroomTemplates
-                .Where(t => User.IsInRole("Admin") || t.PartnerId == userId)
-                .ToListAsync();
 
-            ViewBag.Templates = new SelectList(templates, "Id", "Title");
-            return View();
-        }
-
+        // PARTNER: POST Create session
+        [Authorize(Roles = UserRoles.Partner)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Partner")]
-        public async Task<IActionResult> Create(ClassroomInstance instance)
+        public async Task<IActionResult> CreateSession(ClassroomInstanceVM vm)
         {
             var userId = _userManager.GetUserId(User);
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Templates = new SelectList(_context.ClassroomTemplates
-                    .Where(t => User.IsInRole("Admin") || t.PartnerId == userId), "Id", "Title", instance.TemplateId);
-                return View(instance);
+                // Ghi log lỗi cho từng trường sai
+                foreach (var key in ModelState.Keys)
+                {
+                    var state = ModelState[key];
+                    foreach (var error in state.Errors)
+                    {
+                        _logger.LogWarning("Validation error at {Key}: {Error}", key, error.ErrorMessage);
+                    }
+                }
+
+                var templates = await _context.ClassroomTemplates
+                    .Where(t => t.PartnerId == userId)
+                    .ToListAsync();
+
+                ViewBag.TemplateList = new SelectList(templates, "Id", "Title", vm.TemplateId);
+
+                await PopulateTemplateData(vm);
+                return View(vm);
             }
 
-            _context.Add(instance);
+            var instance = new ClassroomInstance
+            {
+                TemplateId = vm.TemplateId,
+                StartDate = vm.StartDate,
+                EndDate = vm.EndDate,
+                ClassTime = TimeSpan.FromHours(vm.SessionDurationHours),
+                Price = vm.Price,
+                GoogleMeetLink = vm.GoogleMeetLink,
+                Status = vm.Status
+            };
+
+            _context.ClassroomInstances.Add(instance);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            _logger.LogInformation("New classroom session created: TemplateId={TemplateId}, Start={StartDate}, End={EndDate}", vm.TemplateId, vm.StartDate, vm.EndDate);
+
+            return RedirectToAction(nameof(MySession));
+        }
+
+
+        // PARTNER: Edit existing session
+        // GET: EditSession (Partner chỉnh sửa session)
+        [Authorize(Roles = UserRoles.Partner)]
+        public async Task<IActionResult> EditSession(int id)
+        {
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Template)
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (instance == null) return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            if (instance.Template.PartnerId != userId) return Forbid();
+
+            // ✅ Gửi danh sách Status để hiển thị trong dropdown
+            ViewBag.StatusList = new SelectList(Enum.GetValues(typeof(ClassroomStatus))
+                .Cast<ClassroomStatus>()
+                .Select(s => new SelectListItem
+                {
+                    Value = ((int)s).ToString(),
+                    Text = s.ToString()
+                }), "Value", "Text", (int)instance.Status);
+
+            return View(instance.ToVM());
+        }
+
+        // POST: EditSession
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Partner)]
+        public async Task<IActionResult> EditSession(int id, ClassroomInstanceVM vm)
+        {
+            if (id != vm.Id) return BadRequest();
+            if (!ModelState.IsValid)
+            {
+                ViewBag.StatusList = new SelectList(Enum.GetValues(typeof(ClassroomStatus))
+                    .Cast<ClassroomStatus>()
+                    .Select(s => new SelectListItem
+                    {
+                        Value = ((int)s).ToString(),
+                        Text = s.ToString()
+                    }), "Value", "Text", (int)vm.Status);
+                return View(vm);
+            }
+
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Template)
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (instance == null) return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            if (instance.Template.PartnerId != userId) return Forbid();
+
+            instance.StartDate = vm.StartDate;
+            instance.EndDate = vm.EndDate;
+            instance.Price = vm.Price;
+            instance.GoogleMeetLink = vm.GoogleMeetLink;
+            instance.ClassTime = TimeSpan.FromHours(vm.SessionDurationHours);
+            instance.Status = vm.Status; // ✅ Update status từ form
+
+            _context.Update(instance);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("MySession");
+        }
+
+        // PARTNER: Delete session
+        [Authorize(Roles = UserRoles.Partner)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSession(int id)
+        {
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Template)
+                .FirstOrDefaultAsync(i => i.Id == id);
+            if (instance == null) return NotFound();
+            if (instance.Template.PartnerId != _userManager.GetUserId(User)) return Forbid();
+
+            _context.ClassroomInstances.Remove(instance);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(MySession));
+        }
+
+        // PUBLIC: View session details & enroll
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(int id)
+        {
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Template)
+                    .ThenInclude(t => t.Partner)
+                .Include(i => i.Enrollments)
+                .FirstOrDefaultAsync(i => i.Id == id);
+            if (instance == null) return NotFound();
+
+            var vm = new ClassroomInstanceDetailVM
+            {
+                Instance = instance,
+                Template = instance.Template,
+                EnrollmentCount = instance.Enrollments.Count,
+                PartnerName = instance.Template.Partner.FullName
+            };
+            return View(vm);
+        }
+
+        // SUPPORT: Populate view model with template data
+        private async Task PopulateTemplateData(ClassroomInstanceVM vm)
+        {
+            var template = await _context.ClassroomTemplates.FindAsync(vm.TemplateId);
+            if (template != null)
+            {
+                vm.TemplateTitle = template.Title;
+                vm.TemplateDescription = template.Description;
+                vm.TemplateImageURL = template.ImageURL;
+                vm.LanguageLevel = template.LanguageLevel.ToString();
+                vm.DocumentURL = template.DocumentURL;
+                //vm.SessionTime = template.SessionTime;
+            }
         }
 
         // ADMIN + PARTNER ONLY
@@ -232,31 +367,59 @@ namespace JapaneseLearningPlatform.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // LEARNER ONLY
-        [Authorize(Roles = "Learner")]
+        // View CLASSROOM CONTENT
+        [Authorize(Roles = "Learner,Partner")]
         public async Task<IActionResult> Content(int id)
         {
             var instance = await _context.ClassroomInstances
+                .AsQueryable()
                 .Include(c => c.Template)
-                .Include(c => c.Assessments)
-                .Include(c => c.Enrollments)
+                .Include(c => c.Assessments!)
+                    .ThenInclude(a => a.Submissions!)
+                        .ThenInclude(s => s.Learner)
+                .Include(c => c.Enrollments!)
+                    .ThenInclude(e => e.Learner)
                 .FirstOrDefaultAsync(c => c.Id == id);
+
 
             if (instance == null) return NotFound();
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isLearner = User.IsInRole(UserRoles.Learner);
+            var isPartner = User.IsInRole(UserRoles.Partner);
+            var isAdmin = User.IsInRole(UserRoles.Admin);
+
             var isEnrolled = instance.Enrollments.Any(e => e.LearnerId == userId && !e.HasLeft);
-            if (!isEnrolled) return Forbid();
+            var isOwnerPartner = isPartner && instance.Template.PartnerId == userId;
+
+            if (isLearner && !isEnrolled)
+                return Forbid();
+
+            if (isPartner && !isOwnerPartner)
+                return Forbid();
 
             var finalAssessment = instance.Assessments?.FirstOrDefault();
+
             AssessmentSubmission? submission = null;
+            List<AssessmentSubmission>? allSubmissions = null;
+
             if (finalAssessment != null)
             {
-                submission = await _context.AssessmentSubmissions
-                    .FirstOrDefaultAsync(s => s.FinalAssessmentId == finalAssessment.Id && s.LearnerId == userId);
+                if (isLearner)
+                {
+                    submission = await _context.AssessmentSubmissions
+                        .FirstOrDefaultAsync(s => s.FinalAssessmentId == finalAssessment.Id && s.LearnerId == userId);
+                }
+
+                if (isPartner && instance.Assessments.First().Submissions != null)
+                {
+                    allSubmissions = instance.Assessments.First().Submissions.ToList();
+                }
             }
+
             var reviewed = await _context.ClassroomEvaluations
-     .AnyAsync(e => e.InstanceId == id && e.LearnerId == userId);
+                .AnyAsync(e => e.InstanceId == id && e.LearnerId == userId);
+
             var vm = new ClassroomContentVM
             {
                 Instance = instance,
@@ -265,11 +428,13 @@ namespace JapaneseLearningPlatform.Controllers
                 FinalAssessment = finalAssessment,
                 Submission = submission,
                 HasSubmitted = submission != null,
-                HasReviewed = reviewed
+                HasReviewed = reviewed,
+                AllSubmissions = allSubmissions
             };
 
             return View(vm);
         }
+
 
         [Authorize(Roles = UserRoles.Learner)]
         public async Task<IActionResult> PayWithPaypal(int id)
@@ -318,6 +483,5 @@ namespace JapaneseLearningPlatform.Controllers
 
             return RedirectToAction("Details", new { id });
         }
-
     }
 }

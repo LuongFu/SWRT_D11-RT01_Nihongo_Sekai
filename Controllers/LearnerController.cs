@@ -17,13 +17,15 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _env;
         private readonly ICoursesService _coursesService;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public LearnerController(AppDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, ICoursesService coursesService)
+        public LearnerController(AppDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env, ICoursesService coursesService, SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
             _userManager = userManager;
             _env = env;
             _coursesService = coursesService;
+            _signInManager = signInManager;
         }
 
         public async Task<IActionResult> Index()
@@ -107,7 +109,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // 👤 Trang hồ sơ người học
-        [Authorize(Roles = "Learner")]
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
@@ -117,7 +118,6 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         // ✏️ Sửa thông tin hồ sơ
-        [Authorize(Roles = "Learner")]
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
@@ -139,36 +139,62 @@ namespace JapaneseLearningPlatform.Controllers
             return RedirectToAction("Profile");
         }
 
-        [Authorize(Roles = "Learner")]
+        // 🔐 Đổi mật khẩu Learner
         [HttpGet]
-        public IActionResult ResetPassword()
+        public IActionResult ChangePassword()
         {
-            return View("~/Views/Learner/ResetPassword.cshtml");
+            return View();
         }
 
-        [Authorize(Roles = "Learner")]
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordVM model)
         {
-            if (!ModelState.IsValid) return View("~/Views/Learner/ResetPassword.cshtml", model);
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound();
-
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
-
-            if (!result.Succeeded)
+            if (!ModelState.IsValid)
             {
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
-                return View("~/Views/Learner/ResetPassword.cshtml", model);
+                TempData["ChangePasswordError"] = "Vui lòng kiểm tra lại thông tin.";
+                return RedirectToAction("ChangePassword");
             }
 
-            return RedirectToAction("Profile");
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["ChangePasswordError"] = "Không tìm thấy tài khoản.";
+                return RedirectToAction("ChangePassword");
+            }
+
+            var checkOldPassword = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
+            if (!checkOldPassword)
+            {
+                TempData["ChangePasswordError"] = "Mật khẩu hiện tại sai.";
+                return RedirectToAction("ChangePassword");
+            }
+
+            // ❌ Nếu mật khẩu mới trùng mật khẩu hiện tại
+            if (model.CurrentPassword == model.NewPassword)
+            {
+                TempData["ChangePasswordError"] = "New password must not be the same as the current password.";
+                return RedirectToAction("ChangePassword");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                TempData["ChangePasswordError"] = string.Join(" ", result.Errors.Select(e => e.Description));
+                return RedirectToAction("ChangePassword");
+            }
+
+            // ✅ Thành công → sign out và cho phép redirect sau vài giây
+            TempData["PasswordChangeSuccess"] = "Thay đổi mật khẩu thành công. Bạn sẽ được chuyển hướng đến trang đăng nhập...";
+            TempData["ShouldRedirectToLogin"] = true;
+            await _signInManager.SignOutAsync();
+
+            return View();
         }
+
+
+
         // 📷 Tải lên ảnh đại diện
-        [Authorize(Roles = "Learner")]
         [HttpPost]
         public async Task<IActionResult> UploadProfilePicture(IFormFile profilePicture)
         {
@@ -228,7 +254,6 @@ namespace JapaneseLearningPlatform.Controllers
 
 
         // 📚 Lớp học của tôi (hiển thị thời khóa biểu và partner)
-        [Authorize(Roles = "Learner")]
         [HttpGet]
         public async Task<IActionResult> MyClassroom()
         {

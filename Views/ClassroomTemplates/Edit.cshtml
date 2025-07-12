@@ -1,0 +1,65 @@
+﻿@model JapaneseLearningPlatform.Data.ViewModels.ClassroomTemplateVM
+@using JapaneseLearningPlatform.Data.Enums
+
+@{
+    ViewData["Title"] = "Chỉnh sửa mẫu lớp học";
+}
+
+<h2 class="mb-4">Chỉnh sửa mẫu lớp học</h2>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ảnh hiện tại</label><br />
+        @if (!string.IsNullOrEmpty(Model.ImageURL))
+        {
+            <img src="@Model.ImageURL" class="img-thumbnail mb-2" style="max-width:200px;" />
+        }
+        <input asp-for="ImageFile" type="file" class="form-control" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LanguageLevel" class="form-label"></label>
+        <select asp-for="LanguageLevel" asp-items="Html.GetEnumSelectList<LanguageLevel>()" class="form-control"></select>
+        <span asp-validation-for="LanguageLevel" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tài liệu hiện tại</label><br />
+        @if (!string.IsNullOrEmpty(Model.DocumentURL))
+        {
+            <a href="@Model.DocumentURL" target="_blank" class="btn btn-outline-info btn-sm mb-2">
+                <i class="bi bi-file-earmark-text me-1"></i>Xem tài liệu
+            </a>
+        }
+        <input asp-for="DocumentFile" type="file" class="form-control" />
+        <span asp-validation-for="DocumentFile" class="text-danger"></span>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-check-circle me-1"></i> Lưu thay đổi
+        </button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">
+            <i class="bi bi-arrow-left"></i> Hủy
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

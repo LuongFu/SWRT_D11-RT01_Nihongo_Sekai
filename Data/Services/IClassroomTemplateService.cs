@@ -12,5 +12,8 @@ namespace JapaneseLearningPlatform.Data.Services
         Task UpdateAsync(ClassroomTemplate template);
         Task DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
+        Task<ClassroomTemplate?> GetByIdWithPartnerAsync(int id);
+        Task<IEnumerable<ClassroomTemplate>> GetByPartnerIdAsync(string partnerId);
+
     }
 }

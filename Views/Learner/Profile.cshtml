@@ -3,75 +3,87 @@
 @{
     ViewData["Title"] = "My Profile";
     ViewData["HideFooter"] = false;
+    Layout = "_Layout";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Welcome, @Model.FullName!</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+}
 
-    <div class="row">
-        <!-- Cột trái: Ảnh đại diện + form upload ảnh -->
+<div class="my-profile-container">
+    <div class="row gx-5 justify-content-center">
+        <!-- Cột trái -->
         <div class="col-md-4 text-center">
-            <!--Hiển thị ảnh đại diện nếu có, nếu không thì dùng ảnh mặc định -->
-            <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath)
-                                                           ? "/uploads/profile/default-img.jpg"
-                                                           : Model.ProfilePicturePath)"
-                 alt="Avatar"
-                 class="rounded-circle img-thumbnail mb-3"
-                 style="width: 150px; height: 150px; object-fit: cover;" />
+            <!-- Welcome -->
+            <div class="welcome-box text-center mb-4">
+                <h2 class="fw-bold text-danger">Welcome, @Model.FullName!</h2>
+            </div>
 
-            <!--Form upload ảnh đại diện -->
-            <form asp-action="UploadProfilePicture"
-                  asp-controller="Learner"
-                  method="post"
-                  enctype="multipart/form-data">
-                <div class="form-group">
-                    <input type="file" name="profilePicture" class="form-control mb-2" id="profilePictureInput" accept="image/*" onchange="previewProfileImage()" />
+            <!-- Avatar -->
+            <div class="avatar-box">
+                <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? "/uploads/profile/default-img.jpg" : Model.ProfilePicturePath)"
+                     alt="Avatar"
+                     class="rounded-circle img-thumbnail profile-image mb-3" />
 
-                    <img id="profilePreview" src="#" alt="Preview" class="rounded-circle img-thumbnail mb-3 d-none"
-                         style="width: 150px; height: 150px; object-fit: cover;" />
+                <form asp-action="UploadProfilePicture"
+                      asp-controller="Learner"
+                      method="post"
+                      enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="file" name="profilePicture"
+                               class="form-control mb-2"
+                               id="profilePictureInput"
+                               accept="image/*"
+                               onchange="previewProfileImage()" />
 
-                    @if (TempData["UploadError"] != null)
-                    {
-                        <small class="text-danger d-block mb-2">@TempData["UploadError"]</small>
-                    }
+                        <!-- Preview -->
+                        <img id="profilePreview" src="#"
+                             alt="Preview"
+                             class="rounded-circle img-thumbnail mb-3 d-none"
+                             style="width: 150px; height: 150px; object-fit: cover;" />
 
-                    <button type="submit" class="btn btn-sm btn-outline-primary w-100">Upload New Photo</button>
-                </div>
-            </form>
+                        <!-- Báo lỗi -->
+                        @if (TempData["UploadError"] != null)
+                        {
+                            <small class="text-danger d-block mb-2">@TempData["UploadError"]</small>
+                        }
+
+                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">Upload New Photo</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <!-- Cột phải: Thông tin hồ sơ người dùng + các hành động nhanh -->
-        <div class="col-md-8">
-            <dl class="row">
-                <dt class="col-sm-4">Full Name</dt>
-                <dd class="col-sm-8">@Model.FullName</dd>
+        <!-- Cột phải -->
+        <div class="col-md-6">
+            <div class="info-wrapper p-4 rounded shadow-sm">
+                <!-- Thông tin người dùng -->
+                <div class="user-info mb-4">
+                    <h4 class="fw-bold mb-3 text-center text-danger">Your Information</h4>
+                    <p><strong>Full Name:</strong> @Model.FullName</p>
+                    <p><strong>Email:</strong> @Model.Email</p>
+                    <p><strong>Role:</strong> @Model.Role</p>
+                </div>
 
-                <dt class="col-sm-4">Email</dt>
-                <dd class="col-sm-8">@Model.Email</dd>
-            </dl>
-
-            <!-- ⚡ Hành động nhanh -->
-            <h5 class="mt-4">Quick Actions</h5>
-            <div class="list-group">
-                <a asp-controller="Learner" asp-action="MyPurchasedCourses"
-                   class="list-group-item list-group-item-action">
-                    <i class="bi bi-book"></i> My Courses
-                </a>
-
-                <a asp-controller="Learner" asp-action="MyClassroom"
-                   class="list-group-item list-group-item-action">
-                    <i class="bi bi-easel"></i> My Classroom
-                </a>
-
-                <a asp-controller="Learner" asp-action="EditProfile"
-                   class="list-group-item list-group-item-action">
-                    <i class="bi bi-pencil-square"></i> Edit Profile
-                </a>
-
-                <a asp-controller="Learner" asp-action="ResetPassword"
-                   class="list-group-item list-group-item-action">
-                    <i class="bi bi-shield-lock"></i> Reset Password
-                </a>
+                <!-- Hành động nhanh -->
+                <div class="quick-actions">
+                    <h5 class="text-danger mb-3 fw-bold">Quick Actions</h5>
+                    <div class="action-buttons">
+                        <a class="action-link" asp-controller="Learner" asp-action="MyPurchasedCourses">
+                            <i class="bi bi-book"></i> My Courses
+                        </a>
+                        <a class="action-link" asp-controller="Learner" asp-action="MyClassroom">
+                            <i class="bi bi-easel"></i> My Classroom
+                        </a>
+                        <a class="action-link" asp-controller="Learner" asp-action="EditProfile">
+                            <i class="bi bi-pencil-square"></i> Edit Profile
+                        </a>
+                        <a class="action-link" asp-controller="Learner" asp-action="ChangePassword">
+                            <i class="bi bi-lock"></i> Change Password
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -97,5 +109,25 @@
                 preview.classList.add('d-none');
             }
         }
+            document.addEventListener("DOMContentLoaded", function () {
+            const totalPetals = 20;
+            const half = totalPetals / 2;
+
+            for (let i = 0; i < totalPetals; i++) {
+                const petal = document.createElement("div");
+                petal.classList.add("sakura-petal");
+                if (i < half) {
+                    petal.style.left = (Math.random() * 50) + "vw";
+                } else {
+                    petal.style.left = (50 + Math.random() * 50) + "vw";
+                }
+                const rotate = Math.random() * 360;
+                petal.style.transform = `rotate(${rotate}deg)`;
+                petal.style.animationDelay = (Math.random() * 5) + "s";
+                petal.style.animationDuration = (5 + Math.random() * 5) + "s";
+
+                document.body.appendChild(petal);
+            }
+        });
     </script>
 }
