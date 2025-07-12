@@ -2,45 +2,57 @@
 @using JapaneseLearningPlatform.Data.Enums
 
 @{
-    ViewData["Title"] = "Tạo mẫu lớp học mới";
+    ViewData["Title"] = "Create a new Classroom Template";
 }
 
-<h2>Tạo mẫu lớp học mới</h2>
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4 text-center">Create a new Classroom Template</h2>
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageFile" class="form-label">Thumbnail</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DocumentFile" class="form-label">Document</label>
+                    <input asp-for="DocumentFile" type="file" class="form-control" />
+                    <span asp-validation-for="DocumentFile" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="LanguageLevel" class="form-label"></label>
+                    <select asp-for="LanguageLevel" asp-items="Html.GetEnumSelectList<LanguageLevel>()" class="form-control"></select>
+                    <span asp-validation-for="LanguageLevel" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i> Create
+                    </button>
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="ImageFile" class="form-label">Ảnh đại diện</label>
-        <input asp-for="ImageFile" type="file" class="form-control" />
-        <span asp-validation-for="ImageFile" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="DocumentFile" class="form-label">Tài liệu đính kèm</label>
-        <input asp-for="DocumentFile" type="file" class="form-control" />
-        <span asp-validation-for="DocumentFile" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="LanguageLevel" class="form-label"></label>
-        <select asp-for="LanguageLevel" asp-items="Html.GetEnumSelectList<LanguageLevel>()" class="form-control"></select>
-        <span asp-validation-for="LanguageLevel" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Tạo mẫu</button>
-    <a asp-action="MyTemplate" class="btn btn-secondary ms-2">Hủy</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

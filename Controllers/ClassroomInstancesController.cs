@@ -250,13 +250,16 @@ namespace JapaneseLearningPlatform.Controllers
                 .Include(i => i.Enrollments)
                 .FirstOrDefaultAsync(i => i.Id == id);
             if (instance == null) return NotFound();
-
+            var userId = _userManager.GetUserId(User); // 👈 Bổ sung dòng này
+            var enrollment = instance.Enrollments.FirstOrDefault(e => e.LearnerId == userId && !e.HasLeft);
             var vm = new ClassroomInstanceDetailVM
             {
                 Instance = instance,
                 Template = instance.Template,
                 EnrollmentCount = instance.Enrollments.Count,
-                PartnerName = instance.Template.Partner.FullName
+                PartnerName = instance.Template.Partner.FullName,
+                IsEnrolled = enrollment != null,
+                HasPaid = enrollment?.IsPaid == true // ✅ thêm dòng này
             };
             return View(vm);
         }
@@ -443,7 +446,12 @@ namespace JapaneseLearningPlatform.Controllers
                 .Include(i => i.Template)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
-            if (instance == null || !instance.IsPaid) return NotFound();
+            if (instance == null)
+                return NotFound();
+
+            // OPTIONAL: nếu bạn chỉ cảnh báo, không trả về lỗi 404
+            if (!instance.IsPaid)
+                return BadRequest("This classroom is not eligible for PayPal payment.");
 
             var vm = new ClassroomPaymentVM
             {
@@ -453,8 +461,9 @@ namespace JapaneseLearningPlatform.Controllers
                 Currency = "USD"
             };
 
-            return View(vm); // View chứa paypal button cho lớp học cụ thể
+            return View(vm);
         }
+
 
         [Authorize(Roles = UserRoles.Learner)]
         public async Task<IActionResult> CompletePayment(int id)

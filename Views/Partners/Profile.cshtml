@@ -11,100 +11,105 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 }
 
-<div class="row">
-    <div class="col-md-4">
-        @* Hiển thị avatar hoặc default *@
-        @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
-        {
-            <img src="@Model.ProfilePicturePath"
-                 alt="Avatar"
-                 class="rounded-circle img-thumbnail"
-                 style="width: 150px; height: 150px; object-fit: cover;" />
-        }
-        else
-        {
-            <img src="/images/default-avatar.png"
-                 alt="Default Avatar"
-                 class="rounded-circle img-thumbnail"
-                 style="width: 150px; height: 150px; object-fit: cover;" />
-        }
-
-        @* Form upload mới *@
-        <form asp-controller="Partner" asp-action="UploadProfilePicture" enctype="multipart/form-data" method="post">
-            <div class="mt-3">
-                <input type="file"
-                       id="profilePictureInput"
-                       name="ProfilePicture"
-                       accept="image/*"
-                       onchange="previewProfileImage()"
-                       class="form-control-file" />
+<div class="my-profile-container">
+    <div class="row gx-5 justify-content-center">
+        <!-- Cột trái -->
+        <div class="col-md-4 text-center">
+            <!-- Welcome -->
+            <div class="welcome-box text-center mb-4">
+                <h2 class="fw-bold text-danger">Welcome, @Model.FullName!</h2>
             </div>
-            <div class="mt-2 text-center">
-                <img id="profilePreview"
-                     src="#"
-                     class="rounded-circle img-thumbnail d-none"
-                     style="width: 150px; height: 150px; object-fit: cover;" />
+
+            <!-- Avatar -->
+            <div class="avatar-box">
+                <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? "/uploads/profile/default-img.jpg" : Model.ProfilePicturePath)"
+                     alt="Avatar"
+                     class="rounded-circle img-thumbnail profile-image mb-3" />
+
+                <form asp-action="UploadProfilePicture"
+                      asp-controller="Learner"
+                      method="post"
+                      enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="file" name="profilePicture"
+                               class="form-control mb-2"
+                               id="profilePictureInput"
+                               accept="image/*"
+                               onchange="previewProfileImage()" />
+
+                        <!-- Preview -->
+                        <img id="profilePreview" src="#"
+                             alt="Preview"
+                             class="rounded-circle img-thumbnail mb-3 d-none"
+                             style="width: 150px; height: 150px; object-fit: cover;" />
+
+                        <!-- Báo lỗi -->
+                        @if (TempData["UploadError"] != null)
+                        {
+                            <small class="text-danger d-block mb-2">@TempData["UploadError"]</small>
+                        }
+
+                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">Upload New Photo</button>
+                    </div>
+                </form>
             </div>
-            <button type="submit"
-                    class="btn btn-sm btn-outline-danger w-100 mt-2">
-                Upload New Photo
-            </button>
-        </form>
-    </div>
+        </div>
 
-    <div class="col-md-8">
-        <dl class="row">
-            <dt class="col-sm-4">Full Name</dt>
-            <dd class="col-sm-8">@Model.FullName</dd>
+        <!-- Cột phải -->
+        <div class="col-md-6">
+            <div class="info-wrapper p-4 rounded shadow-sm">
+                <!-- Thông tin người dùng -->
+                <div class="user-info mb-4">
+                    <h4 class="fw-bold mb-3 text-center text-danger">Your Information</h4>
+                    <p><strong>Full Name:</strong> @Model.FullName</p>
+                    <p><strong>Email:</strong> @Model.Email</p>
+                    <p><strong>Role:</strong> @Model.Role</p>
+                </div>
 
-            <dt class="col-sm-4">Email</dt>
-            <dd class="col-sm-8">@Model.Email</dd>
-        </dl>
-
-        <h4 class="mt-4">Quick Actions</h4>
-        <ul class="list-group">
-            <li class="list-group-item">
-                <a href="#">
-                    <i class="bi bi-easel"></i>
-                    My Classroom <span class="text-muted small">(coming soon)</span>
-                </a>
-            </li>
-            <li class="list-group-item">
-                <a asp-controller="Partner" asp-action="EditProfile">
-                    <i class="bi bi-pencil-square"></i> Edit Profile
-                </a>
-            </li>
-            <li class="list-group-item">
-                <a asp-controller="Partner" asp-action="ResetPassword">
-                    <i class="bi bi-shield-lock"></i> Reset Password
-                </a>
-            </li>
-        </ul>
+                <!-- Hành động nhanh -->
+                <div class="quick-actions">
+                    <h5 class="text-danger mb-3 fw-bold">Quick Actions</h5>
+                    <div class="action-buttons">
+                        <a class="action-link" asp-controller="Learner" asp-action="MyPurchasedCourses">
+                            <i class="bi bi-book"></i> My Courses
+                        </a>
+                        <a class="action-link" asp-controller="Learner" asp-action="MyClassroom">
+                            <i class="bi bi-easel"></i> My Classroom
+                        </a>
+                        <a class="action-link" asp-controller="Learner" asp-action="EditProfile">
+                            <i class="bi bi-pencil-square"></i> Edit Profile
+                        </a>
+                        <a class="action-link" asp-controller="Learner" asp-action="ChangePassword">
+                            <i class="bi bi-lock"></i> Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        // preview ảnh trước khi upload
         function previewProfileImage() {
             const input = document.getElementById('profilePictureInput');
             const preview = document.getElementById('profilePreview');
 
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
+
                 reader.onload = function (e) {
                     preview.src = e.target.result;
                     preview.classList.remove('d-none');
                 }
+
                 reader.readAsDataURL(input.files[0]);
             } else {
                 preview.src = "#";
                 preview.classList.add('d-none');
             }
         }
-
-        // sakura petal animation
-        document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("DOMContentLoaded", function () {
             const totalPetals = 20;
             const half = totalPetals / 2;
 

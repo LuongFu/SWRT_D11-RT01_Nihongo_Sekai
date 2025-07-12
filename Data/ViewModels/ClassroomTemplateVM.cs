@@ -9,27 +9,27 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public int Id { get; set; }
 
         [Required]
-        [Display(Name = "Tiêu đề mẫu")]
+        [Display(Name = "Template Name")]
         public string Title { get; set; }
 
         [Required]
-        [Display(Name = "Mô tả mẫu")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
-        [Display(Name = "Ảnh đại diện (tùy chọn)")]
+        [Display(Name = "Thumbnail (optional)")]
         public string? ImageURL { get; set; }
 
-        [Display(Name = "Tải ảnh (tùy chọn)")]
+        [Display(Name = "Upload thumbnail (optional)")]
         public IFormFile? ImageFile { get; set; }
 
-        [Display(Name = "Tài liệu đính kèm (tùy chọn)")]
+        [Display(Name = "Document File (optional)")]
         public IFormFile? DocumentFile { get; set; }
 
         [Display(Name = "Tài liệu đã tải")]
         public string? DocumentURL { get; set; } // ✅ BỔ SUNG để không bị lỗi
 
         [Required]
-        [Display(Name = "Trình độ ngôn ngữ")]
+        [Display(Name = "Level")]
         public LanguageLevel LanguageLevel { get; set; }
 
         // Chuyển từ VM xuống Entity

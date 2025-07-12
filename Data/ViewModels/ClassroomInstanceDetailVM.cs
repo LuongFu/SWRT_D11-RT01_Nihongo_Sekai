@@ -11,5 +11,6 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public string? PartnerName { get; set; }
         // 👇 Thêm để phục vụ kiểm tra đã đăng ký hay chưa
         public bool IsEnrolled { get; set; }
+        public bool HasPaid { get; set; } // 👈 thêm dòng này
     }
 }

@@ -9,5 +9,6 @@ namespace JapaneseLearningPlatform.Data.Seeds
         public string Password { get; set; } = default!;
         public string Role { get; set; } = default!;
         public bool IsBanned { get; set; }
+        public bool IsApproved { get; set; } = default!;
     }
 }

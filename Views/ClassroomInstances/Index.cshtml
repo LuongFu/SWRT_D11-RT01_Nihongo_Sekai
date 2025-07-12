@@ -63,7 +63,7 @@
                                 <i class="bi bi-image"></i>
                             </div>
                         }
-                        <span class="badge badge-level">Trình độ: @item.LanguageLevel</span>
+                        <span class="badge badge-level">Level: @item.LanguageLevel</span>
                     </div>
 
                     <div class="card-body d-flex flex-column">
@@ -92,8 +92,8 @@
                         else
                         {
                             <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-danger">@item.Price.ToString("N0") VNĐ</span>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+                                <span class="fw-bold text-danger">@item.Price.ToString("N0") USD</span>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">View Details</a>
                             </div>
                         }
                     </div>
@@ -103,7 +103,7 @@
                         <br />
                         @if (item.IsEnrolled)
                         {
-                            <span class="text-success">Đã tham gia</span>
+                            <span class="text-success">Enrolled</span>
                         }
                     </div>
                 </div>
