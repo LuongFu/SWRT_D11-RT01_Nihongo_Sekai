@@ -41,10 +41,9 @@
                         {
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" ? "active-tab" : "")" asp-controller="Admin" asp-action="Index">Home</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active-tab" : "")" asp-controller="Account" asp-action="Users">User List</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["action"]?.ToString() == "PartnerApplications" ? "active-tab" : "")" asp-controller="Admin" asp-action="PartnerApplications">Partner Applications</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PartnerApplications" ? "active-tab" : "")" asp-controller="Admin" asp-action="PartnerApplications">Partner Applications</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")" asp-controller="Courses" asp-action="Index">Courses</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Classroom" ? "active-tab" : "")" asp-controller="ClassroomInstances" asp-action="Index">Classroom</a></li>
-                            @* <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Videos" ? "active-tab" : "")" asp-controller="Videos" asp-action="Index">Videos</a></li> *@
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")" asp-controller="ClassroomInstances" asp-action="Index">Classroom</a></li>
                         }
 
                         else if (User.Identity.IsAuthenticated && User.IsInRole("Partner"))
@@ -66,12 +65,12 @@
 
                         else
                         {
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active-tab" : "")" asp-controller="Learner" asp-action="Index">Home</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" ? "active-tab" : "")" asp-controller="Learner" asp-action="Index">Home</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")" asp-controller="Courses" asp-action="Index">Courses</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" && ViewContext.RouteData.Values["action"]?.ToString() == "Classroom" ? "active-tab" : "")" asp-controller="ClassroomInstances" asp-action="Index">Classrooms</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")" asp-controller="ClassroomInstances" asp-action="Index">Classrooms</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")"asp-controller="Schedule" asp-action="Index">Schedule</a></li>
                             <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dictionary" ? "active-tab" : "")" asp-controller="Dictionary" asp-action="Search">Dictionary</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" && ViewContext.RouteData.Values["action"]?.ToString() == "Classroom" ? "active-tab" : "")" asp-controller="SidePages" asp-action="About">About</a></li>
+                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SidePages" ? "active-tab" : "")" asp-controller="SidePages" asp-action="About">About</a></li>
                             
                         }
                     </ul>
