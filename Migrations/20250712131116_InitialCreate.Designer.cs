@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250712021548_InitialCreate")]
+    [Migration("20250712131116_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -1075,7 +1075,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasOne("JapaneseLearningPlatform.Models.Partner.PartnerProfile", "Profile")
                         .WithMany("Documents")
                         .HasForeignKey("PartnerProfileId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")

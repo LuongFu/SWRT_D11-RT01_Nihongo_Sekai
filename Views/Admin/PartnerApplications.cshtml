@@ -54,6 +54,12 @@
             border-radius: .5rem;
             font-size: .875rem;
         }
+
+        .approved-date {
+            font-style: italic;
+            font-size: 0.85rem;
+        }
+
     </style>
 }
 
@@ -64,9 +70,7 @@
     <a asp-action="PartnerApplications" asp-route-filter="Pending"
        class="btn @(current == PartnerStatus.Pending ? "btn-primary" : "btn-outline-primary")">Pending</a>
     <a asp-action="PartnerApplications" asp-route-filter="Approved"
-       class="btn @(current == PartnerStatus.Approved ? "btn-success" : "btn-outline-success")">Approved</a>
-    <a asp-action="PartnerApplications" asp-route-filter="Rejected"
-       class="btn @(current == PartnerStatus.Rejected ? "btn-danger" : "btn-outline-danger")">Rejected</a>
+       class="btn @(current == PartnerStatus.Approved ? "btn-success" : "btn-outline-success")">Approved</a>   
 </div>
 
 <div class="row g-3">
@@ -121,6 +125,14 @@
                                 }
                     </div>
                 </div>
+                @* ────────── INSERT APPROVAL DATE HERE ────────── *@
+                @if (current == PartnerStatus.Approved && p.DecisionAt.HasValue)
+                {
+                    <div class="approved-date text-muted small mb-2">
+                    Approved on @p.DecisionAt.Value.ToString("MMMM d, yyyy")
+                
+                    </div>
+                }
 
                 <div class="mt-auto">
                     <a asp-action="ReviewPartner" asp-route-id="@p.Id"
