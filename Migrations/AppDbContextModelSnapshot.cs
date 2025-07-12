@@ -1072,7 +1072,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasOne("JapaneseLearningPlatform.Models.Partner.PartnerProfile", "Profile")
                         .WithMany("Documents")
                         .HasForeignKey("PartnerProfileId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")

@@ -156,18 +156,19 @@ namespace JapaneseLearningPlatform.Data
             // 1) Mối quan hệ 1 PartnerProfile có nhiều PartnerDocument,
             //    nhưng khi xóa profile thì không tự động xóa document (Restrict)
             modelBuilder.Entity<PartnerDocument>()
-              .HasOne(d => d.Profile)
-              .WithMany(p => p.Documents)
-              .HasForeignKey(d => d.PartnerProfileId)
-              .OnDelete(DeleteBehavior.Restrict);
+            .HasOne(d => d.Profile)
+            .WithMany(p => p.Documents)
+            .HasForeignKey(d => d.PartnerProfileId)
+            .OnDelete(DeleteBehavior.Cascade);
+
 
             // 2) Mối quan hệ 1-1 PartnerProfile ↔ ApplicationUser,
             //    nhưng khi xóa user thì không tự động xóa profile (Restrict)
             modelBuilder.Entity<PartnerProfile>()
-              .HasOne(p => p.User)
-              .WithOne(u => u.PartnerProfile)
-              .HasForeignKey<PartnerProfile>(p => p.UserId)
-              .OnDelete(DeleteBehavior.Restrict);
+            .HasOne(p => p.User)
+            .WithOne(u => u.PartnerProfile)
+            .HasForeignKey<PartnerProfile>(p => p.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
             // ---- MỚI: cấu hình enum Status và DecisionAt ----
             modelBuilder.Entity<PartnerProfile>()

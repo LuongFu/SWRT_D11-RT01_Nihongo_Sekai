@@ -444,7 +444,7 @@ namespace JapaneseLearningPlatform.Migrations
                         column: x => x.PartnerProfileId,
                         principalTable: "PartnerProfiles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

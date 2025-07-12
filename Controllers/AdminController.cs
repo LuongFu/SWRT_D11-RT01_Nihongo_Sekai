@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;                    // UserManager<>, SignIn
 using Microsoft.AspNetCore.Identity.UI.Services;        // IEmailSender
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
 
 
 namespace JapaneseLearningPlatform.Controllers
@@ -22,15 +23,18 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;  // <-- thêm
         private readonly IEmailSender _emailSender;  // <-- thêm
+        private readonly IWebHostEnvironment _env;
 
         public AdminController(
             AppDbContext context,
             UserManager<ApplicationUser> userManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IWebHostEnvironment env)
         {
             _context = context;
             _userManager = userManager;
             _emailSender = emailSender;
+            _env = env;
         }
 
         public IActionResult Index()
@@ -296,42 +300,39 @@ namespace JapaneseLearningPlatform.Controllers
             return RedirectToAction(nameof(PartnerApplications));
         }
 
-        
-
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> RejectPartner(int id)
         {
+            // 1) load profile + user
             var profile = await _context.PartnerProfiles
-                              .Include(p => p.User)
-                              .FirstOrDefaultAsync(p => p.Id == id);
+                                .Include(p => p.User)
+                                .FirstOrDefaultAsync(p => p.Id == id);
             if (profile == null) return NotFound();
 
+            // 2) mark as Rejected for your audit table
             profile.Status = PartnerStatus.Rejected;
             profile.DecisionAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
-            // Sinh URL tới trang Register (Account/Register)
-            var registerUrl = Url.Action(
-                nameof(AccountController.Register),
-                "Account",
-                null,
-                Request.Scheme
-            )!;
-
+            // 3) send "sorry, not approved" email
             var user = profile.User;
             var subject = "🙏 Your Partner Application Status";
+            var registerUrl = Url.Action(nameof(AccountController.Register),
+                                         "Account", null, Request.Scheme)!;
+
             var body = $@"<!DOCTYPE html>
             <html><head><meta charset=""UTF-8""/></head>
             <body style=""margin:0;padding:0;background:#f4f4f7;"">
               <table width=""100%"" cellpadding=""0"" cellspacing=""0"">
                 <tr><td align=""center"">
-                  <table width=""600"" cellpadding=""0"" cellspacing=""0"" style=""background:#ffffff;
-                         border-radius:8px;overflow:hidden;"">
+                  <table width=""600"" cellpadding=""0"" cellspacing=""0"" 
+                         style=""background:#ffffff;border-radius:8px;overflow:hidden;"">
                     <!-- Banner -->
                     <tr>
                       <td>
                         <img src=""https://source.unsplash.com/600x200/?sorry,stamp"" 
-                             alt=""Application Not Approved"" width=""600"" style=""display:block;""/>
+                             alt=""Application Not Approved"" width=""600"" 
+                             style=""display:block;""/>
                       </td>
                     </tr>
                     <!-- Content -->
@@ -346,16 +347,17 @@ namespace JapaneseLearningPlatform.Controllers
                         </p>
                         <p style=""font-size:16px;line-height:1.5;margin-top:20px;"">
                           You’re welcome to gain more experience and 
-                          <a href=""https://yourdomain.com/partner/apply"" 
-                          <a href=""{registerUrl}"" 
-                             style=""color:#1a73e8;"">apply again</a> when you’re ready.
+                          <a href=""{registerUrl}"" style=""color:#1a73e8;"">
+                            apply again
+                          </a> when you’re ready.
                         </p>
                       </td>
                     </tr>
                     <!-- Footer -->
                     <tr>
-                      <td style=""background:#f9f9fa;padding:15px;text-align:center;
-                                 font-family:Arial,sans-serif;color:#888;font-size:12px;"">
+                      <td style=""background:#f9f9fa;padding:15px;
+                                 text-align:center;font-family:Arial,sans-serif;
+                                 color:#888;font-size:12px;"">
                         <p style=""margin:0;"">© {DateTime.UtcNow.Year} Nihongo Sekai</p>
                       </td>
                     </tr>
@@ -366,9 +368,21 @@ namespace JapaneseLearningPlatform.Controllers
             </html>";
 
             await _emailSender.SendEmailAsync(user.Email!, subject, body);
+
+            // 2) Remove the profile (documents go with it via cascade)
+            _context.PartnerProfiles.Remove(profile);
+            await _context.SaveChangesAsync();
+
+            // 3) Delete the user account
+            await _userManager.DeleteAsync(profile.User);
+
+            // 4) (Optional) Delete their physical uploads folder
+            var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "partners", profile.User.Id);
+            if (Directory.Exists(uploadsDir))
+                Directory.Delete(uploadsDir, recursive: true);
+
             return RedirectToAction(nameof(PartnerApplications));
         }
-
         #endregion
     }
 }
