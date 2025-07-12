@@ -217,8 +217,9 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (remoteError != null)
             {
-                TempData["Error"] = $"Error from external provider: {remoteError}";
-                return RedirectToAction("Login");
+                // Google login bị hủy → quay về trang login
+                TempData["ErrorMessage"] = "Google login was cancelled or failed: " + remoteError;
+                return RedirectToAction(nameof(Login));
             }
 
             var info = await _signInManager.GetExternalLoginInfoAsync();
