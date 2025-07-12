@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250710144744_FixDecimalForOrder")]
-    partial class FixDecimalForOrder
+    [Migration("20250712021548_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -126,9 +126,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PartnerDocumentPath")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -291,6 +288,9 @@ namespace JapaneseLearningPlatform.Migrations
 
                     b.Property<string>("GoogleMeetLink")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
 
                     b.Property<int>("MaxCapacity")
                         .HasColumnType("int");
@@ -501,6 +501,87 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("PartnerProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerProfileId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PartnerDocuments");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DecisionAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("YearsOfExperience")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("PartnerProfiles");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerSpecialization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PartnerProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Specialization")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerProfileId");
+
+                    b.ToTable("PartnerSpecializations");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResult", b =>
@@ -989,6 +1070,47 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerDocument", b =>
+                {
+                    b.HasOne("JapaneseLearningPlatform.Models.Partner.PartnerProfile", "Profile")
+                        .WithMany("Documents")
+                        .HasForeignKey("PartnerProfileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Profile");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerProfile", b =>
+                {
+                    b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")
+                        .WithOne("PartnerProfile")
+                        .HasForeignKey("JapaneseLearningPlatform.Models.Partner.PartnerProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerSpecialization", b =>
+                {
+                    b.HasOne("JapaneseLearningPlatform.Models.Partner.PartnerProfile", "PartnerProfile")
+                        .WithMany("Specializations")
+                        .HasForeignKey("PartnerProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PartnerProfile");
+                });
+
             modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResult", b =>
                 {
                     b.HasOne("Quiz", "Quiz")
@@ -1153,6 +1275,11 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("ContentItems");
                 });
 
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("PartnerProfile");
+                });
+
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomInstance", b =>
                 {
                     b.Navigation("Assessments");
@@ -1180,6 +1307,13 @@ namespace JapaneseLearningPlatform.Migrations
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerProfile", b =>
+                {
+                    b.Navigation("Documents");
+
+                    b.Navigation("Specializations");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResult", b =>

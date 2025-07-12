@@ -282,6 +282,11 @@
                 <h1 class="auth-title">Welcome Back</h1>
                 <p class="auth-subtitle">Sign in to continue your Japanese learning journey</p>
 
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success">@TempData["Success"]</div>
+                }
+
                 @if (TempData["Error"] != null)
                 {
                     <div class="alert alert-danger" role="alert">
@@ -294,7 +299,7 @@
 
                     <div class="mb-3">
                         <label asp-for="EmailAddress" class="form-label">Email Address</label>
-                        <input asp-for="EmailAddress" class="form-control" placeholder="Enter your email" />
+                        <input asp-for="EmailAddress" class="form-control" placeholder="Enter your email" autofocus />
                         <span asp-validation-for="EmailAddress" class="text-danger"></span>
                     </div>
 

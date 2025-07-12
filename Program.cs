@@ -69,14 +69,20 @@ namespace JapaneseLearningPlatform
                 .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
             {
                 var googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
-                options.ClientId = googleAuthNSection["ClientId"];
-                options.ClientSecret = googleAuthNSection["ClientSecret"];
+
+                // ném nếu thiếu config, tránh gán null
+                options.ClientId = googleAuthNSection["ClientId"]
+                                      ?? throw new InvalidOperationException("Missing Authentication:Google:ClientId");
+                options.ClientSecret = googleAuthNSection["ClientSecret"]
+                                      ?? throw new InvalidOperationException("Missing Authentication:Google:ClientSecret");
             });
             // add api connect
             builder.Services.AddHttpClient<DictionaryController>();
             builder.Services.AddMemoryCache();
             builder.Services.AddSession();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddHostedService<RejectedCleanupService>();
 
             var app = builder.Build();
 

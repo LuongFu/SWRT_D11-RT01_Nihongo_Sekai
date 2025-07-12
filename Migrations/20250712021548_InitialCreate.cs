@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JapaneseLearningPlatform.Migrations
 {
     /// <inheritdoc />
-    public partial class FixDecimalForOrder : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,7 +33,6 @@ namespace JapaneseLearningPlatform.Migrations
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false),
-                    PartnerDocumentPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsBanned = table.Column<bool>(type: "bit", nullable: false),
                     ProfilePicturePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -260,6 +259,28 @@ namespace JapaneseLearningPlatform.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PartnerProfiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    DecisionAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    YearsOfExperience = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PartnerProfiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PartnerProfiles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CourseSections",
                 columns: table => new
                 {
@@ -356,6 +377,7 @@ namespace JapaneseLearningPlatform.Migrations
                     ClassTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     MaxCapacity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
                     GoogleMeetLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
@@ -394,6 +416,53 @@ namespace JapaneseLearningPlatform.Migrations
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PartnerDocuments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    PartnerProfileId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PartnerDocuments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PartnerDocuments_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PartnerDocuments_PartnerProfiles_PartnerProfileId",
+                        column: x => x.PartnerProfileId,
+                        principalTable: "PartnerProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PartnerSpecializations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PartnerProfileId = table.Column<int>(type: "int", nullable: false),
+                    Specialization = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PartnerSpecializations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PartnerSpecializations_PartnerProfiles_PartnerProfileId",
+                        column: x => x.PartnerProfileId,
+                        principalTable: "PartnerProfiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -770,6 +839,27 @@ namespace JapaneseLearningPlatform.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PartnerDocuments_PartnerProfileId",
+                table: "PartnerDocuments",
+                column: "PartnerProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PartnerDocuments_UserId",
+                table: "PartnerDocuments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PartnerProfiles_UserId",
+                table: "PartnerProfiles",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PartnerSpecializations_PartnerProfileId",
+                table: "PartnerSpecializations",
+                column: "PartnerProfileId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_QuizOptions_QuestionId",
                 table: "QuizOptions",
                 column: "QuestionId");
@@ -857,6 +947,12 @@ namespace JapaneseLearningPlatform.Migrations
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
+                name: "PartnerDocuments");
+
+            migrationBuilder.DropTable(
+                name: "PartnerSpecializations");
+
+            migrationBuilder.DropTable(
                 name: "QuizResultDetails");
 
             migrationBuilder.DropTable(
@@ -876,6 +972,9 @@ namespace JapaneseLearningPlatform.Migrations
 
             migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "PartnerProfiles");
 
             migrationBuilder.DropTable(
                 name: "QuizOptions");
