@@ -430,5 +430,13 @@ namespace JapaneseLearningPlatform.Controllers
 
         // Khi truy cập denied
         public IActionResult AccessDenied(string returnUrl) => View();
+
+        [HttpGet]
+        public IActionResult LoginFailed(string? error)
+        {
+            TempData["Error"] = error ?? "Something went wrong during Google login.";
+            return RedirectToAction("Login");
+        }
+
     }
 }
