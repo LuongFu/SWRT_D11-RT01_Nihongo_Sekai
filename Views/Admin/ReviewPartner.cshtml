@@ -2,90 +2,111 @@
 @using JapaneseLearningPlatform.Helpers
 @model JapaneseLearningPlatform.Data.ViewModels.ReviewPartnerVM
 
-<!-- Animate on Scroll (AOS) init script; place once in your layout -->
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
-    <script>
-        document.addEventListener('DOMContentLoaded', () => AOS.init({ once: true, offset: 120 }));
-    </script>
+@section Styles {
+  <style>
+    /* Fade-in wrapper */
+    .review-wrapper {
+      display:flex; flex-wrap:wrap; gap:2rem;
+      opacity:0; transform:translateY(20px);
+      animation:fadeInUp .6s forwards .2s;
+    }
+    @@keyframes fadeInUp {
+      to { opacity:1; transform:translateY(0); }
+    }
+
+    .review-card {
+      background:linear-gradient(135deg,#fff,#f8f8f8);
+      border-radius:1rem; padding:1.5rem;
+      box-shadow:0 8px 20px rgba(0,0,0,0.05);
+      transition:transform .3s,box-shadow .3s;
+    }
+    .review-card:hover {
+      transform:translateY(-4px);
+      box-shadow:0 12px 30px rgba(0,0,0,0.1);
+    }
+
+    .review-avatar {
+      width:160px; height:160px; border-radius:50%;
+      object-fit:cover; box-shadow:0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom:1rem;
+    }
+
+    .specs-container {
+      display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.5rem;
+    }
+    .spec-badge {
+      background:#0d6efd; color:#fff; padding:.25rem .75rem;
+      border-radius:.5rem; font-size:.875rem;
+    }
+  </style>
 }
 
-<div class="container mt-5" data-aos="fade-up" data-aos-duration="600">
-    <div class="row">
-        <!-- LEFT SIDEBAR: PROFILE CARD -->
-        <div class="col-lg-4 mb-4">
-            <div class="card review-card shadow-sm p-0">
-                <!-- Banner + Avatar -->
-                <div class="position-relative">
-                    <div class="w-100" style="
-               height:120px;
-               background:url('https://via.placeholder.com/600x120/cccccc/ffffff?text=Profile+Banner')
-                         center/cover no-repeat;"></div>
-                    <img src="@( Model.Profile.User.ProfilePicturePath
-                                                ?? "https://www.vectorstock.com/royalty-free-vector/gray-human-icon-profile-placeholder-vector-35850819" )"
-                         alt="Avatar"
-                         class="review-avatar position-absolute top-100 start-50 translate-middle border border-white"
-                         style="background:#fff;" />
-                </div>
+@section Scripts {
+  <script>
+    document.addEventListener('DOMContentLoaded',()=>{
+      // nothing extra
+    });
+  </script>
+}
 
-                <!-- Profile Details -->
-                <div class="card-body text-center mt-5">
-                    <h4 class="mb-1">@Model.Profile.User.FullName</h4>
-                    <p class="text-muted mb-3">@Model.Profile.User.Email</p>
+<div class="review-wrapper">
+  <!-- LEFT -->
+  <div class="review-card flex-shrink-0" style="max-width:360px;">
+    <div class="text-center">
+      <img src="@(
+           !string.IsNullOrEmpty(Model.Profile.User.ProfilePicturePath)
+             ? Model.Profile.User.ProfilePicturePath
+             : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id,140)
+         )"
+           class="review-avatar"
+           alt="@Model.Profile.User.FullName" />
+      <h4>@Model.Profile.User.FullName</h4>
+      <p class="text-muted">@Model.Profile.User.Email</p>
 
-                    <p class="mb-2">
-                        <strong>Experience:</strong><br />
-                        @Model.Profile.YearsOfExperience.GetDisplayName()
-                    </p>
-
-                    <div>
-                        @foreach (var spec in Model.Profile.Specializations)
-                        {
-                            <span class="badge bg-primary me-1 mb-1">@spec.Specialization</span>
-                        }
-                    </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="card-footer text-center bg-white">
-                    <button class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                        Reject
-                    </button>
-                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
-                        Approve
-                    </button>
-                </div>
+      <p class="mt-3"><strong>Experience:</strong><br/>
+        @Model.Profile.YearsOfExperience.GetDisplayName()
+      </p>
+        <div class="specs-container">
+            @* Render every specialization, no truncation *@
+            @foreach (var spec in Model.Profile.Specializations)
+            {
+            <span class="spec-badge">@spec.Specialization</span>
+            }
             </div>
-        </div>
-
-        <!-- RIGHT CONTENT: DOCUMENT THUMBNAILS -->
-        <div class="col-lg-8">
-            <h5 class="mb-3">Uploaded Documents</h5>
-            <div class="row g-3">
-                @foreach (var doc in Model.Profile.Documents)
-                {
-                    <div class="col-sm-6">
-                        <div class="card doc-thumb h-100">
-                            <a href="@doc.FilePath" target="_blank">
-                                <img src="@doc.FilePath"
-                                     alt="Document thumbnail"
-                                     class="card-img-top" />
-                            </a>
-                            <div class="card-body p-2 text-center text-truncate">
-                                <a href="@doc.FilePath" target="_blank" class="doc-link small">
-                                    @System.IO.Path.GetFileName(doc.FilePath)
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                }
-
-            </div>
-        </div>
     </div>
+
+    @if(Model.Profile.Status==PartnerStatus.Pending)
+    {
+      <div class="card-footer text-center bg-white">
+        <button class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">Approve</button>
+      </div>
+    }
+  </div>
+
+  <!-- RIGHT: Documents -->
+  <div class="flex-grow-1">
+    <h5>Uploaded Documents</h5>
+    <div class="row g-3">
+      @foreach(var doc in Model.Profile.Documents)
+      {
+        <div class="col-sm-6">
+          <div class="card doc-thumb h-100">
+            <a href="@doc.FilePath" target="_blank">
+              <img src="@doc.FilePath" class="card-img-top" style="height:150px;object-fit:cover" />
+            </a>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
 </div>
 
+<p class="mt-4">
+  <a asp-action="PartnerApplications" asp-controller="Admin" class="btn btn-link">Back to list</a>
+</p>
+
+<!-- Approve/Reject modals giữ nguyên như bạn có sẵn -->
 <!-- APPROVE CONFIRM MODAL -->
 <div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -135,117 +156,3 @@
         </form>
     </div>
 </div>
-
-<p>
-    <a asp-action="PartnerApplications" asp-controller="Admin" class="btn btn-link">
-        Back to list
-    </a>
-</p>
-
-<!-- CUSTOM CSS (add to site.css or a new admin.css) -->
-<style>
-    .review-avatar {
-        width: 140px;
-        height: 140px;
-        border-radius: 50%;
-        border: 4px solid #E53935;
-        transition: transform .3s ease, box-shadow .3s ease;
-        background: #fff;
-    }
-
-        .review-avatar:hover {
-            transform: translateY(-6px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-    .review-card {
-        transition: transform .25s ease, box-shadow .25s ease;
-        overflow: visible;
-    }
-
-        .review-card:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-        }
-
-    /* 2) Document thumbnail overlay: cover link text fully */
-    .doc-thumb {
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-    }
-
-        .doc-thumb img {
-            display: block;
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            transition: transform .3s ease;
-        }
-
-        .doc-thumb:hover img {
-            transform: scale(1.1);
-        }
-
-        .doc-thumb .overlay {
-            position: absolute;
-            inset: 0; /* top:0; right:0; bottom:0; left:0 */
-            background: rgba(0, 0, 0, 0.4);
-            color: #fff;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity .3s ease;
-        }
-
-        .doc-thumb:hover .overlay {
-            opacity: 1;
-        }
-        /* Ensure the <a> stays clickable even though overlay sits on top */
-        .doc-thumb .overlay,
-        .doc-thumb img {
-            pointer-events: none;
-        }
-
-        .doc-thumb a {
-            display: block;
-            position: relative;
-            z-index: 1; /* keep the <a> above the overlay layer for click events */
-        }
-
-    .btn-approve {
-        background: #43A047;
-        border-color: #388E3C;
-    }
-
-    .btn-reject {
-        color: #E53935;
-    }
-
-    /* Modal scale-in */
-    .modal.fade .modal-dialog {
-        transform: translateY(-30px) scale(0.97);
-        transition: transform .2s ease-out;
-    }
-
-    .modal.show .modal-dialog {
-        transform: translateY(0) scale(1);
-    }
-
-    /* Link tên file: ẩn khi hover */
-    /* luôn ẩn phần tên file */
-    .doc-link {
-        display: none !important;
-    }
-
-    .doc-link {
-        transition: opacity .3s ease;
-    }
-
-    .doc-thumb:hover .doc-link {
-        opacity: 0;
-    }
-
-</style>

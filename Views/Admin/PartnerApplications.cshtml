@@ -1,86 +1,152 @@
 ﻿@using JapaneseLearningPlatform.Models.Partner
 @using JapaneseLearningPlatform.Data.Enums
+@using JapaneseLearningPlatform.Helpers  @*cho GetDisplayName()*@
 @model IEnumerable<PartnerProfile>
 
 @{
     ViewData["Title"] = "Partner Applications";
-    // Pull the current filter out of ViewData (set in your controller)
     var current = (PartnerStatus)(ViewData["CurrentFilter"] ?? PartnerStatus.Pending);
+}
+
+@section Styles {
+    <style>
+        /* Fade-in grid */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp .6s forwards;
+        }
+        @@keyframes fadeInUp {
+            to
+
+        {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* Card lift, gradient */
+        .partner-card {
+            background: linear-gradient(135deg,#fff,#f9f9f9);
+            border-radius: .75rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform .3s,box-shadow .3s;
+        }
+
+            .partner-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+            }
+
+        /* Specs badges */
+        .specs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin-top: .5rem;
+        }
+
+        .spec-badge {
+            background: #6c757d;
+            color: #fff;
+            padding: .25rem .75rem;
+            border-radius: .5rem;
+            font-size: .875rem;
+        }
+    </style>
 }
 
 <h1 class="mb-4">@ViewData["Title"]</h1>
 
-<!-- 1) Filter Tabs -->
+<!-- Filter Tabs -->
 <div class="btn-group mb-4" role="group">
     <a asp-action="PartnerApplications" asp-route-filter="Pending"
-       class="btn @(current == PartnerStatus.Pending
-                             ? "btn-primary"
-                             : "btn-outline-primary")">
-        Pending
-    </a>
+       class="btn @(current == PartnerStatus.Pending ? "btn-primary" : "btn-outline-primary")">Pending</a>
     <a asp-action="PartnerApplications" asp-route-filter="Approved"
-       class="btn @(current == PartnerStatus.Approved
-                             ? "btn-success"
-                             : "btn-outline-success")">
-        Approved
-    </a>
+       class="btn @(current == PartnerStatus.Approved ? "btn-success" : "btn-outline-success")">Approved</a>
     <a asp-action="PartnerApplications" asp-route-filter="Rejected"
-       class="btn @(current == PartnerStatus.Rejected
-                             ? "btn-danger"
-                             : "btn-outline-danger")">
-        Rejected
-    </a>
+       class="btn @(current == PartnerStatus.Rejected ? "btn-danger" : "btn-outline-danger")">Rejected</a>
 </div>
 
 <div class="row g-3">
     @if (!Model.Any())
     {
-        <div class="col-12">
-            <div class="alert alert-info">
-                No @current applications found.
-            </div>
-        </div>
+        <div class="col-12"><div class="alert alert-info">No @current applications found.</div></div>
     }
     else
     {
-        @foreach (var p in Model)
+        var idx = 0;
+        foreach (var p in Model)
         {
+            var specs = p.Specializations.Select(s => s.Specialization).ToList();
+            var shown = specs.Take(2).ToList();
+            var extra = specs.Count - shown.Count;
             <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
+                <div class="card partner-card fade-in">
                     <div class="card-body d-flex flex-column">
+                        <!-- Avatar + name/email -->
                         <div class="d-flex align-items-center mb-3">
-                            <img src="@(p.User.ProfilePicturePath ?? "/images/default-avatar.png")"
-                                 class="rounded-circle me-2"
-                                 style="width:40px; height:40px; object-fit:cover;"
-                                 alt="Avatar" />
-                            <div>
-                                <h5 class="card-title mb-0">@p.User.FullName</h5>
-                                <small class="text-muted">@p.User.Email</small>
-                            </div>
-                        </div>
-                        <p class="text-truncate mb-4">
-                            <strong>Exp:</strong>
-                            @@p.YearsOfExperience.GetDisplayName()
+                            <img src="@(
+                                 !string.IsNullOrEmpty(p.User.ProfilePicturePath)
+                                   ? p.User.ProfilePicturePath
+                                   : AvatarHelper.GetAvatarUrl(p.User.Id, 40)
+                                  )"
+                         class="rounded-circle me-2"
+                         style="width:40px;height:40px;object-fit:cover;"
+                         alt="@p.User.FullName" />
+                    <div>
+                        <h5 class="card-title mb-0">@p.User.FullName</h5>
+                        <small class="text-muted">@p.User.Email</small>
+                    </div>
+                </div>
+
+                        <!-- Exp + Specs -->
+                        <div>
+                            <strong>Exp:</strong> @p.YearsOfExperience.GetDisplayName()
                             &nbsp;•&nbsp;
                             <strong>Specs:</strong>
-                            @string.Join(", ",
-                            p.Specializations.Select(s => s.Specialization))
-                </p>
+                            <div class="specs-container">
+                        @foreach (var s in shown)
+                                {
+                                    <span class="spec-badge">@s</span>
+                                }
+                                @if (extra > 0)
+                                {
+                                    <span class="spec-badge"
+                                          data-bs-toggle="tooltip"
+                                          title="@string.Join(", ", specs.Skip(2))">
+                                        and more (+@extra)
+                                    </span>
+                                }
+                    </div>
+                </div>
+
                 <div class="mt-auto">
                     <a asp-action="ReviewPartner" asp-route-id="@p.Id"
-                       class="btn btn-sm
-                        @(current == PartnerStatus.Pending
-                                                   ? "btn-primary"
-                                                   : current == PartnerStatus.Approved
-                                                     ? "btn-success"
-                                                     : "btn-danger")
-                        w-100">
+                       class="btn btn-sm w-100 mt-3
+                   @(current == PartnerStatus.Pending ? "btn-primary" :
+                                            current == PartnerStatus.Approved ? "btn-success" : "btn-danger")">
                         Review Details
                     </a>
                 </div>
             </div>
         </div>
     </div>
+        idx++;
         }
     }
 </div>
+
+@section Scripts {
+    @* thêm tooltip *@
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+          var t = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+          t.forEach(el=>new bootstrap.Tooltip(el));
+
+          document.querySelectorAll('.fade-in')
+            .forEach((el,i)=>el.style.animationDelay=(i*100)+'ms');
+        });
+    </script>
+}
