@@ -33,6 +33,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
                     Email = u.Email,
                     EmailConfirmed = true,
                     Role = u.Role,
+                    IsApproved = true,
                     IsBanned = u.IsBanned
                 };
 
