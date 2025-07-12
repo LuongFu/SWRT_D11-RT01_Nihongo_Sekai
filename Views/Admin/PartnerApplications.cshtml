@@ -63,92 +63,96 @@
     </style>
 }
 
-<h1 class="mb-4">@ViewData["Title"]</h1>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1>@ViewData["Title"]</h1>
+    </div>
 
-<!-- Filter Tabs -->
-<div class="btn-group mb-4" role="group">
-    <a asp-action="PartnerApplications" asp-route-filter="Pending"
-       class="btn @(current == PartnerStatus.Pending ? "btn-primary" : "btn-outline-primary")">Pending</a>
-    <a asp-action="PartnerApplications" asp-route-filter="Approved"
-       class="btn @(current == PartnerStatus.Approved ? "btn-success" : "btn-outline-success")">Approved</a>   
-</div>
+    <!-- Filter Tabs -->
+    <div class="btn-group mb-4 d-flex justify-content-center" role="group">
+        <a asp-action="PartnerApplications" asp-route-filter="Pending"
+           class="btn @(current == PartnerStatus.Pending ? "btn-primary" : "btn-outline-primary")">Pending</a>
+        <a asp-action="PartnerApplications" asp-route-filter="Approved"
+           class="btn @(current == PartnerStatus.Approved ? "btn-success" : "btn-outline-success")">Approved</a>
+    </div>
 
-<div class="row g-3">
-    @if (!Model.Any())
-    {
-        <div class="col-12"><div class="alert alert-info">No @current applications found.</div></div>
-    }
-    else
-    {
-        var idx = 0;
-        foreach (var p in Model)
+    <div class="row g-3">
+        @if (!Model.Any())
         {
-            var specs = p.Specializations.Select(s => s.Specialization).ToList();
-            var shown = specs.Take(2).ToList();
-            var extra = specs.Count - shown.Count;
-            <div class="col-md-4">
-                <div class="card partner-card fade-in">
-                    <div class="card-body d-flex flex-column">
-                        <!-- Avatar + name/email -->
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="@(
-                                 !string.IsNullOrEmpty(p.User.ProfilePicturePath)
-                                   ? p.User.ProfilePicturePath
-                                   : AvatarHelper.GetAvatarUrl(p.User.Id, 40)
-                                  )"
-                         class="rounded-circle me-2"
-                         style="width:40px;height:40px;object-fit:cover;"
-                         alt="@p.User.FullName" />
-                    <div>
-                        <h5 class="card-title mb-0">@p.User.FullName</h5>
-                        <small class="text-muted">@p.User.Email</small>
-                    </div>
-                </div>
+            <div class="col-12">
+                <div class="alert alert-info text-center">No @current applications found.</div>
+            </div>
+        }
+        else
+        {
+            foreach (var p in Model)
+            {
+                var specs = p.Specializations.Select(s => s.Specialization).ToList();
+                var shown = specs.Take(2).ToList();
+                var extra = specs.Count - shown.Count;
 
-                        <!-- Exp + Specs -->
+                <div class="col-md-4">
+                    <div class="card partner-card fade-in h-100">
+                        <div class="card-body d-flex flex-column">
+                            <!-- Avatar + name/email -->
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="@(
+                                     !string.IsNullOrEmpty(p.User.ProfilePicturePath)
+                                       ? p.User.ProfilePicturePath
+                                       : AvatarHelper.GetAvatarUrl(p.User.Id, 40))"
+                             class="rounded-circle me-2"
+                             style="width:40px;height:40px;object-fit:cover;"
+                             alt="@p.User.FullName" />
                         <div>
-                            <strong>Exp:</strong> @p.YearsOfExperience.GetDisplayName()
-                            &nbsp;•&nbsp;
-                            <strong>Specs:</strong>
-                            <div class="specs-container">
-                        @foreach (var s in shown)
-                                {
-                                    <span class="spec-badge">@s</span>
-                                }
-                                @if (extra > 0)
-                                {
-                                    <span class="spec-badge"
-                                          data-bs-toggle="tooltip"
-                                          title="@string.Join(", ", specs.Skip(2))">
-                                        and more (+@extra)
-                                    </span>
-                                }
+                            <h5 class="card-title mb-0">@p.User.FullName</h5>
+                            <small class="text-muted">@p.User.Email</small>
+                        </div>
                     </div>
-                </div>
-                @* ────────── INSERT APPROVAL DATE HERE ────────── *@
-                @if (current == PartnerStatus.Approved && p.DecisionAt.HasValue)
-                {
-                    <div class="approved-date text-muted small mb-2">
-                    Approved on @p.DecisionAt.Value.ToString("MMMM d, yyyy")
-                
-                    </div>
-                }
 
-                <div class="mt-auto">
-                    <a asp-action="ReviewPartner" asp-route-id="@p.Id"
-                       class="btn btn-sm w-100 mt-3
-                   @(current == PartnerStatus.Pending ? "btn-primary" :
-                                            current == PartnerStatus.Approved ? "btn-success" : "btn-danger")">
-                        Review Details
-                    </a>
+                            <!-- Exp + Specs -->
+                            <div>
+                                <strong>Exp:</strong> @p.YearsOfExperience.GetDisplayName()
+                                &nbsp;•&nbsp;
+                                <strong>Specs:</strong>
+                                <div class="specs-container mt-1">
+                            @foreach (var s in shown)
+                                    {
+                                        <span class="spec-badge">@s</span>
+                                    }
+                                    @if (extra > 0)
+                                    {
+                                        <span class="spec-badge"
+                                              data-bs-toggle="tooltip"
+                                              title="@string.Join(", ", specs.Skip(2))">
+                                            and more (+@extra)
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+
+                            @if (current == PartnerStatus.Approved && p.DecisionAt.HasValue)
+                            {
+                                <div class="approved-date text-muted small mt-2">
+                                    Approved on @p.DecisionAt.Value.ToString("MMMM d, yyyy")
+                                </div>
+                            }
+
+                    <div class="mt-auto">
+                        <a asp-action="ReviewPartner" asp-route-id="@p.Id"
+                           class="btn btn-sm w-100 mt-3
+                                   @(current == PartnerStatus.Pending ? "btn-primary" :
+                                                                   current == PartnerStatus.Approved ? "btn-success" : "btn-danger")">
+                            Review Details
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-        idx++;
+                }
         }
-    }
+    </div>
 </div>
+
 
 @section Scripts {
     @* thêm tooltip *@
