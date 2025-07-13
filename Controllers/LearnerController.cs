@@ -277,7 +277,8 @@ namespace JapaneseLearningPlatform.Controllers
                 InstanceId = e.InstanceId,
                 ClassTitle = e.Instance?.Template?.Title ?? "(Unknown)",
                 StartDate = e.Instance.StartDate,
-                HasLeft = e.HasLeft
+                HasLeft = e.HasLeft,
+                ThumbnailUrl = e.Instance?.Template?.ImageURL // ánh xạ ảnh đại diện
             }).ToList();
 
             return View(model);

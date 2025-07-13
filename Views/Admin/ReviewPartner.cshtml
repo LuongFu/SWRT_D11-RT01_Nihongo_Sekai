@@ -49,62 +49,67 @@
   </script>
 }
 
-<div class="review-wrapper">
-  <!-- LEFT -->
-  <div class="review-card flex-shrink-0" style="max-width:360px;">
-    <div class="text-center">
-      <img src="@(
-           !string.IsNullOrEmpty(Model.Profile.User.ProfilePicturePath)
-             ? Model.Profile.User.ProfilePicturePath
-             : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id,140)
-         )"
-           class="review-avatar"
-           alt="@Model.Profile.User.FullName" />
-      <h4>@Model.Profile.User.FullName</h4>
-      <p class="text-muted">@Model.Profile.User.Email</p>
+<div class="container mt-5">
+    <div class="row review-wrapper">
+        <!-- LEFT -->
+        <div class="col-md-4">
+            <div class="review-card text-center p-3">
+                <img src="@(
+                     !string.IsNullOrEmpty(Model.Profile.User.ProfilePicturePath)
+                         ? Model.Profile.User.ProfilePicturePath
+                         : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id, 140))"
+                     class="review-avatar mb-2"
+                     alt="@Model.Profile.User.FullName" />
 
-      <p class="mt-3"><strong>Experience:</strong><br/>
-        @Model.Profile.YearsOfExperience.GetDisplayName()
-      </p>
-        <div class="specs-container">
-            @* Render every specialization, no truncation *@
-            @foreach (var spec in Model.Profile.Specializations)
-            {
-            <span class="spec-badge">@spec.Specialization</span>
-            }
+                <h4>@Model.Profile.User.FullName</h4>
+                <p class="text-muted">@Model.Profile.User.Email</p>
+
+                <p class="mt-3">
+                    <strong>Experience:</strong><br />
+                    @Model.Profile.YearsOfExperience.GetDisplayName()
+                </p>
+
+                <div class="specs-container mb-3">
+                    @foreach (var spec in Model.Profile.Specializations)
+                    {
+                        <span class="spec-badge">@spec.Specialization</span>
+                    }
+                </div>
+
+                @if (Model.Profile.Status == PartnerStatus.Pending)
+                {
+                    <div class="card-footer bg-white">
+                        <button class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">Approve</button>
+                    </div>
+                }
             </div>
-    </div>
-
-    @if(Model.Profile.Status==PartnerStatus.Pending)
-    {
-      <div class="card-footer text-center bg-white">
-        <button class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">Approve</button>
-      </div>
-    }
-  </div>
-
-  <!-- RIGHT: Documents -->
-  <div class="flex-grow-1">
-    <h5>Uploaded Documents</h5>
-    <div class="row g-3">
-      @foreach(var doc in Model.Profile.Documents)
-      {
-        <div class="col-sm-6">
-          <div class="card doc-thumb h-100">
-            <a href="@doc.FilePath" target="_blank">
-              <img src="@doc.FilePath" class="card-img-top" style="height:150px;object-fit:cover" />
-            </a>
-          </div>
         </div>
-      }
-    </div>
-  </div>
-</div>
 
-<p class="mt-4">
-  <a asp-action="PartnerApplications" asp-controller="Admin" class="btn btn-link">Back to list</a>
-</p>
+        <!-- RIGHT: Documents -->
+        <div class="col-md-8">
+            <h5 class="mb-3">Uploaded Documents</h5>
+            <div class="row g-3">
+                @foreach (var doc in Model.Profile.Documents)
+                {
+                    <div class="col-sm-6">
+                        <div class="card doc-thumb h-100">
+                            <a href="@doc.FilePath" target="_blank">
+                                <img src="@doc.FilePath" class="card-img-top" style="height:150px;object-fit:cover" />
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="mt-4">
+                <a asp-action="PartnerApplications" asp-controller="Admin" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Approve/Reject modals giữ nguyên như bạn có sẵn -->
 <!-- APPROVE CONFIRM MODAL -->
