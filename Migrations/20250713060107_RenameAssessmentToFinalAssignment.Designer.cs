@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250712131116_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250713060107_RenameAssignmentToFinalAssignment")]
+    partial class RenameAssignmentToFinalAssignment
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

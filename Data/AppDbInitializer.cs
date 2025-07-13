@@ -605,7 +605,7 @@ namespace JapaneseLearningPlatform.Data
             }
         }
 
-        public static async Task SeedClassroomAssessmentsAsync(IApplicationBuilder applicationBuilder)
+        public static async Task SeedClassroomAssignmentsAsync(IApplicationBuilder applicationBuilder)
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
@@ -620,23 +620,23 @@ namespace JapaneseLearningPlatform.Data
                 if (instance == null || learner == null)
                     return;
 
-                // Create FinalAssessment if not exists
-                if (!context.FinalAssessments.Any(a => a.ClassroomInstanceId == instance.Id))
+                // Create FinalAssignment if not exists
+                if (!context.FinalAssignments.Any(a => a.ClassroomInstanceId == instance.Id))
                 {
-                    var assessment = new FinalAssessment
+                    var assignment = new FinalAssignment
                     {
                         ClassroomInstanceId = instance.Id,
                         Instructions = "Please submit a short essay about your classroom experience.",
                         DueDate = DateTime.UtcNow.AddDays(7)
                     };
 
-                    context.FinalAssessments.Add(assessment);
+                    context.FinalAssignments.Add(assignment);
                     await context.SaveChangesAsync();
 
-                    // Create AssessmentSubmission
-                    var submission = new AssessmentSubmission
+                    // Create AssignmentSubmission
+                    var submission = new AssignmentSubmission
                     {
-                        FinalAssessmentId = assessment.Id,
+                        FinalAssignmentId = assignment.Id,
                         LearnerId = learner.Id,
                         SubmittedAt = DateTime.UtcNow,
                         AnswerText = "This is my essay submission.",
@@ -644,7 +644,7 @@ namespace JapaneseLearningPlatform.Data
                         Feedback = "Good job overall."
                     };
 
-                    context.AssessmentSubmissions.Add(submission);
+                    context.AssignmentSubmissions.Add(submission);
 
                     // Create ClassroomEvaluation
                     var evaluation = new ClassroomEvaluation

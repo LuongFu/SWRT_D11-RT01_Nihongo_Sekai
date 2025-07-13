@@ -163,7 +163,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.AssessmentSubmission", b =>
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.AssignmentSubmission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -180,7 +180,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FinalAssessmentId")
+                    b.Property<int>("FinalAssignmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("LearnerId")
@@ -195,11 +195,11 @@ namespace JapaneseLearningPlatform.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FinalAssessmentId");
+                    b.HasIndex("FinalAssignmentId");
 
                     b.HasIndex("LearnerId");
 
-                    b.ToTable("AssessmentSubmissions");
+                    b.ToTable("AssignmentSubmissions");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomEnrollment", b =>
@@ -417,7 +417,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.ToTable("DailyWords");
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssessment", b =>
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssignment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -439,7 +439,7 @@ namespace JapaneseLearningPlatform.Migrations
 
                     b.HasIndex("ClassroomInstanceId");
 
-                    b.ToTable("FinalAssessments");
+                    b.ToTable("FinalAssignments");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Order", b =>
@@ -947,11 +947,11 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.AssessmentSubmission", b =>
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.AssignmentSubmission", b =>
                 {
-                    b.HasOne("JapaneseLearningPlatform.Models.FinalAssessment", "Assessment")
+                    b.HasOne("JapaneseLearningPlatform.Models.FinalAssignment", "Assignment")
                         .WithMany("Submissions")
-                        .HasForeignKey("FinalAssessmentId")
+                        .HasForeignKey("FinalAssignmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -961,7 +961,7 @@ namespace JapaneseLearningPlatform.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Assessment");
+                    b.Navigation("Assignment");
 
                     b.Navigation("Learner");
                 });
@@ -1026,10 +1026,10 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Partner");
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssessment", b =>
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssignment", b =>
                 {
                     b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", "Instance")
-                        .WithMany("Assessments")
+                        .WithMany("Assignments")
                         .HasForeignKey("ClassroomInstanceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1279,7 +1279,7 @@ namespace JapaneseLearningPlatform.Migrations
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomInstance", b =>
                 {
-                    b.Navigation("Assessments");
+                    b.Navigation("Assignments");
 
                     b.Navigation("Enrollments");
                 });
@@ -1296,7 +1296,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Videos_Courses");
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssessment", b =>
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssignment", b =>
                 {
                     b.Navigation("Submissions");
                 });

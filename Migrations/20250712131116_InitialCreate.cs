@@ -612,7 +612,7 @@ namespace JapaneseLearningPlatform.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FinalAssessments",
+                name: "FinalAssignments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -623,9 +623,9 @@ namespace JapaneseLearningPlatform.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FinalAssessments", x => x.Id);
+                    table.PrimaryKey("PK_FinalAssignments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FinalAssessments_ClassroomInstances_ClassroomInstanceId",
+                        name: "FK_FinalAssignments_ClassroomInstances_ClassroomInstanceId",
                         column: x => x.ClassroomInstanceId,
                         principalTable: "ClassroomInstances",
                         principalColumn: "Id",
@@ -654,12 +654,12 @@ namespace JapaneseLearningPlatform.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AssessmentSubmissions",
+                name: "AssignmentSubmissions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FinalAssessmentId = table.Column<int>(type: "int", nullable: false),
+                    FinalAssignmentId = table.Column<int>(type: "int", nullable: false),
                     LearnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AnswerText = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -669,17 +669,17 @@ namespace JapaneseLearningPlatform.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssessmentSubmissions", x => x.Id);
+                    table.PrimaryKey("PK_AssignmentSubmissions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AssessmentSubmissions_AspNetUsers_LearnerId",
+                        name: "FK_AssignmentSubmissions_AspNetUsers_LearnerId",
                         column: x => x.LearnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AssessmentSubmissions_FinalAssessments_FinalAssessmentId",
-                        column: x => x.FinalAssessmentId,
-                        principalTable: "FinalAssessments",
+                        name: "FK_AssignmentSubmissions_FinalAssignments_FinalAssignmentId",
+                        column: x => x.FinalAssignmentId,
+                        principalTable: "FinalAssignments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -758,13 +758,13 @@ namespace JapaneseLearningPlatform.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssessmentSubmissions_FinalAssessmentId",
-                table: "AssessmentSubmissions",
-                column: "FinalAssessmentId");
+                name: "IX_AssignmentSubmissions_FinalAssignmentId",
+                table: "AssignmentSubmissions",
+                column: "FinalAssignmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssessmentSubmissions_LearnerId",
-                table: "AssessmentSubmissions",
+                name: "IX_AssignmentSubmissions_LearnerId",
+                table: "AssignmentSubmissions",
                 column: "LearnerId");
 
             migrationBuilder.CreateIndex(
@@ -819,8 +819,8 @@ namespace JapaneseLearningPlatform.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FinalAssessments_ClassroomInstanceId",
-                table: "FinalAssessments",
+                name: "IX_FinalAssignments_ClassroomInstanceId",
+                table: "FinalAssignments",
                 column: "ClassroomInstanceId");
 
             migrationBuilder.CreateIndex(
@@ -929,7 +929,7 @@ namespace JapaneseLearningPlatform.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "AssessmentSubmissions");
+                name: "AssignmentSubmissions");
 
             migrationBuilder.DropTable(
                 name: "ClassroomEnrollments");
@@ -965,7 +965,7 @@ namespace JapaneseLearningPlatform.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "FinalAssessments");
+                name: "FinalAssignments");
 
             migrationBuilder.DropTable(
                 name: "CourseSections");
