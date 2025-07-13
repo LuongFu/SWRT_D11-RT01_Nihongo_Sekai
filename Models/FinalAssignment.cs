@@ -1,6 +1,6 @@
 ﻿namespace JapaneseLearningPlatform.Models
 {
-    public class FinalAssessment
+    public class FinalAssignment
     {
         public int Id { get; set; }
 
@@ -10,6 +10,6 @@
         public string Instructions { get; set; }            // Hướng dẫn làm bài kiểm tra
         public DateTime? DueDate { get; set; }
 
-        public List<AssessmentSubmission>? Submissions { get; set; }
+        public List<AssignmentSubmission>? Submissions { get; set; }
     }
 }

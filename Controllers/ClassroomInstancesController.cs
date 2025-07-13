@@ -377,7 +377,7 @@ namespace JapaneseLearningPlatform.Controllers
             var instance = await _context.ClassroomInstances
                 .AsQueryable()
                 .Include(c => c.Template)
-                .Include(c => c.Assessments!)
+                .Include(c => c.Assignments!)
                     .ThenInclude(a => a.Submissions!)
                         .ThenInclude(s => s.Learner)
                 .Include(c => c.Enrollments!)
@@ -401,22 +401,22 @@ namespace JapaneseLearningPlatform.Controllers
             if (isPartner && !isOwnerPartner)
                 return Forbid();
 
-            var finalAssessment = instance.Assessments?.FirstOrDefault();
+            var finalAssignment = instance.Assignments?.FirstOrDefault();
 
-            AssessmentSubmission? submission = null;
-            List<AssessmentSubmission>? allSubmissions = null;
+            AssignmentSubmission? submission = null;
+            List<AssignmentSubmission>? allSubmissions = null;
 
-            if (finalAssessment != null)
+            if (finalAssignment != null)
             {
                 if (isLearner)
                 {
-                    submission = await _context.AssessmentSubmissions
-                        .FirstOrDefaultAsync(s => s.FinalAssessmentId == finalAssessment.Id && s.LearnerId == userId);
+                    submission = await _context.AssignmentSubmissions
+                        .FirstOrDefaultAsync(s => s.FinalAssignmentId == finalAssignment.Id && s.LearnerId == userId);
                 }
 
-                if (isPartner && instance.Assessments.First().Submissions != null)
+                if (isPartner && instance.Assignments.First().Submissions != null)
                 {
-                    allSubmissions = instance.Assessments.First().Submissions.ToList();
+                    allSubmissions = instance.Assignments.First().Submissions.ToList();
                 }
             }
 
@@ -428,7 +428,7 @@ namespace JapaneseLearningPlatform.Controllers
                 Instance = instance,
                 Template = instance.Template,
                 PartnerName = instance.Template.Partner?.FullName,
-                FinalAssessment = finalAssessment,
+                FinalAssignment = finalAssignment,
                 Submission = submission,
                 HasSubmitted = submission != null,
                 HasReviewed = reviewed,

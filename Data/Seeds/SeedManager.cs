@@ -21,7 +21,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
             new ClassroomTemplateSeeder(),
             new ClassroomInstanceSeeder(),
             new ClassroomTestEnrollmentSeeder(),
-            new ClassroomAssessmentSeeder(),
+            new ClassroomAssignmentSeeder(),
             new DailyWordSeeder()
             };
 

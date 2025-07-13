@@ -37,8 +37,8 @@
             </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="assessment-tab" data-bs-toggle="tab" href="#assessment" role="tab">
-                Final Assessment
+            <a class="nav-link" id="assignment-tab" data-bs-toggle="tab" href="#assignment" role="tab">
+                Final Assignment
             </a>
         </li>
         <li class="nav-item" role="presentation">
@@ -127,19 +127,19 @@
             </div>
         </div>
 
-        <!-- 🔹 Final Assessment -->
-        <div class="tab-pane fade" id="assessment" role="tabpanel">
+        <!-- 🔹 Final Assignment -->
+        <div class="tab-pane fade" id="assignment" role="tabpanel">
             <div class="p-3">
                 <h5 class="fw-bold">Final Assignment</h5>
 
-                @if (Model.FinalAssessment != null)
+                @if (Model.FinalAssignment != null)
                 {
                     <p><strong>Instructions:</strong></p>
-                    <p>@Html.Raw(Model.FinalAssessment.Instructions)</p>
+                    <p>@Html.Raw(Model.FinalAssignment.Instructions)</p>
 
-                    @if (Model.FinalAssessment?.DueDate != null)
+                    @if (Model.FinalAssignment?.DueDate != null)
                     {
-                        <p><strong>Due Date:</strong> @Model.FinalAssessment.DueDate.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p><strong>Due Date:</strong> @Model.FinalAssignment.DueDate.Value.ToString("dd/MM/yyyy HH:mm")</p>
                     }
 
                     @if (User.IsInRole("Learner")) // Learner View
@@ -153,7 +153,7 @@
 
                         @if (Model.HasSubmitted)
                         {
-                            <p class="text-success">✅ You have already submitted your assessment.</p>
+                            <p class="text-success">✅ You have already submitted your assignment.</p>
                             <p><strong>Score:</strong> @(Model.Submission?.Score?.ToString() ?? "-")</p>
                             <p><strong>Feedback:</strong> @(Model.Submission?.Feedback ?? "Not reviewed yet")</p>
 
@@ -167,17 +167,17 @@
                         {
                             <p class="text-danger mt-3">✅ Your submission has already been graded. You cannot modify it.</p>
                         }
-                        else if (Model.FinalAssessment?.DueDate != null && Model.FinalAssessment.DueDate <= DateTime.Now)
+                        else if (Model.FinalAssignment?.DueDate != null && Model.FinalAssignment.DueDate <= DateTime.Now)
                         {
                             <p class="text-danger mt-3">⛔ You cannot submit. The deadline has passed.</p>
                         }
                         else
                         {
                             <!-- Form for new or resubmission -->
-                            <form id="assessmentForm" asp-action="SubmitAssessment" asp-controller="Assessments" asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
+                            <form id="assignmentForm" asp-action="SubmitAssignment" asp-controller="Assignments" asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label for="AnswerText" class="form-label fw-bold">Your New Answer (optional)</label>
-                                    <textarea id="answerText" name="answerText" rows="5" class="form-control" placeholder="Write your updated answer here..."></textarea>
+                                    <textarea id="answerText" name="answerText" rows="5" class="form-control" placeholder="Write your answer here..."></textarea>
                                 </div>
 
                                 <div class="mb-3">
@@ -192,7 +192,7 @@
 
                     else if (User.IsInRole("Partner"))  //Partner View
                     {
-                        <form asp-action="UpdateDeadline" asp-controller="Assessments" asp-route-assessmentId="@Model.FinalAssessment.Id" method="post" class="d-flex align-items-center gap-2 mt-2">
+                        <form asp-action="UpdateDeadline" asp-controller="Assignments" asp-route-assignmentId="@Model.FinalAssignment.Id" method="post" class="d-flex align-items-center gap-2 mt-2">
                             <input type="text" id="newDueDate" name="newDueDate" class="form-control" required placeholder="-- Select a new due date --" />
                             <button type="submit" class="btn btn-outline-primary btn-sm">Update Deadline</button>
                         </form>
@@ -203,7 +203,7 @@
                         }
                         @if (Model.AllSubmissions == null || !Model.AllSubmissions.Any())
                         {
-                            <p class="text-muted mt-3">No learners have submitted their assessments yet.</p>
+                            <p class="text-muted mt-3">No learners have submitted their assignments yet.</p>
                         }
                         else
                         {
@@ -235,7 +235,7 @@
                                                 <td>@scoreStatus</td>
                                                 <td>@feedbackStatus</td>
                                                 <td>
-                                                    <a asp-controller="Assessments" asp-action="Grade"
+                                                    <a asp-controller="Assignments" asp-action="Grade"
                                                        asp-route-submissionId="@submission.Id"
                                                        class="btn btn-sm btn-outline-primary">
                                                         @actionLabel
@@ -252,7 +252,7 @@
                 }
                 else
                 {
-                    <p class="text-muted">This class does not include a final assessment.</p>
+                    <p class="text-muted">This class does not include a final assignment.</p>
                 }
             </div>
         </div>
@@ -319,7 +319,7 @@
 <!-- Chặn nếu learner không submit bất kỳ loại đáp án nào -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("assessmentForm");
+        const form = document.getElementById("assignmentForm");
         if (form) {
             form.addEventListener("submit", function (e) {
                 const answerText = document.getElementById("answerText")?.value?.trim();

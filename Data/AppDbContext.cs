@@ -113,22 +113,22 @@ namespace JapaneseLearningPlatform.Data
                 .HasForeignKey(e => e.LearnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // FinalAssessment → ClassroomInstance
-            modelBuilder.Entity<FinalAssessment>()
+            // FinalAssignment → ClassroomInstance
+            modelBuilder.Entity<FinalAssignment>()
                 .HasOne(fa => fa.Instance)
-                .WithMany(ci => ci.Assessments)
+                .WithMany(ci => ci.Assignments)
                 .HasForeignKey(fa => fa.ClassroomInstanceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // AssessmentSubmission → FinalAssessment
-            modelBuilder.Entity<AssessmentSubmission>()
-                .HasOne(s => s.Assessment)
+            // AssignmentSubmission → FinalAssignment
+            modelBuilder.Entity<AssignmentSubmission>()
+                .HasOne(s => s.Assignment)
                 .WithMany(a => a.Submissions)
-                .HasForeignKey(s => s.FinalAssessmentId)
+                .HasForeignKey(s => s.FinalAssignmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // AssessmentSubmission → ApplicationUser
-            modelBuilder.Entity<AssessmentSubmission>()
+            // AssignmentSubmission → ApplicationUser
+            modelBuilder.Entity<AssignmentSubmission>()
                 .HasOne(s => s.Learner)
                 .WithMany()
                 .HasForeignKey(s => s.LearnerId)
@@ -202,8 +202,8 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<ClassroomTemplate> ClassroomTemplates { get; set; }
         public DbSet<ClassroomInstance> ClassroomInstances { get; set; }
         public DbSet<ClassroomEnrollment> ClassroomEnrollments { get; set; }
-        public DbSet<FinalAssessment> FinalAssessments { get; set; }
-        public DbSet<AssessmentSubmission> AssessmentSubmissions { get; set; }
+        public DbSet<FinalAssignment> FinalAssignments { get; set; }
+        public DbSet<AssignmentSubmission> AssignmentSubmissions { get; set; }
         public DbSet<ClassroomEvaluation> ClassroomEvaluations { get; set; }
 
         public DbSet<DailyWord> DailyWords { get; set; }
