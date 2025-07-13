@@ -114,12 +114,11 @@ namespace JapaneseLearningPlatform.Controllers
                 await _context.SaveChangesAsync();
 
                 // 3) Upload & lưu PartnerDocument (nhiều file)
-                // 3.1) tạo thư mục riêng cho từng user
                 var userFolder = newUser.Id;
-                var uploadsRoot = Path.Combine(_env.WebRootPath, "uploads", "partners", userFolder);
+                // Dùng partner_docs thay vì partners
+                var uploadsRoot = Path.Combine(_env.WebRootPath, "uploads", "partner_docs", userFolder);
                 Directory.CreateDirectory(uploadsRoot);
 
-                // 3.2) di chuyển từng IFormFile vào folder và add record
                 foreach (var f in registerVM.PartnerDocument)
                 {
                     var ext = Path.GetExtension(f.FileName).ToLower();
@@ -135,11 +134,13 @@ namespace JapaneseLearningPlatform.Controllers
                         {
                             UserId = newUser.Id,
                             PartnerProfileId = profile.Id,
+                            // Khớp path với thư mục partner_docs
                             FilePath = $"/uploads/partner_docs/{userFolder}/{fn}"
                         });
                     }
                 }
                 await _context.SaveChangesAsync();
+
             }
 
             // Gán đúng role đã chọn
@@ -420,7 +421,7 @@ namespace JapaneseLearningPlatform.Controllers
 
             // if they’re a Partner, send them to Views/Partners/Profile.cshtml
             if (await _userManager.IsInRoleAsync(user, "Partner"))
-                return View("~/Views/Partners/Profile.cshtml", user);
+                return RedirectToAction("Profile", "Partner");
 
             // otherwise your Learner flow
             return View("~/Views/Learner/Profile.cshtml", user);

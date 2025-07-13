@@ -37,8 +37,11 @@ namespace JapaneseLearningPlatform.Controllers
 
         // ✅ Default landing for /Partner
         [HttpGet]
-        public IActionResult Index() =>
-            RedirectToAction(nameof(Profile));
+        [Authorize(Roles = "Partner")]
+        public IActionResult Index()
+        {
+            return View("~/Views/Partners/Index.cshtml");
+        }
 
         // 👤 Partner Profile – now includes Documents
         [Authorize(Roles = "Partner")]
