@@ -1,4 +1,5 @@
-﻿@model JapaneseLearningPlatform.Models.ApplicationUser
+﻿@using JapaneseLearningPlatform.Helpers
+@model JapaneseLearningPlatform.Models.ApplicationUser
 
 @{
     ViewData["Title"] = "My Profile";
@@ -13,21 +14,21 @@
 
 <div class="my-profile-container">
     <div class="row gx-5 justify-content-center">
-        <!-- Cột trái -->
+        <!-- LEFT COLUMN: Welcome & Avatar -->
         <div class="col-md-4 text-center">
-            <!-- Welcome -->
             <div class="welcome-box text-center mb-4">
                 <h2 class="fw-bold text-danger">Welcome, @Model.FullName!</h2>
             </div>
 
-            <!-- Avatar -->
-            <div class="avatar-box">
-                <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? "/uploads/profile/default-img.jpg" : Model.ProfilePicturePath)"
+            <div class="avatar-box mb-4">
+                <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath)
+                                                 ? "/uploads/profile/default-img.jpg"
+                                                 : Model.ProfilePicturePath)"
                      alt="Avatar"
                      class="rounded-circle img-thumbnail profile-image mb-3" />
 
                 <form asp-action="UploadProfilePicture"
-                      asp-controller="Learner"
+                      asp-controller="Partner"
                       method="post"
                       enctype="multipart/form-data">
                     <div class="form-group">
@@ -37,53 +38,114 @@
                                accept="image/*"
                                onchange="previewProfileImage()" />
 
-                        <!-- Preview -->
                         <img id="profilePreview" src="#"
                              alt="Preview"
                              class="rounded-circle img-thumbnail mb-3 d-none"
-                             style="width: 150px; height: 150px; object-fit: cover;" />
+                             style="width:150px; height:150px; object-fit:cover;" />
 
-                        <!-- Báo lỗi -->
                         @if (TempData["UploadError"] != null)
                         {
-                            <small class="text-danger d-block mb-2">@TempData["UploadError"]</small>
+                            <small class="text-danger d-block mb-2">
+                                @TempData["UploadError"]
+                            </small>
                         }
 
-                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">Upload New Photo</button>
+                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                            Upload New Photo
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Cột phải -->
+        <!-- RIGHT COLUMN: Info, Actions, Partner Details -->
         <div class="col-md-6">
             <div class="info-wrapper p-4 rounded shadow-sm">
-                <!-- Thông tin người dùng -->
+                <!-- Basic user info -->
                 <div class="user-info mb-4">
                     <h4 class="fw-bold mb-3 text-center text-danger">Your Information</h4>
                     <p><strong>Full Name:</strong> @Model.FullName</p>
                     <p><strong>Email:</strong> @Model.Email</p>
                     <p><strong>Role:</strong> @Model.Role</p>
+
+                    @* Partner-only fields *@
+                    @if (Model.PartnerProfile != null)
+                    {
+                        <p>
+                            <strong>Experience:</strong>
+                            @Model.PartnerProfile.YearsOfExperience.GetDisplayName()
+                        </p>
+                        <p>
+                            <strong>Specializations:</strong>
+                            @if (Model.PartnerProfile.Specializations.Any())
+                            {
+                                @string.Join(", ",
+                                Model.PartnerProfile.Specializations
+                                .Select(s => s.Specialization.GetDisplayName()))
+                                                }
+                            else
+                            {
+                                <em>No specializations selected</em>
+                            }
+                        </p>
+                    }
                 </div>
 
-                <!-- Hành động nhanh -->
-                <div class="quick-actions">
+                <!-- Quick Actions -->
+                <div class="quick-actions mb-4">
                     <h5 class="text-danger mb-3 fw-bold">Quick Actions</h5>
-                    <div class="action-buttons">
-                        <a class="action-link" asp-controller="Learner" asp-action="MyPurchasedCourses">
+                    <div class="action-buttons d-grid gap-2">
+                        <a class="action-link btn btn-outline-danger"
+                           asp-controller="Partner" asp-action="MyCourses">
                             <i class="bi bi-book"></i> My Courses
                         </a>
-                        <a class="action-link" asp-controller="Learner" asp-action="MyClassroom">
+                        <a class="action-link btn btn-outline-danger"
+                           asp-controller="Partner" asp-action="MyClassroom">
                             <i class="bi bi-easel"></i> My Classroom
                         </a>
-                        <a class="action-link" asp-controller="Learner" asp-action="EditProfile">
+                        <a class="action-link btn btn-outline-danger"
+                           asp-controller="Partner" asp-action="EditProfile">
                             <i class="bi bi-pencil-square"></i> Edit Profile
                         </a>
-                        <a class="action-link" asp-controller="Learner" asp-action="ChangePassword">
+                        <a class="action-link btn btn-outline-danger"
+                           asp-controller="Partner" asp-action="ResetPassword">
                             <i class="bi bi-lock"></i> Change Password
                         </a>
                     </div>
                 </div>
+
+                @* Partner Documents *@
+                @if (Model.PartnerProfile?.Documents?.Any() == true)
+                {
+                    <div class="partner-documents mt-4">
+                        <h5 class="text-danger mb-3 fw-bold">Your Documents</h5>
+                        <ul class="list-unstyled d-flex flex-wrap gap-3">
+                            @foreach (var doc in Model.PartnerProfile.Documents)
+                            {
+                                <li>
+                                    <div class="position-relative">
+                                        <a href="@doc.FilePath" target="_blank">
+                                            <img src="@doc.FilePath"
+                                                 class="img-thumbnail"
+                                                 style="width:120px; height:120px; object-fit:cover;"
+                                                 alt="Document thumbnail" />
+                                        </a>
+                                        <form asp-action="DeleteDocument"
+                                              asp-controller="Partner"
+                                              method="post"
+                                              class="position-absolute top-0 end-0 m-1">
+                                            <input type="hidden" name="id" value="@doc.Id" />
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger p-1">
+                                                &times;
+                                            </button>
+                                        </form>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -94,38 +156,29 @@
         function previewProfileImage() {
             const input = document.getElementById('profilePictureInput');
             const preview = document.getElementById('profilePreview');
-
-            if (input.files && input.files[0]) {
+            if (input.files?.[0]) {
                 const reader = new FileReader();
-
-                reader.onload = function (e) {
+                reader.onload = e => {
                     preview.src = e.target.result;
                     preview.classList.remove('d-none');
-                }
-
+                };
                 reader.readAsDataURL(input.files[0]);
             } else {
                 preview.src = "#";
                 preview.classList.add('d-none');
             }
         }
-            document.addEventListener("DOMContentLoaded", function () {
-            const totalPetals = 20;
-            const half = totalPetals / 2;
-
+        document.addEventListener("DOMContentLoaded", function () {
+            const totalPetals = 20, half = totalPetals/2;
             for (let i = 0; i < totalPetals; i++) {
                 const petal = document.createElement("div");
                 petal.classList.add("sakura-petal");
-                if (i < half) {
-                    petal.style.left = (Math.random() * 50) + "vw";
-                } else {
-                    petal.style.left = (50 + Math.random() * 50) + "vw";
-                }
-                const rotate = Math.random() * 360;
-                petal.style.transform = `rotate(${rotate}deg)`;
-                petal.style.animationDelay = (Math.random() * 5) + "s";
-                petal.style.animationDuration = (5 + Math.random() * 5) + "s";
-
+                petal.style.left = (i < half
+                    ? Math.random()*50
+                    : 50 + Math.random()*50) + "vw";
+                petal.style.transform = `rotate(${Math.random()*360}deg)`;
+                petal.style.animationDelay = `${Math.random()*5}s`;
+                petal.style.animationDuration = `${5 + Math.random()*5}s`;
                 document.body.appendChild(petal);
             }
         });

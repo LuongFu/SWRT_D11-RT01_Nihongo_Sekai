@@ -46,6 +46,8 @@ namespace JapaneseLearningPlatform.Controllers
             var user = await _context.Users
                 .Include(u => u.PartnerProfile)
                     .ThenInclude(p => p.Documents)
+                    .Include(u => u.PartnerProfile)
+            .ThenInclude(p => p.Specializations)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null) return NotFound();
@@ -175,7 +177,7 @@ namespace JapaneseLearningPlatform.Controllers
             {
                 UserId = userId,
                 PartnerProfileId = profile.Id,
-                FilePath = $"/uploads/partners/{userId}/{fname}"
+                FilePath = $"/uploads/partner_docs/{userId}/{fname}"
             };
             _context.PartnerDocuments.Add(doc);
             await _context.SaveChangesAsync();
