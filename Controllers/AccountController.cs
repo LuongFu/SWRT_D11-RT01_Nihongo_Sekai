@@ -135,7 +135,7 @@ namespace JapaneseLearningPlatform.Controllers
                         {
                             UserId = newUser.Id,
                             PartnerProfileId = profile.Id,
-                            FilePath = $"/uploads/partners/{userFolder}/{fn}"
+                            FilePath = $"/uploads/partner_docs/{userFolder}/{fn}"
                         });
                     }
                 }

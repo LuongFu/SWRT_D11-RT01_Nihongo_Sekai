@@ -1,20 +1,492 @@
-﻿@model JapaneseLearningPlatform.Models.ApplicationUser
+﻿@using JapaneseLearningPlatform.Helpers
+@using JapaneseLearningPlatform.Data.Enums
+@model JapaneseLearningPlatform.Data.ViewModels.EditPartnerProfileVM
+
 @{
     ViewData["Title"] = "Edit Profile";
-    ViewData["HideFooter"] = false;
+    Layout = "_Layout";
 }
 
-<div class="container mt-4">
-    <h2>Edit Your Profile</h2>
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+    <!-- Global Stylesheet -->
+    <link asp-append-version="true" href="~/css/styles.css" rel="stylesheet" />
 
-    <form asp-action="EditProfile" method="post">
-        <div class="mb-3">
-            <label asp-for="FullName" class="form-label">Full Name</label>
-            <input asp-for="FullName" class="form-control" />
-            <span asp-validation-for="FullName" class="text-danger"></span>
-        </div>
+    <!-- Page-Specific CSS: File Upload -->
+    <style>
+        .file-upload {
+            border: 2px dashed var(--bs-gray-300);
+            border-radius: .5rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all .2s ease;
+            position: relative;
+        }
 
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a asp-action="Profile" class="btn btn-secondary ms-2">Cancel</a>
-    </form>
+            .file-upload.dragover {
+                border-color: var(--bs-danger);
+                background: var(--bs-danger-bg);
+            }
+
+        .file-upload-icon {
+            font-size: 2rem;
+            color: var(--bs-gray-400);
+            margin-bottom: .75rem;
+        }
+
+        .file-upload-text {
+            font-weight: 500;
+            color: var(--bs-gray-700);
+            margin-bottom: .5rem;
+        }
+
+        .file-upload-hint {
+            font-size: .875rem;
+            color: var(--bs-gray-500);
+        }
+
+        .file-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .75rem;
+            margin-top: 1rem;
+        }
+
+        .file-item {
+            position: relative;
+            width: 120px;
+            border: 1px solid var(--bs-gray-200);
+            border-radius: .375rem;
+            padding: .5rem;
+            background: var(--bs-gray-50);
+        }
+
+            .file-item .btn-close {
+                position: absolute;
+                top: 4px;
+                right: 4px;
+                z-index: 10;
+                background: rgba(255,255,255,0.8);
+                border-radius: 50%;
+            }
+        /* Tăng chiều ngang của card chính */
+        .change-password-card {
+            max-width: 700px; /* => mở rộng form */
+            width: 100%;
+            margin: 0 auto; /* canh giữa */
+            padding: 2rem; /* giữ khoảng đệm */
+        }
+
+        /* Nếu muốn override inline style, đảm bảo độ ưu tiên cao */
+        @@media (min-width: 768px) {
+            .change-password-card
+
+        {
+            max-width: 700px;
+        }
+
+        }
+
+        /* vùng upload */
+        .file-upload {
+            transition: border-color .3s ease, background .3s ease;
+        }
+
+            .file-upload:hover,
+            .file-upload.dragover {
+                border-color: var(--bs-danger) !important;
+                background: var(--bs-danger-bg);
+            }
+
+        /* các input/select và checkbox */
+        .form-control,
+        .form-select,
+        .form-check-input + .form-check-label {
+            transition: box-shadow .2s ease, transform .2s ease;
+        }
+
+            .form-control:hover,
+            .form-select:hover,
+            .form-check-input:hover + .form-check-label,
+            .form-check-label:hover {
+                box-shadow: 0 0 0 3px rgba(220,38,38,0.15);
+                transform: translateY(-1px);
+            }
+
+        .form-check-label {
+            padding: .25rem .5rem;
+            border-radius: .375rem;
+            transition: background .2s ease;
+        }
+
+            .form-check-label:hover {
+                background: rgba(220,38,38,0.05);
+            }
+
+        /* input và select */
+        .form-control:hover,
+        .form-select:hover {
+            border-color: var(--bs-danger);
+            box-shadow: 0 0 0 2px rgba(220,38,38,0.2);
+        }
+
+        /* checkbox labels đã ở trên */
+        .file-upload {
+            border: 2px dashed var(--bs-gray-300);
+            border-radius: .5rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+            .file-upload:hover,
+            .file-upload.dragover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(220,38,38,0.2);
+                border-color: var(--bs-danger);
+                background: var(--bs-danger-bg);
+            }
+
+        .file-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .75rem;
+        }
+
+        .file-item {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80px;
+            padding: .5rem;
+            border: 1px solid var(--bs-gray-200);
+            border-radius: .375rem;
+            background: var(--bs-gray-50);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+            .file-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            }
+
+            .file-item img {
+                width: 100%;
+                height: 60px;
+                object-fit: cover;
+                border-radius: .25rem;
+            }
+
+            .file-item .file-name {
+                margin-top: .25rem;
+                font-size: .75rem;
+                text-align: center;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+            }
+
+            .file-item .btn-close {
+                position: absolute;
+                top: 2px;
+                right: 2px;
+                padding: 0;
+                font-size: .75rem;
+            }
+        /* thumbnail container */
+        .doc-thumb {
+            position: relative;
+            margin-right: .75rem;
+            margin-bottom: .75rem;
+            display: inline-block;
+        }
+
+            .doc-thumb img {
+                width: 120px;
+                height: 120px;
+                object-fit: cover;
+                border-radius: .375rem;
+                border: 1px solid var(--bs-gray-200);
+            }
+            /* move the “×” into top-left corner */
+            .doc-thumb .delete-btn {
+                position: absolute;
+                top: 4px;
+                left: 4px;
+                z-index: 10;
+                background: rgba(255,255,255,0.8);
+                border-radius: 50%;
+                border: none;
+                width: 20px;
+                height: 20px;
+                line-height: 18px;
+                text-align: center;
+                padding: 0;
+                font-size: 14px;
+                cursor: pointer;
+            }
+            /* move the “×” into top-left corner */
+            .doc-thumb .delete-btn {
+                /* …existing… */
+                transition: background .2s ease, color .2s ease;
+            }
+                /* on hover, turn red with white “×” */
+                .doc-thumb .delete-btn:hover {
+                    background: rgba(220, 38, 38, 0.9) !important;
+                    color: #fff;
+                }
+
+    </style>
+}
+
+<div class="change-password-bg d-flex align-items-center justify-content-center">
+    <div class="change-password-card">
+        <h3 class="text-center text-danger fw-bold mb-4">Edit Profile</h3>
+
+        @if (TempData["EditProfileSuccess"] != null)
+        {
+            <div class="alert alert-success">@TempData["EditProfileSuccess"]</div>
+        }
+        @if (TempData["EditProfileError"] != null)
+        {
+            <div class="alert alert-danger">@TempData["EditProfileError"]</div>
+        }
+
+        <form asp-controller="Partner"
+              asp-action="EditProfile"
+              method="post"
+              enctype="multipart/form-data"
+              id="editProfileForm">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+            <div class="row">
+                <!-- LEFT: basic info -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label">Full Name</label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="YearsOfExperience" class="form-label">Experience</label>
+                        <select asp-for="YearsOfExperience"
+                                asp-items="Model.ExperienceOptions"
+                                class="form-select">
+                            <option value="">-- select experience --</option>
+                        </select>
+                        <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- RIGHT: specs, upload, existing docs -->
+                <div class="col-md-6">
+                    <!-- Specializations -->
+                    <div class="mb-4">
+                        <label class="form-label">Specializations</label>
+                        <div class="row g-2">
+                            @foreach (var spec in Model.AllSpecializations)
+                            {
+                                <div class="col-6">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               name="SelectedSpecializations"
+                                               value="@( (int)spec )"
+                                               @(Model.SelectedSpecializations.Contains(spec) ? "checked" : "") />
+                                        @spec.GetDisplayName()
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div>
+                            <span id="specError" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- File‐upload zone -->
+                    <div class="mb-4">
+                        <label asp-for="NewDocuments" class="form-label">
+                            Certificates & Qualifications
+                        </label>
+                        <div class="file-upload" id="certificateUpload">
+                            <div class="file-upload-icon">📁</div>
+                            <div class="file-upload-text">Upload your certificates</div>
+                            <div class="file-upload-hint">
+                                PDF, DOC, or images up to 10MB each
+                            </div>
+                            <input type="file"
+                                   name="NewDocuments"
+                                   id="NewDocuments"
+                                   multiple
+                                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                   style="display:none;" />
+                        </div>
+                        <div id="editFileList" class="file-list mt-2"></div>
+                    </div>
+
+                    <!-- Existing docs inside the same form -->
+                    @if (Model.ExistingDocuments.Any())
+                    {
+                        <div class="mb-4">
+                            <label class="form-label">Existing Documents</label>
+                            <div id="existingDocs" class="d-flex flex-wrap">
+                                @foreach (var doc in Model.ExistingDocuments)
+                                {
+                                    <div class="doc-thumb" data-docid="@doc.Id">
+                                        <a href="@doc.FilePath" target="_blank">
+                                            <img src="@doc.FilePath" alt="Document" />
+                                        </a>
+                                        <button type="button" class="delete-btn">×</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- container for hidden inputs we’ll append on delete -->
+                    <div id="deletedDocsContainer"></div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Profile"
+                   class="btn btn-outline-danger fw-semibold px-4">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="btn btn-danger fw-semibold px-4">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          // ────────── 1) Grab everything up front ──────────
+          const form               = document.getElementById("editProfileForm");
+          const specInputs         = Array.from(document.querySelectorAll('input[name="SelectedSpecializations"]'));
+          const specError          = document.getElementById("specError");
+          const uploadZone         = document.getElementById("certificateUpload");
+          const fileInput          = document.getElementById("NewDocuments");
+          const fileList           = document.getElementById("editFileList");
+          const dt                 = new DataTransfer();
+          const deleteBtns         = document.querySelectorAll(".doc-thumb .delete-btn");
+          const deletedContainer   = document.getElementById("deletedDocsContainer");
+          const totalPetals        = 20;
+          const half               = totalPetals / 2;
+
+          // ────────── 2) Live‐validation for Specializations ──────────
+          function validateSpecs() {
+            if (!specInputs.some(ch => ch.checked)) {
+              specError.textContent = "Please select at least one specialization.";
+              return false;
+            }
+            specError.textContent = "";
+            return true;
+          }
+          specInputs.forEach(ch => ch.addEventListener("change", validateSpecs));
+
+          // ────────── 3) File‐upload drag & drop + preview ──────────
+          uploadZone.addEventListener("click", () => fileInput.click());
+          ["dragover","dragleave","drop"].forEach(evt =>
+            uploadZone.addEventListener(evt, e => {
+              e.preventDefault();
+              uploadZone.classList.toggle("dragover", evt === "dragover");
+              if (evt === "drop") Array.from(e.dataTransfer.files).forEach(handleFile);
+            })
+          );
+          fileInput.addEventListener("change", () => {
+            Array.from(fileInput.files).forEach(handleFile);
+            fileInput.files = dt.files;
+          });
+
+          function handleFile(file) {
+            if (file.size > 10 * 1024 * 1024) {
+              return alert("File quá lớn: " + file.name);
+            }
+            if ([...dt.files].some(f => f.name === file.name)) return;
+            dt.items.add(file);
+
+            if (file.type.startsWith("image/")) {
+              const reader = new FileReader();
+              reader.onload = e => renderFileCard(file, e.target.result);
+              reader.readAsDataURL(file);
+            } else {
+              renderFileCard(file, "/icons/file-icon.png");
+            }
+          }
+
+          function renderFileCard(file, src) {
+            const card = document.createElement("div");
+            card.className = "file-item";
+            card.innerHTML = `
+              <img src="${src}" alt="${file.name}" />
+              <div class="file-name" title="${file.name}">${file.name}</div>
+              <button type="button" class="btn-close">×</button>
+            `;
+            card.querySelector(".btn-close").addEventListener("click", () => {
+              for (let i = 0; i < dt.items.length; i++) {
+                if (dt.items[i].getAsFile().name === file.name) {
+                  dt.items.remove(i);
+                  break;
+                }
+              }
+              fileInput.files = dt.files;
+              card.remove();
+            });
+            fileList.append(card);
+          }
+
+          // ────────── 4) Delete existing thumbnails (mark for server) ──────────
+          deleteBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+              const thumb = btn.closest(".doc-thumb");
+              const id    = thumb.getAttribute("data-docid");
+              thumb.remove();
+              const inp   = document.createElement("input");
+              inp.type    = "hidden";
+              inp.name    = "DeletedDocumentIds";
+              inp.value   = id;
+              deletedContainer.appendChild(inp);
+            });
+          });
+
+          // ────────── 5) Sakura petals ──────────
+          for (let i = 0; i < totalPetals; i++) {
+            const petal = document.createElement("div");
+            petal.classList.add("sakura-petal");
+            petal.style.left              = (i < half ? Math.random()*50 : 50+Math.random()*50) + "vw";
+            petal.style.transform         = `rotate(${Math.random()*360}deg)`;
+            petal.style.animationDelay    = `${Math.random()*5}s`;
+            petal.style.animationDuration = `${5+Math.random()*5}s`;
+            document.body.appendChild(petal);
+          }
+
+          // ────────── 6) Final on-submit: re-validate & confirm ──────────
+          form.addEventListener("submit", e => {
+            if (!validateSpecs()) {
+              e.preventDefault();
+              return;
+            }
+            if (!confirm("Are you sure you want to save these changes?")) {
+              e.preventDefault();
+            }
+          });
+        });
+    </script>
+}
+

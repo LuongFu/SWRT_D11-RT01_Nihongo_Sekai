@@ -91,6 +91,26 @@
                     }
                 </div>
 
+                @* Partner Documents – moved up, read-only *@
+                @if (Model.PartnerProfile?.Documents?.Any() == true)
+                {
+                    <div class="partner-documents mb-4">
+                        <h5 class="text-danger mb-3 fw-bold">Your Documents</h5>
+                        <ul class="list-unstyled d-flex flex-wrap gap-3">
+                            @foreach (var doc in Model.PartnerProfile.Documents)
+                            {
+                                <li>
+                                    <a href="@doc.FilePath" target="_blank">
+                                        <img src="@doc.FilePath"
+                                             class="img-thumbnail"
+                                             style="width:120px; height:120px; object-fit:cover;" />
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
                 <!-- Quick Actions -->
                 <div class="quick-actions mb-4">
                     <h5 class="text-danger mb-3 fw-bold">Quick Actions</h5>
@@ -112,40 +132,7 @@
                             <i class="bi bi-lock"></i> Change Password
                         </a>
                     </div>
-                </div>
-
-                @* Partner Documents *@
-                @if (Model.PartnerProfile?.Documents?.Any() == true)
-                {
-                    <div class="partner-documents mt-4">
-                        <h5 class="text-danger mb-3 fw-bold">Your Documents</h5>
-                        <ul class="list-unstyled d-flex flex-wrap gap-3">
-                            @foreach (var doc in Model.PartnerProfile.Documents)
-                            {
-                                <li>
-                                    <div class="position-relative">
-                                        <a href="@doc.FilePath" target="_blank">
-                                            <img src="@doc.FilePath"
-                                                 class="img-thumbnail"
-                                                 style="width:120px; height:120px; object-fit:cover;"
-                                                 alt="Document thumbnail" />
-                                        </a>
-                                        <form asp-action="DeleteDocument"
-                                              asp-controller="Partner"
-                                              method="post"
-                                              class="position-absolute top-0 end-0 m-1">
-                                            <input type="hidden" name="id" value="@doc.Id" />
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-outline-danger p-1">
-                                                &times;
-                                            </button>
-                                        </form>
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                }
+                </div>                
             </div>
         </div>
     </div>
