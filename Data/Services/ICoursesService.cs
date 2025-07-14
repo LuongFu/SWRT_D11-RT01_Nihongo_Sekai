@@ -13,6 +13,7 @@ namespace JapaneseLearningPlatform.Data.Services
         Task<CourseHierarchyVM> GetCourseHierarchyAsync(int courseId, string userId, string cartId);
         Task<IEnumerable<CourseListItemVM>> GetFeaturedCoursesAsync();
         Task<List<CourseWithPurchaseVM>> GetAllCoursesWithPurchaseInfoAsync(string userId, string shoppingCartId);
+        Task<IEnumerable<CourseListItemVM>> GetRecommendedCoursesAsync(string userId, int limit = 4);
 
     }
 }

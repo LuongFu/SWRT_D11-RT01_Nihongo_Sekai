@@ -64,9 +64,6 @@
 }
 
 <div class="admin-wrapper">
-    @* <div class="admin-sidebar" id="adminSidebar">
-        <partial name="~/Views/Shared/Admin/_Sidebar.cshtml" />
-    </div> *@
 
     <div class="admin-main">
 
@@ -102,7 +99,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <p class="text-muted mb-1">Revenue</p>
-                            <h5 class="mb-0">$@ViewBag.TotalRevenue.ToString("N0")</h5>
+                            <h5 class="mb-0">$@ViewBag.TotalRevenue.ToString("N2")</h5>
                         </div>
                         <i class="bi bi-currency-dollar fs-2 text-success"></i>
                     </div>
@@ -148,7 +145,7 @@
                             <th>User Email</th>
                             <th>Order Date</th>
                             <th>Total</th>
-                            <th>#Courses</th>
+                            <th>No. Courses</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JapaneseLearningPlatform.Data.Seeds
 {
-    public class ClassroomAssessmentSeeder : ISpecificSeeder
+    public class ClassroomAssignmentSeeder : ISpecificSeeder
     {
         public async Task SeedAsync(AppDbContext context, IServiceProvider services)
         {
@@ -19,25 +19,25 @@ namespace JapaneseLearningPlatform.Data.Seeds
             if (instance == null || learner == null)
                 return;
 
-            // Seed final assessment if missing
-            bool hasAssessment = await context.FinalAssessments
+            // Seed final assignment if missing
+            bool hasAssignment = await context.FinalAssignments
                 .AnyAsync(a => a.ClassroomInstanceId == instance.Id);
 
-            if (!hasAssessment)
+            if (!hasAssignment)
             {
-                var assessment = new FinalAssessment
+                var assignment = new FinalAssignment
                 {
                     ClassroomInstanceId = instance.Id,
                     Instructions = "Please submit a short essay about your classroom experience.",
                     DueDate = DateTime.UtcNow.AddDays(7)
                 };
-                context.FinalAssessments.Add(assessment);
+                context.FinalAssignments.Add(assignment);
                 await context.SaveChangesAsync();
 
                 // Add a submission
-                context.AssessmentSubmissions.Add(new AssessmentSubmission
+                context.AssignmentSubmissions.Add(new AssignmentSubmission
                 {
-                    FinalAssessmentId = assessment.Id,
+                    FinalAssignmentId = assignment.Id,
                     LearnerId = learner.Id,
                     SubmittedAt = DateTime.UtcNow,
                     AnswerText = "This is my essay submission.",

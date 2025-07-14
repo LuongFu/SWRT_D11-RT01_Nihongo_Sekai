@@ -1897,10 +1897,11 @@ namespace JapaneseLearningPlatform.Data.Seeds
         public static IReadOnlyList<UserSeed> Users = new List<UserSeed>
 {
     new() { Email="lmp14589@gmail.com", FullName="Admin", Password="Phu123123@", Role="Admin" },
-    new() { Email="giakhoiquang@gmail.com", FullName="Gia Khoi Partner", Password="Khoi2005.", Role="Partner" },
-    new() { Email="partner1@nihongo.com", FullName="Partner One", Password="Test123@", Role="Partner" },
-    new() { Email="partner2@nihongo.com", FullName="Partner Two", Password="Test123@", Role="Partner" },
+    new() { Email="giakhoiquang@gmail.com", FullName="Gia Khoi Partner", Password="Khoi2005.", Role="Partner", IsApproved = true },
+    new() { Email="partner1@nihongo.com", FullName="Partner One", Password="Test123@", Role="Partner", IsApproved = true  },
+    new() { Email="partner2@nihongo.com", FullName="Partner Two", Password="Test123@", Role="Partner", IsApproved = true },
     new() { Email="noobhoang@gmail.com", FullName="Hoang Nguyen", Password="Hoang2005.", Role="Learner" },
+    new() { Email="hoang120305@gmail.com", FullName="Hoang Nguyen 2", Password="Hoang2005.", Role="Learner" },
     new() { Email="banneduser@gmail.com", FullName="Banned User", Password="Test123!@#", Role="Learner", IsBanned = true }
 };
 

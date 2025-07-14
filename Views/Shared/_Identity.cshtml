@@ -47,8 +47,13 @@ else
             else if (User.IsInRole("Partner"))
             {
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Orders" asp-action="Index">
-                        <i class="bi bi-tv"></i> My Classroom
+                    <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="ClassroomTemplates" asp-action="MyTemplate">
+                        <i class="bi bi-tv"></i> My Classroom Templates
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="ClassroomInstances" asp-action="MySession">
+                        <i class="bi bi-tv"></i> My Classroom Sessions
                     </a>
                 </li>
                 <li>

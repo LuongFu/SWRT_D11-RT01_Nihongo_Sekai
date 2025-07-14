@@ -1,4 +1,7 @@
-﻿using JapaneseLearningPlatform.Models;
+﻿using JapaneseLearningPlatform.Data.Enums;
+using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Models;
+using JapaneseLearningPlatform.Models.Partner;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -110,22 +113,22 @@ namespace JapaneseLearningPlatform.Data
                 .HasForeignKey(e => e.LearnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // FinalAssessment → ClassroomInstance
-            modelBuilder.Entity<FinalAssessment>()
+            // FinalAssignment → ClassroomInstance
+            modelBuilder.Entity<FinalAssignment>()
                 .HasOne(fa => fa.Instance)
-                .WithMany(ci => ci.Assessments)
+                .WithMany(ci => ci.Assignments)
                 .HasForeignKey(fa => fa.ClassroomInstanceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // AssessmentSubmission → FinalAssessment
-            modelBuilder.Entity<AssessmentSubmission>()
-                .HasOne(s => s.Assessment)
+            // AssignmentSubmission → FinalAssignment
+            modelBuilder.Entity<AssignmentSubmission>()
+                .HasOne(s => s.Assignment)
                 .WithMany(a => a.Submissions)
-                .HasForeignKey(s => s.FinalAssessmentId)
+                .HasForeignKey(s => s.FinalAssignmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // AssessmentSubmission → ApplicationUser
-            modelBuilder.Entity<AssessmentSubmission>()
+            // AssignmentSubmission → ApplicationUser
+            modelBuilder.Entity<AssignmentSubmission>()
                 .HasOne(s => s.Learner)
                 .WithMany()
                 .HasForeignKey(s => s.LearnerId)
@@ -150,6 +153,33 @@ namespace JapaneseLearningPlatform.Data
             modelBuilder.Entity<Video_Course>().HasOne(m => m.Course).WithMany(am => am.Videos_Courses).HasForeignKey(m => m.CourseId);
             modelBuilder.Entity<Video_Course>().HasOne(m => m.Video).WithMany(am => am.Videos_Courses).HasForeignKey(m => m.VideoId);
 
+            // 1) Mối quan hệ 1 PartnerProfile có nhiều PartnerDocument,
+            //    nhưng khi xóa profile thì không tự động xóa document (Restrict)
+            modelBuilder.Entity<PartnerDocument>()
+            .HasOne(d => d.Profile)
+            .WithMany(p => p.Documents)
+            .HasForeignKey(d => d.PartnerProfileId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+            // 2) Mối quan hệ 1-1 PartnerProfile ↔ ApplicationUser,
+            //    nhưng khi xóa user thì không tự động xóa profile (Restrict)
+            modelBuilder.Entity<PartnerProfile>()
+            .HasOne(p => p.User)
+            .WithOne(u => u.PartnerProfile)
+            .HasForeignKey<PartnerProfile>(p => p.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            // ---- MỚI: cấu hình enum Status và DecisionAt ----
+            modelBuilder.Entity<PartnerProfile>()
+            .Property(p => p.Status)
+            .HasConversion<int>()
+            .HasDefaultValue(PartnerStatus.Pending);
+            
+            modelBuilder.Entity<PartnerProfile>()
+            .Property(p => p.DecisionAt)
+            .IsRequired(false);
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -172,11 +202,16 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<ClassroomTemplate> ClassroomTemplates { get; set; }
         public DbSet<ClassroomInstance> ClassroomInstances { get; set; }
         public DbSet<ClassroomEnrollment> ClassroomEnrollments { get; set; }
-        public DbSet<FinalAssessment> FinalAssessments { get; set; }
-        public DbSet<AssessmentSubmission> AssessmentSubmissions { get; set; }
+        public DbSet<FinalAssignment> FinalAssignments { get; set; }
+        public DbSet<AssignmentSubmission> AssignmentSubmissions { get; set; }
         public DbSet<ClassroomEvaluation> ClassroomEvaluations { get; set; }
 
-        // Word of the day
         public DbSet<DailyWord> DailyWords { get; set; }
+        //public DbSet<PartnerDocument> PartnerCertificates { get; set; }
+        public DbSet<PartnerProfile> PartnerProfiles { get; set; }
+        public DbSet<PartnerSpecialization> PartnerSpecializations { get; set; }
+        public DbSet<PartnerDocument> PartnerDocuments { get; set; }
+
+
     }
 }

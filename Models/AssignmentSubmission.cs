@@ -1,11 +1,11 @@
 ﻿namespace JapaneseLearningPlatform.Models
 {
-    public class AssessmentSubmission
+    public class AssignmentSubmission
     {
         public int Id { get; set; }
 
-        public int FinalAssessmentId { get; set; }
-        public FinalAssessment Assessment { get; set; }
+        public int FinalAssignmentId { get; set; }
+        public FinalAssignment Assignment { get; set; }
 
         public string LearnerId { get; set; }
         public ApplicationUser Learner { get; set; }

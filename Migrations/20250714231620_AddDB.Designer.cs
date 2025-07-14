@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250710144744_FixDecimalForOrder")]
-    partial class FixDecimalForOrder
+    [Migration("20250714231620_AddDB")]
+    partial class AddDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -292,6 +292,9 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Property<string>("GoogleMeetLink")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
                     b.Property<int>("MaxCapacity")
                         .HasColumnType("int");
 
@@ -327,9 +330,6 @@ namespace JapaneseLearningPlatform.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DocumentURL")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
 
@@ -339,9 +339,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Property<string>("PartnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("SessionTime")
-                        .HasColumnType("float");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -389,35 +386,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.DailyWord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JapaneseWord")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Romanji")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DailyWords");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssessment", b =>

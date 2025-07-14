@@ -209,12 +209,40 @@ namespace JapaneseLearningPlatform.Data.Services
                     Name = c.Name,
                     Description = c.Description,
                     CoverImageUrl = c.ImageURL,
-                    Tuition = c.Price,
+                    Tuition = c.FinalPrice,
                     Level = c.CourseCategory.ToString()
                 })
                 .ToListAsync();
 
             return courses;
         }
+
+        public async Task<IEnumerable<CourseListItemVM>> GetRecommendedCoursesAsync(string userId, int limit = 4)
+        {
+            // Get purchased course IDs
+            var purchasedIds = await _context.Orders
+                .Where(o => o.UserId == userId)
+                .SelectMany(o => o.OrderItems.Select(oi => oi.CourseId))
+                .ToListAsync();
+
+            // Get non-purchased, recent or popular courses
+            var recommendedCourses = await _context.Courses
+                .Where(c => !purchasedIds.Contains(c.Id))
+                .OrderByDescending(c => c.StartDate) // Or use popularity, etc.
+                .Take(limit)
+                .Select(c => new CourseListItemVM
+                {
+                    CourseId = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    CoverImageUrl = c.ImageURL,
+                    Tuition = c.FinalPrice,
+                    Level = c.CourseCategory.ToString()
+                })
+                .ToListAsync();
+
+            return recommendedCourses;
+        }
+
     }
 }

@@ -14,10 +14,10 @@ namespace JapaneseLearningPlatform.Models
         public TimeSpan ClassTime { get; set; }
         public int MaxCapacity { get; set; } = 20; 
         public decimal Price { get; set; }
-        public bool IsPaid => Price > 0;
+        public bool IsPaid { get; set; }
         public string? GoogleMeetLink { get; set; }
         public ClassroomStatus Status { get; set; } = ClassroomStatus.Draft;
         public ICollection<ClassroomEnrollment> Enrollments { get; set; } = new List<ClassroomEnrollment>();
-        public List<FinalAssessment>? Assessments { get; set; }
+        public List<FinalAssignment>? Assignments { get; set; }
     }
 }

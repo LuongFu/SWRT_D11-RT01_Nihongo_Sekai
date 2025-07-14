@@ -377,7 +377,7 @@ namespace JapaneseLearningPlatform.Controllers
             var instance = await _context.ClassroomInstances
                 .AsQueryable()
                 .Include(c => c.Template)
-                .Include(c => c.Assessments!)
+                .Include(c => c.Assignments!)
                     .ThenInclude(a => a.Submissions!)
                         .ThenInclude(s => s.Learner)
                 .Include(c => c.Enrollments!)
@@ -401,22 +401,22 @@ namespace JapaneseLearningPlatform.Controllers
             if (isPartner && !isOwnerPartner)
                 return Forbid();
 
-            var finalAssessment = instance.Assessments?.FirstOrDefault();
+            var finalAssignment = instance.Assignments?.FirstOrDefault();
 
-            AssessmentSubmission? submission = null;
-            List<AssessmentSubmission>? allSubmissions = null;
+            AssignmentSubmission? submission = null;
+            List<AssignmentSubmission>? allSubmissions = null;
 
-            if (finalAssessment != null)
+            if (finalAssignment != null)
             {
                 if (isLearner)
                 {
-                    submission = await _context.AssessmentSubmissions
-                        .FirstOrDefaultAsync(s => s.FinalAssessmentId == finalAssessment.Id && s.LearnerId == userId);
+                    submission = await _context.AssignmentSubmissions
+                        .FirstOrDefaultAsync(s => s.FinalAssignmentId == finalAssignment.Id && s.LearnerId == userId);
                 }
 
-                if (isPartner && instance.Assessments.First().Submissions != null)
+                if (isPartner && instance.Assignments.First().Submissions != null)
                 {
-                    allSubmissions = instance.Assessments.First().Submissions.ToList();
+                    allSubmissions = instance.Assignments.First().Submissions.ToList();
                 }
             }
 
@@ -428,7 +428,7 @@ namespace JapaneseLearningPlatform.Controllers
                 Instance = instance,
                 Template = instance.Template,
                 PartnerName = instance.Template.Partner?.FullName,
-                FinalAssessment = finalAssessment,
+                FinalAssignment = finalAssignment,
                 Submission = submission,
                 HasSubmitted = submission != null,
                 HasReviewed = reviewed,
@@ -446,7 +446,12 @@ namespace JapaneseLearningPlatform.Controllers
                 .Include(i => i.Template)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
-            if (instance == null || !instance.IsPaid) return NotFound();
+            if (instance == null)
+                return NotFound();
+
+            // OPTIONAL: nếu bạn chỉ cảnh báo, không trả về lỗi 404
+            if (!instance.IsPaid)
+                return BadRequest("This classroom is not eligible for PayPal payment.");
 
             var vm = new ClassroomPaymentVM
             {
@@ -456,8 +461,9 @@ namespace JapaneseLearningPlatform.Controllers
                 Currency = "USD"
             };
 
-            return View(vm); // View chứa paypal button cho lớp học cụ thể
+            return View(vm);
         }
+
 
         [Authorize(Roles = UserRoles.Learner)]
         public async Task<IActionResult> CompletePayment(int id)

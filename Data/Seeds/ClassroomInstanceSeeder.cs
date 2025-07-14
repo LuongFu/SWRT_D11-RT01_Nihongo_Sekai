@@ -28,7 +28,8 @@ namespace JapaneseLearningPlatform.Data.Seeds
                     EndDate = DateTime.Today.AddDays(33),
                     ClassTime = new TimeSpan(19, 0, 0),
                     MaxCapacity = 10,
-                    Price = 120000,
+                    Price = 60,
+                    IsPaid = true,
                     GoogleMeetLink = "https://meet.google.com/test-class1",
                     Status = ClassroomStatus.Published
                 },

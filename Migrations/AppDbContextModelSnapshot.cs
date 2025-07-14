@@ -124,9 +124,6 @@ namespace JapaneseLearningPlatform.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("PartnerDocumentPath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -166,7 +163,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.AssessmentSubmission", b =>
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.AssignmentSubmission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -183,7 +180,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FinalAssessmentId")
+                    b.Property<int>("FinalAssignmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("LearnerId")
@@ -198,11 +195,11 @@ namespace JapaneseLearningPlatform.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FinalAssessmentId");
+                    b.HasIndex("FinalAssignmentId");
 
                     b.HasIndex("LearnerId");
 
-                    b.ToTable("AssessmentSubmissions");
+                    b.ToTable("AssignmentSubmissions");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomEnrollment", b =>
@@ -288,6 +285,9 @@ namespace JapaneseLearningPlatform.Migrations
 
                     b.Property<string>("GoogleMeetLink")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
 
                     b.Property<int>("MaxCapacity")
                         .HasColumnType("int");
@@ -417,7 +417,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.ToTable("DailyWords");
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssessment", b =>
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssignment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -439,7 +439,7 @@ namespace JapaneseLearningPlatform.Migrations
 
                     b.HasIndex("ClassroomInstanceId");
 
-                    b.ToTable("FinalAssessments");
+                    b.ToTable("FinalAssignments");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Order", b =>
@@ -498,6 +498,87 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("PartnerProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerProfileId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PartnerDocuments");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DecisionAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("YearsOfExperience")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("PartnerProfiles");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerSpecialization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PartnerProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Specialization")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerProfileId");
+
+                    b.ToTable("PartnerSpecializations");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResult", b =>
@@ -866,11 +947,11 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.AssessmentSubmission", b =>
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.AssignmentSubmission", b =>
                 {
-                    b.HasOne("JapaneseLearningPlatform.Models.FinalAssessment", "Assessment")
+                    b.HasOne("JapaneseLearningPlatform.Models.FinalAssignment", "Assignment")
                         .WithMany("Submissions")
-                        .HasForeignKey("FinalAssessmentId")
+                        .HasForeignKey("FinalAssignmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -880,7 +961,7 @@ namespace JapaneseLearningPlatform.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Assessment");
+                    b.Navigation("Assignment");
 
                     b.Navigation("Learner");
                 });
@@ -945,10 +1026,10 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Partner");
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssessment", b =>
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssignment", b =>
                 {
                     b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", "Instance")
-                        .WithMany("Assessments")
+                        .WithMany("Assignments")
                         .HasForeignKey("ClassroomInstanceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -984,6 +1065,47 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerDocument", b =>
+                {
+                    b.HasOne("JapaneseLearningPlatform.Models.Partner.PartnerProfile", "Profile")
+                        .WithMany("Documents")
+                        .HasForeignKey("PartnerProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Profile");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerProfile", b =>
+                {
+                    b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")
+                        .WithOne("PartnerProfile")
+                        .HasForeignKey("JapaneseLearningPlatform.Models.Partner.PartnerProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerSpecialization", b =>
+                {
+                    b.HasOne("JapaneseLearningPlatform.Models.Partner.PartnerProfile", "PartnerProfile")
+                        .WithMany("Specializations")
+                        .HasForeignKey("PartnerProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PartnerProfile");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResult", b =>
@@ -1150,9 +1272,14 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("ContentItems");
                 });
 
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("PartnerProfile");
+                });
+
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomInstance", b =>
                 {
-                    b.Navigation("Assessments");
+                    b.Navigation("Assignments");
 
                     b.Navigation("Enrollments");
                 });
@@ -1169,7 +1296,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Videos_Courses");
                 });
 
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssessment", b =>
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.FinalAssignment", b =>
                 {
                     b.Navigation("Submissions");
                 });
@@ -1177,6 +1304,13 @@ namespace JapaneseLearningPlatform.Migrations
             modelBuilder.Entity("JapaneseLearningPlatform.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.Partner.PartnerProfile", b =>
+                {
+                    b.Navigation("Documents");
+
+                    b.Navigation("Specializations");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.QuizResult", b =>

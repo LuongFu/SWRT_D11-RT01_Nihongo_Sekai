@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\submissions\" />
+    <Folder Include="wwwroot\uploads\partners\" />
     <Folder Include="wwwroot\uploads\profile\" />
   </ItemGroup>
 

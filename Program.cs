@@ -69,14 +69,35 @@ namespace JapaneseLearningPlatform
                 .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
             {
                 var googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
-                options.ClientId = googleAuthNSection["ClientId"];
-                options.ClientSecret = googleAuthNSection["ClientSecret"];
+
+                // ném nếu thiếu config, tránh gán null
+                options.ClientId = googleAuthNSection["ClientId"]
+                                      ?? throw new InvalidOperationException("Missing Authentication:Google:ClientId");
+                options.ClientSecret = googleAuthNSection["ClientSecret"]
+                                      ?? throw new InvalidOperationException("Missing Authentication:Google:ClientSecret");
+
+                // Thêm đoạn sau để xử lý khi người dùng bấm Cancel hoặc lỗi xảy ra
+                options.Events.OnRemoteFailure = context =>
+                {
+                    context.Response.Redirect("/Account/LoginFailed?error=access_denied");
+                    context.HandleResponse(); // chặn xử lý mặc định (throw exception)
+                    return Task.CompletedTask;
+                };
+
+                //  Force Google to always show account chooser
+                options.Events.OnRedirectToAuthorizationEndpoint = context =>
+                {
+                    context.Response.Redirect(context.RedirectUri + "&prompt=select_account");
+                    return Task.CompletedTask;
+                };
             });
             // add api connect
             builder.Services.AddHttpClient<DictionaryController>();
             builder.Services.AddMemoryCache();
             builder.Services.AddSession();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddHostedService<RejectedCleanupService>();
 
             var app = builder.Build();
 

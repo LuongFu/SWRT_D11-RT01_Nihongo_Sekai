@@ -9,13 +9,13 @@ using System.Globalization;
 
 namespace JapaneseLearningPlatform.Controllers
 {
-    public class AssessmentsController : Controller
+    public class AssignmentsController : Controller
     {
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _env;
 
-        public AssessmentsController(AppDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env)
+        public AssignmentsController(AppDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment env)
         {
             _context = context;
             _userManager = userManager;
@@ -24,28 +24,28 @@ namespace JapaneseLearningPlatform.Controllers
 
         [Authorize(Roles = "Learner")]
         [HttpPost]
-        public async Task<IActionResult> SubmitAssessment(int instanceId, string? answerText, IFormFile? SubmissionFile)
+        public async Task<IActionResult> SubmitAssignment(int instanceId, string? answerText, IFormFile? SubmissionFile)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            // 🔍 Tìm FinalAssessment theo ClassroomInstanceId
-            var assessment = await _context.FinalAssessments
+            // 🔍 Tìm FinalAssignment theo ClassroomInstanceId
+            var assignment = await _context.FinalAssignments
                 .FirstOrDefaultAsync(a => a.ClassroomInstanceId == instanceId);
 
-            if (assessment == null)
+            if (assignment == null)
             {
-                return NotFound("Assessment not found for this class.");
+                return NotFound("Assignment not found for this class.");
             }
 
-            if (assessment.DueDate != null && DateTime.Now > assessment.DueDate)
+            if (assignment.DueDate != null && DateTime.Now > assignment.DueDate)
             {
-                return BadRequest("The assessment deadline has passed.");
+                return BadRequest("The assignment deadline has passed.");
             }
 
             if (string.IsNullOrWhiteSpace(answerText) && (SubmissionFile == null || SubmissionFile.Length == 0))
             {
                 TempData["Message"] = "❌ Please enter an answer or upload a file before submitting.";
-                return Redirect($"/ClassroomInstances/Content/{instanceId}#assessment");
+                return Redirect($"/ClassroomInstances/Content/{instanceId}#assignment");
             }
 
             string? filePath = null;
@@ -65,8 +65,8 @@ namespace JapaneseLearningPlatform.Controllers
                 filePath = "/submissions/" + fileName;
             }
 
-            var existing = await _context.AssessmentSubmissions
-                .FirstOrDefaultAsync(s => s.LearnerId == user.Id && s.FinalAssessmentId == assessment.Id);
+            var existing = await _context.AssignmentSubmissions
+                .FirstOrDefaultAsync(s => s.LearnerId == user.Id && s.FinalAssignmentId == assignment.Id);
 
             if (existing != null)
             {
@@ -74,7 +74,7 @@ namespace JapaneseLearningPlatform.Controllers
                 if (existing.Score != null)
                 {
                     TempData["Message"] = "❌ You cannot update your submission after it has been graded.";
-                    return Redirect($"/ClassroomInstances/Content/{instanceId}#assessment");
+                    return Redirect($"/ClassroomInstances/Content/{instanceId}#assignment");
                 }
 
                 // Xóa file cũ nếu có và có file mới upload
@@ -94,30 +94,30 @@ namespace JapaneseLearningPlatform.Controllers
             }
             else
             {
-                var submission = new AssessmentSubmission
+                var submission = new AssignmentSubmission
                 {
-                    FinalAssessmentId = assessment.Id,
+                    FinalAssignmentId = assignment.Id,
                     LearnerId = user.Id,
                     FilePath = filePath,
                     AnswerText = answerText, // ✅ thêm dòng này
                     SubmittedAt = DateTime.Now
                 };
 
-                _context.AssessmentSubmissions.Add(submission);
+                _context.AssignmentSubmissions.Add(submission);
             }
 
             await _context.SaveChangesAsync();
             TempData["Message"] = "Submitted successfully!";
 
-            return Redirect($"/ClassroomInstances/Content/{instanceId}#assessment");
+            return Redirect($"/ClassroomInstances/Content/{instanceId}#assignment");
         }
 
         [Authorize(Roles = "Partner")]
         public async Task<IActionResult> Grade(int submissionId)
         {
-            var submission = await _context.AssessmentSubmissions
+            var submission = await _context.AssignmentSubmissions
                 .Include(s => s.Learner)
-                .Include(s => s.Assessment)
+                .Include(s => s.Assignment)
                     .ThenInclude(a => a.Instance)
                         .ThenInclude(i => i.Template)
                 .FirstOrDefaultAsync(s => s.Id == submissionId);
@@ -125,11 +125,11 @@ namespace JapaneseLearningPlatform.Controllers
             if (submission == null) return NotFound();
 
             var userId = _userManager.GetUserId(User);
-            var isOwnerPartner = submission.Assessment.Instance.Template.PartnerId == userId;
+            var isOwnerPartner = submission.Assignment.Instance.Template.PartnerId == userId;
 
             if (!isOwnerPartner) return Forbid();
 
-            var instance = submission.Assessment.Instance;
+            var instance = submission.Assignment.Instance;
             var vm = new GradeSubmissionVM
             {
                 SubmissionId = submission.Id,
@@ -138,7 +138,7 @@ namespace JapaneseLearningPlatform.Controllers
                 FilePath = submission.FilePath,
                 Score = submission.Score,
                 Feedback = submission.Feedback,
-                InstanceId = submission.Assessment.ClassroomInstanceId,
+                InstanceId = submission.Assignment.ClassroomInstanceId,
 
                 // Thêm các trường header lớp
                 ClassTitle = instance.Template.Title,
@@ -156,8 +156,8 @@ namespace JapaneseLearningPlatform.Controllers
         [Authorize(Roles = "Partner")]
         public async Task<IActionResult> Grade(GradeSubmissionVM vm)
         {
-            var submission = await _context.AssessmentSubmissions
-                .Include(s => s.Assessment)
+            var submission = await _context.AssignmentSubmissions
+                .Include(s => s.Assignment)
                     .ThenInclude(a => a.Instance)
                         .ThenInclude(i => i.Template) // ✅ BỔ SUNG dòng này
                 .FirstOrDefaultAsync(s => s.Id == vm.SubmissionId);
@@ -165,7 +165,7 @@ namespace JapaneseLearningPlatform.Controllers
             if (submission == null) return NotFound();
 
             var userId = _userManager.GetUserId(User);
-            var isOwnerPartner = submission.Assessment.Instance.Template.PartnerId == userId;
+            var isOwnerPartner = submission.Assignment.Instance.Template.PartnerId == userId;
             if (!isOwnerPartner) return Forbid();
 
             submission.Score = vm.Score;
@@ -174,42 +174,42 @@ namespace JapaneseLearningPlatform.Controllers
             await _context.SaveChangesAsync();
             TempData["Message"] = "Graded successfully!";
 
-            return Redirect($"/ClassroomInstances/Content/{vm.InstanceId}#assessment");
+            return Redirect($"/ClassroomInstances/Content/{vm.InstanceId}#assignment");
         }
 
         [HttpPost]
         [Authorize(Roles = "Partner")]
-        public async Task<IActionResult> UpdateDeadline(int assessmentId, string newDueDate)
+        public async Task<IActionResult> UpdateDeadline(int assignmentId, string newDueDate)
         {
-            var assessment = await _context.FinalAssessments
+            var assignment = await _context.FinalAssignments
                 .Include(a => a.Instance)
                     .ThenInclude(i => i.Template)
-                .FirstOrDefaultAsync(a => a.Id == assessmentId);
+                .FirstOrDefaultAsync(a => a.Id == assignmentId);
 
-            if (assessment == null) return NotFound();
+            if (assignment == null) return NotFound();
 
             var userId = _userManager.GetUserId(User);
-            if (assessment.Instance.Template.PartnerId != userId)
+            if (assignment.Instance.Template.PartnerId != userId)
                 return Forbid();
 
             if (!DateTime.TryParseExact(newDueDate, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDueDate))
             {
                 TempData["DeadlineMessage"] = "❌ Invalid date format.";
-                return Redirect($"/ClassroomInstances/Content/{assessment.ClassroomInstanceId}#assessment");
+                return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
             }
 
             //kiểm tra tính tương lai của deadline mới
-            if (parsedDueDate <= assessment.DueDate)
+            if (parsedDueDate <= assignment.DueDate)
             {
                 TempData["DeadlineMessage"] = "❌ New deadline must be later than the current one.";
-                return Redirect($"/ClassroomInstances/Content/{assessment.ClassroomInstanceId}#assessment");
+                return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
             }
 
-            assessment.DueDate = parsedDueDate;
+            assignment.DueDate = parsedDueDate;
             await _context.SaveChangesAsync();
 
             TempData["DeadlineMessage"] = "✅ Deadline updated successfully.";
-            return Redirect($"/ClassroomInstances/Content/{assessment.ClassroomInstanceId}#assessment");
+            return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
         }
 
     }

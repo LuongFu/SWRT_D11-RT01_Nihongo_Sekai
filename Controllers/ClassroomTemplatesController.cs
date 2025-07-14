@@ -71,7 +71,7 @@ namespace JapaneseLearningPlatform.Controllers
 
             var entity = vm.ToEntity(partnerId, imageUrl, documentUrl);
             await _templateService.AddAsync(entity);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Loading", new { returnUrl = "/ClassroomTemplates/MyTemplate" });
         }
 
         // GET: /ClassroomTemplates/Edit/5
@@ -109,7 +109,8 @@ namespace JapaneseLearningPlatform.Controllers
             existing.LanguageLevel = vm.LanguageLevel;
 
             await _templateService.UpdateAsync(existing);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Loading", new { returnUrl = "/ClassroomTemplates/MyTemplate" }); //fixed
+            //return RedirectToAction(nameof(Index));
         }
 
         // GET: /ClassroomTemplates/Delete/5
@@ -134,7 +135,8 @@ namespace JapaneseLearningPlatform.Controllers
                 return Forbid();
 
             await _templateService.DeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Loading", new { returnUrl = "/ClassroomTemplates/MyTemplate" }); //fixed
+            //return RedirectToAction(nameof(Index));
         }
 
         // ✅ UTILITY: Internal helper for saving file

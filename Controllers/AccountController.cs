@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using JapaneseLearningPlatform.Data.Enums;
+using JapaneseLearningPlatform.Models.Partner;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -64,7 +66,7 @@ namespace JapaneseLearningPlatform.Controllers
             if (!ModelState.IsValid)
                 return View(registerVM);
 
-            if (await _userManager.FindByEmailAsync(registerVM.EmailAddress) != null)
+            if (await _userManager.FindByEmailAsync(registerVM.EmailAddress!) != null)
             {
                 TempData["Error"] = "This email address is already in use.";
                 return View(registerVM);
@@ -87,27 +89,57 @@ namespace JapaneseLearningPlatform.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 return View(registerVM);
             }
-
-            // Upload partner file
-            if (registerVM.ApplyAsPartner && registerVM.PartnerDocument != null)
+                       
+            if (registerVM.ApplyAsPartner)
             {
-                var allowedTypes = new[] { ".pdf", ".jpg", ".jpeg", ".png" };
-                var ext = Path.GetExtension(registerVM.PartnerDocument.FileName).ToLower();
-                if (!allowedTypes.Contains(ext) || registerVM.PartnerDocument.Length > 10 * 1024 * 1024)
+                // 1) Tạo PartnerProfile
+                var profile = new PartnerProfile
                 {
-                    ModelState.AddModelError("PartnerDocument", "Invalid file. Only PDF/JPG/PNG under 10MB allowed.");
-                    return View(registerVM);
+                    UserId = newUser.Id,
+                    YearsOfExperience = registerVM.YearsOfExperience!.Value
+
+                };
+                _context.PartnerProfiles.Add(profile);
+                await _context.SaveChangesAsync();
+
+                // 2) Tạo PartnerSpecialization
+                foreach (var spec in registerVM.Specializations ?? Enumerable.Empty<SpecializationType>())
+                {
+                    _context.PartnerSpecializations.Add(new PartnerSpecialization
+                    {
+                        PartnerProfileId = profile.Id,
+                        Specialization = spec
+                    });
                 }
+                await _context.SaveChangesAsync();
 
-                string fileName = $"{Guid.NewGuid()}{ext}";
-                string uploadPath = Path.Combine(_env.WebRootPath, "uploads", "partner_docs");
-                if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
+                // 3) Upload & lưu PartnerDocument (nhiều file)
+                // 3.1) tạo thư mục riêng cho từng user
+                var userFolder = newUser.Id;
+                var uploadsRoot = Path.Combine(_env.WebRootPath, "uploads", "partners", userFolder);
+                Directory.CreateDirectory(uploadsRoot);
 
-                using var stream = new FileStream(Path.Combine(uploadPath, fileName), FileMode.Create);
-                await registerVM.PartnerDocument.CopyToAsync(stream);
+                // 3.2) di chuyển từng IFormFile vào folder và add record
+                foreach (var f in registerVM.PartnerDocument)
+                {
+                    var ext = Path.GetExtension(f.FileName).ToLower();
+                    if (new[] { ".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png" }.Contains(ext)
+                        && f.Length <= 10 * 1024 * 1024)
+                    {
+                        var fn = $"{Guid.NewGuid()}{ext}";
+                        var fullPath = Path.Combine(uploadsRoot, fn);
+                        using var fs = System.IO.File.Create(fullPath);
+                        await f.CopyToAsync(fs);
 
-                newUser.PartnerDocumentPath = $"/uploads/partner_docs/{fileName}";
-                await _userManager.UpdateAsync(newUser);
+                        _context.PartnerDocuments.Add(new PartnerDocument
+                        {
+                            UserId = newUser.Id,
+                            PartnerProfileId = profile.Id,
+                            FilePath = $"/uploads/partners/{userFolder}/{fn}"
+                        });
+                    }
+                }
+                await _context.SaveChangesAsync();
             }
 
             // Gán đúng role đã chọn
@@ -118,19 +150,25 @@ namespace JapaneseLearningPlatform.Controllers
                 return View(registerVM);
             }
 
-            // Tạo token xác thực email
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { userId = newUser.Id, token }, Request.Scheme);
-
-            await _emailSender.SendEmailAsync(newUser.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>.");
-
-            //return RedirectToAction("Index", "Loading", new { returnUrl = "/Account/RegisterCompleted" });
-            return RedirectToAction("RegisterCompleted", "Account");
-
+            if (registerVM.ApplyAsPartner)
+            {
+                // instead of email confirmation:
+                TempData["PostRegisterMessage"] =
+                    "Thank you! Your application has been submitted. We will review it within 24 hours.";
+                return View("RequestPending");
+            }
+            else
+            {
+                // existing Learner flow
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account",
+                                                  new { userId = newUser.Id, token }, Request.Scheme);
+                await _emailSender.SendEmailAsync(newUser.Email, "Confirm your email",
+                    $"Please confirm by <a href='{confirmationLink}'>clicking here</a>.");
+                TempData["PostRegisterMessage"] = "Account created! Check your email to confirm.";
+                return RedirectToAction(nameof(RegisterCompleted));
+            }
         }
-
 
         // Forgot Password
         [HttpPost]
@@ -138,17 +176,18 @@ namespace JapaneseLearningPlatform.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (model.Email is null) return View(model);
+            var user = await _userManager.FindByEmailAsync(model.Email)!;
             if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
             {
                 TempData["Error"] = "Email isn't exists.";
-                return View();
+                return View(model);
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = Url.Action("ResetPassword", "Account", new { token, email = model.Email }, Request.Scheme);
+            var resetLink = Url.Action("ResetPassword", "Account", new { token, email = model.Email! }, Request.Scheme)!;
 
-            await _emailSender.SendEmailAsync(model.Email, "Reset your password", $"Click here to reset your password: <a href='{resetLink}'>Reset</a>");
+            await _emailSender.SendEmailAsync(model.Email!, "Reset your password", $"Click here to reset your password: <a href='{resetLink}'>Reset</a>");
 
             return RedirectToAction("ForgotPasswordConfirmation", "Account");
 
@@ -196,7 +235,7 @@ namespace JapaneseLearningPlatform.Controllers
 
         // GOOGLE LOGIN
         [HttpGet]
-        public IActionResult ExternalLogin(string provider, string returnUrl = null)
+        public IActionResult ExternalLogin(string provider, string? returnUrl = null)
         {
             var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
@@ -204,14 +243,15 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
         {
             returnUrl ??= Url.Content("~/");
 
             if (remoteError != null)
             {
-                TempData["Error"] = $"Error from external provider: {remoteError}";
-                return RedirectToAction("Login");
+                // Google login bị hủy → quay về trang login
+                TempData["ErrorMessage"] = "Google login was cancelled or failed: " + remoteError;
+                return RedirectToAction(nameof(Login));
             }
 
             var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -262,9 +302,27 @@ namespace JapaneseLearningPlatform.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Login(string? userId = null, string? token = null)
         {
-            return View(); // Trả view lần đầu, không truyền model, không có lỗi
+            // 1) Nếu có userId + token => thực hiện confirm
+            if (!string.IsNullOrEmpty(userId)
+             && !string.IsNullOrEmpty(token))
+            {
+                var u = await _userManager.FindByIdAsync(userId);
+                if (u != null && !u.EmailConfirmed)
+                {
+                    var r = await _userManager.ConfirmEmailAsync(u, token);
+                    if (r.Succeeded)
+                        TempData["Success"] = "Your email has been confirmed — you can now log in!";
+                    else
+                        TempData["Error"] = "Email confirmation failed. Please contact support.";
+                }
+                // 2) Redirect để xóa query-string và trigger lần GET mới
+                return RedirectToAction(nameof(Login));
+            }
+
+            // 3) Lần GET cuối cùng trả view với model rỗng
+            return View(new LoginVM());
         }
 
         [HttpPost]
@@ -274,11 +332,17 @@ namespace JapaneseLearningPlatform.Controllers
             if (!ModelState.IsValid)
                 return View(loginVM);
 
-            var user = await _userManager.FindByEmailAsync(loginVM.EmailAddress);
+            var user = await _userManager.FindByEmailAsync(loginVM.EmailAddress!);
             if (user == null)
             {
                 TempData["Error"] = "The email does not exist in the system. Please, try another email!";
                 return View(loginVM);
+            }
+
+            if (user.Role == "Partner" && !user.IsApproved)
+            {
+                TempData["Error"] = "Your partner application is still pending review. We’ll let you know via email within 24 hours.";
+                return RedirectToAction("Login");
             }
 
             // Check if user is banned
@@ -296,7 +360,7 @@ namespace JapaneseLearningPlatform.Controllers
                 return View(loginVM);
             }
 
-            var passwordValid = await _userManager.CheckPasswordAsync(user, loginVM.Password);
+            var passwordValid = await _userManager.CheckPasswordAsync(user, loginVM.Password!);
             if (!passwordValid)
             {
                 TempData["Error"] = "There's something wrong with your password. Try again!";
@@ -305,7 +369,7 @@ namespace JapaneseLearningPlatform.Controllers
 
             // Nếu xác thực email OK, đăng nhập
             var signInResult = await _signInManager.PasswordSignInAsync(
-                user, loginVM.Password, isPersistent: false, lockoutOnFailure: false);
+                user, loginVM.Password!, isPersistent: false, lockoutOnFailure: false);
 
             if (!signInResult.Succeeded)
             {
@@ -342,15 +406,28 @@ namespace JapaneseLearningPlatform.Controllers
         }
         //Profile của người dùng
         [Authorize(Roles = "Learner,Partner,Admin")]
+        [Authorize]
         public async Task<IActionResult> Profile()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var userId = _userManager.GetUserId(User);
+            // load user + partner‐profile + docs
+            var user = await _context.Users
+                .Include(u => u.PartnerProfile)
+                    .ThenInclude(p => p.Documents)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
             if (user == null) return NotFound();
+
+            // if they’re a Partner, send them to Views/Partners/Profile.cshtml
+            if (await _userManager.IsInRoleAsync(user, "Partner"))
+                return View("~/Views/Partners/Profile.cshtml", user);
+
+            // otherwise your Learner flow
             return View("~/Views/Learner/Profile.cshtml", user);
         }
 
-            //Ban feature
-            [HttpPost]
+        //Ban feature
+        [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> ToggleBan(string id)
@@ -385,5 +462,13 @@ namespace JapaneseLearningPlatform.Controllers
 
         // Khi truy cập denied
         public IActionResult AccessDenied(string returnUrl) => View();
+
+        [HttpGet]
+        public IActionResult LoginFailed(string? error)
+        {
+            TempData["Error"] = error ?? "Something went wrong during Google login.";
+            return RedirectToAction("Login");
+        }
+
     }
 }
