@@ -96,8 +96,8 @@ namespace JapaneseLearningPlatform.Controllers
                 var profile = new PartnerProfile
                 {
                     UserId = newUser.Id,
-                    YearsOfExperience = registerVM.YearsOfExperience!.Value
-
+                    YearsOfExperience = registerVM.YearsOfExperience!.Value,
+                    CreatedAt = DateTime.UtcNow    // ← gán ngày giờ hiện tại
                 };
                 _context.PartnerProfiles.Add(profile);
                 await _context.SaveChangesAsync();
@@ -155,7 +155,7 @@ namespace JapaneseLearningPlatform.Controllers
             {
                 // instead of email confirmation:
                 TempData["PostRegisterMessage"] =
-                    "Thank you! Your application has been submitted. We will review it within 24 hours.";
+                    "Thank you! Your application has been submitted. We will review it within 3 days.";
                 return View("RequestPending");
             }
             else

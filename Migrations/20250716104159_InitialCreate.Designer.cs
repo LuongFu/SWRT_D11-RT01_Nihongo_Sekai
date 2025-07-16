@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250713081501_InitialCreate")]
+    [Migration("20250716104159_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -539,6 +539,9 @@ namespace JapaneseLearningPlatform.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DecisionAt")
                         .HasColumnType("datetime2");
