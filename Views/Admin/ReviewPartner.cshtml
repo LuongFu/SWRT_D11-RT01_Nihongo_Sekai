@@ -1,163 +1,51 @@
-﻿@using JapaneseLearningPlatform.Data.Enums
+﻿@using JapaneseLearningPlatform.Data.ViewModels
 @using JapaneseLearningPlatform.Helpers
-@model JapaneseLearningPlatform.Data.ViewModels.ReviewPartnerVM
-
-@section Styles {
-  <style>
-    /* Fade-in wrapper */
-    .review-wrapper {
-      display:flex; flex-wrap:wrap; gap:2rem;
-      opacity:0; transform:translateY(20px);
-      animation:fadeInUp .6s forwards .2s;
-    }
-    @@keyframes fadeInUp {
-      to { opacity:1; transform:translateY(0); }
-    }
-
-    .review-card {
-      background:linear-gradient(135deg,#fff,#f8f8f8);
-      border-radius:1rem; padding:1.5rem;
-      box-shadow:0 8px 20px rgba(0,0,0,0.05);
-      transition:transform .3s,box-shadow .3s;
-    }
-    .review-card:hover {
-      transform:translateY(-4px);
-      box-shadow:0 12px 30px rgba(0,0,0,0.1);
-    }
-
-    .review-avatar {
-      width:160px; height:160px; border-radius:50%;
-      object-fit:cover; box-shadow:0 4px 15px rgba(0,0,0,0.1);
-      margin-bottom:1rem;
-    }
-
-    .specs-container {
-      display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.5rem;
-    }
-    .spec-badge {
-      background:#0d6efd; color:#fff; padding:.25rem .75rem;
-      border-radius:.5rem; font-size:.875rem;
-    }
-  </style>
-}
-
-@section Scripts {
-  <script>
-    document.addEventListener('DOMContentLoaded',()=>{
-      // nothing extra
-    });
-  </script>
-}
+@using JapaneseLearningPlatform.Data.Enums
+@model ReviewPartnerVM
 
 <div class="container mt-5">
-    <div class="row review-wrapper">
-        <!-- LEFT -->
-        <div class="col-md-4">
-            <div class="review-card text-center p-3">
-                <img src="@(
-                     !string.IsNullOrEmpty(Model.Profile.User.ProfilePicturePath)
-                         ? Model.Profile.User.ProfilePicturePath
-                         : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id, 140))"
-                     class="review-avatar mb-2"
-                     alt="@Model.Profile.User.FullName" />
+    <h2 class="mb-4">Review Partner Application</h2>
 
-                <h4>@Model.Profile.User.FullName</h4>
-                <p class="text-muted">@Model.Profile.User.Email</p>
-
-                <p class="mt-3">
-                    <strong>Experience:</strong><br />
-                    @Model.Profile.YearsOfExperience.GetDisplayName()
-                </p>
-
-                <div class="specs-container mb-3">
-                    @foreach (var spec in Model.Profile.Specializations)
-                    {
-                        <span class="spec-badge">@spec.Specialization</span>
-                    }
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+                <img src="@( !string.IsNullOrEmpty(Model.Profile.User.ProfilePicturePath)
+                                                   ? Model.Profile.User.ProfilePicturePath
+                                                   : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id, 80) )"
+                     class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;" />
+                <div>
+                    <h4 class="mb-0">@Model.Profile.User.FullName</h4>
+                    <small class="text-muted">@Model.Profile.User.Email</small>
                 </div>
-
-                @if (Model.Profile.Status == PartnerStatus.Pending)
-                {
-                    <div class="card-footer bg-white">
-                        <button class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
-                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">Approve</button>
-                    </div>
-                }
             </div>
+
+            <p><strong>Experience:</strong> @Model.Profile.YearsOfExperience.GetDisplayName()</p>
+            <p>
+                <strong>Specializations:</strong>
+                @foreach (var spec in Model.Profile.Specializations.Select(s => s.Specialization))
+                {
+                    <span class="badge bg-secondary me-1">@spec</span>
+                }
+            </p>
         </div>
-
-        <!-- RIGHT: Documents -->
-        <div class="col-md-8">
-            <h5 class="mb-3">Uploaded Documents</h5>
-            <div class="row g-3">
-                @foreach (var doc in Model.Profile.Documents)
-                {
-                    <div class="col-sm-6">
-                        <div class="card doc-thumb h-100">
-                            <a href="@doc.FilePath" target="_blank">
-                                <img src="@doc.FilePath" class="card-img-top" style="height:150px;object-fit:cover" />
-                            </a>
-                        </div>
-                    </div>
-                }
-            </div>
-
-            <div class="mt-4">
-                <a asp-action="PartnerApplications" asp-controller="Admin" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to List
-                </a>
-            </div>
+        <h5>Uploaded Documents</h5>
+        <div class="row g-3">
+            @foreach (var doc in Model.Profile.Documents)
+            {
+                <div class="col-sm-6 col-md-4">
+                    <a href="@doc.FilePath" target="_blank">
+                        <img src="@doc.FilePath"
+                             class="img-fluid rounded"
+                             style="height:150px;object-fit:cover;" />
+                    </a>
+                </div>
+            }
+        </div>
+        <div class="card-footer text-end">            
+            <a asp-action="PartnerApplications" asp-controller="Admin" class="btn btn-outline-secondary ms-3">
+                Back to List
+            </a>
         </div>
     </div>
 </div>
 
-<!-- Approve/Reject modals giữ nguyên như bạn có sẵn -->
-<!-- APPROVE CONFIRM MODAL -->
-<div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form asp-action="ApprovePartner" method="post" class="modal-content">
-            <input type="hidden" name="id" value="@Model.Profile.Id" />
-            <div class="modal-header">
-                <h5 class="modal-title text-success">Confirm Approval</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to <strong>approve</strong>
-                <em>@Model.Profile.User.FullName</em>’s application?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Cancel
-                </button>
-                <button type="submit" class="btn btn-success">
-                    Yes, Approve
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- REJECT CONFIRM MODAL -->
-<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form asp-action="RejectPartner" method="post" class="modal-content">
-            <input type="hidden" name="id" value="@Model.Profile.Id" />
-            <div class="modal-header">
-                <h5 class="modal-title text-danger">Confirm Rejection</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to <strong>reject</strong>
-                <em>@Model.Profile.User.FullName</em>’s application?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Cancel
-                </button>
-                <button type="submit" class="btn btn-danger">
-                    Yes, Reject
-                </button>
-            </div>
-        </form>
-    </div>
-</div>

@@ -22,7 +22,30 @@
     <link rel="stylesheet" href="~/css/styles.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
 }
+<style>
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        justify-items: center;
+        align-items: stretch;
+        margin-top: 2rem;
+    }
 
+    .team-member {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 300px; /* Optional: limit max width for consistency */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+</style>
 <main>
     <!-- Hero Section -->
     <section class="about-hero">
@@ -41,15 +64,15 @@
                     </p>
                     <div class="hero-stats">
                         <div class="stat-item">
-                            <div class="stat-number">50,000+</div>
+                            <div class="stat-number">20+</div>
                             <div class="stat-label">Students Worldwide</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number">200+</div>
+                            <div class="stat-number">10+</div>
                             <div class="stat-label">Expert Teachers</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number">95%</div>
+                            <div class="stat-number">70%</div>
                             <div class="stat-label">Success Rate</div>
                         </div>
                     </div>
@@ -133,44 +156,44 @@
                     <h2 class="section-title">Our Story</h2>
                     <div class="story-timeline">
                         <div class="timeline-item">
-                            <div class="timeline-year">2018</div>
+                            <div class="timeline-year">5/2025</div>
                             <div class="timeline-content">
                                 <h4>The Beginning</h4>
                                 <p>
-                                    Founded in Tokyo by Hiroshi Tanaka and Sarah Kim, two
+                                    Founded in Da Nang FPT University by M.Khoi, M.Phu, V.Hoang and G.Khoi four
                                     language educators passionate about connecting cultures
                                     through Japanese language learning.
                                 </p>
                             </div>
                         </div>
                         <div class="timeline-item">
-                            <div class="timeline-year">2019</div>
+                            <div class="timeline-year">6/2025</div>
                             <div class="timeline-content">
-                                <h4>First 1,000 Students</h4>
+                                <h4>First 10 Learners</h4>
                                 <p>
-                                    Reached our first milestone with students from 25
-                                    countries, proving the demand for quality online Japanese
+                                    Reached our first milestone with students from Vietname
+                                    , proving the demand for quality online Japanese
                                     education.
                                 </p>
                             </div>
                         </div>
                         <div class="timeline-item">
-                            <div class="timeline-year">2021</div>
+                            <div class="timeline-year">7/2025</div>
                             <div class="timeline-content">
                                 <h4>Global Expansion</h4>
                                 <p>
-                                    Opened our San Francisco office and launched live
+                                    Opened our Da Nang office and launched live
                                     classroom features, enabling real-time cultural exchange
                                     between students and native speakers.
                                 </p>
                             </div>
                         </div>
                         <div class="timeline-item">
-                            <div class="timeline-year">2024</div>
+                            <div class="timeline-year">8/2025</div>
                             <div class="timeline-content">
                                 <h4>Today</h4>
                                 <p>
-                                    Serving over 50,000 students globally with 200+ certified
+                                    Serving over 20 students globally with 10+ certified
                                     teachers and innovative AI-powered learning tools, while
                                     maintaining our commitment to cultural authenticity.
                                 </p>
@@ -200,11 +223,11 @@
             <div class="team-grid">
                 <div class="team-member">
                     <div class="member-image">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=HiroshiTanaka&backgroundColor=b6e3f4&clothesType=BlazerShirt"
-                             alt="Hiroshi Tanaka" />
+                        <img src="images/MKhoi.png"
+                             alt="Phan Minh Khoi" />
                     </div>
                     <div class="member-info">
-                        <h3 class="member-name">Hiroshi Tanaka</h3>
+                        <h3 class="member-name">Phan Minh Khoi</h3>
                         <p class="member-title">Co-Founder & CEO</p>
                         <p class="member-description">
                             Former professor at Tokyo University with 15+ years in
@@ -228,11 +251,11 @@
 
                 <div class="team-member">
                     <div class="member-image">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SarahKim&backgroundColor=ffd93d&clothesType=BlazerShirt"
-                             alt="Sarah Kim" />
+                        <img src="images/MPhu.jpg"
+                             alt="Luong Minh Phu" />
                     </div>
                     <div class="member-info">
-                        <h3 class="member-name">Sarah Kim</h3>
+                        <h3 class="member-name">Minh Phu</h3>
                         <p class="member-title">Co-Founder & CPO</p>
                         <p class="member-description">
                             EdTech innovator with a passion for cross-cultural education.
@@ -240,12 +263,12 @@
                             platforms.
                         </p>
                         <div class="member-social">
-                            <a href="#" aria-label="LinkedIn">
+                            <a href="https://www.linkedin.com/in/ph%C3%BA-l%C6%B0%C6%A1ng-minh-9ba52a369/" aria-label="LinkedIn">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                                 </svg>
                             </a>
-                            <a href="#" aria-label="Twitter">
+                            <a href="https://www.facebook.com/FuHocFPT/" aria-label="Facebook">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
                                 </svg>
@@ -256,11 +279,11 @@
 
                 <div class="team-member">
                     <div class="member-image">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=YukiNakamura&backgroundColor=ffdfbf&clothesType=BlazerShirt"
-                             alt="Yuki Nakamura" />
+                        <img src="images/VHoang.png"
+                             alt="Nguyen Van Hoang" />
                     </div>
                     <div class="member-info">
-                        <h3 class="member-name">Yuki Nakamura</h3>
+                        <h3 class="member-name">Nguyen Van Hoang</h3>
                         <p class="member-title">Head of Curriculum</p>
                         <p class="member-description">
                             Master's in Applied Linguistics from Waseda University.
@@ -279,11 +302,11 @@
 
                 <div class="team-member">
                     <div class="member-image">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=MikeOConnor&backgroundColor=c0aede&clothesType=BlazerShirt"
-                             alt="Mike O'Connor" />
+                        <img src="images/GKhoi.png"
+                             alt="Nguyen Quang Gia Khoi" />
                     </div>
                     <div class="member-info">
-                        <h3 class="member-name">Mike O'Connor</h3>
+                        <h3 class="member-name">Nguyen Quang Gia Khoi</h3>
                         <p class="member-title">CTO</p>
                         <p class="member-description">
                             Former Silicon Valley engineer with expertise in AI and

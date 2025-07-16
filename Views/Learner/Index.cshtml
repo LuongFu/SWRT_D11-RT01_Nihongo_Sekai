@@ -196,6 +196,53 @@
             font-size: 0.875rem;
         }
 
+        /* Container chung cho card */
+        .card.h-100 {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Phần ảnh và tiêu đề vẫn auto */
+        /* Phần nội dung chính (body) cố định chiều cao */
+        .card-body {
+            flex: 1; /* đẩy phần footer (nút) xuống dưới */
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        /* Phần mô tả + title + price sẽ nằm trong .content-wrapper */
+        .content-wrapper {
+            flex: 1; /* chiếm hết không gian thân card */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .clamp-3 {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3; /* Chỉ hiện tối đa 3 dòng */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            /* Nếu cần hỗ trợ non-WebKit (Firefox): */
+            /* display: block;
+             display: -moz-box;
+             -moz-box-orient: vertical;
+             line-clamp: 3; */
+        }
+
+        @@media (max-width: 768px) {
+            .card-body
+
+        {
+            padding: 0.75rem;
+        }
+
+        .clamp-3 {
+            -webkit-line-clamp: 2; /* Ví dụ chỉ 2 dòng trên mobile */
+        }
+
+        }
     </style>
 }
 
@@ -218,10 +265,10 @@
                     <a href="~/About" class="btn btn-outline btn-large">Learn More</a>
                 </div>
                 <div class="hero-stats">
-                    <div class="stat-item"><strong>10,000+</strong> <span class="stat-label">Students</span></div>
-                    <div class="stat-item"><strong>150+</strong> <span class="stat-label">Courses</span></div>
-                    <div class="stat-item"><strong>50+</strong> <span class="stat-label">Partners</span></div>
-                    <div class="stat-item"><strong>95%</strong> <span class="stat-label">Success Rate</span></div>
+                    <div class="stat-item"><strong>20+</strong> <span class="stat-label">Students</span></div>
+                    <div class="stat-item"><strong>10+</strong> <span class="stat-label">Courses</span></div>
+                    <div class="stat-item"><strong>10+</strong> <span class="stat-label">Partners</span></div>
+                    <div class="stat-item"><strong>70%</strong> <span class="stat-label">Success Rate</span></div>
                 </div>
             </div>
             <div class="hero-image-wrapper float-animation shadow-lg">
@@ -245,9 +292,11 @@
                     <div class="card h-100 shadow-sm border-0">
                         <img src="@item.Course.ImageURL" class="card-img-top" alt="@item.Course.Name" style="height: 200px; object-fit: cover;" />
                         <div class="card-body">
+                            <div class="content-wrapper">
                             <h5 class="card-title">@item.Course.Name</h5>
                             <p class="card-text">@item.Course.Description</p>
                             <p class="text-muted">@item.Course.CourseCategory - <strong>@item.Course.FinalPrice.ToString("C")</strong></p>
+                        </div>
                             <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-danger w-100 mt-2">
                                 View Course
                             </a>

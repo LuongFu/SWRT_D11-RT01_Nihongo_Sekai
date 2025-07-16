@@ -537,6 +537,9 @@ namespace JapaneseLearningPlatform.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("DecisionAt")
                         .HasColumnType("datetime2");
 
