@@ -180,7 +180,7 @@
             </div>
             
         </div>
-        @if (User.IsInRole("Admin") && Model.Sections != null && Model.Sections.Any())
+        @if (User.IsInRole("Admin"))
         {
             <div class="sidebar-section">
                 <a asp-controller="CourseSections" asp-action="Create" asp-route-courseId="@Model.Course.Id"
