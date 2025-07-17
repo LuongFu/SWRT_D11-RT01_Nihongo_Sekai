@@ -10,9 +10,9 @@
     <!-- 🔹 Header -->
     <div class="bg-light p-4 rounded shadow-sm mb-4">
         <h2 class="fw-bold">@Model.Template.Title</h2>
-        <p class="mb-1"><strong>Partner:</strong> @Model.PartnerName</p>
-        <p class="mb-1"><strong>Schedule:</strong> @Model.Instance.StartDate.ToShortDateString() → @Model.Instance.EndDate.ToShortDateString()</p>
-        <p class="mb-1"><strong>Time:</strong> @($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</p>
+        <p class="mb-1"><strong>Đối tác:</strong> @Model.PartnerName</p>
+        <p class="mb-1"><strong>Lịch:</strong> @Model.Instance.StartDate.ToShortDateString() → @Model.Instance.EndDate.ToShortDateString()</p>
+        <p class="mb-1"><strong>Thời gian:</strong> @($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</p>
         <p class="mb-1"><strong>Meet Link:</strong> <a href="@Model.Instance.GoogleMeetLink" target="_blank">@Model.Instance.GoogleMeetLink</a></p>
     </div>
 
@@ -20,25 +20,25 @@
     <ul class="nav nav-tabs mb-3" id="classTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab">
-                Overview
+                Tổng quan
             </a>
         </li>
         <li class="nav-item" role="presentation">
             @if (User.IsInRole("Partner") || User.IsInRole("Admin"))
             {
                 <a class="nav-link" id="learners-tab" data-bs-toggle="tab" href="#learners" role="tab">
-                    Learners
+                    Danh sách học viên
                 </a>
             }
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" id="resources-tab" data-bs-toggle="tab" href="#resources" role="tab">
-                Resources
+                Tài nguyên
             </a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" id="assignment-tab" data-bs-toggle="tab" href="#assignment" role="tab">
-                Final Assignment
+                Đánh giá cuối kỳ
             </a>
         </li>
         <li class="nav-item" role="presentation">
@@ -53,8 +53,8 @@
         <!-- 🔹 Overview -->
         <div class="tab-pane fade show active" id="overview" role="tabpanel">
             <div class="p-3">
-                <h5 class="fw-bold">Class Description</h5>
-                <p class="text-muted">The class description or content is not available yet.</p>
+                <h5 class="fw-bold">Mô tả lớp học</h5>
+                <p class="text-muted">Hiện không có sẵn.</p>
 
                 <!-- TODO: Uncomment and use later when ContentHtml is added -->
                 @*
@@ -67,11 +67,11 @@
         {
             <div class="tab-pane fade" id="learners" role="tabpanel" aria-labelledby="learners-tab">
                 <div class="p-3">
-                    <h5 class="fw-bold mb-3">Enrolled Learners</h5>
+                    <h5 class="fw-bold mb-3">Danh sách học viên</h5>
 
                     @if (Model.Instance.Enrollments == null || !Model.Instance.Enrollments.Any())
                     {
-                        <p class="text-muted">No learners have enrolled in this class yet.</p>
+                        <p class="text-muted">Chưa có học viên tham gia.</p>
                     }
                     else
                     {
@@ -110,8 +110,8 @@
         <!-- 🔹 Resources -->
         <div class="tab-pane fade" id="resources" role="tabpanel">
             <div class="p-3">
-                <h5 class="fw-bold">Learning Materials</h5>
-                <p class="text-muted">No downloadable materials have been added.</p>
+                <h5 class="fw-bold">Tài nguyên học tập</h5>
+                <p class="text-muted">Chưa có tài nguyên học tập nào.</p>
 
                 <!-- TODO: Uncomment and use later when ResourceUrl is added -->
                 @*
@@ -130,11 +130,11 @@
         <!-- 🔹 Final Assignment -->
         <div class="tab-pane fade" id="assignment" role="tabpanel">
             <div class="p-3">
-                <h5 class="fw-bold">Final Assignment</h5>
+                <h5 class="fw-bold">Bài luận đánh giá cuối khóa</h5>
 
                 @if (Model.FinalAssignment != null)
                 {
-                    <p><strong>Instructions:</strong></p>
+                    <p><strong>Hướng dẫn:</strong></p>
                     <p>@Html.Raw(Model.FinalAssignment.Instructions)</p>
 
                     @if (Model.FinalAssignment?.DueDate != null)
@@ -153,35 +153,35 @@
 
                         @if (Model.HasSubmitted)
                         {
-                            <p class="text-success">✅ You have already submitted your assignment.</p>
-                            <p><strong>Score:</strong> @(Model.Submission?.Score?.ToString() ?? "-")</p>
-                            <p><strong>Feedback:</strong> @(Model.Submission?.Feedback ?? "Not reviewed yet")</p>
+                            <p class="text-success">✅ Bạn đã gửi bài làm của mình.</p>
+                            <p><strong>Điểm:</strong> @(Model.Submission?.Score?.ToString() ?? "Chưa được chấm")</p>
+                            <p><strong>Nhận xét:</strong> @(Model.Submission?.Feedback ?? "Chưa có nhận xét")</p>
 
                             <div class="mb-3 mt-4">
-                                <label class="form-label fw-bold">Your Previous Answer:</label>
+                                <label class="form-label fw-bold">Bài làm cũ:</label>
                                 <textarea class="form-control" rows="5" readonly>@Model.Submission?.AnswerText</textarea>
                             </div>
                         }
 
                         @if (Model.Submission?.Score != null)
                         {
-                            <p class="text-danger mt-3">✅ Your submission has already been graded. You cannot modify it.</p>
+                            <p class="text-danger mt-3">✅ Bài làm của bạn đã được chấm và không thể thay đổi.</p>
                         }
                         else if (Model.FinalAssignment?.DueDate != null && Model.FinalAssignment.DueDate <= DateTime.Now)
                         {
-                            <p class="text-danger mt-3">⛔ You cannot submit. The deadline has passed.</p>
+                            <p class="text-danger mt-3">⛔ Đã quá hạn nộp bài làm.</p>
                         }
                         else
                         {
                             <!-- Form for new or resubmission -->
                             <form id="assignmentForm" asp-action="SubmitAssignment" asp-controller="Assignments" asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
                                 <div class="mb-3">
-                                    <label for="AnswerText" class="form-label fw-bold">Your New Answer (optional)</label>
+                                    <label for="AnswerText" class="form-label fw-bold">Bài làm của bạn:</label>
                                     <textarea id="answerText" name="answerText" rows="5" class="form-control" placeholder="Write your answer here..."></textarea>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="submission" class="form-label fw-bold">Upload a new file (optional)</label>
+                                    <label for="submission" class="form-label fw-bold">Tải lên file bài làm</label>
                                     <input id="submissionFile" type="file" name="SubmissionFile" class="form-control" />
                                 </div>
 
@@ -194,7 +194,7 @@
                     {
                         <form asp-action="UpdateDeadline" asp-controller="Assignments" asp-route-assignmentId="@Model.FinalAssignment.Id" method="post" class="d-flex align-items-center gap-2 mt-2">
                             <input type="text" id="newDueDate" name="newDueDate" class="form-control" required placeholder="-- Select a new due date --" />
-                            <button type="submit" class="btn btn-outline-primary btn-sm">Update Deadline</button>
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Cập nhật hạn nộp</button>
                         </form>
 
                         @if (TempData["DeadlineMessage"] != null)
@@ -203,7 +203,7 @@
                         }
                         @if (Model.AllSubmissions == null || !Model.AllSubmissions.Any())
                         {
-                            <p class="text-muted mt-3">No learners have submitted their assignments yet.</p>
+                            <p class="text-muted mt-3">Chưa có học viên nào gửi bài làm.</p>
                         }
                         else
                         {
@@ -211,12 +211,12 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 5%">#</th>
-                                        <th>Name</th>
+                                        <th>Tên</th>
                                         <th>Email</th>
-                                        <th>Submitted At</th>
-                                        <th>Score</th>
+                                        <th>Nộp vào lúc</th>
+                                        <th>Điểm</th>
                                         <th>Feedback</th>
-                                        <th>Action</th>
+                                        <th>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody><!--Đã set local time rồi nên không sửa ở đây-->
@@ -224,9 +224,9 @@
                                         int index = 1;
                                         foreach (var submission in Model.AllSubmissions)
                                         {
-                                            var scoreStatus = submission.Score.HasValue ? submission.Score.ToString() : "Not graded";
-                                            var feedbackStatus = !string.IsNullOrWhiteSpace(submission.Feedback) ? submission.Feedback : "Not reviewed";
-                                            var actionLabel = submission.Score.HasValue ? "Edit" : "Grade";
+                                            var scoreStatus = submission.Score.HasValue ? submission.Score.ToString() : "Chưa chấm";
+                                            var feedbackStatus = !string.IsNullOrWhiteSpace(submission.Feedback) ? submission.Feedback : "Chưa nhận xét";
+                                            var actionLabel = submission.Score.HasValue ? "Sửa" : "Chấm";
                                             <tr>
                                                 <td>@index</td>
                                                 <td>@submission.Learner?.FullName</td>
@@ -252,7 +252,7 @@
                 }
                 else
                 {
-                    <p class="text-muted">This class does not include a final assignment.</p>
+                    <p class="text-muted">Lớp học chưa có bài đánh giá cuối khóa nào.</p>
                 }
             </div>
         </div>
@@ -261,7 +261,7 @@
         <!-- 🔹 Feedback -->
         <div class="tab-pane fade" id="review" role="tabpanel">
             <div class="p-3">
-                <h5 class="fw-bold">Class Feedback</h5>
+                <h5 class="fw-bold">Gửi Feedback đến đối tác</h5>
                 @if (!Model.HasReviewed)
                 {
                     <form asp-action="SubmitReview" asp-route-instanceId="@Model.Instance.Id" method="post">
@@ -270,15 +270,15 @@
                             <input type="number" class="form-control" name="Rating" min="1" max="5" required />
                         </div>
                         <div class="mb-3">
-                            <label for="Comment" class="form-label">Your Comment</label>
+                            <label for="Comment" class="form-label">Nhận xét của bạn</label>
                             <textarea class="form-control" name="Comment" rows="3"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                        <button type="submit" class="btn btn-primary">Gửi Review</button>
                     </form>
                 }
                 else
                 {
-                    <p class="text-success">✅ You've submitted your review.</p>
+                    <p class="text-success">✅ Bạn đã gửi review.</p>
                 }
             </div>
         </div>
@@ -286,7 +286,7 @@
 
     <div class="text-center mt-5">
         <button class="btn btn-outline-secondary" onclick="history.back()">
-            <i class="bi bi-arrow-left"></i> Back to Previous Page
+            <i class="bi bi-arrow-left"></i> Về trang trước
         </button>
     </div>
 </div>
