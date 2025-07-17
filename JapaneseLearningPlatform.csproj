@@ -14,6 +14,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20250716155540_InitialSync.cs" />
+    <Compile Remove="Migrations\20250716155540_InitialSync.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="project-structure.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
