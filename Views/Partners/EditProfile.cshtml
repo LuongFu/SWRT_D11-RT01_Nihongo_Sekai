@@ -3,13 +3,13 @@
 @model JapaneseLearningPlatform.Data.ViewModels.EditPartnerProfileVM
 
 @{
-    ViewData["Title"] = "Edit Profile";
+    ViewData["Title"] = "Chỉnh sửa hồ sơ";
     Layout = "_Layout";
 }
 
 @section Styles {
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
     <!-- Global Stylesheet -->
     <link asp-append-version="true" href="~/css/styles.css" rel="stylesheet" />
 
@@ -246,7 +246,7 @@
 
 <div class="change-password-bg d-flex align-items-center justify-content-center">
     <div class="change-password-card">
-        <h3 class="text-center text-danger fw-bold mb-4">Edit Profile</h3>
+        <h3 class="text-center text-danger fw-bold mb-4">Chỉnh sửa hồ sơ đối tác</h3>
 
         @if (TempData["EditProfileSuccess"] != null)
         {
@@ -266,33 +266,33 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
 
             <div class="row">
-                <!-- LEFT: basic info -->
+                <!-- Cột trái: thông tin cơ bản -->
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label asp-for="Email" class="form-label">Email</label>
                         <input asp-for="Email" class="form-control" readonly />
                     </div>
                     <div class="mb-3">
-                        <label asp-for="FullName" class="form-label">Full Name</label>
+                        <label asp-for="FullName" class="form-label">Họ và tên</label>
                         <input asp-for="FullName" class="form-control" />
                         <span asp-validation-for="FullName" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="YearsOfExperience" class="form-label">Experience</label>
+                        <label asp-for="YearsOfExperience" class="form-label">Kinh nghiệm</label>
                         <select asp-for="YearsOfExperience"
                                 asp-items="Model.ExperienceOptions"
                                 class="form-select">
-                            <option value="">-- select experience --</option>
+                            <option value="">-- Chọn kinh nghiệm --</option>
                         </select>
                         <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
                     </div>
                 </div>
 
-                <!-- RIGHT: specs, upload, existing docs -->
+                <!-- Cột phải: chuyên môn và tài liệu -->
                 <div class="col-md-6">
-                    <!-- Specializations -->
+                    <!-- Chuyên môn -->
                     <div class="mb-4">
-                        <label class="form-label">Specializations</label>
+                        <label class="form-label">Chuyên môn</label>
                         <div class="row g-2">
                             @foreach (var spec in Model.AllSpecializations)
                             {
@@ -313,16 +313,16 @@
                         </div>
                     </div>
 
-                    <!-- File‐upload zone -->
+                    <!-- Vùng tải lên tài liệu mới -->
                     <div class="mb-4">
                         <label asp-for="NewDocuments" class="form-label">
-                            Certificates & Qualifications
+                            Chứng chỉ & bằng cấp
                         </label>
                         <div class="file-upload" id="certificateUpload">
                             <div class="file-upload-icon">📁</div>
-                            <div class="file-upload-text">Upload your certificates</div>
+                            <div class="file-upload-text">Tải lên chứng chỉ của bạn</div>
                             <div class="file-upload-hint">
-                                PDF, DOC, or images up to 10MB each
+                                PDF, DOC hoặc hình ảnh tối đa 10MB mỗi file
                             </div>
                             <input type="file"
                                    name="NewDocuments"
@@ -334,11 +334,11 @@
                         <div id="editFileList" class="file-list mt-2"></div>
                     </div>
 
-                    <!-- Existing docs inside the same form -->
+                    <!-- Tài liệu đã tồn tại -->
                     @if (Model.ExistingDocuments.Any())
                     {
                         <div class="mb-4">
-                            <label class="form-label">Existing Documents</label>
+                            <label class="form-label">Tài liệu hiện có</label>
                             <div id="existingDocs" class="d-flex flex-wrap">
                                 @foreach (var doc in Model.ExistingDocuments)
                                 {
@@ -353,7 +353,7 @@
                         </div>
                     }
 
-                    <!-- container for hidden inputs we’ll append on delete -->
+                    <!-- Nơi chứa input ẩn khi xóa tài liệu -->
                     <div id="deletedDocsContainer"></div>
                 </div>
             </div>
@@ -361,22 +361,23 @@
             <div class="d-flex justify-content-between mt-4">
                 <a asp-action="Profile"
                    class="btn btn-outline-danger fw-semibold px-4">
-                    Cancel
+                    Hủy
                 </a>
                 <button type="submit"
                         class="btn btn-danger fw-semibold px-4">
-                    Save Changes
+                    Lưu thay đổi
                 </button>
             </div>
         </form>
     </div>
 </div>
 
+
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-          // ────────── 1) Grab everything up front ──────────
+          // 1) Lấy tất cả các phần tử
           const form               = document.getElementById("editProfileForm");
           const specInputs         = Array.from(document.querySelectorAll('input[name="SelectedSpecializations"]'));
           const specError          = document.getElementById("specError");
@@ -389,10 +390,10 @@
           const totalPetals        = 20;
           const half               = totalPetals / 2;
 
-          // ────────── 2) Live‐validation for Specializations ──────────
+          // 2) Kiểm tra chọn chuyên môn
           function validateSpecs() {
             if (!specInputs.some(ch => ch.checked)) {
-              specError.textContent = "Please select at least one specialization.";
+              specError.textContent = "Vui lòng chọn ít nhất một chuyên môn.";
               return false;
             }
             specError.textContent = "";
@@ -400,7 +401,7 @@
           }
           specInputs.forEach(ch => ch.addEventListener("change", validateSpecs));
 
-          // ────────── 3) File‐upload drag & drop + preview ──────────
+          // 3) Tải file kéo thả + xem trước
           uploadZone.addEventListener("click", () => fileInput.click());
           ["dragover","dragleave","drop"].forEach(evt =>
             uploadZone.addEventListener(evt, e => {
@@ -451,7 +452,7 @@
             fileList.append(card);
           }
 
-          // ────────── 4) Delete existing thumbnails (mark for server) ──────────
+          // 4) Xóa tài liệu cũ (đánh dấu gửi server)
           deleteBtns.forEach(btn => {
             btn.addEventListener("click", () => {
               const thumb = btn.closest(".doc-thumb");
@@ -465,7 +466,7 @@
             });
           });
 
-          // ────────── 5) Sakura petals ──────────
+          // 5) Hiệu ứng cánh hoa sakura
           for (let i = 0; i < totalPetals; i++) {
             const petal = document.createElement("div");
             petal.classList.add("sakura-petal");
@@ -476,17 +477,16 @@
             document.body.appendChild(petal);
           }
 
-          // ────────── 6) Final on-submit: re-validate & confirm ──────────
+          // 6) Khi submit: kiểm tra và xác nhận
           form.addEventListener("submit", e => {
             if (!validateSpecs()) {
               e.preventDefault();
               return;
             }
-            if (!confirm("Are you sure you want to save these changes?")) {
+            if (!confirm("Bạn có chắc muốn lưu các thay đổi này không?")) {
               e.preventDefault();
             }
           });
         });
     </script>
 }
-

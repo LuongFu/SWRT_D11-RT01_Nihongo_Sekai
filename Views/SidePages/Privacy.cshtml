@@ -1,23 +1,19 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy - Nihongo Sekai";
+    ViewData["Title"] = "Chính Sách Quyền Riêng Tư - Nihongo Sekai";
     Layout = "_Layout";
 }
 
 @section Head {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Privacy Policy - Nihongo Sekai</title>
+    <title>Chính Sách Quyền Riêng Tư - Nihongo Sekai</title>
     <meta name="description"
-          content="Learn how Nihongo Sekai protects your privacy and handles your personal information. Our comprehensive privacy policy." />
+          content="Tìm hiểu cách Nihongo Sekai bảo vệ quyền riêng tư và xử lý thông tin cá nhân của bạn. Chính sách quyền riêng tư toàn diện của chúng tôi." />
 }
 
 @section Styles {
-    <meta name="description"
-          content="Learn how Nihongo Sekai protects your privacy and handles your personal information. Our comprehensive privacy policy." />
-
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
 
     <!-- Page CSS -->
     <link rel="stylesheet" href="~/css/privacy.css" />
@@ -35,18 +31,16 @@
         <div class="container">
             <div class="legal-hero-content">
                 <div class="legal-breadcrumb">
-                    <a asp-page="/Index">Home</a>
+                    <a asp-page="/Index">Trang Chủ</a>
                     <span class="legal-breadcrumb-separator">›</span>
-                    <span>Privacy Policy</span>
+                    <span>Chính Sách Quyền Riêng Tư</span>
                 </div>
-                <h1 class="legal-page-title">Privacy Policy</h1>
+                <h1 class="legal-page-title">Chính Sách Quyền Riêng Tư</h1>
                 <p class="legal-page-subtitle">
-                    Your privacy is important to us. This policy explains how we
-                    collect, use, and protect your information with complete
-                    transparency.
+                    Quyền riêng tư của bạn rất quan trọng với chúng tôi. Chính sách này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin của bạn một cách minh bạch.
                 </p>
                 <div class="legal-last-updated">
-                    <strong>Last Updated:</strong> January 15, 2024
+                    <strong>Cập Nhật Lần Cuối:</strong> 15 tháng 1, 2024
                 </div>
             </div>
         </div>
@@ -58,18 +52,18 @@
             <div class="legal-wrapper">
                 <aside class="legal-sidebar">
                     <div class="legal-nav-card">
-                        <h3 class="legal-nav-title">Table of Contents</h3>
+                        <h3 class="legal-nav-title">Mục Lục</h3>
                         <ul class="legal-nav-list">
-                            <li><a href="#information-collection" class="legal-nav-link">Information We Collect</a></li>
-                            <li><a href="#how-we-use" class="legal-nav-link">How We Use Information</a></li>
-                            <li><a href="#information-sharing" class="legal-nav-link">Information Sharing</a></li>
-                            <li><a href="#data-security" class="legal-nav-link">Data Security</a></li>
-                            <li><a href="#cookies" class="legal-nav-link">Cookies & Tracking</a></li>
-                            <li><a href="#your-rights" class="legal-nav-link">Your Rights</a></li>
-                            <li><a href="#children-privacy" class="legal-nav-link">Children's Privacy</a></li>
-                            <li><a href="#international" class="legal-nav-link">International Users</a></li>
-                            <li><a href="#changes" class="legal-nav-link">Policy Changes</a></li>
-                            <li><a href="#contact" class="legal-nav-link">Contact Us</a></li>
+                            <li><a href="#information-collection" class="legal-nav-link">Thông Tin Chúng Tôi Thu Thập</a></li>
+                            <li><a href="#how-we-use" class="legal-nav-link">Cách Sử Dụng Thông Tin</a></li>
+                            <li><a href="#information-sharing" class="legal-nav-link">Chia Sẻ Thông Tin</a></li>
+                            <li><a href="#data-security" class="legal-nav-link">Bảo Mật Dữ Liệu</a></li>
+                            <li><a href="#cookies" class="legal-nav-link">Cookies & Theo Dõi</a></li>
+                            <li><a href="#your-rights" class="legal-nav-link">Quyền Của Bạn</a></li>
+                            <li><a href="#children-privacy" class="legal-nav-link">Quyền Riêng Tư Trẻ Em</a></li>
+                            <li><a href="#international" class="legal-nav-link">Người Dùng Quốc Tế</a></li>
+                            <li><a href="#changes" class="legal-nav-link">Thay Đổi Chính Sách</a></li>
+                            <li><a href="#contact" class="legal-nav-link">Liên Hệ</a></li>
                         </ul>
                     </div>
                 </aside>
@@ -77,156 +71,159 @@
                 <article class="legal-main legal-article">
                     <!-- 1. Information We Collect -->
                     <section id="information-collection" class="legal-section">
-                        <h2>1. Information We Collect</h2>
-                        <h3>Personal Information</h3>
-                        <p>We collect information you provide directly to us, including:</p>
+                        <h2>1. Thông Tin Chúng Tôi Thu Thập</h2>
+                        <h3>Thông Tin Cá Nhân</h3>
+                        <p>Chúng tôi thu thập thông tin bạn cung cấp trực tiếp, bao gồm:</p>
                         <ul>
-                            <li><strong>Account Information:</strong> Name, email address, username, password, profile picture</li>
-                            <li><strong>Profile Data:</strong> Learning goals, Japanese proficiency level, interests, bio</li>
-                            <li><strong>Payment Information:</strong> Billing address, payment method details (processed securely through PayPal)</li>
-                            <li><strong>Educational Records:</strong> Course progress, quiz scores, certificates earned, study streaks</li>
-                            <li><strong>Communication:</strong> Messages in forums, chat sessions with teachers, support requests</li>
+                            <li><strong>Thông Tin Tài Khoản:</strong> Tên, email, tên đăng nhập, mật khẩu, ảnh hồ sơ</li>
+                            <li><strong>Dữ Liệu Hồ Sơ:</strong> Mục tiêu học tập, trình độ tiếng Nhật, sở thích, tiểu sử</li>
+                            <li><strong>Thông Tin Thanh Toán:</strong> Địa chỉ thanh toán, phương thức thanh toán (xử lý an toàn qua PayPal)</li>
+                            <li><strong>Kết Quả Học Tập:</strong> Tiến độ khóa học, điểm bài kiểm tra, chứng chỉ, chuỗi ngày học</li>
+                            <li><strong>Liên Lạc:</strong> Tin nhắn trên diễn đàn, chat với giáo viên, yêu cầu hỗ trợ</li>
                         </ul>
 
-                        <h3>Automatically Collected Information</h3>
+                        <h3>Thông Tin Thu Thập Tự Động</h3>
                         <ul>
-                            <li><strong>Usage Data:</strong> Pages viewed, time spent, features used, search queries</li>
-                            <li><strong>Device Information:</strong> Browser type, operating system, IP address, device identifiers</li>
-                            <li><strong>Location Data:</strong> General location based on IP address for content localization</li>
-                            <li><strong>Performance Data:</strong> Page load times, errors, interaction patterns</li>
+                            <li><strong>Dữ Liệu Sử Dụng:</strong> Trang đã xem, thời gian sử dụng, tính năng đã dùng, truy vấn tìm kiếm</li>
+                            <li><strong>Thông Tin Thiết Bị:</strong> Loại trình duyệt, hệ điều hành, địa chỉ IP, mã nhận diện thiết bị</li>
+                            <li><strong>Dữ Liệu Vị Trí:</strong> Vị trí chung dựa trên IP để cá nhân hóa nội dung</li>
+                            <li><strong>Dữ Liệu Hiệu Suất:</strong> Thời gian tải trang, lỗi, mẫu tương tác</li>
                         </ul>
                     </section>
 
                     <!-- 2. How We Use Your Information -->
                     <section id="how-we-use" class="legal-section">
-                        <h2>2. How We Use Your Information</h2>
-                        <p>We use the information we collect to:</p>
+                        <h2>2. Cách Chúng Tôi Sử Dụng Thông Tin</h2>
+                        <p>Chúng tôi sử dụng thông tin để:</p>
                         <ul>
-                            <li><strong>Provide Services:</strong> Deliver courses, manage your account, process payments</li>
-                            <li><strong>Personalize Experience:</strong> Recommend courses, customize content, track progress</li>
-                            <li><strong>Communicate:</strong> Send updates, notifications, marketing materials (with consent)</li>
-                            <li><strong>Improve Platform:</strong> Analyze usage patterns, fix bugs, develop new features</li>
-                            <li><strong>Security:</strong> Prevent fraud, protect against abuse, ensure platform safety</li>
-                            <li><strong>Legal Compliance:</strong> Meet regulatory requirements, respond to legal requests</li>
+                            <li><strong>Cung Cấp Dịch Vụ:</strong> Triển khai khóa học, quản lý tài khoản, xử lý thanh toán</li>
+                            <li><strong>Cá Nhân Hóa Trải Nghiệm:</strong> Đề xuất khóa học, tùy chỉnh nội dung, theo dõi tiến độ</li>
+                            <li><strong>Liên Lạc:</strong> Gửi thông báo, cập nhật, tài liệu marketing (với sự đồng ý)</li>
+                            <li><strong>Cải Thiện Nền Tảng:</strong> Phân tích sử dụng, khắc phục lỗi, phát triển tính năng mới</li>
+                            <li><strong>Bảo Mật:</strong> Ngăn chặn gian lận, bảo vệ chống lạm dụng, đảm bảo an toàn</li>
+                            <li><strong>Tuân Thủ Pháp Lý:</strong> Đáp ứng yêu cầu pháp lý, trả lời trát đòi</li>
                         </ul>
                     </section>
 
                     <!-- 3. Information Sharing -->
                     <section id="information-sharing" class="legal-section">
-                        <h2>3. Information Sharing</h2>
-                        <p>We do not sell your personal information. We may share information in these situations:</p>
-                        <h3>With Your Consent</h3>
-                        <p>We share information when you explicitly consent, such as connecting with teachers or participating in community features.</p>
-                        <h3>Service Providers</h3>
-                        <p>We work with trusted third parties who help us operate our platform:</p>
+                        <h2>3. Chia Sẻ Thông Tin</h2>
+                        <p>Chúng tôi không bán thông tin cá nhân của bạn. Chúng tôi chỉ chia sẻ trong các trường hợp sau:</p>
+
+                        <h3>Với Sự Đồng Ý</h3>
+                        <p>Khi bạn cho phép, ví dụ liên kết với giáo viên hoặc tham gia tính năng cộng đồng.</p>
+
+                        <h3>Nhà Cung Cấp Dịch Vụ</h3>
+                        <p>Chúng tôi làm việc với bên thứ ba tin cậy để vận hành nền tảng:</p>
                         <ul>
-                            <li><strong>Payment Processing:</strong> PayPal for secure payment transactions</li>
-                            <li><strong>Video Hosting:</strong> YouTube and Jitsi Meet for educational content and live classes</li>
-                            <li><strong>Email Services:</strong> For sending notifications and updates</li>
-                            <li><strong>Analytics:</strong> To understand platform usage and improve services</li>
+                            <li><strong>Thanh Toán:</strong> PayPal cho giao dịch an toàn</li>
+                            <li><strong>Lưu Trữ Video:</strong> YouTube và Jitsi Meet cho nội dung và lớp học trực tiếp</li>
+                            <li><strong>Dịch Vụ Email:</strong> Gửi thông báo và cập nhật</li>
+                            <li><strong>Phân Tích:</strong> Hiểu cách sử dụng và cải thiện</li>
                         </ul>
-                        <h3>Legal Requirements</h3>
-                        <p>We may disclose information when required by law or to protect rights, property, or safety.</p>
+
+                        <h3>Yêu Cầu Pháp Lý</h3>
+                        <p>Khi được yêu cầu bởi pháp luật hoặc để bảo vệ quyền, tài sản, an toàn.</p>
                     </section>
 
                     <!-- 4. Data Security -->
                     <section id="data-security" class="legal-section">
-                        <h2>4. Data Security</h2>
-                        <p>We implement appropriate security measures to protect your information:</p>
+                        <h2>4. Bảo Mật Dữ Liệu</h2>
+                        <p>Chúng tôi áp dụng các biện pháp bảo mật:</p>
                         <ul>
-                            <li><strong>Encryption:</strong> Data transmitted using SSL/TLS encryption</li>
-                            <li><strong>Access Controls:</strong> Limited access to personal data on need-to-know basis</li>
-                            <li><strong>Regular Audits:</strong> Security assignments and vulnerability testing</li>
-                            <li><strong>Data Backups:</strong> Regular backups stored securely</li>
-                            <li><strong>Incident Response:</strong> Procedures for addressing security breaches</li>
+                            <li><strong>Mã Hóa:</strong> Dữ liệu truyền qua SSL/TLS</li>
+                            <li><strong>Kiểm Soát Truy Cập:</strong> Hạn chế truy cập theo nhu cầu</li>
+                            <li><strong>Kiểm Toán Định Kỳ:</strong> Kiểm thử lỗ hổng</li>
+                            <li><strong>Sao Lưu Dữ Liệu:</strong> Sao lưu thường xuyên, lưu trữ an toàn</li>
+                            <li><strong>Ứng Phó Sự Cố:</strong> Quy trình xử lý vi phạm bảo mật</li>
                         </ul>
                         <div class="legal-warning-box">
-                            <h4>⚠️ Important Note</h4>
-                            <p>However, no security system is completely secure. We cannot guarantee absolute security of your information.</p>
+                            <h4>⚠️ Lưu Ý Quan Trọng</h4>
+                            <p>Dù vậy, không hệ thống nào hoàn hảo tuyệt đối. Chúng tôi không thể đảm bảo bảo mật 100%.</p>
                         </div>
                     </section>
 
                     <!-- 5. Cookies & Tracking -->
                     <section id="cookies" class="legal-section">
-                        <h2>5. Cookies & Tracking</h2>
-                        <p>We use cookies and similar technologies to enhance your experience:</p>
-                        <h3>Essential Cookies</h3>
-                        <p>Required for basic platform functionality, such as maintaining your login session.</p>
-                        <h3>Analytics Cookies</h3>
-                        <p>Help us understand how you use our platform to improve services.</p>
-                        <h3>Preference Cookies</h3>
-                        <p>Remember your settings and personalize your experience.</p>
-                        <p>You can control cookies through your browser settings. See our <a asp-page="/CookiePolicy" class="legal-link">Cookie Policy</a> for more details.</p>
+                        <h2>5. Cookies & Theo Dõi</h2>
+                        <p>Chúng tôi sử dụng cookies và công nghệ tương tự:</p>
+                        <h3>Cookies Cơ Bản</h3>
+                        <p>Duy trì phiên đăng nhập và chức năng nền tảng.</p>
+                        <h3>Cookies Phân Tích</h3>
+                        <p>Giúp hiểu cách bạn sử dụng để cải thiện dịch vụ.</p>
+                        <h3>Cookies Tùy Chỉnh</h3>
+                        <p>Ghi nhớ cài đặt và tùy chỉnh trải nghiệm.</p>
+                        <p>Bạn có thể quản lý cookies qua trình duyệt. Xem thêm <a asp-page="/CookiePolicy" class="legal-link">Chính Sách Cookie</a>.</p>
                     </section>
 
                     <!-- 6. Your Rights -->
                     <section id="your-rights" class="legal-section">
-                        <h2>6. Your Rights</h2>
-                        <p>You have the following rights regarding your personal information:</p>
+                        <h2>6. Quyền Của Bạn</h2>
+                        <p>Bạn có các quyền sau đối với thông tin của mình:</p>
                         <ul>
-                            <li><strong>Access:</strong> Request a copy of the personal information we hold about you</li>
-                            <li><strong>Correction:</strong> Update or correct inaccurate information</li>
-                            <li><strong>Deletion:</strong> Request deletion of your personal information (with some exceptions)</li>
-                            <li><strong>Portability:</strong> Receive your data in a structured, machine-readable format</li>
-                            <li><strong>Objection:</strong> Object to certain types of processing</li>
-                            <li><strong>Restriction:</strong> Request limitation of processing in certain circumstances</li>
+                            <li><strong>Truy Cập:</strong> Yêu cầu bản sao thông tin</li>
+                            <li><strong>Chỉnh Sửa:</strong> Cập nhật thông tin không chính xác</li>
+                            <li><strong>Xóa:</strong> Yêu cầu xóa (có ngoại lệ)</li>
+                            <li><strong>Di Động:</strong> Nhận dữ liệu dưới dạng máy đọc được</li>
+                            <li><strong>Phản Đối:</strong> Phản đối một số hình thức xử lý</li>
+                            <li><strong>Giới Hạn:</strong> Yêu cầu hạn chế xử lý</li>
                         </ul>
                         <div class="legal-info-box">
-                            <h4>📧 Exercise Your Rights</h4>
-                            <p>To exercise these rights, contact us at <a href="mailto:privacy@nihongosekai.com" class="legal-link">privacy@nihongosekai.com</a>.</p>
+                            <h4>📧 Thực Thi Quyền</h4>
+                            <p>Để thực thi, vui lòng liên hệ <a href="mailto:privacy@nihongosekai.com" class="legal-link">privacy@nihongosekai.com</a>.</p>
                         </div>
                     </section>
 
                     <!-- 7. Children's Privacy -->
                     <section id="children-privacy" class="legal-section">
-                        <h2>7. Children's Privacy</h2>
-                        <p>Our platform is not intended for children under 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately.</p>
-                        <p>For users between 13–18, we require parental consent before collecting personal information in certain jurisdictions.</p>
+                        <h2>7. Quyền Riêng Tư Trẻ Em</h2>
+                        <p>Nền tảng không dành cho trẻ dưới 13 tuổi. Chúng tôi không cố ý thu thập thông tin từ trẻ dưới 13. Nếu bạn là phụ huynh và phát hiện, hãy liên hệ ngay.</p>
+                        <p>Với người dùng 13–18 tuổi, chúng tôi yêu cầu phụ huynh đồng ý tại một số khu vực pháp lý.</p>
                     </section>
 
                     <!-- 8. International Users -->
                     <section id="international" class="legal-section">
-                        <h2>8. International Users</h2>
-                        <p>Our services are provided globally. If you are located outside Japan, your information may be transferred to and processed in Japan or other countries where we operate.</p>
-                        <p>We ensure appropriate safeguards are in place for international transfers, including:</p>
+                        <h2>8. Người Dùng Quốc Tế</h2>
+                        <p>Dịch vụ cung cấp toàn cầu. Nếu bạn ngoài Nhật, thông tin có thể được chuyển và xử lý tại Nhật hoặc nơi chúng tôi hoạt động.</p>
+                        <p>Chúng tôi đảm bảo các biện pháp bảo vệ cho chuyển dữ liệu quốc tế:</p>
                         <ul>
-                            <li>Adequacy decisions by relevant authorities</li>
-                            <li>Standard contractual clauses</li>
-                            <li>Certification schemes</li>
+                            <li>Quyết định tương đương về bảo mật</li>
+                            <li>Điều khoản hợp đồng tiêu chuẩn</li>
+                            <li>Chứng nhận bảo vệ</li>
                         </ul>
                     </section>
 
                     <!-- 9. Changes to This Policy -->
                     <section id="changes" class="legal-section">
-                        <h2>9. Changes to This Policy</h2>
-                        <p>We may update this Privacy Policy from time to time. We will notify you of any material changes by:</p>
+                        <h2>9. Thay Đổi Chính Sách</h2>
+                        <p>Chúng tôi có thể cập nhật chính sách này. Chúng tôi sẽ thông báo bằng:</p>
                         <ul>
-                            <li>Posting the updated policy on our website</li>
-                            <li>Sending an email notification to registered users</li>
-                            <li>Displaying a notice on our platform</li>
+                            <li>Đăng trên website</li>
+                            <li>Gửi email thông báo</li>
+                            <li>Hiển thị thông báo trên nền tảng</li>
                         </ul>
-                        <p>Your continued use of our services after any changes indicates your acceptance of the updated policy.</p>
+                        <p>Việc bạn tiếp tục sử dụng dịch vụ sau thay đổi đồng nghĩa chấp nhận chính sách mới.</p>
                     </section>
 
                     <!-- 10. Contact Us -->
                     <section id="contact" class="legal-section">
-                        <h2>10. Contact Us</h2>
-                        <p>If you have questions about this Privacy Policy or our privacy practices, please contact us:</p>
+                        <h2>10. Liên Hệ</h2>
+                        <p>Nếu có thắc mắc về chính sách hoặc thực hành quyền riêng tư, vui lòng liên hệ:</p>
                         <div class="legal-contact-grid">
                             <div class="legal-contact-card">
                                 <h4>Email</h4>
                                 <p><a href="mailto:privacy@nihongosekai.com" class="legal-link">privacy@nihongosekai.com</a></p>
                             </div>
                             <div class="legal-contact-card">
-                                <h4>Mailing Address</h4>
+                                <h4>Địa Chỉ Thư Tín</h4>
                                 <p>
-                                    Nihongo Sekai Privacy Team<br />
+                                    Đội Quyền Riêng Tư Nihongo Sekai<br />
                                     1-2-3 Shibuya, Shibuya-ku<br />
-                                    Tokyo 150-0002, Japan
+                                    Tokyo 150-0002, Nhật Bản
                                 </p>
                             </div>
                             <div class="legal-contact-card">
-                                <h4>Data Protection Officer</h4>
+                                <h4>Đơn Vị Phụ Trách Dữ Liệu</h4>
                                 <p><a href="mailto:dpo@nihongosekai.com" class="legal-link">dpo@nihongosekai.com</a></p>
                             </div>
                         </div>

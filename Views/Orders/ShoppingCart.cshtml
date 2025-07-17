@@ -2,9 +2,14 @@
 @model ShoppingCartVM
 
 @{
-    ViewData["Title"] = "Shopping Cart";
+    ViewData["Title"] = "Giỏ hàng";
     ViewData["HideNavbar"] = false;
     ViewData["HideFooter"] = false;
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
 }
 
 <style>
@@ -105,11 +110,11 @@
         max-width: 100% !important;
     }
 </style>
-<div class="cart-header text-center">Shopping Cart</div>
+
+<div class="cart-header text-center">Giỏ hàng</div>
 <div class="cart-container">
     <div class="cart-left">
-        
-        <p>@Model.ShoppingCart.ShoppingCartItems.Count course(s) in cart</p>
+        <p>@Model.ShoppingCart.ShoppingCartItems.Count khóa học trong giỏ</p>
 
         @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
         {
@@ -119,7 +124,7 @@
                     <div>
                         <div class="cart-course-title">@item.Course.Name</div>
                         <div class="text-muted">@item.Course.FinalPrice.ToString("c")</div>
-                        <a class="cart-remove" asp-controller="Orders" asp-action="RemoveItemFromShoppingCart" asp-route-id="@item.Course.Id">Remove</a>
+                        <a class="cart-remove" asp-controller="Orders" asp-action="RemoveItemFromShoppingCart" asp-route-id="@item.Course.Id">Xóa</a>
                     </div>
                 </div>
                 <div class="fw-bold">@((item.Amount * item.Course.FinalPrice).ToString("c"))</div>
@@ -128,19 +133,20 @@
     </div>
 
     <div class="cart-right">
-        <h4>Total: @Model.ShoppingCartTotal.ToString("c")</h4>
+        <h4>Tổng: @Model.ShoppingCartTotal.ToString("c")</h4>
 
-            <!-- Nút PayPal to -->
-            <div id="paypal-btn" class="mb-3 w-200"></div>
+        <!-- Nút PayPal -->
+        <div id="paypal-btn" class="mb-3 w-200"></div>
 
-            <!-- Nút thêm khóa học -->
-            <a class="btn-secondary d-block text-center" asp-controller="Courses" asp-action="Index">Add more items</a>
+        <!-- Thêm khóa học -->
+        <a class="btn-secondary d-block text-center" asp-controller="Courses" asp-action="Index">Thêm khóa học</a>
     </div>
 </div>
+
 @if (Model.RecommendedCourses != null && Model.RecommendedCourses.Any())
 {
     <div class="mt-5">
-        <h4 class ="cart-header text-center">Recommended for you</h4>
+        <h4 class="cart-header text-center">Gợi ý cho bạn</h4>
         <div class="row">
             @foreach (var item in Model.RecommendedCourses)
             {
@@ -152,7 +158,7 @@
                             <p class="card-text">@item.Description</p>
                             <p class="fw-bold text-danger">@item.Tuition.ToString("c")</p>
                             <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId" class="btn btn-danger w-100 mt-2">
-                                View Course
+                                Xem khóa học
                             </a>
                         </div>
                     </div>
@@ -161,6 +167,7 @@
         </div>
     </div>
 }
+
 @section Scripts {
     <script src="https://www.paypalobjects.com/api/checkout.js"></script>
     <script>
@@ -190,7 +197,7 @@
             },
             onAuthorize: function (data, actions) {
                 return actions.payment.execute().then(function () {
-                    var url = '@Url.Action("CompleteOrder", "Orders", new { })';
+                    var url = '@Url.Action("CompleteOrder", "Orders")';
                     window.location.href = url;
                 });
             }

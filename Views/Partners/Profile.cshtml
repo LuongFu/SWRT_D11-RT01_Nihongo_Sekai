@@ -2,28 +2,28 @@
 @model JapaneseLearningPlatform.Models.ApplicationUser
 
 @{
-    ViewData["Title"] = "My Profile";
+    ViewData["Title"] = "Hồ sơ của tôi";
     ViewData["HideFooter"] = false;
     Layout = "_Layout";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
 }
 
 <div class="my-profile-container">
     <div class="row gx-5 justify-content-center">
-        <!-- LEFT COLUMN: Welcome & Avatar -->
+        <!-- CỘT TRÁI: Chào mừng & Ảnh đại diện -->
         <div class="col-md-4 text-center">
             <div class="welcome-box text-center mb-4">
-                <h2 class="fw-bold text-danger">Welcome, @Model.FullName!</h2>
+                <h2 class="fw-bold text-danger">Chào mừng, @Model.FullName!</h2>
             </div>
 
             <div class="avatar-box mb-4">
                 <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath)
-                                                 ? "/uploads/profile/default-img.jpg"
-                                                 : Model.ProfilePicturePath)"
+                                                                      ? "/uploads/profile/default-img.jpg"
+                                                                      : Model.ProfilePicturePath)"
                      alt="Avatar"
                      class="rounded-circle img-thumbnail profile-image mb-3" />
 
@@ -39,7 +39,7 @@
                                onchange="previewProfileImage()" />
 
                         <img id="profilePreview" src="#"
-                             alt="Preview"
+                             alt="Xem trước"
                              class="rounded-circle img-thumbnail mb-3 d-none"
                              style="width:150px; height:150px; object-fit:cover;" />
 
@@ -51,32 +51,31 @@
                         }
 
                         <button type="submit" class="btn btn-sm btn-outline-danger w-100">
-                            Upload New Photo
+                            Tải ảnh mới
                         </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: Info, Actions, Partner Details -->
+        <!-- CỘT PHẢI: Thông tin, Hành động nhanh, Thông tin đối tác -->
         <div class="col-md-6">
             <div class="info-wrapper p-4 rounded shadow-sm">
-                <!-- Basic user info -->
+                <!-- Thông tin cơ bản -->
                 <div class="user-info mb-4">
-                    <h4 class="fw-bold mb-3 text-center text-danger">Your Information</h4>
-                    <p><strong>Full Name:</strong> @Model.FullName</p>
+                    <h4 class="fw-bold mb-3 text-center text-danger">Thông tin của bạn</h4>
+                    <p><strong>Họ và tên:</strong> @Model.FullName</p>
                     <p><strong>Email:</strong> @Model.Email</p>
-                    <p><strong>Role:</strong> @Model.Role</p>
+                    <p><strong>Vai trò:</strong> @Model.Role</p>
 
-                    @* Partner-only fields *@
+                    @* Thông tin chỉ dành cho Partner *@
                     @if (Model.PartnerProfile != null)
                     {
                         <p>
-                            <strong>Experience:</strong>
-                            @Model.PartnerProfile.YearsOfExperience.GetDisplayName()
+                            <strong>Kinh nghiệm:</strong> @Model.PartnerProfile.YearsOfExperience.GetDisplayName()
                         </p>
                         <p>
-                            <strong>Specializations:</strong>
+                            <strong>Chuyên môn:</strong>
                             @if (Model.PartnerProfile.Specializations.Any())
                             {
                                 @string.Join(", ",
@@ -85,17 +84,17 @@
                                                 }
                             else
                             {
-                                <em>No specializations selected</em>
+                                <em>Chưa chọn chuyên môn</em>
                             }
                         </p>
                     }
                 </div>
 
-                @* Partner Documents – moved up, read-only *@
+                @* Tài liệu đối tác (chỉ xem) *@
                 @if (Model.PartnerProfile?.Documents?.Any() == true)
                 {
                     <div class="partner-documents mb-4">
-                        <h5 class="text-danger mb-3 fw-bold">Your Documents</h5>
+                        <h5 class="text-danger mb-3 fw-bold">Tài liệu của bạn</h5>
                         <ul class="list-unstyled d-flex flex-wrap gap-3">
                             @foreach (var doc in Model.PartnerProfile.Documents)
                             {
@@ -111,28 +110,28 @@
                     </div>
                 }
 
-                <!-- Quick Actions -->
+                <!-- Thao tác nhanh -->
                 <div class="quick-actions mb-4">
-                    <h5 class="text-danger mb-3 fw-bold">Quick Actions</h5>
+                    <h5 class="text-danger mb-3 fw-bold">Thao tác nhanh</h5>
                     <div class="action-buttons d-grid gap-2">
                         <a class="action-link btn btn-outline-danger"
                            asp-controller="Partner" asp-action="MyCourses">
-                            <i class="bi bi-book"></i> My Courses
+                            <i class="bi bi-book"></i> Khóa học của tôi
                         </a>
                         <a class="action-link btn btn-outline-danger"
                            asp-controller="Partner" asp-action="MyClassroom">
-                            <i class="bi bi-easel"></i> My Classroom
+                            <i class="bi bi-easel"></i> Lớp học của tôi
                         </a>
                         <a class="action-link btn btn-outline-danger"
                            asp-controller="Partner" asp-action="EditProfile">
-                            <i class="bi bi-pencil-square"></i> Edit Profile
+                            <i class="bi bi-pencil-square"></i> Chỉnh sửa hồ sơ
                         </a>
                         <a class="action-link btn btn-outline-danger"
                            asp-controller="Learner" asp-action="ChangePassword">
-                            <i class="bi bi-lock"></i> Change Password
+                            <i class="bi bi-lock"></i> Đổi mật khẩu
                         </a>
                     </div>
-                </div>                
+                </div>
             </div>
         </div>
     </div>
@@ -155,17 +154,18 @@
                 preview.classList.add('d-none');
             }
         }
+
         document.addEventListener("DOMContentLoaded", function () {
-            const totalPetals = 20, half = totalPetals/2;
+            const totalPetals = 20, half = totalPetals / 2;
             for (let i = 0; i < totalPetals; i++) {
                 const petal = document.createElement("div");
                 petal.classList.add("sakura-petal");
                 petal.style.left = (i < half
-                    ? Math.random()*50
-                    : 50 + Math.random()*50) + "vw";
-                petal.style.transform = `rotate(${Math.random()*360}deg)`;
-                petal.style.animationDelay = `${Math.random()*5}s`;
-                petal.style.animationDuration = `${5 + Math.random()*5}s`;
+                    ? Math.random() * 50
+                    : 50 + Math.random() * 50) + "vw";
+                petal.style.transform = `rotate(${Math.random() * 360}deg)`;
+                petal.style.animationDelay = `${Math.random() * 5}s`;
+                petal.style.animationDuration = `${5 + Math.random() * 5}s`;
                 document.body.appendChild(petal);
             }
         });

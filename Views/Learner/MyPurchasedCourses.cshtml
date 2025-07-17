@@ -2,16 +2,21 @@
 @model IEnumerable<Course>
 
 @{
-    ViewData["Title"] = "My Purchased Courses";
+    ViewData["Title"] = "Các Khóa Học Đã Mua";
     ViewData["HideFooter"] = false;
 }
 
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+}
+
 <div class="container py-5">
-    <h2 class="mb-4 text-danger fw-bold text-center">My Purchased Courses</h2>
+    <h2 class="mb-4 text-danger fw-bold text-center">Các Khóa Học Đã Mua</h2>
 
     @if (!Model.Any())
     {
-        <div class="alert alert-warning text-center">You haven't purchased any courses yet.</div>
+        <div class="alert alert-warning text-center">Bạn chưa mua khóa học nào.</div>
     }
     else
     {
@@ -29,7 +34,7 @@
                             <p class="card-text text-muted small">
                                 @(string.IsNullOrEmpty(course.Description)
                                                         ? ""
-                                                        : course.Description.Substring(0, Math.Min(100, course.Description.Length)) + "...")
+                                                        : course.Description.Substring(0, Math.Min(100, course.Description.Length)) + "…")
                     </p>
 
                             <div class="mt-auto">
@@ -37,7 +42,7 @@
                                    asp-action="Details"
                                    asp-route-id="@course.Id"
                                    class="btn btn-danger w-100 fw-semibold">
-                                    <i class="bi bi-play-btn"></i> Start Learning
+                                    <i class="bi bi-play-btn"></i> Tiếp tục học
                                 </a>
                             </div>
                         </div>
@@ -51,7 +56,7 @@
 @if ((int)ViewBag.TotalPages > 1)
 {
     <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Pagination">
+        <nav aria-label="Phân trang">
             <ul class="pagination">
                 @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
                 {

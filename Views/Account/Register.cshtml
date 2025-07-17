@@ -3,7 +3,7 @@
 @model RegisterVM
 
 @{
-    ViewData["Title"] = "Sign Up - Nihongo Sekai";
+    ViewData["Title"] = "Đăng ký - Nihongo Sekai";
     Layout = "_Layout";
     ViewData["HideNavbar"] = true;
     ViewData["HideFooter"] = true;
@@ -14,13 +14,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <meta name="description"
-          content="Create your Nihongo Sekai account and start your Japanese learning journey today." />
+          content="Tạo tài khoản Nihongo Sekai và bắt đầu hành trình học tiếng Nhật ngay hôm nay." />
 }
-
 
 @section Styles {
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
     <!-- Global Stylesheet -->
     <link asp-append-version="true" href="~/css/styles.css" rel="stylesheet" />
     <!-- Page-Specific CSS -->
@@ -711,283 +710,254 @@
 }
 
 <div class="auth-page">
-    <div class="auth-main">
-        <div class="auth-card">
-            <!-- Left Column: Form -->
-            <div class="auth-form-column">
-                <div class="auth-header">
-                    <div class="auth-brand" style="margin-bottom:1rem;">
-                        <span class="brand-icon">日</span>
-                        <span class="brand-text">Nihongo Sekai</span>
-                    </div>
-                    <h1 class="auth-title" style="margin-bottom:1rem;">Start Your Journey</h1>
-                    <p class="auth-subtitle" style="margin-bottom:1rem;">
-                        Create your account and begin mastering Japanese today
-                    </p>
-                </div>
+  <div class="auth-main">
+    <div class="auth-card">
+      <!-- Left Column: Form -->
+      <div class="auth-form-column">
+        <div class="auth-header">
+          <div class="auth-brand" style="margin-bottom:1rem;">
+            <span class="brand-icon">日</span>
+            <span class="brand-text">Nihongo Sekai</span>
+          </div>
+          <h1 class="auth-title" style="margin-bottom:1rem;">Bắt đầu hành trình của bạn</h1>
+          <p class="auth-subtitle" style="margin-bottom:1rem;">
+            Tạo tài khoản và làm chủ tiếng Nhật ngay hôm nay
+          </p>
+        </div>
 
-                @* Hiển thị lỗi chung nếu có *@
-                @if (TempData["Error"] != null)
-                {
-                    <div class="auth-message error">
-                        @TempData["Error"]
-                    </div>
-                }
+        @* Hiển thị lỗi chung nếu có *@
+        @if (TempData["Error"] != null)
+        {
+          <div class="auth-message error">
+            @TempData["Error"]
+          </div>
+        }
 
-        @* Role Selection *@
+        <!-- Role Selection -->
         <div class="role-selection">
-          <label class="form-label">Choose your role</label>
+          <label class="form-label">Chọn vai trò của bạn</label>
           <div class="role-options">
             <div class="role-option selected" data-role="Learner">
               <div class="role-icon">🎓</div>
-              <h3 class="role-title">Learner</h3>
+              <h3 class="role-title">Người học</h3>
               <p class="role-description">
-                Learn Japanese through courses and live classrooms
+                Học tiếng Nhật qua các khóa học và lớp học trực tiếp
               </p>
             </div>
             <div class="role-option" data-role="Partner">
               <div class="role-icon">🏫</div>
-              <h3 class="role-title">Partner</h3>
+              <h3 class="role-title">Đối tác</h3>
               <p class="role-description">
-                Share your expertise and teach Japanese to students worldwide
+                Chia sẻ chuyên môn và giảng dạy tiếng Nhật cho học viên toàn cầu
               </p>
             </div>
           </div>
         </div>
 
         <form asp-action="Register"
-                method="post"
-                enctype="multipart/form-data"
-                class="auth-form"
-                id="registerForm">
-            <input asp-for="ApplyAsPartner" type="hidden" id="ApplyAsPartner" value="false" />
+              method="post"
+              enctype="multipart/form-data"
+              class="auth-form"
+              id="registerForm">
+          <input asp-for="ApplyAsPartner" type="hidden" id="ApplyAsPartner" value="false" />
 
+          <div class="form-group">
+            <label asp-for="FullName" class="form-label">Họ và tên</label>
+            <input asp-for="FullName"
+                   class="form-input"
+                   placeholder="Nhập đầy đủ họ tên"
+                   required autofocus />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+          </div>
+
+          <div class="form-group">
+            <label asp-for="EmailAddress" class="form-label">Địa chỉ email</label>
+            <input asp-for="EmailAddress"
+                   type="email"
+                   class="form-input"
+                   placeholder="Nhập địa chỉ email"
+                   required />
+            <span asp-validation-for="EmailAddress" class="text-danger"></span>
+          </div>
+
+          <div class="form-group">
+            <label asp-for="Password" class="form-label">Mật khẩu</label>
+            <div class="password-input-wrapper">
+              <input asp-for="Password"
+                     type="password"
+                     id="password"
+                     class="form-input"
+                     placeholder="Tạo mật khẩu đủ mạnh"
+                     minlength="8" required />
+              <button type="button"
+                      class="password-toggle"
+                      onclick="togglePassword('password')"
+                      aria-label="Toggle password visibility">
+                <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Strength & Requirements -->
+            <div class="password-strength" id="passwordStrength">
+              <div class="strength-label">Độ mạnh mật khẩu:</div>
+              <div class="strength-bar">
+                <div id="strengthFill" class="strength-fill"></div>
+              </div>
+              <div id="strengthText" class="strength-text">
+                Nhập mật khẩu
+              </div>
+            </div>
+            <div class="password-requirements">
+              <div id="req-length" class="requirement">
+                <span class="req-icon">○</span>Tối thiểu 8 ký tự
+              </div>
+              <div id="req-uppercase" class="requirement">
+                <span class="req-icon">○</span>Ít nhất 1 chữ hoa
+              </div>
+              <div id="req-lowercase" class="requirement">
+                <span class="req-icon">○</span>Ít nhất 1 chữ thường
+              </div>
+              <div id="req-number" class="requirement">
+                <span class="req-icon">○</span>Ít nhất 1 số
+              </div>
+              <div id="req-symbol" class="requirement">
+                <span class="req-icon">○</span>Ít nhất 1 ký tự đặc biệt (!@@#$%^&*)
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label asp-for="ConfirmPassword" class="form-label">Xác nhận mật khẩu</label>
+            <div class="password-input-wrapper">
+              <input asp-for="ConfirmPassword"
+                     type="password"
+                     id="confirmPassword"
+                     class="form-input"
+                     placeholder="Xác nhận mật khẩu"
+                     required />
+              <button type="button"
+                      class="password-toggle"
+                      onclick="togglePassword('confirmPassword')"
+                      aria-label="Toggle confirm password visibility">
+                <svg id="eyeIcon2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+          </div>
+
+          <!-- Chỉ hiện khi chọn Partner -->
+          <div id="partnerExtra" style="display:none;">
+            <!-- Years of Experience -->
             <div class="form-group">
-                <label asp-for="FullName" class="form-label">Full Name</label>
-                <input asp-for="FullName"
-                        class="form-input"
-                        placeholder="Enter your full name" required autofocus />
-                <span asp-validation-for="FullName" class="text-danger"></span>
+              <label asp-for="YearsOfExperience" class="form-label">Kinh nghiệm (năm)</label>
+              <select asp-for="YearsOfExperience"
+                      class="form-input"
+                      asp-items="Html.GetEnumSelectList<YearsOfExperience>()">
+                <option value="">Chọn kinh nghiệm</option>
+              </select>
+              <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
             </div>
 
+            <!-- Specializations -->
             <div class="form-group">
-                <label asp-for="EmailAddress" class="form-label">
-                    Email Address
-                </label>
-                <input asp-for="EmailAddress"
-                        type="email"
-                        class="form-input"
-                        placeholder="Enter your email address" required />
-                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+              <label asp-for="Specializations" class="form-label">Chuyên môn</label>
+              <div class="specializations-grid">
+                @foreach (SpecializationType spec in Enum.GetValues(typeof(SpecializationType)))
+                {
+                  <label class="checkbox-group">
+                    <input type="checkbox"
+                           name="Specializations"
+                           value="@spec"
+                           class="checkbox-input"
+                           @(Model.Specializations?.Contains(spec) == true ? "checked" : "") />
+                    <span class="checkbox-label">
+                      @Html.DisplayFor(_ => spec)
+                    </span>
+                  </label>
+                }
+              </div>
+              <span asp-validation-for="Specializations" class="text-danger"></span>
             </div>
 
+            <!-- Certificates & Qualifications -->
             <div class="form-group">
-                <label asp-for="Password" class="form-label">Password</label>
-                <div class="password-input-wrapper">
-                    <input asp-for="Password"
-                            type="password"
-                            id="password"
-                            class="form-input"
-                            placeholder="Create a strong password"
-                            minlength="8" required />
-                    <button type="button"
-                            class="password-toggle"
-                            onclick="togglePassword('password')"
-                            aria-label="Toggle password visibility">
-                        <svg id="eyeIcon"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                            <circle cx="12" cy="12" r="3" />
-                        </svg>
-                    </button>
+              <label asp-for="PartnerDocument" class="form-label">Chứng chỉ & bằng cấp</label>
+              <div class="file-upload" id="certificateUpload">
+                <div class="file-upload-icon">📁</div>
+                <div class="file-upload-text">Tải lên chứng chỉ của bạn</div>
+                <div class="file-upload-hint">
+                  PDF, DOC hoặc hình ảnh, tối đa 10MB
                 </div>
-
-                <!-- Strength & Requirements -->
-                <div class="password-strength" id="passwordStrength">
-                    <div class="strength-label">Password Strength:</div>
-                    <div class="strength-bar">
-                        <div id="strengthFill" class="strength-fill"></div>
-                    </div>
-                    <div id="strengthText" class="strength-text">
-                        Enter password
-                    </div>
-                </div>
-                <div class="password-requirements">
-                    <div id="req-length" class="requirement">
-                        <span class="req-icon">○</span>At least 8 characters
-                    </div>
-                    <div id="req-uppercase" class="requirement">
-                        <span class="req-icon">○</span>One uppercase letter
-                    </div>
-                    <div id="req-lowercase" class="requirement">
-                        <span class="req-icon">○</span>One lowercase letter
-                    </div>
-                    <div id="req-number" class="requirement">
-                        <span class="req-icon">○</span>One number
-                    </div>
-                    <div id="req-symbol" class="requirement">
-                        <span class="req-icon">○</span>One symbol (!@@#$%^&*)
-                    </div>
-                </div>
+                <input type="file"
+                       name="PartnerDocument"
+                       id="PartnerDocument"
+                       multiple
+                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                       style="display:none;" />
+              </div>
+              <div id="fileList" class="file-list"></div>
+              <span asp-validation-for="PartnerDocument" class="text-danger"></span>
             </div>
+          </div>
 
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="form-label">
-                    Confirm Password
-                </label>
-                <div class="password-input-wrapper">
-                    <input asp-for="ConfirmPassword"
-                            type="password"
-                            id="confirmPassword"
-                            class="form-input"
-                            placeholder="Confirm your password" required />
-                    <button type="button"
-                            class="password-toggle"
-                            onclick="togglePassword('confirmPassword')"
-                            aria-label="Toggle confirm password visibility">
-                        <svg id="eyeIcon2"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                            <circle cx="12" cy="12" r="3" />
-                        </svg>
-                    </button>
-                </div>
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
+          <!-- Agree Terms -->
+          <div class="form-group">
+            <label class="form-label">
+              <input asp-for="AgreeTerms"
+                     type="checkbox"
+                     id="AgreeTerms"
+                     disabled />
+              Tôi đồng ý với
+              <a href="~/terms" class="auth-link" target="_blank">Điều khoản dịch vụ</a>
+              và
+              <a href="~/privacy" class="auth-link" target="_blank">Chính sách bảo mật</a>
+            </label>
+            <span asp-validation-for="AgreeTerms" class="text-danger"></span>
+          </div>
 
-            @* Chỉ hiện khi chọn Partner
-    <div id="partnerUploadSection"
-        class="form-group"
-        style="display:none;">
-    <label asp-for="PartnerDocument" class="form-label">
-        Upload verification document
-    </label>
-    <input asp-for="PartnerDocument"
-            type="file"
-            accept=".pdf,.jpg,.png"
-            class="form-input" />
-    <span asp-validation-for="PartnerDocument"
-            class="text-danger"></span>
-    </div> *@
-
-            <!-- Chỉ hiện khi chọn Partner -->
-            <div id="partnerExtra" style="display:none;">
-                <!-- Years of Experience -->
-                <div class="form-group">
-                    <label asp-for="YearsOfExperience" class="form-label"></label>
-                    <select asp-for="YearsOfExperience"
-                            class="form-input"
-                            asp-items="Html.GetEnumSelectList<YearsOfExperience>()">
-                        <option value="">Select experience</option>
-                    </select>
-                    <span asp-validation-for="YearsOfExperience"
-                            class="text-danger"></span>
-                </div>
-
-                <!-- Specializations -->
-                <div class="form-group">
-                    <label asp-for="Specializations" class="form-label"></label>
-                    <div class="specializations-grid">
-                        @foreach (SpecializationType spec in Enum.GetValues(typeof(SpecializationType)))
-                        {
-                            <label class="checkbox-group">
-                                <input type="checkbox"
-                                        name="Specializations"
-                                        value="@spec"
-                                        class="checkbox-input"
-                                        @(Model.Specializations?.Contains(spec) == true ? "checked" : "") />
-                                <span class="checkbox-label">
-                                    @Html.DisplayFor(_ => spec)
-                                </span>
-                            </label>
-                        }
-                    </div>
-                    <span asp-validation-for="Specializations"
-                            class="text-danger"></span>
-                </div>
-
-                <!-- Certificates & Qualifications -->
-                <div class="form-group">
-                    <label asp-for="PartnerDocument" class="form-label"></label>
-                    <div class="file-upload" id="certificateUpload">
-                        <div class="file-upload-icon">📁</div>
-                        <div class="file-upload-text">Upload your certificates</div>
-                        <div class="file-upload-hint">
-                            PDF, DOC, or images up to 10MB each
-                        </div>
-                        <input type="file"
-                                name="PartnerDocument"
-                                id="PartnerDocument"
-                                multiple
-                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                style="display:none;" />
-                    </div>
-                    <div id="fileList" class="file-list"></div>
-                    <span asp-validation-for="PartnerDocument"
-                            class="text-danger"></span>
-                </div>
-            </div>
-
-
-            <!-- ↓ đây: AgreeTerms -->
-            <div class="form-group">
-                <label class="form-label">
-                    <input asp-for="AgreeTerms"
-                            type="checkbox"
-                            id="AgreeTerms"
-                            disabled />
-                    I agree to the
-                    <a href="~/terms" class="auth-link" target="_blank">Terms of Service</a>
-                    and
-                    <a href="~/privacy" class="auth-link" target="_blank">Privacy Policy</a>
-                </label>
-                <span asp-validation-for="AgreeTerms" class="text-danger"></span>
-            </div>
-
-            <!-- ↓ đây: nút submit -->
-            <button type="submit"
-                    id="registerButton"
-                    class="auth-button"
-                    disabled>
-                <span id="registerButtonText">Create Account</span>
-                <div id="registerSpinner" class="spinner" style="display:none;"></div>
-            </button>
+          <!-- Submit Button -->
+          <button type="submit"
+                  id="registerButton"
+                  class="auth-button"
+                  disabled>
+            <span id="registerButtonText">Tạo tài khoản</span>
+            <div id="registerSpinner" class="spinner" style="display:none;"></div>
+          </button>
         </form>
 
         <!-- Social Login -->
         <div class="social-login">
-            <div class="social-divider">Or sign up with</div>
-            <div class="social-buttons">
-                <button type="button" class="social-button" onclick="signupWithGoogle()">
-                    <!-- Dùng logo gốc Google từ URL của họ -->
-                    <img src="https://developers.google.com/identity/images/g-logo.png"
-                            alt="Google" />
-                    Google
-                </button>
-            </div>
+          <div class="social-divider">Hoặc đăng ký bằng</div>
+          <div class="social-buttons">
+            <button type="button" class="social-button" onclick="signupWithGoogle()">
+              <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" />
+              Google
+            </button>
+          </div>
         </div>
 
         <!-- Auth Links -->
         <div class="auth-links">
           <p>
-            Already have an account?
-            <a asp-action="Login" class="auth-link">
-              Sign in here
-            </a>
+            Đã có tài khoản?
+            <a asp-action="Login" class="auth-link">Đăng nhập tại đây</a>
           </p>
         </div>
-            <div class="mt-4 text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-muted small"><i class="bi bi-arrow-left-circle"></i> Back to Home</a>
-            </div>
+
+        <div class="mt-4 text-center">
+          <a asp-controller="Home" asp-action="Index" class="text-muted small">
+            <i class="bi bi-arrow-left-circle"></i> Quay về trang chủ
+          </a>
+        </div>
       </div>
-    </div><!-- /.auth-card -->
-  </div><!-- /.auth-main -->
+    </div>
+  </div><!-- /.auth-card -->
 </div><!-- /.auth-page -->
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
@@ -1012,7 +982,7 @@
               opt.classList.add('selected');
               const isPartner = opt.dataset.role === 'Partner';
               roleHidden.value = isPartner ? 'true' : 'false';
-              btnText.textContent = isPartner ? 'Request Account' : 'Create Account';
+              btnText.textContent = isPartner ? 'Yêu cầu tài khoản' : 'Tạo tài khoản';
               partnerExtra.style.display = isPartner ? 'block' : 'none';
               if (isPartner) {
                 yearsSelect.setAttribute('required','');
@@ -1071,16 +1041,16 @@
               }
             });
             const levels = [
-              { w:'20%', t:'Very Weak', c:'#ef4444' },
-              { w:'40%', t:'Weak',      c:'#f59e0b' },
-              { w:'60%', t:'Fair',      c:'#eab308' },
-              { w:'80%', t:'Good',      c:'#22c55e' },
-              { w:'100%',t:'Strong',    c:'#16a34a' }
+              { w:'20%', t:'Rất yếu',     c:'#ef4444' },
+              { w:'40%', t:'Yếu',         c:'#f59e0b' },
+              { w:'60%', t:'Trung bình',  c:'#eab308' },
+              { w:'80%', t:'Tốt',         c:'#22c55e' },
+              { w:'100%',t:'Mạnh',        c:'#16a34a' }
             ];
             if (!v) {
               fill.style.width = '0';
               fill.style.background = '#e5e7eb';
-              txt.textContent = 'Enter password';
+              txt.textContent = 'Nhập mật khẩu';
             } else {
               const lv = levels[Math.min(score,4)];
               fill.style.width = lv.w;
@@ -1089,7 +1059,7 @@
             }
           });
           cf.addEventListener('input', () => {
-            cf.setCustomValidity(cf.value !== pwd.value ? 'Passwords do not match' : '');
+            cf.setCustomValidity(cf.value !== pwd.value ? 'Mật khẩu không khớp' : '');
           });
 
           // 4) FILE UPLOAD
@@ -1142,5 +1112,6 @@
         });
     </script>
 }
+
 
 

@@ -1,41 +1,39 @@
 ﻿@{
     Layout = "_Layout";
-    ViewData["Title"] = "Help Center - Nihongo Sekai";
+    ViewData["Title"] = "Trung Tâm Trợ Giúp - Nihongo Sekai";
 }
 
 @section Head {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Help Center - Nihongo Sekai</title>
+    <title>Trung Tâm Trợ Giúp - Nihongo Sekai</title>
     <meta name="description"
-          content="Get help with your Japanese learning journey. Find answers to common questions, tutorials, and support resources." />
+          content="Tìm kiếm trợ giúp cho hành trình học tiếng Nhật của bạn. Tìm câu trả lời cho các câu hỏi thường gặp, hướng dẫn và tài nguyên hỗ trợ." />
 }
 
 @section Styles {
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
 
-    <!-- Page-specific CSS -->
+    <!-- CSS trang cụ thể -->
     <link rel="stylesheet" href="~/css/help.css" />
     <link rel="stylesheet" href="~/css/styles.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
 }
 
-<!-- Main Content -->
+<!-- Nội dung chính -->
 <main>
-    <!-- Page Header -->
+    <!-- Tiêu đề trang -->
     <section class="page-header">
         <div class="container">
-            <h1 class="page-title">Help Center</h1>
+            <h1 class="page-title">Trung Tâm Trợ Giúp</h1>
             <p class="page-subtitle">
-                Find answers to common questions and get support for your Japanese
-                learning journey
+                Tìm câu trả lời cho các câu hỏi thường gặp và nhận hỗ trợ cho hành trình học tiếng Nhật của bạn
             </p>
         </div>
     </section>
 
-    <!-- Search Section -->
+    <!-- Phần tìm kiếm -->
     <section class="help-search-section">
         <div class="container">
             <div class="search-box">
@@ -49,16 +47,16 @@
                 </svg>
                 <input type="text"
                        id="helpSearch"
-                       placeholder="Search help articles..."
+                       placeholder="Tìm kiếm bài viết trợ giúp..."
                        class="search-input" />
             </div>
         </div>
     </section>
 
-    <!-- FAQ Categories -->
+    <!-- Danh mục FAQ -->
     <section class="faq-categories-section">
         <div class="container">
-            <h2 class="section-title">Popular Topics</h2>
+            <h2 class="section-title">Chủ Đề Phổ Biến</h2>
             <div class="categories-grid">
                 <div class="category-card" data-category="getting-started">
                     <div class="category-icon">
@@ -71,12 +69,11 @@
                             <path d="M2 12l10 5 10-5" />
                         </svg>
                     </div>
-                    <h3 class="category-title">Getting Started</h3>
+                    <h3 class="category-title">Bắt Đầu</h3>
                     <p class="category-description">
-                        Learn how to create your account, choose courses, and begin your
-                        Japanese learning journey.
+                        Học cách tạo tài khoản, chọn khóa học và bắt đầu hành trình học tiếng Nhật.
                     </p>
-                    <span class="category-count">12 articles</span>
+                    <span class="category-count">12 bài viết</span>
                 </div>
 
                 <div class="category-card" data-category="courses">
@@ -89,12 +86,11 @@
                             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                         </svg>
                     </div>
-                    <h3 class="category-title">Courses & Learning</h3>
+                    <h3 class="category-title">Khóa Học & Học Tập</h3>
                     <p class="category-description">
-                        Everything about our courses, progress tracking, certificates,
-                        and learning materials.
+                        Tất cả về khóa học, theo dõi tiến độ, chứng chỉ và tài liệu học tập.
                     </p>
-                    <span class="category-count">18 articles</span>
+                    <span class="category-count">18 bài viết</span>
                 </div>
 
                 <div class="category-card" data-category="classrooms">
@@ -108,12 +104,11 @@
                             <path d="m22 21-3-3" />
                         </svg>
                     </div>
-                    <h3 class="category-title">Live Classrooms</h3>
+                    <h3 class="category-title">Lớp Học Trực Tiếp</h3>
                     <p class="category-description">
-                        Join live sessions, interact with teachers, and practice with
-                        other students in real-time.
+                        Tham gia các buổi học trực tiếp, tương tác với giáo viên và luyện tập cùng bạn học khác theo thời gian thực.
                     </p>
-                    <span class="category-count">8 articles</span>
+                    <span class="category-count">8 bài viết</span>
                 </div>
 
                 <div class="category-card" data-category="technical">
@@ -126,12 +121,11 @@
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                         </svg>
                     </div>
-                    <h3 class="category-title">Technical Support</h3>
+                    <h3 class="category-title">Hỗ Trợ Kỹ Thuật</h3>
                     <p class="category-description">
-                        Troubleshoot technical issues, browser requirements, and account
-                        problems.
+                        Khắc phục sự cố kỹ thuật, yêu cầu trình duyệt và vấn đề tài khoản.
                     </p>
-                    <span class="category-count">15 articles</span>
+                    <span class="category-count">15 bài viết</span>
                 </div>
 
                 <div class="category-card" data-category="billing">
@@ -144,12 +138,11 @@
                             <line x1="1" y1="10" x2="23" y2="10" />
                         </svg>
                     </div>
-                    <h3 class="category-title">Billing & Payments</h3>
+                    <h3 class="category-title">Thanh Toán & Hóa Đơn</h3>
                     <p class="category-description">
-                        Manage your subscription, payment methods, refunds, and billing
-                        information.
+                        Quản lý đăng ký, phương thức thanh toán, hoàn tiền và thông tin hóa đơn.
                     </p>
-                    <span class="category-count">10 articles</span>
+                    <span class="category-count">10 bài viết</span>
                 </div>
 
                 <div class="category-card" data-category="account">
@@ -162,42 +155,39 @@
                             <circle cx="12" cy="7" r="4" />
                         </svg>
                     </div>
-                    <h3 class="category-title">Account Settings</h3>
+                    <h3 class="category-title">Cài Đặt Tài Khoản</h3>
                     <p class="category-description">
-                        Update your profile, change password, privacy settings, and
-                        account preferences.
+                        Cập nhật hồ sơ, đổi mật khẩu, cài đặt quyền riêng tư và tùy chọn tài khoản.
                     </p>
-                    <span class="category-count">7 articles</span>
+                    <span class="category-count">7 bài viết</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Popular FAQs -->
+    <!-- FAQ Phổ Biến -->
     <section class="popular-faqs-section">
         <div class="container">
-            <h2 class="section-title">Frequently Asked Questions</h2>
+            <h2 class="section-title">Câu Hỏi Thường Gặp</h2>
             <div class="faq-accordion" id="faqAccordion">
-                <!-- FAQ items will be loaded dynamically -->
+                <!-- Các mục FAQ sẽ được tải động -->
             </div>
         </div>
     </section>
 
-    <!-- Contact Support -->
+    <!-- Liên hệ hỗ trợ -->
     <section class="contact-support-section">
         <div class="container">
             <div class="support-card">
                 <div class="support-content">
-                    <h2 class="support-title">Still need help?</h2>
+                    <h2 class="support-title">Vẫn cần trợ giúp?</h2>
                     <p class="support-description">
-                        Can't find what you're looking for? Our support team is here to
-                        help you with any questions about your Japanese learning
-                        journey.
+                        Không tìm thấy câu trả lời bạn cần? Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng giúp bạn với bất kỳ câu hỏi nào về hành trình học tiếng Nhật.
                     </p>
                     <div class="support-actions">
-                        <a href="contact.html" class="btn btn-primary">Contact Support</a>
+                        <a href="contact.html" class="btn btn-primary">Liên hệ hỗ trợ</a>
                         <a href="mailto:support@nihongosekai.com"
-                           class="btn btn-outline">Email Us</a>
+                           class="btn btn-outline">Gửi Email</a>
                     </div>
                 </div>
                 <div class="support-image">
@@ -233,19 +223,19 @@
         async function handleContactFormSubmission(form) {
           try {
             showLoading();
-            // simulate API call
+            // mô phỏng gọi API
             await new Promise(r => setTimeout(r, 1500));
-            window.NihongoSekai.showToast("Message sent successfully! We'll get back to you within 24 hours.", "success");
+            window.NihongoSekai.showToast("Gửi tin nhắn thành công! Chúng tôi sẽ phản hồi trong vòng 24 giờ.", "success");
             form.reset();
           } catch {
-            window.NihongoSekai.showToast("Failed to send message. Please try again.", "error");
+            window.NihongoSekai.showToast("Gửi tin nhắn thất bại. Vui lòng thử lại.", "error");
           } finally {
             hideLoading();
           }
         }
 
         function openLiveChat() {
-          window.NihongoSekai.showToast("Live chat feature coming soon! Please use email or phone for now.", "info");
+          window.NihongoSekai.showToast("Tính năng chat trực tiếp sắp ra mắt! Vui lòng sử dụng email hoặc điện thoại trước nhé.", "info");
         }
 
         function showOfficeLocations() {

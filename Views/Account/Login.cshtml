@@ -2,7 +2,7 @@
 @model LoginVM
 
 @{
-    ViewData["Title"] = "Sign In - Nihongo Sekai";
+    ViewData["Title"] = "Đăng nhập - Nihongo Sekai";
     Layout = "_Layout";
     ViewData["HideNavbar"] = true;
     ViewData["HideFooter"] = true;
@@ -11,14 +11,14 @@
 @section Head {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign In - Nihongo Sekai</title>
+    <title>Đăng nhập - Nihongo Sekai</title>
     <meta name="description"
-          content="Sign in to your Nihongo Sekai account and continue your Japanese learning journey with expert courses and live classrooms." />
+          content="Đăng nhập vào tài khoản Nihongo Sekai của bạn và tiếp tục hành trình học tiếng Nhật với các khóa học chất lượng và lớp học trực tiếp." />
 }
 
 @section Styles {
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
     <!-- Global Stylesheet -->
     <link rel="stylesheet" href="/css/styles.css" />
     <!-- Page-Specific CSS -->
@@ -279,8 +279,8 @@
                     <span class="brand-nihongo">Nihongo</span>
                     <span class="brand-sekai">Sekai</span>
                 </div>
-                <h1 class="auth-title">Welcome Back</h1>
-                <p class="auth-subtitle">Sign in to continue your Japanese learning journey</p>
+                <h1 class="auth-title">Chào mừng trở lại</h1>
+                <p class="auth-subtitle">Đăng nhập để tiếp tục hành trình học tiếng Nhật của bạn</p>
 
                 @if (TempData["Success"] != null)
                 {
@@ -290,7 +290,7 @@
                 @if (TempData["Error"] != null)
                 {
                     <div class="alert alert-danger" role="alert">
-                        <strong>Sorry!</strong> @TempData["Error"]
+                        <strong>Xin lỗi!</strong> @TempData["Error"]
                     </div>
                 }
                 @if (TempData["ErrorMessage"] != null)
@@ -303,14 +303,14 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                     <div class="mb-3">
-                        <label asp-for="EmailAddress" class="form-label">Email Address</label>
-                        <input asp-for="EmailAddress" class="form-control" placeholder="Enter your email" autofocus />
+                        <label asp-for="EmailAddress" class="form-label">Địa chỉ email</label>
+                        <input asp-for="EmailAddress" class="form-control" placeholder="Nhập địa chỉ email của bạn" autofocus />
                         <span asp-validation-for="EmailAddress" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3 password-input-wrapper">
-                        <label asp-for="Password" class="form-label">Password</label>
-                        <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
+                        <label asp-for="Password" class="form-label">Mật khẩu</label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu của bạn" />
                         <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">
                             <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -325,55 +325,56 @@
                     </div>
 
                     <button type="submit" class="btn btn-danger w-100 mb-3" id="loginButton">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
                     </button>
 
-                    <div class="text-center text-muted mb-3">or continue with</div>
+                    <div class="text-center text-muted mb-3">hoặc đăng nhập bằng</div>
 
                     <a asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Google"
                        class="btn btn-outline-danger w-100 mb-3 d-flex justify-content-center align-items-center">
-                        <i class="bi bi-google me-2"></i> Continue with Google
+                        <i class="bi bi-google me-2"></i> Tiếp tục với Google
                     </a>
 
                     <div class="text-end mb-2">
-                        <a asp-action="ForgotPassword" class="text-danger text-decoration-none">Forgot your password?</a>
+                        <a asp-action="ForgotPassword" class="text-danger text-decoration-none">Quên mật khẩu?</a>
                     </div>
                     <div class="text-center small mb-4">
-                        Don't have an account? <a asp-action="Register" class="text-danger text-decoration-none">Create one</a>
+                        Chưa có tài khoản? <a asp-action="Register" class="text-danger text-decoration-none">Đăng ký</a>
                     </div>
 
                     <div class="mt-4 text-center">
-                        <a asp-controller="Home" asp-action="Index" class="text-muted small"><i class="bi bi-arrow-left-circle"></i> Back to Home</a>
+                        <a asp-controller="Home" asp-action="Index" class="text-muted small"><i class="bi bi-arrow-left-circle"></i> Quay về trang chủ</a>
                     </div>
                 </form>
             </div>
 
             <!-- Right: Benefits Column -->
             <div class="auth-benefits-column">
-                <h2>Master Japanese with Confidence</h2>
-                <p>Join thousands of learners on their journey to Japanese fluency with our comprehensive platform</p>
+                <h2>Chinh phục tiếng Nhật với sự tự tin</h2>
+                <p>Tham gia cùng hàng ngàn người học trên hành trình thành thạo tiếng Nhật với nền tảng toàn diện của chúng tôi</p>
                 <ul class="list-unstyled benefits-list">
                     <li class="benefit-item">
                         <div class="benefit-icon">📚</div>
-                        <div><h5>Expert-Led Courses</h5><p class="small">Learn from native speakers and certified teachers with structured, progressive lessons</p></div>
+                        <div><h5>Khóa học do chuyên gia dẫn dắt</h5><p class="small">Học từ người bản xứ và giáo viên chứng nhận với các bài học có cấu trúc, tiến bộ</p></div>
                     </li>
                     <li class="benefit-item">
                         <div class="benefit-icon">💬</div>
-                        <div><h5>Live Conversation Practice</h5><p class="small">Join interactive classrooms and practice speaking with real people in real-time</p></div>
+                        <div><h5>Thực hành hội thoại trực tiếp</h5><p class="small">Tham gia lớp học tương tác và luyện nói với người thật trong thời gian thực</p></div>
                     </li>
                     <li class="benefit-item">
                         <div class="benefit-icon">📊</div>
-                        <div><h5>Track Your Progress</h5><p class="small">Monitor your learning journey with detailed analytics and personalized recommendations</p></div>
+                        <div><h5>Theo dõi tiến trình của bạn</h5><p class="small">Theo dõi hành trình học của bạn với phân tích chi tiết và đề xuất cá nhân hóa</p></div>
                     </li>
                     <li class="benefit-item">
                         <div class="benefit-icon">🌍</div>
-                        <div><h5>Global Community</h5><p class="small">Connect with learners worldwide and immerse yourself in Japanese culture</p></div>
+                        <div><h5>Cộng đồng toàn cầu</h5><p class="small">Kết nối với người học khắp thế giới và hòa mình vào văn hóa Nhật Bản</p></div>
                     </li>
                 </ul>
             </div>
         </div>
     </main>
 </div>
+
 
 <!-- Scripts -->
 @section Scripts {

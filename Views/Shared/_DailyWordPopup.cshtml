@@ -1,19 +1,27 @@
 ﻿@model JapaneseLearningPlatform.Models.DailyWord
 
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+}
+
 <div id="dailyWordIcon" style="position:fixed;bottom:30px;right:30px;z-index:1000;cursor:pointer;">
-    <img src="https://us-tuna-sounds-images.voicemod.net/e1bd81b3-5577-4cc0-b8f6-36fad0073c04-1748624882991.jpg" alt="Word of the Day" style="width:80px;height:80px;border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,0.3);" />
+    <img src="https://us-tuna-sounds-images.voicemod.net/e1bd81b3-5577-4cc0-b8f6-36fad0073c04-1748624882991.jpg"
+         alt="Từ trong ngày"
+         style="width:80px;height:80px;border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,0.3);" />
 </div>
 
 <div id="dailyWordModal" class="daily-word-modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Word of the Day</h2>
+        <h2>Từ trong ngày</h2>
         <h3>@Model.JapaneseWord</h3>
         <p><strong>@Model.Romanji</strong></p>
         <p>@Model.Description</p>
         @if (!string.IsNullOrEmpty(Model.ImageUrl))
         {
-            <img src="@Model.ImageUrl" style="max-width:100%;height:auto;border-radius:10px;" />
+            <img src="@Model.ImageUrl"
+                 style="max-width:100%;height:auto;border-radius:10px;" />
         }
     </div>
 </div>

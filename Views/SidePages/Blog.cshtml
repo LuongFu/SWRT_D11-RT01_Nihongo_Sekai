@@ -6,28 +6,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description"
-          content="Explore Japanese language learning tips, cultural insights, student success stories, and expert advice from our teachers and community." />
+          content="Khám phá mẹo học tiếng Nhật, hiểu sâu văn hóa, câu chuyện thành công của học viên và lời khuyên chuyên môn từ giảng viên và cộng đồng của chúng tôi." />
 }
 
-
 @section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+
     <link rel="stylesheet" href="~/css/blog.css" />
     <link rel="stylesheet" href="~/css/styles.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
 }
 
 <main>
-    <!-- Blog Hero -->
+    <!-- Phần Blog Hero -->
     <section class="blog-hero">
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    Learning <span class="text-gradient">Japanese</span> Together
+                    Cùng nhau <span class="text-gradient">Học Tiếng Nhật</span>
                 </h1>
                 <p class="hero-description">
-                    Discover insights, tips, and stories from our Japanese learning
-                    community. From grammar guides to cultural deep-dives, explore
-                    everything that makes learning Japanese an incredible journey.
+                    Khám phá góc nhìn, mẹo và câu chuyện từ cộng đồng học tiếng Nhật của chúng tôi.
+                    Từ hướng dẫn ngữ pháp đến đi sâu vào văn hóa, hãy trải nghiệm mọi điều làm nên
+                    hành trình học tiếng Nhật tuyệt vời.
                 </p>
                 <div class="hero-search">
                     <div class="search-box">
@@ -35,117 +37,118 @@
                             <circle cx="11" cy="11" r="8" />
                             <path d="m21 21-4.35-4.35" />
                         </svg>
-                        <input type="text" id="blogSearch" placeholder="Search articles..." class="search-input" />
+                        <input type="text" id="blogSearch" placeholder="Tìm kiếm bài viết..." class="search-input" />
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Featured Article -->
+    <!-- Bài viết nổi bật -->
     <section class="featured-article-section">
         <div class="container">
             <div class="featured-article">
                 <div class="featured-image">
-                    <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&h=500&fit=crop" alt="Featured Article" />
-                    <div class="featured-badge">Featured</div>
+                    <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&h=500&fit=crop"
+                         alt="Bài viết nổi bật" />
+                    <div class="featured-badge">Nổi bật</div>
                 </div>
                 <div class="featured-content">
                     <div class="article-meta">
-                        <span class="article-category">Cultural Insights</span>
-                        <span class="article-date">March 18, 2024</span>
-                        <span class="article-reading-time">8 min read</span>
+                        <span class="article-category">Hiểu về Văn hóa</span>
+                        <span class="article-date">18 Tháng 3, 2024</span>
+                        <span class="article-reading-time">8 phút đọc</span>
                     </div>
-                    <h2 class="featured-title">Understanding Keigo: The Art of Japanese Politeness</h2>
+                    <h2 class="featured-title">Hiểu về Keigo: Nghệ thuật Lịch sự trong tiếng Nhật</h2>
                     <p class="featured-excerpt">
-                        Dive deep into the complex world of Japanese honorific language
-                        (keigo) and discover how mastering these forms can transform
-                        your Japanese communication. From basic respect to business
-                        formality, learn when and how to use these essential
-                        expressions.
+                        Khám phá sâu về ngôn ngữ kính ngữ Nhật Bản (keigo) và tìm hiểu cách làm chủ những
+                        biểu hiện này có thể thay đổi cách giao tiếp của bạn. Từ thể hiện sự tôn trọng cơ bản
+                        đến trang trọng trong kinh doanh, học khi nào và làm thế nào để sử dụng chúng.
                     </p>
                     <div class="article-author">
                         <div class="author-avatar">
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=YukiSensei&backgroundColor=b6e3f4" alt="Yuki Tanaka" />
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=YukiSensei&backgroundColor=b6e3f4"
+                                 alt="Yuki Tanaka" />
                         </div>
                         <div class="author-info">
                             <div class="author-name">Yuki Tanaka</div>
-                            <div class="author-title">Senior Japanese Instructor</div>
+                            <div class="author-title">Giảng viên Cao cấp tiếng Nhật</div>
                         </div>
                     </div>
-                    <a href="#" class="btn btn-primary">Read Full Article</a>
+                    <a href="#" class="btn btn-primary">Đọc bài đầy đủ</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Categories Section -->
+    <!-- Phân loại -->
     <section class="categories-section">
         <div class="container">
-            <h2 class="section-title">Explore by Category</h2>
+            <h2 class="section-title">Khám phá theo Danh mục</h2>
             <div class="categories-grid">
-                @* Lặp qua model hoặc hardcode các thẻ category-card *@
+                @* Lặp qua model hoặc đặt cứng các thẻ category-card *@
                 <div class="category-card" data-category="learning-tips">
                     <div class="category-icon">📚</div>
-                    <h3 class="category-title">Learning Tips</h3>
+                    <h3 class="category-title">Mẹo Học</h3>
                     <p class="category-description">
-                        Effective study methods, memory techniques, and learning strategies
+                        Phương pháp học hiệu quả, kỹ thuật ghi nhớ và chiến lược học tập
                     </p>
-                    <div class="category-count">45 articles</div>
+                    <div class="category-count">45 bài viết</div>
                 </div>
                 <!-- ... các thẻ khác tương tự ... -->
             </div>
         </div>
     </section>
 
-    <!-- Recent Articles -->
+    <!-- Bài viết gần đây -->
     <section class="articles-section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Recent Articles</h2>
+                <h2 class="section-title">Bài viết Mới nhất</h2>
                 <div class="section-filters">
                     <select id="categoryFilter" class="filter-select">
-                        <option value="">All Categories</option>
-                        <option value="learning-tips">Learning Tips</option>
+                        <option value="">Tất cả Danh mục</option>
+                        <option value="learning-tips">Mẹo Học</option>
                         <!-- ... -->
                     </select>
                     <select id="sortFilter" class="filter-select">
-                        <option value="newest">Newest First</option>
-                        <option value="oldest">Oldest First</option>
-                        <option value="popular">Most Popular</option>
+                        <option value="newest">Mới nhất trước</option>
+                        <option value="oldest">Cũ nhất trước</option>
+                        <option value="popular">Phổ biến nhất</option>
                     </select>
                 </div>
             </div>
 
             <div class="articles-grid" id="articlesGrid">
-                @* Nội dung articles sẽ render bằng JS hoặc từ Model *@
+                @* Nội dung bài viết sẽ render bằng JS hoặc từ Model *@
             </div>
 
             <div class="load-more-section">
-                <button class="btn btn-outline" id="loadMoreBtn">Load More Articles</button>
+                <button class="btn btn-outline" id="loadMoreBtn">Tải thêm bài viết</button>
             </div>
         </div>
     </section>
 
-    <!-- Newsletter Signup -->
+    <!-- Đăng ký nhận bản tin -->
     <section class="newsletter-section">
         <div class="container">
             <div class="newsletter-content">
                 <div class="newsletter-text">
-                    <h2 class="newsletter-title">Stay Updated</h2>
+                    <h2 class="newsletter-title">Cập nhật Liên tục</h2>
                     <p class="newsletter-description">
-                        Get the latest Japanese learning tips, cultural insights, and
-                        success stories delivered to your inbox. Join 25,000+ learners
-                        who read our weekly newsletter.
+                        Nhận mẹo học tiếng Nhật mới nhất, hiểu sâu văn hóa và câu chuyện thành công
+                        được gửi đến hộp thư của bạn. Tham gia cùng 25.000+ học viên đã đăng ký bản tin hàng tuần.
                     </p>
                 </div>
                 <form class="newsletter-form" id="newsletterForm">
                     <div class="form-group">
-                        <input type="email" id="newsletterEmail" placeholder="Enter your email address" class="newsletter-input" required />
-                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                        <input type="email" id="newsletterEmail"
+                               placeholder="Nhập email của bạn"
+                               class="newsletter-input" required />
+                        <button type="submit" class="btn btn-primary">Đăng ký</button>
                     </div>
                     <p class="newsletter-note">
-                        Free to subscribe. Unsubscribe anytime. No spam, we promise! 📧
+                        Miễn phí đăng ký. Hủy bất cứ lúc nào. Cam kết không spam! 📧
                     </p>
                 </form>
             </div>

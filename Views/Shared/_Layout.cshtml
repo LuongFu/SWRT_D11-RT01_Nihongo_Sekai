@@ -2,13 +2,16 @@
     var hideNavbar = ViewData["HideNavbar"] as bool? ?? false;
     var hideFooter = ViewData["HideFooter"] as bool? ?? false;
 }
+
 @section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/footer.css" />
-    <link rel="stylesheet" href="~/css/styles.css" />  
+    <link rel="stylesheet" href="~/css/styles.css" />
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -37,61 +40,97 @@
                     </div>
                     <ul class="nav-list">
 
+                        @* Admin *@
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <li>
-                                <a class="nav-link @(
-                                    ViewContext.RouteData.Values["controller"]?.ToString() == "Admin"
-                                    && ViewContext.RouteData.Values["action"]?.ToString()     == "Index"
-                                    ? "active-tab"
-                                    : ""
-                                    )"
-                                    asp-controller="Admin" asp-action="Index">
-                                    Home
+                                <a asp-controller="Admin" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active-tab" : "")">
+                                    Trang chủ
                                 </a>
                             </li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active-tab" : "")" asp-controller="Account" asp-action="Users">User List</a></li>
                             <li>
-                                <a class="nav-link @(
-                                    ViewContext.RouteData.Values["controller"]?.ToString() == "Admin"
-                                    && ViewContext.RouteData.Values["action"]?.ToString()     == "PartnerApplications"
-                                    ? "active-tab"
-                                    : ""
-                                    )"
-                                    asp-controller="Admin" asp-action="PartnerApplications">
-                                    Partner Applications
+                                <a asp-controller="Account" asp-action="Users" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active-tab" : "")">
+                                    Danh sách người dùng
                                 </a>
                             </li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")" asp-controller="Courses" asp-action="Index">Courses</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")" asp-controller="ClassroomInstances" asp-action="Index">Classroom</a></li>
+                            <li>
+                                <a asp-controller="Admin" asp-action="PartnerApplications" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "PartnerApplications" ? "active-tab" : "")">
+                                    Ứng tuyển Đối tác
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="Courses" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")">
+                                    Khóa học
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="ClassroomInstances" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")">
+                                    Lớp học
+                                </a>
+                            </li>
                         }
-
+                        @* Partner *@
                         else if (User.Identity.IsAuthenticated && User.IsInRole("Partner"))
                         {
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Partner" ? "active-tab" : "")" asp-controller="Partner" asp-action="Index">Home</a></li>
+                            <li>
+                                <a asp-controller="Partner" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Partner" ? "active-tab" : "")">
+                                    Trang chủ
+                                </a>
+                            </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle @((ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomTemplates" || ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances") ? "active-tab" : "")"
-                                   href="#" id="classroomDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Classrooms
+                                <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomTemplates" || ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")"
+                                   href="#" id="classroomDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Lớp học
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="classroomDropdown">
-                                    <li><a class="dropdown-item" asp-controller="ClassroomInstances" asp-action="MySession">My Sessions</a></li>
-                                    <li><a class="dropdown-item" asp-controller="ClassroomTemplates" asp-action="MyTemplate">My Templates</a></li>
+                                    <li><a asp-controller="ClassroomInstances" asp-action="MySession" class="dropdown-item">Phiên học</a></li>
+                                    <li><a asp-controller="ClassroomTemplates" asp-action="MyTemplate" class="dropdown-item">Mẫu lớp</a></li>
                                 </ul>
                             </li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dictionary" ? "active-tab" : "")" asp-controller="Dictionary" asp-action="Search">Dictionary</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")" asp-controller="Schedule" asp-action="Index">Schedule</a></li>
+                            <li>
+                                <a asp-controller="Dictionary" asp-action="Search" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dictionary" ? "active-tab" : "")">
+                                    Từ điển
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="Schedule" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")">
+                                    Lịch học
+                                </a>
+                            </li>
                         }
-
+                        @* Learner or guest *@
                         else
                         {
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" ? "active-tab" : "")" asp-controller="Learner" asp-action="Index">Home</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")" asp-controller="Courses" asp-action="Index">Courses</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")" asp-controller="ClassroomInstances" asp-action="Index">Classrooms</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")"asp-controller="Schedule" asp-action="Index">Schedule</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dictionary" ? "active-tab" : "")" asp-controller="Dictionary" asp-action="Search">Dictionary</a></li>
-                            <li><a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SidePages" ? "active-tab" : "")" asp-controller="SidePages" asp-action="About">About</a></li>
-                            
+                            <li>
+                                <a asp-controller="Learner" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" ? "active-tab" : "")">
+                                    Trang chủ
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="Courses" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")">
+                                    Khóa học
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="ClassroomInstances" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")">
+                                    Lớp học
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="Schedule" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")">
+                                    Lịch học
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="Dictionary" asp-action="Search" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dictionary" ? "active-tab" : "")">
+                                    Từ điển
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="SidePages" asp-action="About" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SidePages" ? "active-tab" : "")">
+                                    Giới thiệu
+                                </a>
+                            </li>
                         }
                     </ul>
                     <div class="nav-actions">
@@ -105,18 +144,18 @@
         <main class="flex-grow-1">
             @await Component.InvokeAsync("DailyWordPopup")
             @RenderBody()
-            @*Chat bot*@
+            <!-- Chat bot -->
             <iframe id="chatbot-iframe"
                     src="https://chat-bot-with-gemini-fe.onrender.com"
                     style="position: fixed;
-               bottom: 0;
-               right: 0;
-               width: 60px; /* chỉ hiển thị icon toggle */
-               height: 60px;
-               border: none;
-               z-index: 9999;
-               border-radius: 50%;
-               overflow: hidden;">
+                           bottom: 0;
+                           right: 0;
+                           width: 60px;
+                           height: 60px;
+                           border: none;
+                           z-index: 9999;
+                           border-radius: 50%;
+                           overflow: hidden;">
             </iframe>
         </main>
 
@@ -125,24 +164,23 @@
             <footer class="footer">
                 <div class="container">
                     <div class="footer-content">
-
-                        <!-- Brand & Social -->
+                        <!-- Thương hiệu & MXH -->
                         <div class="footer-section">
                             <div class="footer-brand">
                                 <span class="brand-icon">日</span>
                                 <span class="brand-text">Nihongo Sekai</span>
                             </div>
                             <p class="footer-description">
-                                Master Japanese through immersive conversations, cultural insights, and personalized learning paths with native speakers.
+                                Chinh phục tiếng Nhật qua trải nghiệm nhập vai, hiểu sâu văn hóa và lộ trình cá nhân hóa cùng người bản xứ.
                             </p>
                             <div class="social-links">
                                 <!-- Facebook -->
                                 <a asp-controller="SidePages" asp-action="About" class="social-link" aria-label="Facebook">
                                     <svg viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43
-                                             c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83
-                                             c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027
-                                             24 18.062 24 12.073z" />
+                                                 c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83
+                                                 c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027
+                                                 24 18.062 24 12.073z" />
                                     </svg>
                                 </a>
 
@@ -150,12 +188,12 @@
                                 <a asp-controller="SidePages" asp-action="Blog" class="social-link" aria-label="Twitter">
                                     <svg viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184
-                                             a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475
-                                             c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827
-                                             4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417
-                                             9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067
-                                             a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496
-                                             13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                                                 a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475
+                                                 c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827
+                                                 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417
+                                                 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067
+                                                 a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496
+                                                 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
                                     </svg>
                                 </a>
 
@@ -163,81 +201,67 @@
                                 <a asp-controller="SidePages" asp-action="Community" class="social-link" aria-label="Instagram">
                                     <svg viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987
-                                             6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988
-                                             c-1.297 0-2.448-.611-3.197-1.559-.748-.948-1.197-2.25-1.197-3.654
-                                             0-1.404.449-2.706 1.197-3.654.749-.948 1.9-1.559 3.197-1.559s2.448.611 3.197 1.559
-                                             c.748.948 1.197 2.25 1.197 3.654 0 1.404-.449 2.706-1.197 3.654
-                                             -.749.948-1.9 1.559-3.197 1.559zm7.718 0c-1.297 0-2.448-.611-3.197-1.559
-                                             -.748-.948-1.197-2.25-1.197-3.654 0-1.404.449-2.706 1.197-3.654
-                                             .749-.948 1.9-1.559 3.197-1.559s2.448.611 3.197 1.559
-                                             c.748.948 1.197 2.25 1.197 3.654 0 1.404-.449 2.706-1.197 3.654
-                                             -.749.948-1.9 1.559-3.197 1.559z" />
+                                                 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988
+                                                 c-1.297 0-2.448-.611-3.197-1.559-.748-.948-1.197-2.25-1.197-3.654
+                                                 0-1.404.449-2.706 1.197-3.654.749-.948 1.9-1.559 3.197-1.559s2.448.611 3.197 1.559
+                                                 c.748.948 1.197 2.25 1.197 3.654 0 1.404-.449 2.706-1.197 3.654
+                                                 -.749.948-1.9 1.559-3.197 1.559zm7.718 0c-1.297 0-2.448-.611-3.197-1.559
+                                                 -.748-.948-1.197-2.25-1.197-3.654 0-1.404.449-2.706 1.197-3.654
+                                                 .749-.948 1.9-1.559 3.197-1.559s2.448.611 3.197 1.559
+                                                 c.748.948 1.197 2.25 1.197 3.654 0 1.404-.449 2.706-1.197 3.654
+                                                 -.749.948-1.9 1.559-3.197 1.559z" />
                                     </svg>
                                 </a>
                             </div>
                         </div>
-
-                        <!-- Learning -->
+                        <!-- Học tập -->
                         <div class="footer-section">
-                            <h4 class="footer-title">Learning</h4>
+                            <h4 class="footer-title">Học tập</h4>
                             <ul class="footer-links">
-                                <li><a asp-controller="Courses" asp-action="Index">Courses</a></li>
-                                <li><a asp-controller="Classrooms" asp-action="Index">Classrooms</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Partners">Partners</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Pricing">Pricing</a></li>
+                                <li><a asp-controller="Courses" asp-action="Index">Khóa học</a></li>
+                                <li><a asp-controller="Classrooms" asp-action="Index">Lớp học</a></li>
+                                <li><a asp-controller="SidePages" asp-action="Partners">Đối tác</a></li>
+                                <li><a asp-controller="SidePages" asp-action="Pricing">Giá cả</a></li>
                             </ul>
                         </div>
-
-                        <!-- Support -->
+                        <!-- Hỗ trợ -->
                         <div class="footer-section">
-                            <h4 class="footer-title">Support</h4>
+                            <h4 class="footer-title">Hỗ trợ</h4>
                             <ul class="footer-links">
-                                <li><a asp-controller="SidePages" asp-action="Help">Help Center</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Contact">Contact Us</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Community">Community</a></li>
+                                <li><a asp-controller="SidePages" asp-action="Help">Trung tâm trợ giúp</a></li>
+                                <li><a asp-controller="SidePages" asp-action="Contact">Liên hệ</a></li>
+                                <li><a asp-controller="SidePages" asp-action="Community">Cộng đồng</a></li>
                                 <li><a asp-controller="SidePages" asp-action="Blog">Blog</a></li>
                             </ul>
                         </div>
-
-                        <!-- Company -->
+                        <!-- Công ty -->
                         <div class="footer-section">
-                            <h4 class="footer-title">Company</h4>
+                            <h4 class="footer-title">Công ty</h4>
                             <ul class="footer-links">
-                                <li><a asp-controller="SidePages" asp-action="About">About Us</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Careers">Careers</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Press">Press</a></li>
+                                <li><a asp-controller="SidePages" asp-action="About">Về chúng tôi</a></li>
+                                <li><a asp-controller="SidePages" asp-action="Careers">Tuyển dụng</a></li>
+                                <li><a asp-controller="SidePages" asp-action="Press">Báo chí</a></li>
                             </ul>
                         </div>
-
                     </div>
-
                     <div class="footer-bottom">
-                        <p class="copyright">© @DateTime.Now.Year Nihongo Sekai. All rights reserved.</p>
+                        <p class="copyright">© @DateTime.Now.Year Nihongo Sekai. Đã đăng ký bản quyền.</p>
                         <div class="footer-bottom-links">
-                            <a asp-controller="SidePages" asp-action="Privacy">Privacy Policy</a>
-                            <a asp-controller="SidePages" asp-action="Terms">Terms of Service</a>
-                            <a asp-controller="SidePages" asp-action="CookiePolicy">Cookie Policy</a>
+                            <a asp-controller="SidePages" asp-action="Privacy">Chính sách bảo mật</a>
+                            <a asp-controller="SidePages" asp-action="Terms">Điều khoản dịch vụ</a>
+                            <a asp-controller="SidePages" asp-action="CookiePolicy">Chính sách Cookie</a>
                         </div>
                     </div>
                 </div>
             </footer>
-
-            @* Scripts *@
             <script src="~/js/script.js"></script>
-            @* <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    initializeAnimations();
-                });
-            </script> *@
         }
     </div>
     <script>
         window.addEventListener("message", function (event) {
             if (!event.data || typeof event.data !== "object") return;
-
             const iframe = document.getElementById("chatbot-iframe");
             if (!iframe) return;
-
             if (event.data.type === "chatbot-open") {
                 iframe.style.width = "400px";
                 iframe.style.height = "500px";
@@ -245,7 +269,7 @@
             } else if (event.data.type === "chatbot-close") {
                 iframe.style.width = "60px";
                 iframe.style.height = "60px";
-                iframe.style.borderRadius = "12px";
+                iframe.style.borderRadius = "50%";
             }
         }, false);
     </script>

@@ -6,6 +6,11 @@
     ViewData["LockScroll"] = true;
 }
 
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+}
+
 <section class="position-relative vw-100 vh-100 text-white d-flex align-items-center justify-content-center overflow-hidden p-0 m-0" style="z-index: 0;">
     <video autoplay loop muted playsinline class="hero-video-bg">
         <source src="https://res.cloudinary.com/dfso7lfxa/video/upload/v1749660098/videoplayback_met85l.mp4" type="video/mp4">
@@ -13,11 +18,11 @@
 
     <div class="position-relative z-1 text-center px-4">
         <h1 class="display-4 animate__animated animate__fadeInDown">
-            Welcome to Nihongo<span class="display-4 animate__animated animate__fadeInDown gradient-text">Sekai</span>
+            Chào mừng đến Nihongo <span class="display-4 animate__animated animate__fadeInDown gradient-text">Sekai</span>
         </h1>
-        <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Learn Japanese with cultural depth</p>
+        <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Học tiếng Nhật với chiều sâu văn hóa</p>
         @{
-            string targetController = "Learner"; // default
+            string targetController = "Learner"; // mặc định
             string targetAction = "Index";
 
             if (User.Identity.IsAuthenticated)
@@ -32,9 +37,10 @@
                 }
             }
         }
-        <a asp-controller="@targetController" asp-action="@targetAction" class="btn gradient-btn mt-3 animate__animated animate__fadeInUp animate__delay-2s">Explore Now</a>
+        <a asp-controller="@targetController" asp-action="@targetAction" class="btn gradient-btn mt-3 animate__animated animate__fadeInUp animate__delay-2s">Khám phá ngay</a>
     </div>
 </section>
+
 <style>
     body.home-lock-scroll {
         overflow: hidden;

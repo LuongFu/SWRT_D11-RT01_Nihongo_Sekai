@@ -1,12 +1,17 @@
-@model IEnumerable<ApplicationUser>
+﻿@model IEnumerable<ApplicationUser>
 
 @{
-    ViewData["Title"] = "List of all users";
+    ViewData["Title"] = "Danh sách tất cả người dùng";
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
 }
 
 <div class="row">
     <div class="col-md-10 offset-1">
-        <h4 class="mb-4">List of all users</h4>
+        <h4 class="mb-4">Danh sách tất cả người dùng</h4>
 
         <table class="table table-bordered text-center">
             <thead class="table-light">
@@ -14,9 +19,9 @@
                     <th>@Html.DisplayNameFor(model => model.FullName)</th>
                     <th>@Html.DisplayNameFor(model => model.UserName)</th>
                     <th>@Html.DisplayNameFor(model => model.Email)</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,11 +35,11 @@
                         <td>
                             @if (item.IsBanned)
                             {
-                                <span class="text-danger fw-bold">Banned</span>
+                                <span class="text-danger fw-bold">Bị cấm</span>
                             }
                             else
                             {
-                                <span class="text-success fw-bold">Active</span>
+                                <span class="text-success fw-bold">Hoạt động</span>
                             }
                         </td>
                         <td>
@@ -42,13 +47,13 @@
                             {
                                 <form asp-action="ToggleBan" asp-route-id="@item.Id" method="post">
                                     <button type="submit" class="btn @(item.IsBanned ? "btn-success" : "btn-danger") btn-sm">
-                                        @(item.IsBanned ? "Unban" : "Ban")
+                                        @(item.IsBanned ? "Bỏ cấm" : "Cấm")
                                     </button>
                                 </form>
                             }
                             else
                             {
-                                <span class="text-muted">Protected</span>
+                                <span class="text-muted">Được bảo vệ</span>
                             }
                         </td>
                     </tr>
@@ -57,3 +62,4 @@
         </table>
     </div>
 </div>
+

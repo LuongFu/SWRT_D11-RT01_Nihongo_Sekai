@@ -1,12 +1,16 @@
 ﻿@using JapaneseLearningPlatform.Data.Enums
+
 @{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Bảng điều khiển quản trị";
     Layout = "_Layout";
     ViewData["HideNavbar"] = false;
     ViewData["HideFooter"] = false;
 }
 
 @section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
     <style>
         .admin-wrapper {
@@ -67,8 +71,7 @@
 
     <div class="admin-main">
 
-
-        <h1 class="mb-4">Admin Dashboard</h1>
+        <h1 class="mb-4">Bảng điều khiển quản trị</h1>
 
         <!-- Dashboard Cards -->
         <div class="row g-4 mb-4">
@@ -76,7 +79,7 @@
                 <div class="card p-3 shadow rounded">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="text-muted mb-1">Total Users</p>
+                            <p class="text-muted mb-1">Tổng người dùng</p>
                             <h5 class="mb-0">@ViewBag.TotalUsers</h5>
                         </div>
                         <i class="bi bi-people-fill fs-2 text-danger"></i>
@@ -87,7 +90,7 @@
                 <div class="card p-3 shadow rounded">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="text-muted mb-1">Orders</p>
+                            <p class="text-muted mb-1">Đơn hàng</p>
                             <h5 class="mb-0">@ViewBag.TotalOrders</h5>
                         </div>
                         <i class="bi bi-cart-check-fill fs-2 text-info"></i>
@@ -98,7 +101,7 @@
                 <div class="card p-3 shadow rounded">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="text-muted mb-1">Revenue</p>
+                            <p class="text-muted mb-1">Doanh thu</p>
                             <h5 class="mb-0">$@ViewBag.TotalRevenue.ToString("N2")</h5>
                         </div>
                         <i class="bi bi-currency-dollar fs-2 text-success"></i>
@@ -109,7 +112,7 @@
                 <div class="card p-3 shadow rounded">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="text-muted mb-1">Classrooms</p>
+                            <p class="text-muted mb-1">Lớp học</p>
                             <h5 class="mb-0">@ViewBag.TotalClassrooms</h5>
                         </div>
                         <i class="bi bi-mortarboard-fill fs-2 text-warning"></i>
@@ -122,30 +125,30 @@
         <div class="row g-4">
             <div class="col-md-6">
                 <div class="card p-3 shadow rounded">
-                    <h6>Sales Value</h6>
+                    <h6>Giá trị bán hàng</h6>
                     <canvas id="salesChart" height="200"></canvas>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card p-3 shadow rounded">
-                    <h6>Total Orders</h6>
+                    <h6>Tổng số đơn hàng</h6>
                     <canvas id="ordersChart" height="200"></canvas>
                 </div>
             </div>
         </div>
         <div class="card mt-4 shadow-sm">
             <div class="card-header bg-white fw-bold">
-                Recent Orders
+                Đơn hàng mới nhất
             </div>
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>User Email</th>
-                            <th>Order Date</th>
-                            <th>Total</th>
-                            <th>No. Courses</th>
+                            <th>Mã đơn hàng</th>
+                            <th>Email người dùng</th>
+                            <th>Ngày đặt hàng</th>
+                            <th>Tổng</th>
+                            <th>Số khóa học</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -164,7 +167,6 @@
             </div>
         </div>
     </div>
-    
 
     <canvas id="revenueByCategoryChart" height="100"></canvas>
 </div>
@@ -177,7 +179,7 @@
             const ordersCtx = document.getElementById('ordersChart')?.getContext('2d');
 
             if (!salesCtx || !ordersCtx) {
-                console.warn("Canvas elements not found. Skipping chart rendering.");
+                console.warn("Không tìm thấy phần tử canvas. Bỏ qua hiển thị biểu đồ.");
                 return;
             }
 
@@ -186,7 +188,7 @@
                 data: {
                     labels: @Html.Raw(Json.Serialize(ViewBag.MonthLabels)),
                     datasets: [{
-                        label: 'Revenue',
+                        label: 'Doanh thu',
                         data: @Html.Raw(Json.Serialize(ViewBag.MonthlyRevenue)),
                         borderColor: '#f5365c',
                         backgroundColor: 'rgba(245, 54, 92, 0.2)',
@@ -214,7 +216,7 @@
                 data: {
                     labels: @Html.Raw(Json.Serialize(ViewBag.MonthLabels)),
                     datasets: [{
-                        label: 'Orders',
+                        label: 'Đơn hàng',
                         data: @Html.Raw(Json.Serialize(ViewBag.MonthlyOrders)),
                         backgroundColor: '#f5365c'
                     }]

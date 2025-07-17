@@ -3,15 +3,20 @@
 @using JapaneseLearningPlatform.Data.Enums
 @model ReviewPartnerVM
 
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+}
+
 <div class="container mt-5">
-    <h2 class="mb-4">Review Partner Application</h2>
+    <h2 class="mb-4">Xem xét đơn ứng tuyển đối tác</h2>
 
     <div class="card mb-4">
         <div class="card-body">
             <div class="d-flex align-items-center mb-3">
                 <img src="@( !string.IsNullOrEmpty(Model.Profile.User.ProfilePicturePath)
-                                                   ? Model.Profile.User.ProfilePicturePath
-                                                   : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id, 80) )"
+                                                                       ? Model.Profile.User.ProfilePicturePath
+                                                                       : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id, 80) )"
                      class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;" />
                 <div>
                     <h4 class="mb-0">@Model.Profile.User.FullName</h4>
@@ -19,16 +24,16 @@
                 </div>
             </div>
 
-            <p><strong>Experience:</strong> @Model.Profile.YearsOfExperience.GetDisplayName()</p>
+            <p><strong>Kinh nghiệm:</strong> @Model.Profile.YearsOfExperience.GetDisplayName()</p>
             <p>
-                <strong>Specializations:</strong>
+                <strong>Chuyên môn:</strong>
                 @foreach (var spec in Model.Profile.Specializations.Select(s => s.Specialization))
                 {
                     <span class="badge bg-secondary me-1">@spec</span>
                 }
             </p>
         </div>
-        <h5>Uploaded Documents</h5>
+        <h5>Tài liệu đã tải lên</h5>
         <div class="row g-3">
             @foreach (var doc in Model.Profile.Documents)
             {
@@ -41,11 +46,12 @@
                 </div>
             }
         </div>
-        <div class="card-footer text-end">            
+        <div class="card-footer text-end">
             <a asp-action="PartnerApplications" asp-controller="Admin" class="btn btn-outline-secondary ms-3">
-                Back to List
+                Quay về danh sách
             </a>
         </div>
     </div>
 </div>
+
 

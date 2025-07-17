@@ -3,17 +3,22 @@
     ViewData["Title"] = "Từ Vựng JLPT";
 }
 
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+}
+
 <div class="container my-4">
 
-    <h2 class="mb-4 text-center text-primary">JLPT Vocabulary Dictionary</h2>
+    <h2 class="mb-4 text-center text-primary">Từ điển từ vựng JLPT</h2>
 
     <form method="get" asp-controller="Dictionary" asp-action="Search" class="row g-3 align-items-center justify-content-center mb-4">
         <div class="col-md-5">
-            <input type="text" name="keyword" class="form-control" placeholder="Enter Japanese word..." value="@ViewBag.Keyword" />
+            <input type="text" name="keyword" class="form-control" placeholder="Nhập từ tiếng Nhật..." value="@ViewBag.Keyword" />
         </div>
         <div class="col-md-3">
             <select name="level" class="form-select">
-                <option value="">-- JLPT Level --</option>
+                <option value="">-- Cấp độ JLPT --</option>
                 <option value="5" selected="@(ViewBag.Level?.ToString() == "5")">N5</option>
                 <option value="4" selected="@(ViewBag.Level?.ToString() == "4")">N4</option>
                 <option value="3" selected="@(ViewBag.Level?.ToString() == "3")">N3</option>
@@ -22,7 +27,7 @@
             </select>
         </div>
         <div class="col-auto">
-            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
         </div>
     </form>
 
@@ -37,8 +42,8 @@
                             <h5 class="card-title text-danger fw-bold">@w.Word</h5>
                             <h6 class="card-subtitle mb-2 text-muted">@w.Romaji</h6>
                             <p class="card-text">
-                                <strong>Furigana:</strong> @w.Furigana <br />
-                                <strong>Meaning:</strong> @w.Meaning <br />
+                                <strong>Phiên âm:</strong> @w.Furigana <br />
+                                <strong>Nghĩa:</strong> @w.Meaning <br />
                                 <span class="badge bg-danger">JLPT N-@w.Level</span>
                             </p>
                         </div>
@@ -50,7 +55,8 @@
     else if (ViewBag.Keyword != null || ViewBag.Level != null)
     {
         <div class="alert alert-warning text-center mt-4">
-            Không tìm thấy kết quả nào phù hợp.
+            Không tìm thấy kết quả phù hợp.
         </div>
     }
 </div>
+

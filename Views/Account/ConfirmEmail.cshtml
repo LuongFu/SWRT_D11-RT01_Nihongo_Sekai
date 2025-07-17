@@ -1,9 +1,14 @@
 @{
-    ViewData["Title"] = "Email Confirmed";
+    ViewData["Title"] = "Xác nhận email thành công";
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
 }
 
 <div class="text-center mt-5">
-    <h2>Email xác nhận thành công!</h2>
-    <p>Thank you for verifying your email. You can close this page.</p>
-    <a asp-controller="Account" asp-action="Login" class="btn btn-success">Login</a>
+    <h2>Xác nhận email thành công!</h2>
+    <p>Cảm ơn bạn đã xác minh email. Bạn có thể đóng trang này.</p>
+    <a asp-controller="Account" asp-action="Login" class="btn btn-success">Đăng nhập</a>
 </div>

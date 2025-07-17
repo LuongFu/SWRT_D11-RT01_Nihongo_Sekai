@@ -4,7 +4,7 @@
 @model IEnumerable<PartnerProfile>
 
 @{
-    ViewData["Title"] = "Partner Applications";
+    ViewData["Title"] = "Đơn ứng tuyển đối tác";
     var filter = (PartnerStatus)(ViewData["CurrentFilter"] ?? PartnerStatus.Pending);
 
     // Base dataset by status
@@ -74,8 +74,10 @@
                        .ToList();
 }
 
-
 @section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+
     <style>
         /* wrapper để dropdown con không đẩy layout */
         .hover-dropdown {
@@ -115,17 +117,21 @@
     </style>
 }
 
+@{
+    ViewData["Title"] = "Đơn ứng tuyển đối tác";
+}
+
 <div class="container mt-5">
     <h1 class="mb-4">@ViewData["Title"]</h1>
 
-    @* Stats cards *@
+    @* Thẻ thống kê *@
     @if (filter == PartnerStatus.Pending)
     {
         <div class="row mb-4">
             <div class="col-md-3">
                 <div class="card bg-danger text-white mb-3">
                     <div class="card-body">
-                        <h5>Total Pending</h5>
+                        <h5>Tổng đơn chờ</h5>
                         <p class="display-4 mb-0">@pendingAll.Count()</p>
                     </div>
                 </div>
@@ -133,7 +139,7 @@
             <div class="col-md-3">
                 <div class="card bg-warning text-white mb-3">
                     <div class="card-body">
-                        <h5>Pending Today</h5>
+                        <h5>Chờ hôm nay</h5>
                         <p class="display-4 mb-0">@pendingToday</p>
                     </div>
                 </div>
@@ -145,35 +151,35 @@
     <div class="btn-group mb-4">
         <a asp-action="PartnerApplications" asp-route-filter="Pending"
            class="btn @(filter == PartnerStatus.Pending ? "btn-primary" : "btn-outline-primary")">
-            Pending
+            Chờ duyệt
         </a>
         <a asp-action="PartnerApplications" asp-route-filter="Approved"
            class="btn @(filter == PartnerStatus.Approved ? "btn-success" : "btn-outline-success")">
-            Approved
+            Đã duyệt
         </a>
     </div>
 
-    @* Filters *@
+    @* Bộ lọc *@
     <form method="get" id="filterForm" class="row g-3 mb-4">
         <input type="hidden" name="filter" value="@filter" />
         <input type="hidden" name="exp" id="expInput" value="@expParam" />
         <input type="hidden" name="spec" id="specInput" value="@specParam" />
         <input type="hidden" name="dateRange" id="dateInput" value="@dateParam" />
 
-        <!-- EXPERIENCE -->
+        <!-- Kinh nghiệm -->
         <div class="col-md-3 hover-dropdown">
-            <label class="form-label">Experience</label>
+            <label class="form-label">Kinh nghiệm</label>
             <button type="button"
                     class="btn btn-light dropdown-toggle w-100 text-start"
                     data-bs-toggle="dropdown">
                 @(string.IsNullOrEmpty(expParam)
-                                ? "All"
+                                ? "Tất cả"
                                 : Enum.Parse<YearsOfExperience>(expParam).GetDisplayName())
             </button>
             <ul class="dropdown-menu w-100">
                 <li>
                     <a class="dropdown-item exp-item @(string.IsNullOrEmpty(expParam) ? "active" : "")"
-                       data-val="">All</a>
+                       data-val="">Tất cả</a>
                 </li>
                 @foreach (var e in Enum.GetValues(typeof(YearsOfExperience)).Cast<YearsOfExperience>())
                 {
@@ -186,21 +192,21 @@
             </ul>
         </div>
 
-        <!-- SPECIALIZATION -->
+        <!-- Chuyên môn -->
         <div class="col-md-3 hover-dropdown">
-            <label class="form-label">Specialization</label>
+            <label class="form-label">Chuyên môn</label>
             <button type="button"
                     class="btn btn-light dropdown-toggle w-100 text-start"
                     data-bs-toggle="dropdown">
                 @(string.IsNullOrEmpty(specParam)
-                                ? "All"
+                                ? "Tất cả"
                                 : ((SpecializationType)Enum.Parse(typeof(SpecializationType), specParam))
                                 .GetDisplayName())
             </button>
             <ul class="dropdown-menu w-100">
                 <li>
                     <a class="dropdown-item spec-item @(string.IsNullOrEmpty(specParam) ? "active" : "")"
-                       data-val="">All</a>
+                       data-val="">Tất cả</a>
                 </li>
                 @foreach (var s in Enum.GetValues(typeof(SpecializationType)).Cast<SpecializationType>())
                 {
@@ -213,50 +219,50 @@
             </ul>
         </div>
 
-        <!-- DATE RANGE -->
+        <!-- Ngày -->
         <div class="col-md-3 hover-dropdown">
             <label class="form-label">
-                @(filter == PartnerStatus.Pending ? "Receive Date" : "Decision Date")
+                @(filter == PartnerStatus.Pending ? "Ngày gửi" : "Ngày quyết định")
             </label>
             <button type="button"
                     class="btn btn-light dropdown-toggle w-100 text-start"
                     data-bs-toggle="dropdown">
                 @(string.IsNullOrEmpty(dateParam)
-                                ? "All"
-                                : dateParam == "today" ? "Today"
-                                : dateParam == "3" ? "Last 3 days"
-                                : dateParam == "7" ? "Last 7 days"
+                                ? "Tất cả"
+                                : dateParam == "today" ? "Hôm nay"
+                                : dateParam == "3" ? "3 ngày qua"
+                                : dateParam == "7" ? "7 ngày qua"
                                 : dateParam)
             </button>
             <ul class="dropdown-menu w-100">
                 <li>
                     <a class="dropdown-item date-item @(string.IsNullOrEmpty(dateParam) ? "active" : "")"
-                       data-val="">All</a>
+                       data-val="">Tất cả</a>
                 </li>
                 <li>
                     <a class="dropdown-item date-item @(dateParam == "today" ? "active" : "")"
-                       data-val="today">Today</a>
+                       data-val="today">Hôm nay</a>
                 </li>
                 <li>
                     <a class="dropdown-item date-item @(dateParam == "3" ? "active" : "")"
-                       data-val="3">Last 3 days</a>
+                       data-val="3">3 ngày qua</a>
                 </li>
                 <li>
                     <a class="dropdown-item date-item @(dateParam == "7" ? "active" : "")"
-                       data-val="7">Last 7 days</a>
+                       data-val="7">7 ngày qua</a>
                 </li>
             </ul>
         </div>
 
         <div class="col-md-3 d-flex align-items-end">
-            <button type="submit" class="btn apply-btn w-100">Apply Filters</button>
+            <button type="submit" class="btn apply-btn w-100">Áp dụng</button>
         </div>
     </form>
 
     @if (!items.Any())
     {
         <div class="alert alert-info">
-            No @filter applications found for the selected criteria.
+            Không có đơn ứng tuyển nào phù hợp tiêu chí.
         </div>
     }
     else
@@ -264,12 +270,12 @@
         <table class="table table-striped table-hover bg-white shadow-sm rounded">
             <thead class="table-light">
                 <tr>
-                    <th>Full Name</th>
+                    <th>Họ và tên</th>
                     <th>Email</th>
-                    <th>Experience</th>
-                    <th>@(filter == PartnerStatus.Pending ? "Receive Date" : "Decision Date")</th>
-                    <th>Specializations</th>
-                    <th class="text-center">Actions</th>
+                    <th>Kinh nghiệm</th>
+                    <th>@(filter == PartnerStatus.Pending ? "Ngày gửi" : "Ngày quyết định")</th>
+                    <th>Chuyên môn</th>
+                    <th class="text-center">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -303,23 +309,23 @@
                         </td>
                         <td class="text-center">
                             <a asp-action="ReviewPartner" asp-route-id="@p.Id"
-                               class="btn btn-sm btn-outline-info me-1">Review</a>
+                               class="btn btn-sm btn-outline-info me-1">Xem</a>
 
                             @if (filter == PartnerStatus.Pending)
                             {
-                                <!-- Approve -->
+                                <!-- Phê duyệt -->
                                 <button type="button"
                                         class="btn btn-sm btn-success me-1"
                                         data-bs-toggle="modal"
                                         data-bs-target="#approveModal-@p.Id">
-                                    Approve
+                                    Phê duyệt
                                 </button>
-                                <!-- Reject -->
+                                <!-- Từ chối -->
                                 <button type="button"
                                         class="btn btn-sm btn-danger"
                                         data-bs-toggle="modal"
                                         data-bs-target="#rejectModal-@p.Id">
-                                    Reject
+                                    Từ chối
                                 </button>
                             }
                         </td>
@@ -328,7 +334,7 @@
             </tbody>
         </table>
 
-        @* Pagination *@
+        @* Phân trang *@
         <nav>
             <ul class="pagination justify-content-center">
                 <li class="page-item @(page == 1 ? "disabled" : "")">
@@ -353,49 +359,47 @@
 
 @foreach (var p in items)
 {
-    <!-- Approve Modal -->
+    <!-- Modal phê duyệt -->
     <div class="modal fade" id="approveModal-@p.Id" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form asp-action="ApprovePartner" asp-controller="Admin" method="post" class="modal-content">
                 <input type="hidden" name="id" value="@p.Id" />
                 <div class="modal-header">
-                    <h5 class="modal-title text-success">Confirm Approval</h5>
+                    <h5 class="modal-title text-success">Xác nhận phê duyệt</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to <strong>approve</strong>
-                    <em>@p.User.FullName</em>'s application?
+                    Bạn có chắc muốn <strong>phê duyệt</strong> đơn của <em>@p.User.FullName</em>?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
                             data-bs-dismiss="modal">
-                        Cancel
+                        Hủy
                     </button>
-                    <button type="submit" class="btn btn-success">Yes, Approve</button>
+                    <button type="submit" class="btn btn-success">Đồng ý phê duyệt</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Reject Modal -->
+    <!-- Modal từ chối -->
     <div class="modal fade" id="rejectModal-@p.Id" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form asp-action="RejectPartner" asp-controller="Admin" method="post" class="modal-content">
                 <input type="hidden" name="id" value="@p.Id" />
                 <div class="modal-header">
-                    <h5 class="modal-title text-danger">Confirm Rejection</h5>
+                    <h5 class="modal-title text-danger">Xác nhận từ chối</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to <strong>reject</strong>
-                    <em>@p.User.FullName</em>'s application?
+                    Bạn có chắc muốn <strong>từ chối</strong> đơn của <em>@p.User.FullName</em>?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
                             data-bs-dismiss="modal">
-                        Cancel
+                        Hủy
                     </button>
-                    <button type="submit" class="btn btn-danger">Yes, Reject</button>
+                    <button type="submit" class="btn btn-danger">Đồng ý từ chối</button>
                 </div>
             </form>
         </div>

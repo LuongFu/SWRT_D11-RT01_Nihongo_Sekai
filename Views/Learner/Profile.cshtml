@@ -1,14 +1,14 @@
 ﻿@model JapaneseLearningPlatform.Models.ApplicationUser
 
 @{
-    ViewData["Title"] = "My Profile";
+    ViewData["Title"] = "Hồ sơ của tôi";
     ViewData["HideFooter"] = false;
     Layout = "_Layout";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
 }
 
 <div class="my-profile-container">
@@ -17,7 +17,7 @@
         <div class="col-md-4 text-center">
             <!-- Welcome -->
             <div class="welcome-box text-center mb-4">
-                <h2 class="fw-bold text-danger">Welcome, @Model.FullName!</h2>
+                <h2 class="fw-bold text-danger">Chào mừng, @Model.FullName!</h2>
             </div>
 
             <!-- Avatar -->
@@ -39,7 +39,7 @@
 
                         <!-- Preview -->
                         <img id="profilePreview" src="#"
-                             alt="Preview"
+                             alt="Xem trước"
                              class="rounded-circle img-thumbnail mb-3 d-none"
                              style="width: 150px; height: 150px; object-fit: cover;" />
 
@@ -49,7 +49,7 @@
                             <small class="text-danger d-block mb-2">@TempData["UploadError"]</small>
                         }
 
-                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">Upload New Photo</button>
+                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">Tải ảnh mới</button>
                     </div>
                 </form>
             </div>
@@ -60,27 +60,27 @@
             <div class="info-wrapper p-4 rounded shadow-sm">
                 <!-- Thông tin người dùng -->
                 <div class="user-info mb-4">
-                    <h4 class="fw-bold mb-3 text-center text-danger">Your Information</h4>
-                    <p><strong>Full Name:</strong> @Model.FullName</p>
+                    <h4 class="fw-bold mb-3 text-center text-danger">Thông tin của bạn</h4>
+                    <p><strong>Họ và tên:</strong> @Model.FullName</p>
                     <p><strong>Email:</strong> @Model.Email</p>
-                    <p><strong>Role:</strong> @Model.Role</p>
+                    <p><strong>Vai trò:</strong> @Model.Role</p>
                 </div>
 
                 <!-- Hành động nhanh -->
                 <div class="quick-actions">
-                    <h5 class="text-danger mb-3 fw-bold">Quick Actions</h5>
+                    <h5 class="text-danger mb-3 fw-bold">Thao tác nhanh</h5>
                     <div class="action-buttons">
                         <a class="action-link" asp-controller="Learner" asp-action="MyPurchasedCourses">
-                            <i class="bi bi-book"></i> My Courses
+                            <i class="bi bi-book"></i> Khóa học của tôi
                         </a>
                         <a class="action-link" asp-controller="Learner" asp-action="MyEnrolledClassrooms">
-                            <i class="bi bi-easel"></i> My Classroom
+                            <i class="bi bi-easel"></i> Lớp học của tôi
                         </a>
                         <a class="action-link" asp-controller="Learner" asp-action="EditProfile">
-                            <i class="bi bi-pencil-square"></i> Edit Profile
+                            <i class="bi bi-pencil-square"></i> Chỉnh sửa hồ sơ
                         </a>
                         <a class="action-link" asp-controller="Learner" asp-action="ChangePassword">
-                            <i class="bi bi-lock"></i> Change Password
+                            <i class="bi bi-lock"></i> Đổi mật khẩu
                         </a>
                     </div>
                 </div>
@@ -109,7 +109,8 @@
                 preview.classList.add('d-none');
             }
         }
-            document.addEventListener("DOMContentLoaded", function () {
+
+        document.addEventListener("DOMContentLoaded", function () {
             const totalPetals = 20;
             const half = totalPetals / 2;
 

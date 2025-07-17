@@ -1,173 +1,170 @@
-﻿
-@{
+﻿@{
     Layout = "_Layout";
-    ViewData["Title"] = "Press - Nihongo Sekai";
-    // ViewData["Description"] = "Press resources for Nihongo Sekai. Download media kit, press releases, company information, and high-resolution assets for media coverage.";
+    ViewData["Title"] = "Báo chí & Truyền thông - Nihongo Sekai";
 }
 
 @section Head {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Press - Nihongo Sekai</title>
+    <title>Báo chí & Truyền thông - Nihongo Sekai</title>
     <meta name="description"
-          content="Press resources for Nihongo Sekai. Download media kit, press releases, company information, and high-resolution assets for media coverage." />
+          content="Tài nguyên dành cho nhà báo, blogger và chuyên gia truyền thông về Nihongo Sekai. Tải bộ Media Kit, thông cáo báo chí, thông tin công ty và tài sản chất lượng cao cho tin tức." />
 }
 
 @section Styles {
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/press.css" />
     <link rel="stylesheet" href="~/css/styles.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
 }
 
-<!-- Main Content -->
 <main>
-    <!-- Hero Section -->
+    <!-- Phần Hero -->
     <section class="press-hero">
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">Press & Media</h1>
+                <h1 class="hero-title">Báo chí & Truyền thông</h1>
                 <p class="hero-description">
-                    Resources for journalists, bloggers, and media professionals
-                    covering Nihongo Sekai. Download our media kit, access
-                    high-resolution assets, and get the latest company information.
+                    Tài nguyên dành cho nhà báo, blogger và chuyên gia truyền thông
+                    khi đưa tin về Nihongo Sekai. Tải bộ Media Kit, truy cập
+                    tài sản chất lượng cao và cập nhật thông tin công ty mới nhất.
                 </p>
                 <div class="hero-actions">
                     <button class="btn btn-primary" onclick="downloadMediaKit()">
-                        Download Media Kit
+                        Tải Media Kit
                     </button>
-                    <a href="contact.html" class="btn btn-outline">Contact Press Team</a>
+                    <a href="contact.html" class="btn btn-outline">Liên hệ Nhóm Báo chí</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Quick Facts -->
+    <!-- Thông tin nhanh -->
     <section class="facts-section">
         <div class="container">
-            <h2 class="section-title">Company at a Glance</h2>
+            <h2 class="section-title">Tổng quan về Công ty</h2>
             <div class="facts-grid">
                 <div class="fact-card">
                     <div class="fact-number">50,000+</div>
-                    <div class="fact-label">Students Worldwide</div>
+                    <div class="fact-label">Học viên toàn cầu</div>
                 </div>
                 <div class="fact-card">
                     <div class="fact-number">200+</div>
-                    <div class="fact-label">Expert Teachers</div>
+                    <div class="fact-label">Giáo viên chuyên gia</div>
                 </div>
                 <div class="fact-card">
                     <div class="fact-number">2018</div>
-                    <div class="fact-label">Founded in Tokyo</div>
+                    <div class="fact-label">Thành lập tại Tokyo</div>
                 </div>
                 <div class="fact-card">
                     <div class="fact-number">120+</div>
-                    <div class="fact-label">Countries Served</div>
+                    <div class="fact-label">Quốc gia phục vụ</div>
                 </div>
                 <div class="fact-card">
                     <div class="fact-number">95%</div>
-                    <div class="fact-label">Student Success Rate</div>
+                    <div class="fact-label">Tỉ lệ thành công của học viên</div>
                 </div>
                 <div class="fact-card">
                     <div class="fact-number">$15M</div>
-                    <div class="fact-label">Series A Funding</div>
+                    <div class="fact-label">Vòng gọi vốn Series A</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Recent News -->
+    <!-- Thông cáo báo chí -->
     <section class="news-section">
         <div class="container">
-            <h2 class="section-title">Recent Press Releases</h2>
+            <h2 class="section-title">Thông cáo Báo chí Gần đây</h2>
             <div class="news-grid">
                 <article class="news-item featured">
-                    <div class="news-date">March 15, 2024</div>
+                    <div class="news-date">15 Tháng Ba, 2024</div>
                     <h3 class="news-title">
-                        Nihongo Sekai Announces $15M Series A Funding Round
+                        Nihongo Sekai công bố gọi vốn Series A trị giá 15 triệu USD
                     </h3>
                     <p class="news-excerpt">
-                        Leading EdTech company Nihongo Sekai raises Series A funding to
-                        expand AI-powered Japanese learning platform globally, with
-                        investment from prominent VCs in Japan and Silicon Valley.
+                        Công ty EdTech hàng đầu Nihongo Sekai huy động thành công
+                        vòng Series A để mở rộng nền tảng học tiếng Nhật AI toàn cầu,
+                        với sự góp mặt của các quỹ đầu tư uy tín Nhật Bản và Thung lũng Silicon.
                     </p>
                     <div class="news-tags">
-                        <span class="news-tag">Funding</span>
-                        <span class="news-tag">Growth</span>
+                        <span class="news-tag">Gọi vốn</span>
+                        <span class="news-tag">Tăng trưởng</span>
                     </div>
                     <button class="btn btn-outline"
                             onclick="readPressRelease('series-a')">
-                        Read Full Release
+                        Đọc thông cáo
                     </button>
                 </article>
 
                 <article class="news-item">
-                    <div class="news-date">February 28, 2024</div>
+                    <div class="news-date">28 Tháng Hai, 2024</div>
                     <h3 class="news-title">
-                        Partnership with Japan Foundation for Cultural Exchange Program
+                        Hợp tác với Quỹ Văn hóa Nhật Bản cho Chương trình Trao đổi Văn hóa
                     </h3>
                     <p class="news-excerpt">
-                        Nihongo Sekai partners with Japan Foundation to launch
-                        comprehensive cultural exchange program connecting international
-                        students with Japanese culture.
+                        Nihongo Sekai hợp tác với Quỹ Văn hóa Nhật Bản để ra mắt
+                        chương trình trao đổi văn hóa toàn diện kết nối học viên quốc tế
+                        với văn hóa Nhật Bản.
                     </p>
                     <div class="news-tags">
-                        <span class="news-tag">Partnership</span>
-                        <span class="news-tag">Culture</span>
+                        <span class="news-tag">Hợp tác</span>
+                        <span class="news-tag">Văn hóa</span>
                     </div>
                     <button class="btn btn-outline"
                             onclick="readPressRelease('japan-foundation')">
-                        Read More
+                        Xem chi tiết
                     </button>
                 </article>
 
                 <article class="news-item">
-                    <div class="news-date">January 20, 2024</div>
+                    <div class="news-date">20 Tháng Một, 2024</div>
                     <h3 class="news-title">
-                        Nihongo Sekai Wins 'Best Language Learning Platform' Award
+                        Nihongo Sekai đoạt giải “Nền tảng Học ngôn ngữ tốt nhất”
                     </h3>
                     <p class="news-excerpt">
-                        Platform recognized for innovation in cultural immersion and
-                        personalized learning at the 2024 EdTech Excellence Awards in
+                        Nền tảng được vinh danh nhờ đổi mới trong trải nghiệm văn hóa và
+                        học tập cá nhân hóa tại Giải thưởng EdTech Excellence 2024 ở
                         San Francisco.
                     </p>
                     <div class="news-tags">
-                        <span class="news-tag">Award</span>
-                        <span class="news-tag">Recognition</span>
+                        <span class="news-tag">Giải thưởng</span>
+                        <span class="news-tag">Vinh danh</span>
                     </div>
                     <button class="btn btn-outline"
                             onclick="readPressRelease('edtech-award')">
-                        Read More
+                        Xem chi tiết
                     </button>
                 </article>
 
                 <article class="news-item">
-                    <div class="news-date">December 10, 2023</div>
-                    <h3 class="news-title">50,000 Students Milestone Reached</h3>
+                    <div class="news-date">10 Tháng Mười Hai, 2023</div>
+                    <h3 class="news-title">Chạm mốc 50,000 học viên</h3>
                     <p class="news-excerpt">
-                        Nihongo Sekai celebrates reaching 50,000 active students
-                        worldwide, demonstrating strong global demand for quality
-                        Japanese language education.
+                        Nihongo Sekai ăn mừng cột mốc 50,000 học viên hoạt động
+                        trên toàn cầu, minh chứng nhu cầu học tiếng Nhật chất lượng cao tăng mạnh.
                     </p>
                     <div class="news-tags">
-                        <span class="news-tag">Milestone</span>
-                        <span class="news-tag">Growth</span>
+                        <span class="news-tag">Cột mốc</span>
+                        <span class="news-tag">Tăng trưởng</span>
                     </div>
                     <button class="btn btn-outline"
                             onclick="readPressRelease('50k-milestone')">
-                        Read More
+                        Xem chi tiết
                     </button>
                 </article>
             </div>
         </div>
     </section>
 
-    <!-- Media Assets -->
+    <!-- Tài sản Truyền thông -->
     <section class="assets-section">
         <div class="container">
-            <h2 class="section-title">Media Assets</h2>
+            <h2 class="section-title">Tài sản Truyền thông</h2>
             <div class="assets-grid">
                 <div class="asset-category">
-                    <h3 class="asset-title">Logos & Branding</h3>
+                    <h3 class="asset-title">Logo & Nhận diện</h3>
                     <div class="asset-items">
                         <div class="asset-item">
                             <div class="asset-preview logo-preview">
@@ -175,12 +172,12 @@
                                 <span class="brand-text">Nihongo Sekai</span>
                             </div>
                             <div class="asset-info">
-                                <div class="asset-name">Primary Logo</div>
+                                <div class="asset-name">Logo Chính</div>
                                 <div class="asset-formats">PNG, SVG, EPS</div>
                             </div>
                             <button class="btn btn-sm btn-outline"
                                     onclick="downloadAsset('logo-primary')">
-                                Download
+                                Tải về
                             </button>
                         </div>
                         <div class="asset-item">
@@ -189,12 +186,12 @@
                                 <span class="brand-text">Nihongo Sekai</span>
                             </div>
                             <div class="asset-info">
-                                <div class="asset-name">Dark Logo</div>
+                                <div class="asset-name">Logo Nền Tối</div>
                                 <div class="asset-formats">PNG, SVG, EPS</div>
                             </div>
                             <button class="btn btn-sm btn-outline"
                                     onclick="downloadAsset('logo-dark')">
-                                Download
+                                Tải về
                             </button>
                         </div>
                         <div class="asset-item">
@@ -202,67 +199,67 @@
                                 <span class="brand-icon">日</span>
                             </div>
                             <div class="asset-info">
-                                <div class="asset-name">Icon Only</div>
+                                <div class="asset-name">Chỉ Biểu Tượng</div>
                                 <div class="asset-formats">PNG, SVG, ICO</div>
                             </div>
                             <button class="btn btn-sm btn-outline"
                                     onclick="downloadAsset('icon-only')">
-                                Download
+                                Tải về
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="asset-category">
-                    <h3 class="asset-title">Product Screenshots</h3>
+                    <h3 class="asset-title">Ảnh Chụp Màn Hình Sản Phẩm</h3>
                     <div class="asset-items">
                         <div class="asset-item">
                             <div class="asset-preview screenshot-preview">
                                 <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&h=200&fit=crop"
-                                     alt="Dashboard" />
+                                     alt="Bảng điều khiển học viên" />
                             </div>
                             <div class="asset-info">
-                                <div class="asset-name">Student Dashboard</div>
-                                <div class="asset-formats">High-res PNG, JPG</div>
+                                <div class="asset-name">Bảng Điều Khiển Học Viên</div>
+                                <div class="asset-formats">PNG chất lượng cao, JPG</div>
                             </div>
                             <button class="btn btn-sm btn-outline"
                                     onclick="downloadAsset('dashboard')">
-                                Download
+                                Tải về
                             </button>
                         </div>
                         <div class="asset-item">
                             <div class="asset-preview screenshot-preview">
                                 <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=300&h=200&fit=crop"
-                                     alt="Classroom" />
+                                     alt="Lớp học trực tiếp" />
                             </div>
                             <div class="asset-info">
-                                <div class="asset-name">Live Classroom</div>
-                                <div class="asset-formats">High-res PNG, JPG</div>
+                                <div class="asset-name">Lớp Học Trực Tiếp</div>
+                                <div class="asset-formats">PNG chất lượng cao, JPG</div>
                             </div>
                             <button class="btn btn-sm btn-outline"
                                     onclick="downloadAsset('classroom')">
-                                Download
+                                Tải về
                             </button>
                         </div>
                         <div class="asset-item">
                             <div class="asset-preview screenshot-preview">
                                 <img src="https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=300&h=200&fit=crop"
-                                     alt="Mobile App" />
+                                     alt="Ứng dụng di động" />
                             </div>
                             <div class="asset-info">
-                                <div class="asset-name">Mobile App</div>
-                                <div class="asset-formats">High-res PNG, JPG</div>
+                                <div class="asset-name">Ứng Dụng Di Động</div>
+                                <div class="asset-formats">PNG chất lượng cao, JPG</div>
                             </div>
                             <button class="btn btn-sm btn-outline"
                                     onclick="downloadAsset('mobile-app')">
-                                Download
+                                Tải về
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="asset-category">
-                    <h3 class="asset-title">Team Photos</h3>
+                    <h3 class="asset-title">Ảnh Đội Ngũ</h3>
                     <div class="asset-items">
                         <div class="asset-item">
                             <div class="asset-preview photo-preview">
@@ -271,11 +268,11 @@
                             </div>
                             <div class="asset-info">
                                 <div class="asset-name">Phan Minh Khoi, CEO</div>
-                                <div class="asset-formats">High-res JPG</div>
+                                <div class="asset-formats">JPG chất lượng cao</div>
                             </div>
                             <button class="btn btn-sm btn-outline"
                                     onclick="downloadAsset('ceo-photo')">
-                                Download
+                                Tải về
                             </button>
                         </div>
                         <div class="asset-item">
@@ -285,25 +282,25 @@
                             </div>
                             <div class="asset-info">
                                 <div class="asset-name">Luong Minh Phu, CPO</div>
-                                <div class="asset-formats">High-res JPG</div>
+                                <div class="asset-formats">JPG chất lượng cao</div>
                             </div>
                             <button class="btn btn-sm btn-outline"
                                     onclick="downloadAsset('cpo-photo')">
-                                Download
+                                Tải về
                             </button>
                         </div>
                         <div class="asset-item">
                             <div class="asset-preview photo-preview">
                                 <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=200&h=200&fit=crop&crop=face"
-                                     alt="Team Photo" />
+                                     alt="Ảnh Đội Ngũ" />
                             </div>
                             <div class="asset-info">
-                                <div class="asset-name">Team Photo</div>
-                                <div class="asset-formats">High-res JPG</div>
+                                <div class="asset-name">Ảnh Đội Ngũ</div>
+                                <div class="asset-formats">JPG chất lượng cao</div>
                             </div>
                             <button class="btn btn-sm btn-outline"
                                     onclick="downloadAsset('team-photo')">
-                                Download
+                                Tải về
                             </button>
                         </div>
                     </div>
@@ -312,90 +309,80 @@
         </div>
     </section>
 
-    <!-- Press Coverage -->
+    <!-- Tin tức Đưa tin -->
     <section class="coverage-section">
         <div class="container">
-            <h2 class="section-title">Press Coverage</h2>
+            <h2 class="section-title">Đưa tin Báo chí</h2>
             <div class="coverage-grid">
                 <div class="coverage-item">
                     <div class="coverage-source">TechCrunch</div>
                     <h3 class="coverage-headline">
-                        "Nihongo Sekai is revolutionizing Japanese language learning
-                        with AI"
+                        “Nihongo Sekai đang cách mạng hóa việc học tiếng Nhật bằng AI”
                     </h3>
-                    <div class="coverage-date">March 2024</div>
-                    <a href="#" class="coverage-link">Read Article →</a>
+                    <div class="coverage-date">Tháng 3, 2024</div>
+                    <a href="#" class="coverage-link">Xem bài viết →</a>
                 </div>
                 <div class="coverage-item">
                     <div class="coverage-source">The Japan Times</div>
                     <h3 class="coverage-headline">
-                        "EdTech startup bridges cultural gap through language education"
+                        “Startup EdTech thu hẹp khoảng cách văn hóa qua giáo dục ngôn ngữ”
                     </h3>
-                    <div class="coverage-date">February 2024</div>
-                    <a href="#" class="coverage-link">Read Article →</a>
+                    <div class="coverage-date">Tháng 2, 2024</div>
+                    <a href="#" class="coverage-link">Xem bài viết →</a>
                 </div>
                 <div class="coverage-item">
                     <div class="coverage-source">EdTech Magazine</div>
                     <h3 class="coverage-headline">
-                        "The future of language learning is cultural immersion"
+                        “Tương lai của học ngôn ngữ là sự đắm chìm văn hóa”
                     </h3>
-                    <div class="coverage-date">January 2024</div>
-                    <a href="#" class="coverage-link">Read Article →</a>
+                    <div class="coverage-date">Tháng 1, 2024</div>
+                    <a href="#" class="coverage-link">Xem bài viết →</a>
                 </div>
                 <div class="coverage-item">
                     <div class="coverage-source">Nikkei Asia</div>
                     <h3 class="coverage-headline">
-                        "Japanese language demand surges globally as startup scales"
+                        “Nhu cầu học tiếng Nhật toàn cầu tăng mạnh khi startup mở rộng”
                     </h3>
-                    <div class="coverage-date">December 2023</div>
-                    <a href="#" class="coverage-link">Read Article →</a>
+                    <div class="coverage-date">Tháng 12, 2023</div>
+                    <a href="#" class="coverage-link">Xem bài viết →</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Executive Bios -->
+    <!-- Hồ Sơ Ban Lãnh Đạo -->
     <section class="bios-section">
         <div class="container">
-            <h2 class="section-title">Executive Team</h2>
+            <h2 class="section-title">Ban Lãnh Đạo</h2>
             <div class="bios-grid">
                 <div class="bio-card">
                     <div class="bio-photo">
-                        <img src="images/MKhoi.png"
-                             alt="Phan Minh Khoi" />
+                        <img src="images/MKhoi.png" alt="Phan Minh Khoi" />
                     </div>
                     <div class="bio-content">
-                        <h3 class="bio-name">Phan Minh Khoi</h3>
-                        <div class="bio-title">Co-Founder & CEO</div>
+                        <h3 class="bio-name">Phan Minh Khôi</h3>
+                        <div class="bio-title">Đồng Sáng Lập & Giám Đốc Điều Hành</div>
                         <p class="bio-description">
-                            Former professor at Tokyo University with 15+ years in
-                            language education. Expert in Japanese pedagogy and cultural
-                            studies. Holds PhD in Applied Linguistics from FPT
-                            University. Published researcher on Japanese language
-                            acquisition.
+                            Nguyên giảng viên tại Đại học Tokyo với hơn 15 năm kinh nghiệm trong lĩnh vực giảng dạy ngôn ngữ. Chuyên gia trong phương pháp giảng dạy tiếng Nhật và nghiên cứu văn hóa. Đạt bằng Tiến sĩ Ngôn ngữ học Ứng dụng tại Đại học FPT. Nghiên cứu sinh đã công bố nhiều bài báo về việc tiếp thu ngôn ngữ tiếng Nhật.
                         </p>
                         <div class="bio-contact">
-                            <a href="mailto:hiroshi@nihongosekai.com">phanminhkhoi23@nihongosekai.com</a>
+                            <a href="mailto:phanminhkhoi23@nihongosekai.com">phanminhkhoi23@nihongosekai.com</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="bio-card">
                     <div class="bio-photo">
-                        <img src="images/MPhu.jpg"
-                             alt="Luong Minh Phu" />
+                        <img src="images/MPhu.jpg" alt="Lương Minh Phú" />
                     </div>
                     <div class="bio-content">
-                        <h3 class="bio-name">Luong Minh Phu</h3>
-                        <div class="bio-title">Co-Founder & Chief Product Officer</div>
+                        <h3 class="bio-name">Lương Minh Phú</h3>
+                        <div class="bio-title">Đồng Sáng Lập & Giám Đốc Sản Phẩm</div>
                         <p class="bio-description">
-                            EdTech innovator with passion for cross-cultural education.
-                            Previously led product teams at major language learning
-                            platforms. Stanford MBA, former Google product manager. Speaks
-                            fluent Japanese and Korean.
+                            Nhà đổi mới EdTech với đam mê về giáo dục đa văn hóa. Trước đây đã lãnh đạo các nhóm sản phẩm tại những nền tảng học ngôn ngữ hàng đầu. Thạc sĩ Quản trị Kinh doanh Stanford, cựu quản lý sản phẩm tại Google. Thông thạo tiếng Nhật và tiếng Hàn.
                         </p>
                         <div class="bio-contact">
-                            <a href="mailto:sarah@nihongosekai.com">sarah@nihongosekai.com</a>
+                            <a href="mailto:phuminhphu@nihongosekai.com">phuminhphu@nihongosekai.com</a>
                         </div>
                     </div>
                 </div>
@@ -403,44 +390,42 @@
         </div>
     </section>
 
-    <!-- Contact Information -->
+    <!-- Thông Tin Liên Hệ Báo Chí -->
     <section class="press-contact-section">
         <div class="container">
             <div class="contact-content">
-                <h2 class="section-title">Press Inquiries</h2>
+                <h2 class="section-title">Liên Hệ Báo Chí</h2>
                 <p class="contact-description">
-                    For press inquiries, interview requests, or additional
-                    information, please contact our media relations team.
+                    Để yêu cầu phỏng vấn, thông tin bổ sung hoặc mọi thắc mắc liên quan đến báo chí, vui lòng liên hệ đội ngũ quan hệ truyền thông của chúng tôi.
                 </p>
 
                 <div class="contact-cards">
                     <div class="contact-card">
-                        <h3 class="contact-name">Media Relations</h3>
+                        <h3 class="contact-name">Quan Hệ Truyền Thông</h3>
                         <div class="contact-details">
                             <div class="contact-item">
                                 <strong>Email:</strong> press@nihongosekai.com
                             </div>
                             <div class="contact-item">
-                                <strong>Phone:</strong> +1 (555) 123-4567
+                                <strong>Điện thoại:</strong> +1 (555) 123-4567
                             </div>
                             <div class="contact-item">
-                                <strong>Response Time:</strong> Within 24 hours
+                                <strong>Thời gian phản hồi:</strong> Trong vòng 24 giờ
                             </div>
                         </div>
                     </div>
 
                     <div class="contact-card">
-                        <h3 class="contact-name">Partnership Inquiries</h3>
+                        <h3 class="contact-name">Liên Hệ Hợp Tác</h3>
                         <div class="contact-details">
                             <div class="contact-item">
                                 <strong>Email:</strong> partnerships@nihongosekai.com
                             </div>
                             <div class="contact-item">
-                                <strong>Phone:</strong> +1 (555) 123-4568
+                                <strong>Điện thoại:</strong> +1 (555) 123-4568
                             </div>
                             <div class="contact-item">
-                                <strong>Focus:</strong> Strategic partnerships and
-                                collaborations
+                                <strong>Phạm vi:</strong> Hợp tác chiến lược và liên kết
                             </div>
                         </div>
                     </div>
@@ -455,13 +440,13 @@
     <script src="~/js/script.js"></script>
     <script>
         function downloadMediaKit() {
-          showToast('Media kit download started. Check your downloads folder.', 'success');
+            showToast('Bắt đầu tải bộ tài liệu truyền thông. Vui lòng kiểm tra thư mục Tải xuống của bạn.', 'success');
         }
         function downloadAsset(assetType) {
-          showToast(`${assetType} asset download started.`, 'success');
+            showToast(`Bắt đầu tải xuống tài nguyên: ${assetType}.`, 'success');
         }
         function readPressRelease(releaseId) {
-          showToast(`Opening press release: ${releaseId}`, 'info');
+            showToast(`Đang mở thông cáo báo chí: ${releaseId}`, 'info');
         }
     </script>
 }
