@@ -12,8 +12,8 @@
 
     // Stats for Pending tab
     var pendingAll = Model.Where(p => p.Status == PartnerStatus.Pending);
-    var today = DateTime.UtcNow.Date;
-    var pendingToday = pendingAll.Count(p => p.CreatedAt.Date == today);
+    var todayLocal = DateTime.Now.Date;
+    var pendingToday = pendingAll.Count(p => p.CreatedAt.ToLocalTime().Date == todayLocal);
 
     // Read query params
     var expParam = Context.Request.Query["exp"].ToString();
@@ -24,27 +24,43 @@
     // Apply filters
     if (!string.IsNullOrEmpty(expParam) &&
         Enum.TryParse<YearsOfExperience>(expParam, out var expVal))
+    {
         allItems = allItems.Where(p => p.YearsOfExperience == expVal);
+    }
 
     if (!string.IsNullOrEmpty(specParam) &&
         Enum.TryParse<SpecializationType>(specParam, out var specVal))
+    {
         allItems = allItems.Where(p => p.Specializations.Any(s => s.Specialization == specVal));
+    }
 
     if (!string.IsNullOrEmpty(dateParam))
     {
         if (filter == PartnerStatus.Pending)
         {
             if (dateParam == "today")
-                allItems = allItems.Where(p => p.CreatedAt.Date == today);
+            {
+                allItems = allItems.Where(p => p.CreatedAt.ToLocalTime().Date == todayLocal);
+            }
             else if (int.TryParse(dateParam, out var days))
-                allItems = allItems.Where(p => p.CreatedAt.Date >= today.AddDays(-days));
+            {
+                allItems = allItems.Where(p => p.CreatedAt.ToLocalTime().Date >= todayLocal.AddDays(-days));
+            }
         }
-        else
+        else // Approved
         {
             if (dateParam == "today")
-                allItems = allItems.Where(p => p.DecisionAt.HasValue && p.DecisionAt.Value.Date == today);
+            {
+                allItems = allItems.Where(p =>
+                    p.DecisionAt.HasValue &&
+                    p.DecisionAt.Value.ToLocalTime().Date == todayLocal);
+            }
             else if (int.TryParse(dateParam, out var days))
-                allItems = allItems.Where(p => p.DecisionAt.HasValue && p.DecisionAt.Value.Date >= today.AddDays(-days));
+            {
+                allItems = allItems.Where(p =>
+                    p.DecisionAt.HasValue &&
+                    p.DecisionAt.Value.ToLocalTime().Date >= todayLocal.AddDays(-days));
+            }
         }
     }
 
@@ -52,8 +68,12 @@
     int pageSize = 10;
     int totalCount = allItems.Count();
     int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-    var items = allItems.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+    var items = allItems
+                       .Skip((page - 1) * pageSize)
+                       .Take(pageSize)
+                       .ToList();
 }
+
 
 @section Styles {
     <style>
