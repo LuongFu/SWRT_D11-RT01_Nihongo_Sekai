@@ -75,11 +75,70 @@
 }
 
 @section Styles {
-    <!-- Google Fonts -->
+    <!-- Google Fonts & Bootstrap Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
 
     <style>
-        /* wrapper để dropdown con không đẩy layout */
+        /* === BODY & BACKGROUND PETALS === */
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: #f9f5f2 url('/images/pattern-wave.png') center/200px repeat;
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* Sakura petals (subtle, few) */
+        .petal {
+            position: fixed;
+            top: -10px;
+            width: 16px;
+            height: 16px;
+            background: url('/images/petal.svg') no-repeat center/contain;
+            opacity: 0.7;
+            animation: fall linear infinite;
+        }
+
+        @@keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        /* === CONTAINER === */
+        .container {
+            margin-top: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: #a32a2a;
+            margin-bottom: 2rem;
+        }
+
+        /* === STAT CARDS === */
+        .stat-card {
+            border-radius: 1rem; /* bo góc to hơn */
+            padding: 0; /* bỏ padding dư */
+            overflow: hidden;
+            background: #fff;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+            .stat-card .card-body {
+                padding: 1rem; /* đưa padding vào card-body */
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            }
+
+
+        /* === FILTER FORM === */
         .hover-dropdown {
             position: relative;
         }
@@ -89,11 +148,13 @@
                 position: absolute;
                 top: 100%;
                 left: 0;
-                z-index: 1000;
-                max-height: 200px;
+                right: 0;
+                max-height: 180px;
                 overflow-y: auto;
                 background: #fff;
-                box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+                border: 1px solid #ddd;
+                border-radius: 0.5rem;
+                box-shadow: 0 .5rem 1rem rgba(0,0,0,0.1);
             }
 
             .hover-dropdown:hover .dropdown-menu {
@@ -101,66 +162,326 @@
             }
 
             .hover-dropdown .dropdown-item:hover {
-                background-color: #f8f9fa;
-                color: #dc3545;
+                background: #fef0f0;
+                color: #a32a2a;
             }
-        /* nhấn mạnh nút Apply */
+
         .apply-btn {
-            background: #dc3545;
-            border-color: #dc3545;
+            background-color: #a32a2a;
+            border-color: #a32a2a;
         }
 
             .apply-btn:hover {
-                background: #c82333;
-                border-color: #bd2130;
+                background-color: #8b2424;
             }
+
+        /* === TABLE === */
+        .table-wrapper {
+            background: #fff;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+
+            .table-wrapper table {
+                border: none;
+            }
+
+            .table-wrapper thead th {
+                background: #fef2f2;
+                color: #a32a2a;
+                border-bottom: none;
+            }
+
+            .table-wrapper tbody tr {
+                transition: background .2s, transform .2s;
+            }
+
+                .table-wrapper tbody tr:hover {
+                    background: #fff5f5;
+                    transform: translateY(-1px);
+                }
+
+
+        .badge-special {
+            background: #fde2e2;
+            color: #a32a2a;
+        }
+
+        /* === FOOTER SPACING === */
+        .pagination {
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        
+        /* Make apply-btn match the style of the "Xóa bộ lọc" button on Users page */
+        .apply-btn {
+            background-color: transparent; /* trong suốt */
+            color: #a32a2a; /* chữ đỏ */
+            border: 1px solid #a32a2a; /* viền đỏ */
+            border-radius: 0.5rem; /* bo góc tương tự */
+            padding: 0.5rem 1.25rem; /* chiều cao & padding */
+            font-weight: 600; /* đậm như nút Clear */
+            transition: background-color .2s, color .2s;
+            white-space: nowrap;
+        }
+
+            .apply-btn:hover,
+            .apply-btn:focus {
+                background-color: #a32a2a; /* nền đỏ khi hover */
+                color: #fff; /* chữ trắng */
+                text-decoration: none;
+            }
+
+        /* Container chung cho filter + nút */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            background: #fff;
+            padding: .75rem 1rem;
+            border-radius: .75rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+            /* Mỗi dropdown và nút Apply cùng chiều cao */
+            .filter-bar .hover-dropdown,
+            .filter-bar .apply-btn {
+                flex: 1 1 0;
+                min-width: 150px;
+                height: 2.75rem;
+            }
+
+                /* Dropdown giữ nguyên style Bootstrap, chỉ bo góc và background */
+                .filter-bar .hover-dropdown .btn {
+                    height: 100%;
+                    border-radius: .5rem;
+                    background: #f8f9fa;
+                    text-align: left;
+                }
+
+            /* Style nút Apply nhỏ gọn như nút “Xóa bộ lọc” bên Users page */
+            .filter-bar .apply-btn {
+                background: transparent;
+                color: #a32a2a;
+                border: 1px solid #a32a2a;
+                border-radius: .5rem;
+                padding: 0; /* padding trên-xuống do height cố định */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                transition: background-color .2s, color .2s, transform .1s;
+            }
+
+                /* Hover & focus state */
+                .filter-bar .apply-btn:hover,
+                .filter-bar .apply-btn:focus {
+                    background-color: #a32a2a;
+                    color: #fff;
+                    transform: translateY(-1px);
+                    text-decoration: none;
+                }
+
+                /* Nếu cần icon bên trong nút */
+                .filter-bar .apply-btn i {
+                    margin-right: .5rem;
+                    font-size: 1.1rem;
+                }
+
+        /* ===== BASIC LAYOUT ===== */
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: #f9f5f2 url('/images/pattern-wave.png') center/200px repeat;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: #a32a2a;
+            margin-bottom: 2.5rem;
+        }
+
+        /* ===== NAV & STATS ===== */
+        .btn-group a {
+            min-width: 120px;
+        }
+
+        .stat-card {
+            border-radius: 0.75rem;
+            background: #fff;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+
+        /* ===== FILTER BAR ===== */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            background: #fff;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+            .filter-bar .hover-dropdown,
+            .filter-bar .apply-btn {
+                flex: 1 1 150px;
+                height: 2.75rem;
+            }
+
+                /* dropdown button */
+                .filter-bar .hover-dropdown .btn {
+                    height: 100%;
+                    width: 100%;
+                    background: #f8f9fa;
+                    border: 1px solid #ddd;
+                    border-radius: 0.5rem;
+                    text-align: left;
+                    padding: 0 .75rem;
+                }
+
+            /* apply button */
+            .filter-bar .apply-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: transparent;
+                color: #a32a2a;
+                border: 1px solid #a32a2a;
+                border-radius: 0.5rem;
+                font-weight: 600;
+                transition: background .2s, color .2s, transform .1s;
+            }
+
+                .filter-bar .apply-btn:hover {
+                    background: #a32a2a;
+                    color: #fff;
+                    transform: translateY(-1px);
+                    text-decoration: none;
+                }
+
+        /* ===== TABLE ===== */
+        .table-wrapper {
+            background: #fff;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+            .table-wrapper table {
+                margin: 0;
+            }
+
+            .table-wrapper thead th {
+                background: #fde2e2;
+                color: #a32a2a;
+                border: none;
+                font-weight: 600;
+            }
+
+            .table-wrapper tbody tr:nth-child(odd) {
+                background: #fff5f5;
+            }
+
+            .table-wrapper tbody tr:hover {
+                background: #ffecec;
+                transform: translateY(-1px);
+                transition: background .2s, transform .2s;
+            }
+
+            .table-wrapper td, .table-wrapper th {
+                vertical-align: middle;
+            }
+
+        /* badge */
+        .badge-special {
+            background: #fde2e2 !important;
+            color: #a32a2a !important;
+        }
+
+        /* pagination */
+        .pagination {
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+            .pagination .page-link {
+                border-radius: .5rem;
+                margin: 0 .25rem;
+            }
+
+        /* make modals a bit more spacious */
+        .modal-content {
+            border-radius: .75rem;
+        }
+
+
+
     </style>
 }
 
-@{
-    ViewData["Title"] = "Đơn ứng tuyển đối tác";
-}
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
 
-<div class="container mt-5">
-    <h1 class="mb-4">@ViewData["Title"]</h1>
-
-    @* Thẻ thống kê *@
-    @if (filter == PartnerStatus.Pending)
-    {
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card bg-danger text-white mb-3">
-                    <div class="card-body">
-                        <h5>Tổng đơn chờ</h5>
-                        <p class="display-4 mb-0">@pendingAll.Count()</p>
+    @* Pending stats *@    
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card border-0 p-3">
+                <div class="card-body">
+                    <div>
+                        <small class="text-muted">Tổng đơn chờ</small>
+                        <h4>@pendingAll.Count()</h4>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-warning text-white mb-3">
-                    <div class="card-body">
-                        <h5>Chờ hôm nay</h5>
-                        <p class="display-4 mb-0">@pendingToday</p>
-                    </div>
+                    <i class="bi bi-hourglass-split fs-2 text-danger"></i>
                 </div>
             </div>
         </div>
-    }
+        <div class="col-md-3">
+            <div class="card stat-card border-0 p-3">
+                <div class="card-body">
+                    <div>
+                        <small class="text-muted">Chờ hôm nay</small>
+                        <h4>@pendingToday</h4>
+                    </div>
+                    <i class="bi bi-calendar-day fs-2 text-warning"></i>
+                </div>
+            </div>
+        </div>
+    </div>    
 
     @* Tabs *@
-    <div class="btn-group mb-4">
-        <a asp-action="PartnerApplications" asp-route-filter="Pending"
-           class="btn @(filter == PartnerStatus.Pending ? "btn-primary" : "btn-outline-primary")">
-            Chờ duyệt
-        </a>
-        <a asp-action="PartnerApplications" asp-route-filter="Approved"
-           class="btn @(filter == PartnerStatus.Approved ? "btn-success" : "btn-outline-success")">
-            Đã duyệt
-        </a>
+    <div class="d-flex justify-content-center mb-4">
+        <div class="btn-group shadow-sm">
+            <a asp-action="PartnerApplications" asp-route-filter="Pending"
+               class="btn @(filter == PartnerStatus.Pending ? "btn-danger" : "btn-outline-secondary")">
+                Chờ duyệt
+            </a>
+            <a asp-action="PartnerApplications" asp-route-filter="Approved"
+               class="btn @(filter == PartnerStatus.Approved ? "btn-success" : "btn-outline-secondary")">
+                Đã duyệt
+            </a>
+        </div>
     </div>
 
-    @* Bộ lọc *@
-    <form method="get" id="filterForm" class="row g-3 mb-4">
+@* Bộ lọc *@
+    <form method="get" asp-controller="Admin" asp-action="PartnerApplications" id="filterForm" class="row g-3 mb-4">
         <input type="hidden" name="filter" value="@filter" />
         <input type="hidden" name="exp" id="expInput" value="@expParam" />
         <input type="hidden" name="spec" id="specInput" value="@specParam" />
@@ -174,19 +495,24 @@
                     data-bs-toggle="dropdown">
                 @(string.IsNullOrEmpty(expParam)
                                 ? "Tất cả"
-                                : Enum.Parse<YearsOfExperience>(expParam).GetDisplayName())
+                                : ((YearsOfExperience)Enum.Parse(typeof(YearsOfExperience), expParam))
+                                .GetDisplayName())
             </button>
             <ul class="dropdown-menu w-100">
                 <li>
                     <a class="dropdown-item exp-item @(string.IsNullOrEmpty(expParam) ? "active" : "")"
-                       data-val="">Tất cả</a>
+                       data-val="">
+                        Tất cả
+                    </a>
                 </li>
                 @foreach (var e in Enum.GetValues(typeof(YearsOfExperience)).Cast<YearsOfExperience>())
                 {
                     var sel = expParam == e.ToString() ? "active" : "";
                     <li>
                         <a class="dropdown-item exp-item @sel"
-                           data-val="@e">@e.GetDisplayName()</a>
+                           data-val="@e">
+                            @e.GetDisplayName()
+                        </a>
                     </li>
                 }
             </ul>
@@ -206,20 +532,24 @@
             <ul class="dropdown-menu w-100">
                 <li>
                     <a class="dropdown-item spec-item @(string.IsNullOrEmpty(specParam) ? "active" : "")"
-                       data-val="">Tất cả</a>
+                       data-val="">
+                        Tất cả
+                    </a>
                 </li>
                 @foreach (var s in Enum.GetValues(typeof(SpecializationType)).Cast<SpecializationType>())
                 {
                     var sel = specParam == s.ToString() ? "active" : "";
                     <li>
                         <a class="dropdown-item spec-item @sel"
-                           data-val="@s">@s.GetDisplayName()</a>
+                           data-val="@s">
+                            @s.GetDisplayName()
+                        </a>
                     </li>
                 }
             </ul>
         </div>
 
-        <!-- Ngày -->
+        <!-- Ngày gửi / quyết định -->
         <div class="col-md-3 hover-dropdown">
             <label class="form-label">
                 @(filter == PartnerStatus.Pending ? "Ngày gửi" : "Ngày quyết định")
@@ -237,25 +567,34 @@
             <ul class="dropdown-menu w-100">
                 <li>
                     <a class="dropdown-item date-item @(string.IsNullOrEmpty(dateParam) ? "active" : "")"
-                       data-val="">Tất cả</a>
+                       data-val="">
+                        Tất cả
+                    </a>
                 </li>
                 <li>
                     <a class="dropdown-item date-item @(dateParam == "today" ? "active" : "")"
-                       data-val="today">Hôm nay</a>
+                       data-val="today">
+                        Hôm nay
+                    </a>
                 </li>
                 <li>
                     <a class="dropdown-item date-item @(dateParam == "3" ? "active" : "")"
-                       data-val="3">3 ngày qua</a>
+                       data-val="3">
+                        3 ngày qua
+                    </a>
                 </li>
                 <li>
                     <a class="dropdown-item date-item @(dateParam == "7" ? "active" : "")"
-                       data-val="7">7 ngày qua</a>
+                       data-val="7">
+                        7 ngày qua
+                    </a>
                 </li>
             </ul>
         </div>
 
-        <div class="col-md-3 d-flex align-items-end">
-            <button type="submit" class="btn apply-btn w-100">Áp dụng</button>
+        <!-- Submit -->
+        <div class="col-md-3 d-grid">
+            <button type="submit" class="btn apply-btn w-100">Áp dụng lọc</button>
         </div>
     </form>
 
@@ -331,26 +670,28 @@
                         </td>
                     </tr>
                 }
+                
             </tbody>
         </table>
+        }
+    </div>
 
-        @* Phân trang *@
+    @* Pagination *@
+    @if (totalPages > 1)
+    {
         <nav>
-            <ul class="pagination justify-content-center">
+            <ul class="pagination">
                 <li class="page-item @(page == 1 ? "disabled" : "")">
-                    <a class="page-link"
-                       href="?filter=@filter&page=@(page - 1)&exp=@expParam&spec=@specParam&dateRange=@dateParam">«</a>
+                    <a class="page-link" href="?filter=@filter&page=@(page - 1)&exp=@expParam&spec=@specParam&dateRange=@dateParam">«</a>
                 </li>
                 @for (int i = 1; i <= totalPages; i++)
                 {
                     <li class="page-item @(i == page ? "active" : "")">
-                        <a class="page-link"
-                           href="?filter=@filter&page=@i&exp=@expParam&spec=@specParam&dateRange=@dateParam">@i</a>
+                        <a class="page-link" href="?filter=@filter&page=@i&exp=@expParam&spec=@specParam&dateRange=@dateParam">@i</a>
                     </li>
                 }
                 <li class="page-item @(page == totalPages ? "disabled" : "")">
-                    <a class="page-link"
-                       href="?filter=@filter&page=@(page + 1)&exp=@expParam&spec=@specParam&dateRange=@dateParam">»</a>
+                    <a class="page-link" href="?filter=@filter&page=@(page + 1)&exp=@expParam&spec=@specParam&dateRange=@dateParam">»</a>
                 </li>
             </ul>
         </nav>
@@ -364,10 +705,11 @@
         <div class="modal-dialog modal-dialog-centered">
             <form asp-action="ApprovePartner" asp-controller="Admin" method="post" class="modal-content">
                 <input type="hidden" name="id" value="@p.Id" />
-                <div class="modal-header">
-                    <h5 class="modal-title text-success">Xác nhận phê duyệt</h5>
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-success"><i class="bi bi-check-circle-fill"></i> Xác nhận phê duyệt</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
                     Bạn có chắc muốn <strong>phê duyệt</strong> đơn của <em>@p.User.FullName</em>?
                 </div>
@@ -386,11 +728,12 @@
     <div class="modal fade" id="rejectModal-@p.Id" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form asp-action="RejectPartner" asp-controller="Admin" method="post" class="modal-content">
-                <input type="hidden" name="id" value="@p.Id" />
-                <div class="modal-header">
-                    <h5 class="modal-title text-danger">Xác nhận từ chối</h5>
+                <input type="hidden" name="id" value="@p.Id" />                
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-success"><i class="bi bi-check-circle-fill"></i> Xác nhận từ chối</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
                     Bạn có chắc muốn <strong>từ chối</strong> đơn của <em>@p.User.FullName</em>?
                 </div>
@@ -431,3 +774,4 @@
         });
     </script>
 }
+ 

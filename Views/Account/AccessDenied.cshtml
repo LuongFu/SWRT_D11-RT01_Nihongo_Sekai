@@ -1,17 +1,124 @@
 ﻿@section Styles {
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* Toàn trang gradient nhẹ */
+        body {
+            background: linear-gradient(135deg, #fdecea 0%, #f9f0f0 100%);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        /* Center container */
+        .access-denied-container {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Card bao quanh nội dung */
+        .access-denied-card {
+            background: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            /* Icon cảnh báo */
+            .access-denied-card::before {
+                content: "⚠️";
+                font-size: 4rem;
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                opacity: 0.15;
+            }
+
+        .access-denied-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #c62828;
+            margin-bottom: 1rem;
+        }
+
+        .access-denied-text {
+            color: #555;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        /* Button về home */
+        .btn-home {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            background: #2e7d32;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            text-decoration: none;
+        }
+
+            .btn-home:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+                background: #1b5e20;
+            }
+
+        /* Decorative floating petals */
+        .petal {
+            position: absolute;
+            width: 1.5rem;
+            height: 1.5rem;
+            background: url('/images/petal.png') no-repeat center/contain;
+            opacity: 0.8;
+            animation: drift 6s ease-in-out infinite;
+        }
+        @@keyframes drift {
+            0%
+
+        {
+            transform: translate(0, 0) rotate(0deg);
+        }
+
+        50% {
+            transform: translate(20px, 30px) rotate(180deg);
+        }
+
+        100% {
+            transform: translate(0, 60px) rotate(360deg);
+        }
+
+        }
+    </style>
 }
 
-<div class="row">
-    <div class="col-md-6 offset-3 alert alert-danger text-center">
-        <h2>Bạn không được phép truy cập trang này</h2>
-
-        <p>Vui lòng nhấn nút bên dưới để chuyển hướng về trang chủ.</p>
-        <hr />
-
-        <p>
-            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-success">Trang chủ</a>
+<div class="access-denied-container">
+    <div class="access-denied-card">
+        <h2 class="access-denied-title">Bạn không được phép truy cập</h2>
+        <p class="access-denied-text">
+            Bạn cần đăng nhập hoặc không có quyền xem trang này.<br />
+            Vui lòng quay về trang chủ hoặc liên hệ quản trị để được hỗ trợ.
         </p>
+        <a asp-controller="Home" asp-action="Index" class="btn-home">← Về Trang Chủ</a>
+
+        @* Random petals for decoration *@
+        @for (int i = 0; i < 8; i++)
+        {
+            var left = new System.Random().Next(0, 100);
+            var delay = new System.Random().NextDouble() * 3;
+            var duration = 4 + new System.Random().NextDouble() * 4;
+            <div class="petal"
+                 style="left:@left% ; top:@(-20 + i * 5)% ; animation-delay:@($"{delay:F2}s") ; animation-duration:@($"{duration:F2}s")">
+            </div>
+        }
     </div>
 </div>

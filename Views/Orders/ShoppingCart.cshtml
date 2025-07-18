@@ -1,4 +1,4 @@
-﻿@using JapaneseLearningPlatform.Data.ViewModels;
+﻿@using JapaneseLearningPlatform.Data.ViewModels
 @model ShoppingCartVM
 
 @{
@@ -10,197 +10,275 @@
 @section Styles {
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
-}
 
-<style>
-    .cart-container {
-        max-width: 1140px;
-        margin: 0 auto;
-        display: flex;
-        gap: 2rem;
-    }
+    <style>
+        /* 1) Nền toàn trang gradient dịu nhẹ */
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
 
-    .cart-left {
-        flex: 2;
-    }
+        /* 2) Tiêu đề chung */
+        .cart-header, .recommended-header {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
 
-    .cart-right {
-        flex: 1;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        padding: 1.5rem;
-        background-color: #f9f9f9;
-        height: fit-content;
-    }
+        /* 3) Bao quanh giỏ hàng thành card nổi */
+        .cart-container {
+            background: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 2rem;
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
 
-    .cart-header {
-        font-size: 2rem;
-        font-weight: bold;
-        margin-top: 2rem;
-        margin-bottom: 1.5rem;
-    }
+        .cart-left {
+            flex: 2;
+        }
 
-    .cart-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 0;
-        border-top: 1px solid #ddd;
-    }
+        .cart-right {
+            flex: 1;
+            background: #fff5f5;
+            border: 1px solid #f5c2c7;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: inset 0 0 0 4px #f87171;
+        }
 
-        .cart-item img {
+            .cart-right h4 {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: #dc3545;
+                margin-bottom: 1rem;
+            }
+
+        /* 4) Card từng khóa học */
+        .cart-item-card {
+            border: 1px solid #eee;
+            border-radius: .5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: transform .2s, box-shadow .2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+        }
+
+            .cart-item-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            }
+
+        .cart-item-img {
             width: 100px;
             height: 60px;
             object-fit: cover;
-            border-radius: 5px;
+            border-radius: .25rem;
             margin-right: 1rem;
         }
 
-    .cart-course-title {
-        font-size: 1.2rem;
-        font-weight: 500;
-    }
-
-    .cart-remove {
-        color: #e53935;
-        font-size: 0.9rem;
-        text-decoration: none;
-    }
-
-    .cart-right h4 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
-    .btn-checkout {
-        background-color: #e53935;
-        color: #fff;
-        border: none;
-        padding: 0.6rem 1.5rem;
-        border-radius: 5px;
-        font-weight: 500;
-        text-decoration: none;
-    }
-
-        .btn-checkout:hover {
-            background-color: #c62828;
+        .cart-course-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #212529;
         }
 
-    .btn-secondary {
-        background-color: transparent;
-        color: #e53935;
-        border: 1px solid #e53935;
-        padding: 0.6rem 1.5rem;
-        border-radius: 5px;
-        font-weight: 500;
-    }
+        .cart-remove {
+            color: #dc3545;
+            font-size: .9rem;
+            transition: color .2s;
+        }
 
-        .btn-secondary:hover {
-            background-color: #e53935;
+            .cart-remove:hover {
+                color: #b02a37;
+                font-weight: 600;
+            }
+
+        /* 5) Nút VNPay hiệu ứng sóng */
+        .vnpay-btn {
+            position: relative;
+            overflow: hidden;
+            background: #dc3545;
+            border: none;
+            color: #fff;
+            padding: .75rem;
+            font-size: 1rem;
+            border-radius: .5rem;
+            transition: transform .2s ease, box-shadow .2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vnpay-logo {
+            width: 24px;
+            margin-right: .5rem;
+        }
+
+        .vnpay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .vnpay-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+            transform: skewX(-20deg);
+            transition: left .5s ease;
+        }
+
+        .vnpay-btn:hover::after {
+            left: 200%;
+        }
+
+        /* 6) Vùng Gợi ý */
+        .recommended-section {
+            background: rgba(255,255,255,0.8);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            margin-bottom: 4rem;
+        }
+
+            .recommended-section .row {
+                margin-top: 1rem;
+            }
+
+        .hover-effect {
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+            .hover-effect:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            }
+
+        .badge-new {
+            background: #dc3545;
             color: #fff;
         }
+    </style>
+}
 
-    #paypal-btn > div {
-        width: 100% !important;
-    }
-
-    #paypal-btn iframe {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-</style>
-
-<div class="cart-header text-center">Giỏ hàng</div>
-<div class="cart-container">
-    <div class="cart-left">
-        <p>@Model.ShoppingCart.ShoppingCartItems.Count khóa học trong giỏ</p>
-
-        @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
-        {
-            <div class="cart-item">
-                <div class="d-flex align-items-center">
-                    <img src="@item.Course.ImageURL" alt="@item.Course.Name" />
-                    <div>
-                        <div class="cart-course-title">@item.Course.Name</div>
-                        <div class="text-muted">@item.Course.FinalPrice.ToString("c")</div>
-                        <a class="cart-remove" asp-controller="Orders" asp-action="RemoveItemFromShoppingCart" asp-route-id="@item.Course.Id">Xóa</a>
-                    </div>
-                </div>
-                <div class="fw-bold">@((item.Amount * item.Course.FinalPrice).ToString("c"))</div>
-            </div>
-        }
-    </div>
-
-    <div class="cart-right">
-        <h4>Tổng: @Model.ShoppingCartTotal.ToString("c")</h4>
-
-        <!-- Nút PayPal -->
-        <div id="paypal-btn" class="mb-3 w-200"></div>
-
-        <!-- Thêm khóa học -->
-        <a class="btn-secondary d-block text-center" asp-controller="Courses" asp-action="Index">Thêm khóa học</a>
-    </div>
-</div>
-
-@if (Model.RecommendedCourses != null && Model.RecommendedCourses.Any())
-{
-    <div class="mt-5">
-        <h4 class="cart-header text-center">Gợi ý cho bạn</h4>
-        <div class="row">
-            @foreach (var item in Model.RecommendedCourses)
+<div class="container my-5">
+    <div class="text-center cart-header">Giỏ hàng</div>
+    <div class="cart-container">
+        <!-- Danh sách khóa học trong giỏ -->
+        <div class="cart-left">
+            <p>@Model.ShoppingCart.ShoppingCartItems.Count khóa học trong giỏ</p>
+            @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
             {
-                <div class="col-md-3">
-                    <div class="card h-100 shadow-sm border-0">
-                        <img src="@item.CoverImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;" />
-                        <div class="card-body">
-                            <h5 class="card-title">@item.Name</h5>
-                            <p class="card-text">@item.Description</p>
-                            <p class="fw-bold text-danger">@item.Tuition.ToString("c")</p>
-                            <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId" class="btn btn-danger w-100 mt-2">
-                                Xem khóa học
+                <div class="cart-item-card">
+                    <div class="d-flex align-items-center">
+                        <img src="@item.Course.ImageURL" alt="@item.Course.Name" class="cart-item-img" />
+                        <div>
+                            <div class="cart-course-title">@item.Course.Name</div>
+                            <div class="text-muted">@item.Course.FinalPrice.ToString("c")</div>
+                            <a class="cart-remove"
+                               asp-controller="Orders"
+                               asp-action="RemoveItemFromShoppingCart"
+                               asp-route-id="@item.Course.Id">
+                                Xóa
                             </a>
                         </div>
                     </div>
+                    <div class="fw-bold">@((item.Amount * item.Course.FinalPrice).ToString("c"))</div>
                 </div>
             }
         </div>
+
+        <!-- Sidebar tổng tiền & thanh toán -->
+        <div class="cart-right">
+            <h4>Tổng: @Model.ShoppingCartTotal.ToString("c")</h4>
+
+            <!-- PayPal Button -->
+            <div id="paypal-btn" class="mb-3 w-100"></div>
+
+            <!-- VNPay Button -->
+            <div class="d-grid gap-2 mb-3">
+                <form asp-action="VNPayCheckout" method="post">
+                    <button type="submit" class="vnpay-btn">
+                        <img src="~/images/vnpay-logo.png" alt="VNPay" class="vnpay-logo" />
+                        Thanh toán VNPay
+                    </button>
+                </form>
+            </div>
+
+            <!-- Link thêm khóa học -->
+            <a class="btn btn-outline-danger w-100" asp-controller="Courses" asp-action="Index">
+                Thêm khóa học
+            </a>
+        </div>
     </div>
-}
+
+    @if (Model.RecommendedCourses?.Any() ?? false)
+    {
+        <div class="recommended-section">
+            <h4 class="recommended-header text-center">Gợi ý cho bạn</h4>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                @foreach (var item in Model.RecommendedCourses)
+                {
+                    <div class="col">
+                        <div class="card h-100 border-start border-4 border-danger shadow-sm d-flex flex-column hover-effect position-relative">
+                            <div class="position-absolute top-0 start-0 m-2">
+                                <span class="badge badge-new">Mới</span>
+                            </div>
+                            <img src="@item.CoverImageUrl"
+                                 class="card-img-top"
+                                 alt="@item.Name"
+                                 style="height:200px; object-fit:cover;" />
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">@item.Name</h5>
+                                <p class="card-text text-truncate">@item.Description</p>
+                                <div class="mt-auto">
+                                    <p class="fw-bold text-danger">@item.Tuition.ToString("c")</p>
+                                    <a asp-controller="Courses"
+                                       asp-action="Details"
+                                       asp-route-id="@item.CourseId"
+                                       class="btn btn-danger w-100">
+                                        Xem khóa học
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
 
 @section Scripts {
     <script src="https://www.paypalobjects.com/api/checkout.js"></script>
     <script>
         let _total = @Html.Raw(Model.ShoppingCartTotal);
-
         paypal.Button.render({
             env: 'sandbox',
             client: {
                 sandbox: 'AcKRtgL4i68EZ2ZYuYUx3ilihAg2YhL5dtF_m19A8MjBWVOn6ewNS4M_uV8gA3xi98zTcUq38gUHbVFx'
             },
             locale: 'en_US',
-            style: {
-                size: 'small',
-                color: 'gold',
-                shape: 'pill'
-            },
+            style: { size: 'small', color: 'gold', shape: 'pill' },
             commit: true,
-            payment: function (data, actions) {
-                return actions.payment.create({
-                    transactions: [{
-                        amount: {
-                            total: _total,
-                            currency: 'USD'
-                        }
-                    }]
-                });
-            },
-            onAuthorize: function (data, actions) {
-                return actions.payment.execute().then(function () {
-                    var url = '@Url.Action("CompleteOrder", "Orders")';
-                    window.location.href = url;
-                });
-            }
-        }, '#paypal-btn')
+            payment: (data, actions) => actions.payment.create({
+                transactions: [{ amount: { total: _total, currency: 'USD' } }]
+            }),
+            onAuthorize: (data, actions) =>
+                actions.payment.execute().then(() => {
+                    window.location.href = '@Url.Action("CompleteOrder", "Orders")';
+                })
+        }, '#paypal-btn');
     </script>
 }

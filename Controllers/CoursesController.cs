@@ -71,7 +71,7 @@ namespace JapaneseLearningPlatform.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Filter(string searchString, CourseCategory? selectedCategory, int page = 1, int pageSize = 6)
+        public async Task<IActionResult> Filter(string searchString, CourseCategory? selectedCategory, int? minPrice, int page = 1, int pageSize = 6)
         {
             // B1: Lấy tất cả khóa học và đưa về List để tránh lỗi delegate inference
             var allCourses = await _service.GetAllAsync();
@@ -95,6 +95,31 @@ namespace JapaneseLearningPlatform.Controllers
                     .Where(c => c.CourseCategory == selectedCategory)
                     .ToList();
             }
+            // === B3.1: Chuyển minPrice thành maxPrice tương ứng ===
+            int? maxPrice = null;
+            if (minPrice.HasValue)
+            {
+                switch (minPrice.Value)
+                {
+                    case 0: maxPrice = 100_000; break;   // Dưới 100k
+                    case 101_000: maxPrice = 500_000; break;   // 101k–500k
+                    case 501_000: maxPrice = 1_000_000; break;   // 501k–1M
+                    case 1_000_001: maxPrice = null; break;   // Trên 1M
+                    default:
+                        minPrice = null; maxPrice = null;
+                        break;
+                }
+            }
+
+            // B3.2: Áp filter giá
+            if (minPrice.HasValue)
+                allCoursesList = allCoursesList
+                    .Where(c => c.FinalPrice >= minPrice.Value)
+                    .ToList();
+            if (maxPrice.HasValue)
+                allCoursesList = allCoursesList
+                    .Where(c => c.FinalPrice <= maxPrice.Value)
+                    .ToList();
 
             // B4: Phân trang
             var totalItems = allCoursesList.Count;
@@ -125,6 +150,7 @@ namespace JapaneseLearningPlatform.Controllers
             }).ToList();
 
             // B7: Truyền dữ liệu cho View
+            ViewBag.MinPrice = minPrice;
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.SearchString = searchString;

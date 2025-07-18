@@ -29,6 +29,52 @@
     <!-- Page-specific CSS -->
     <link rel="stylesheet" href="~/css/courses.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
+    <style>
+       /* Container pill-style */
+        .pagination {
+          display: flex !important;
+          justify-content: center;
+          align-items: center;
+          gap: 0.5rem;
+          margin-top: 2rem;
+          padding-left: 0;
+          list-style: none;
+        }
+
+        /* Các nút số */
+        .pagination .page-item {
+          /* giữ nguyên cấu trúc để Bootstrap không can thiệp */
+        }
+        .pagination .page-item .page-link {
+          padding: 0.5rem 0.75rem;
+          border-radius: 999px;
+          background: var(--bs-gray-100);
+          color: var(--bs-gray-700);
+          font-weight: 500;
+          transition: background 0.2s, box-shadow 0.2s;
+          border: none;
+        }
+
+        /* Hover hiệu ứng */
+        .pagination .page-item .page-link:hover {
+          background: var(--bs-gray-200);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Nút active */
+        .pagination .page-item.active .page-link {
+          background: var(--bs-primary) !important;
+          color: #fff !important;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        /* Disable (nếu có prev/next) */
+        .pagination .page-item.disabled .page-link {
+          opacity: 0.5;
+          cursor: default;
+          background: #fff;
+        }
+    </style>
 }
 
 @section Scripts {
@@ -82,7 +128,7 @@
 <div id="wordOfTheDayContainer"></div>
 <div class="container animate-on-scroll">
     <div class="mb-4">
-    <form asp-action="Filter" method="get" class="row g-2 align-items-center">
+     <form asp-action="Filter" method="get" class="row g-2 align-items-center">
         <div class="col-auto">
             <label class="form-label mb-0">Phân loại:</label>
         </div>
@@ -97,9 +143,40 @@
                 }
             </select>
         </div>
+
+        <!-- Price Filter -->
+        <div class="col-auto">
+            <label class="form-label mb-0">Price:</label>
+        </div>
+        <div class="col-auto">
+            <select id="priceFilter" name="minPrice" class="form-select">
+                @{
+                    // Tạo list tạm ngay trong view cho ví dụ
+                    var priceOptions = new[]
+                    {
+                        new { Value = (int?)null, Text = "Select a price..." },
+                        new { Value = (int?)0, Text = "Dưới 100.000₫" },
+                        new { Value = (int?)101000, Text = "101.000–500.000₫" },
+                        new { Value = (int?)501000, Text = "501.000–1.000.000₫" },
+                        new { Value = (int?)1000001, Text = "Trên 1.000.000₫" }
+                    };
+                }
+
+                @foreach (var opt in priceOptions)
+                {
+                    // Xác định xem có đang được chọn hay không
+                    var isSelected = (ViewBag.MinPrice == null && opt.Value == null)
+                                      || (ViewBag.MinPrice != null && opt.Value != null && (int)ViewBag.MinPrice == opt.Value);
+                    var selectedAttr = isSelected ? "selected" : "";
+                    @:<option value="@(opt.Value?.ToString() ?? "")" @selectedAttr>@opt.Text</option>
+                }
+            </select>
+        </div>
+
         <div class="col-auto">
             <input type="text" name="searchString" class="form-control" placeholder="Search by name..." value="@ViewBag.SearchString" />
-        </div>
+        </div>        
+
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-funnel"></i> Áp dụng bộ lọc
@@ -187,20 +264,22 @@
 
     @await Html.PartialAsync("_CreateItem", "Courses")
 
-    @* Pagination *@
+
+    <!-- @* Pagination *@ -->
     <div class="mt-4 text-center">
-        <nav>
-            <ul class="pagination justify-content-center">
-                @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                {
-                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-                    </li>
-                }
-            </ul>
-        </nav>
+      <nav>
+        <ul class="pagination justify-content-center">
+          @for (int i = 1; i <= ViewBag.TotalPages; i++)
+          {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+              <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+            </li>
+          }
+        </ul>
+      </nav>
     </div>
 </div>
+
 <!-- Enhanced Scripts -->
 <script src="~/js/script.js" asp-append-version="true"></script>
 <script>
@@ -236,10 +315,6 @@
     }
 
     function setupEventListeners() {
-      document
-        .getElementById("courseSearch")
-        .addEventListener("input", handleSearch);
-
       setupFilterHoverBehavior();
       document
         .getElementById("categoryFilter")
@@ -260,7 +335,7 @@
 
       document.querySelectorAll(".filter-pill select").forEach((select) => {
         select.addEventListener("change", updateFilterChipState);
-      });
+      });     
     }
 
     function setupFilterHoverBehavior() {
@@ -522,6 +597,6 @@
     };
 
     updateFilterChipStates();
-    updateClearButton();
+    updateClearButton();   
   });
 </script>
