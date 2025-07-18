@@ -1,51 +1,269 @@
+﻿@using JapaneseLearningPlatform.Models
 @model IEnumerable<Video>
 
 @{
-    ViewData["Title"] = "List of Videos";
-    ViewData["HideNavbar"] = false;
-    ViewData["HideFooter"] = true;
+    ViewData["Title"] = "Danh sách Video Học Tiếng Nhật";
+    Layout = "_Layout";
+    ViewData["BodyClass"] = "video-page";
+
+    // == Paging logic in-view ==
+    int pageSize = 9;
+    var pageQuery = Context.Request.Query["page"].ToString();
+    int pageNumber = 1;
+    if (!string.IsNullOrEmpty(pageQuery) && int.TryParse(pageQuery, out var p) && p > 0)
+    {
+        pageNumber = p;
+    }
+    int totalItems = Model.Count();
+    int pageCount = (int)Math.Ceiling(totalItems / (double)pageSize);
+    pageNumber = Math.Min(Math.Max(pageNumber, 1), Math.Max(pageCount, 1));
+
+    var pagedVideos = Model
+        .Skip((pageNumber - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
 }
 
-<div class="row">
-    <div class="col-md-8 offset-md-2">
+@section Styles {
+    <style>
+        /*---------------------------------------------------
+              1. Background: gradient hồng pastel + subtle sakura
+            ---------------------------------------------------*/
+        body {
+            background: linear-gradient(150deg, #ffe3e3 0%, #ffd4dc 70%, #fffaf5 100%), radial-gradient(circle at 20% 20%, rgba(255,192,203,0.2) 10%, transparent 11%), radial-gradient(circle at 80% 80%, rgba(255,182,193,0.2) 8%, transparent 9%);
+            background-blend-mode: soft-light, normal, normal;
+            /* padding: 4rem 0; */
+            overflow-x: hidden;
+        }
 
-        <table class="table">
-            <thead>
-                <tr class="text-center">
-                    <th>@Html.DisplayNameFor(model => model.VideoURL)</th>
-                    <th>@Html.DisplayNameFor(model => model.VideoDescription)</th>
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                    {
-                        <th>Actions</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
+        h2 {
+            margin-top: 5%;
+        }
+
+        /*---------------------------------------------------
+              2. Petal shape & animation in pure CSS
+            ---------------------------------------------------*/
+        .petal {
+            position: absolute;
+            width: 1rem;
+            height: 1.2rem;
+            background: pink;
+            border-radius: 50% 50% 40% 60%;
+            transform: rotate(var(--seed-rot)) translateY(-150%);
+            opacity: 0.8;
+            animation: petal-fall var(--seed-dur) linear infinite var(--seed-delay);
+        }
+
+            .petal::before {
+                content: "";
+                position: absolute;
+                width: 60%;
+                height: 60%;
+                background: #ffe0e6;
+                border-radius: 50% 40% 60% 50%;
+                top: 10%;
+                left: 20%;
+                transform: rotate(30deg);
+            }
+        @@keyframes petal-fall {
+            0%
+
+        {
+            transform: rotate(var(--seed-rot)) translateY(-150%) translateX(0);
+        }
+
+        100% {
+            transform: rotate(var(--seed-rot)) translateY(100vh) translateX(var(--seed-x));
+        }
+
+        }
+
+        /*---------------------------------------------------
+              3. Title, Search, Grid, Cards, Pagination, Button
+            ---------------------------------------------------*/
+        .page-title {
+            color: #c21807;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            font-weight: 800;
+        }
+
+        .search-input {
+            max-width: 360px;
+            border-radius: 2rem;
+            border: 1px solid #ffcdd2;
+            margin-bottom: 1.5rem;
+        }
+
+        #videoGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+            gap: 1.5rem;
+        }
+
+        .card-video {
+            background: #fff8f8;
+            border-radius: 1rem;
+            border: 1px solid #ffe4e1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform .25s, box-shadow .25s;
+        }
+
+            .card-video:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 16px 32px rgba(0,0,0,0.1);
+            }
+
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: .5rem;
+            margin-top: 2rem;
+        }
+
+            .pagination .page-item .page-link {
+                border-radius: .5rem;
+                border: 1px solid #ffcdd2;
+                color: #c21807;
+                padding: .4rem .8rem;
+            }
+
+            .pagination .page-item.active .page-link {
+                background: #e57373;
+                color: #fff;
+                border-color: #e57373;
+            }
+
+        .add-video-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff5252, #ff1744);
+            color: #fff;
+            font-weight: 600;
+            padding: .6rem 1.4rem;
+            border-radius: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform .2s, box-shadow .2s, background .3s;
+            text-decoration: none;
+            margin-top: 2rem;
+            margin-bottom: 5%;
+        }
+
+            .add-video-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+                background: linear-gradient(45deg, #ff1744, #d50000);
+            }
+    </style>
+}
+
+<body>
+    <div class="container position-relative">
+
+        <!-- generate 15 petals with random seeds -->
+        @for (int i = 0; i < 15; i++)
+        {
+            var rot = Random.Shared.NextDouble() * 360;
+            var dur = Random.Shared.NextDouble() * 6 + 4;
+            var delay = -Random.Shared.NextDouble() * 8;
+            var x = $"{Random.Shared.Next(-100, 100)}px";
+            <div class="petal"
+                 style="--seed-rot:@(rot)deg; --seed-dur:@(dur)s; --seed-delay:@(delay)s; --seed-x:@x">
+            </div>
+        }
+
+        <!-- Title -->
+        <h2 class="text-center page-title">
+            <i class="bi bi-tv-fill"></i> @ViewData["Title"]
+        </h2>
+
+        <!-- Live‑Search -->
+        <div class="d-flex justify-content-end">
+            <input id="liveSearch"
+                   class="form-control search-input"
+                   type="text"
+                   placeholder="Tìm nhanh..." />
+        </div>
+
+        <!-- Video Grid -->
+        <div id="videoGrid">
+            @foreach (var video in pagedVideos)
+            {
+                <div>
+                    <div class="card card-video h-100">
+                        <div class="position-relative">
+                            <img src="@video.VideoURL" class="card-img-top" />
+                            <span class="play-icon">
+                                <i class="bi bi-play-circle-fill"></i>
+                            </span>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text flex-grow-1">@video.VideoDescription</p>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="text-end">
+                                    <a asp-action="Edit" asp-route-id="@video.Id" class="btn btn-outline-danger btn-sm me-1">
+                                        <i class="bi bi-pencil"></i> Sửa
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@video.Id" class="btn btn-outline-info btn-sm me-1">
+                                        <i class="bi bi-eye"></i> Chi tiết
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@video.Id" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination">
+                <li class="page-item @(pageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?page=@(pageNumber - 1)">«</a>
+                </li>
+                @for (int i = 1; i <= pageCount; i++)
                 {
-                <tr>
-                    <td class="align-middle">
-                            <img class="rounded-circle" src="@item.VideoURL" alt="" style="max-width: 150px" />
-                    </td>
-                    <td class="align-middle">
-                        @Html.DisplayFor(modelItem => item.VideoDescription)
-                    </td>
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                    {
-                        <td class="align-middle">
-                            <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i>Edit </a> |
-                            <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i>Details </a> |
-                            <a class="btn btn-danger text-white" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i>Delete </a>
-                        </td>
-                    }
-
-                </tr>
+                    <li class="page-item @(pageNumber == i ? "active" : "")">
+                        <a class="page-link" href="?page=@i">@i</a>
+                    </li>
                 }
-            </tbody>
+                <li class="page-item @(pageNumber == pageCount ? "disabled" : "")">
+                    <a class="page-link" href="?page=@(pageNumber + 1)">»</a>
+                </li>
+            </ul>
+        </nav>
 
-        </table>
+        <!-- Add video -->
+        <div class="text-center">
+            <a asp-action="Create" class="add-video-btn">
+                <i class="bi bi-plus-lg"></i> Thêm video mới
+            </a>
+        </div>
 
     </div>
-</div>
 
-@await Html.PartialAsync("_CreateItem", "Videos") 
+    @section Scripts {
+        <script>
+            // Live‑search
+            document.getElementById('liveSearch').addEventListener('input', function() {
+              const q = this.value.toLowerCase();
+              document.querySelectorAll('.card-video').forEach(card => {
+                const txt = card.querySelector('.card-text').innerText.toLowerCase();
+                card.parentElement.style.display = txt.includes(q) ? '' : 'none';
+              });
+            });
+        </script>
+    }
+</body>
