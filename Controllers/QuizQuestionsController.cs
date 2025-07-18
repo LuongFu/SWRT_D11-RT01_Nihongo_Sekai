@@ -68,7 +68,7 @@ namespace JapaneseLearningPlatform.Controllers
 
             await _service.SaveQuestionAsync(vm);
 
-            TempData["SuccessMessage"] = "Question saved successfully.";
+            TempData["SuccessMessage"] = "Đã lưu câu hỏi.";
             return RedirectToAction("Details", "Quizzes", new { id = vm.QuizId });
         }
 
@@ -77,7 +77,7 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> Delete(int id, int quizId)
         {
             await _service.DeleteQuestionAsync(id);
-            TempData["SuccessMessage"] = "Question deleted successfully.";
+            TempData["SuccessMessage"] = "Đã xóa câu hỏi.";
             return RedirectToAction("Details", "Quizzes", new { id = quizId });
         }
     }

@@ -2,7 +2,7 @@
 @model ClassroomContentVM
 
 @{
-    ViewData["Title"] = "Classroom Content";
+    ViewData["Title"] = "Xem nội dung lớp học";
 }
 
 <div class="container mt-4">
@@ -10,7 +10,7 @@
     <!-- 🔹 Header -->
     <div class="bg-light p-4 rounded shadow-sm mb-4">
         <h2 class="fw-bold">@Model.Template.Title</h2>
-        <p class="mb-1"><strong>Đối tác:</strong> @Model.PartnerName</p>
+        <p class="mb-1"><strong>Người hướng dẫn:</strong> @Model.PartnerName</p>
         <p class="mb-1"><strong>Lịch:</strong> @Model.Instance.StartDate.ToShortDateString() → @Model.Instance.EndDate.ToShortDateString()</p>
         <p class="mb-1"><strong>Thời gian:</strong> @($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</p>
         <p class="mb-1"><strong>Meet Link:</strong> <a href="@Model.Instance.GoogleMeetLink" target="_blank">@Model.Instance.GoogleMeetLink</a></p>
@@ -79,9 +79,9 @@
                             <thead class="table-light">
                                 <tr>
                                     <th style="width: 5%">#</th>
-                                    <th>Name</th>
+                                    <th>Tên</th>
                                     <th>Email</th>
-                                    <th>Enrolled At</th>
+                                    <th>Thời điểm tham gia</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -139,7 +139,7 @@
 
                     @if (Model.FinalAssignment?.DueDate != null)
                     {
-                        <p><strong>Due Date:</strong> @Model.FinalAssignment.DueDate.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p><strong>Hạn nộp:</strong> @Model.FinalAssignment.DueDate.Value.ToString("dd/MM/yyyy HH:mm")</p>
                     }
 
                     @if (User.IsInRole("Learner")) // Learner View
@@ -285,9 +285,19 @@
     </div>
 
     <div class="text-center mt-5">
-        <button class="btn btn-outline-secondary" onclick="history.back()">
-            <i class="bi bi-arrow-left"></i> Về trang trước
-        </button>
+        @if (User.IsInRole("Partner"))
+        {
+            <a asp-action="MySession" asp-controller="ClassroomInstances" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Về trang chủ
+            </a>
+        }
+        else
+        {
+            <a asp-action="Index" asp-controller="ClassroomInstances" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Về trang chủ
+            </a>
+        }
+
     </div>
 </div>
 
@@ -328,7 +338,7 @@
 
                 if (!answerText && !fileSelected) {
                     e.preventDefault(); // ❌ chặn submit
-                    alert("⛔ Please enter an answer or upload a file before submitting.");
+                    alert("⛔ Vui lòng gửi bài làm hoặc file bài làm trước khi nộp.");
                 }
             });
         }

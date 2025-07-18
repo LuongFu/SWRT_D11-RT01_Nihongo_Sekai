@@ -2,7 +2,7 @@
 @using JapaneseLearningPlatform.Data.ViewModels
 @model QuizQuestionFormVM
 @{
-    ViewData["Title"] = Model.QuestionId.HasValue ? "Edit Question" : "Create Question";
+    ViewData["Title"] = Model.QuestionId.HasValue ? "Sửa câu hỏi" : "Tạo câu hỏi";
     var isEdit = Model.QuestionId.HasValue;
 }
 
@@ -27,18 +27,18 @@
         </div>
 
         <hr />
-        <h5 class="fw-bold text-danger">Answer Options</h5>
+        <h5 class="fw-bold text-danger">Các phương án</h5>
 
         <div id="option-list">
             <!-- Options will be rendered here by JavaScript -->
             @* Initial rendering of options is handled by JavaScript *@
         </div>
 
-        <button type="button" class="btn btn-outline-secondary mt-3" onclick="addOption()">+ Add Option</button>
+        <button type="button" class="btn btn-outline-secondary mt-3" onclick="addOption()">+ Thêm phương án</button>
 
         <div class="mt-4 d-flex gap-3">
-            <button type="submit" class="btn btn-danger px-4">Save</button>
-            <a asp-action="Manage" asp-controller="Quizzes" asp-route-id="@Model.QuizId" class="btn btn-outline-dark">Cancel</a>
+            <button type="submit" class="btn btn-danger px-4">Lưu</button>
+            <a asp-action="Manage" asp-controller="Quizzes" asp-route-id="@Model.QuizId" class="btn btn-outline-dark">Hủy</a>
         </div>
     </form>
 </div>

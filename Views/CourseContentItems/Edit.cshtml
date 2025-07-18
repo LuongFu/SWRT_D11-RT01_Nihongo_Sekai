@@ -4,7 +4,7 @@
 @model NewCourseContentItemVM
 
 @{
-    ViewData["Title"] = "Edit Content Item";
+    ViewData["Title"] = "Sửa nội dung";
 }
 
 <!-- Internal Theme Styles (same as Create.cshtml) -->
@@ -64,7 +64,7 @@
 
 <div class="container mt-4 mb-5">
     <div class="card shadow-sm rounded-4 p-4">
-        <h2>Edit Content Item</h2>
+        <h2>Sửa nội dung</h2>
 
         <form asp-action="Edit" method="post">
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
@@ -74,12 +74,12 @@
             <input type="hidden" asp-for="SectionId" />
 
             <div class="mb-3">
-                <label class="form-label">Course</label>
+                <label class="form-label">Khóa học</label>
                 <input class="form-control" value="@Model.CourseTitle" readonly />
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Section</label>
+                <label class="form-label">Mục</label>
                 <input class="form-control" value="@Model.SectionTitle" readonly />
             </div>
 
@@ -109,7 +109,7 @@
             </div>
 
             <div id="videoFields" style="display:none;">
-                <div class="section-label">Video Details</div>
+                <div class="section-label">Chi tiết Video</div>
                 <div class="mb-3">
                     <label asp-for="VideoURL" class="form-label"></label>
                     <input asp-for="VideoURL" class="form-control" />
@@ -124,7 +124,7 @@
             </div>
 
             <div id="quizFields" style="display:none;">
-                <div class="section-label">Quiz Details</div>
+                <div class="section-label">Chi tiết Quiz</div>
                 <div class="mb-3">
                     <label asp-for="QuizId" class="form-label"></label>
                     <select asp-for="QuizId" class="form-select" asp-items="Model.Quizzes">
@@ -136,10 +136,10 @@
 
             <div class="d-flex gap-2 mt-4">
                 <button type="submit" class="btn btn-red">
-                    <i class="bi bi-save"></i> Save Changes
+                    <i class="bi bi-save"></i> Lưu thay đổi
                 </button>
                 <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-outline-red">
-                    <i class="bi bi-arrow-left-circle"></i> Cancel
+                    <i class="bi bi-arrow-left-circle"></i> Hủy
                 </a>
             </div>
         </form>

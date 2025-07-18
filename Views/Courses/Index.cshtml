@@ -6,7 +6,7 @@
 @model IEnumerable<CourseWithPurchaseVM>
 
 @{
-    ViewData["Title"] = "All Courses";
+    ViewData["Title"] = "Danh sách khóa học";
     ViewData["HideNavbar"] = false;
     ViewData["HideFooter"] = false;
 
@@ -199,14 +199,14 @@
                             @if (item.DiscountPercent != null && item.Course.StartDate <= DateTime.Now && item.Course.EndDate >= DateTime.Now)
                             {
                             <p class="text-danger">
-                                <del>@item.Course.Price.ToString("C")</del>
-                                <strong>@item.Course.FinalPrice.ToString("C")</strong>
+                                <del>@item.Course.Price.ToString("N0") ₫</del>
+                                <strong>@item.Course.FinalPrice.ToString("N0") ₫</strong>
                                 <span class="badge bg-danger text-white">@item.Course.DiscountPercent% OFF</span>
                             </p>
                         }
                         else
                         {
-                            <p><strong>@item.Course.Price.ToString("C")</strong></p>
+                            <p><strong>@item.Course.Price.ToString("N0") ₫</strong></p>
                         }
                         </p>
                         <div class="mt-auto">

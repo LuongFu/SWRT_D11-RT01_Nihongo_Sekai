@@ -1,6 +1,6 @@
 ﻿@model Quiz
 @{
-    ViewData["Title"] = "Manage Q&A";
+    ViewData["Title"] = "Quản lý Q&A";
     var quizTitle = ViewData["QuizTitle"] as string;
     var courseId = (int)ViewData["CourseId"];
 }
@@ -65,24 +65,24 @@
 
 <div class="container mt-4 mb-5">
     <div class="card shadow-sm rounded-4 p-4">
-        <h2>Manage Q&A: @quizTitle</h2>
+        <h2>Quản lý Q&A: @quizTitle</h2>
 
         <div class="mb-3 d-flex gap-2">
             <a asp-action="Create" asp-controller="QuizQuestions" asp-route-quizId="@Model.Id" class="btn btn-red">
-                <i class="bi bi-plus-circle"></i> Add Question
+                <i class="bi bi-plus-circle"></i> Thêm câu hỏi
             </a>
             <a asp-action="Preview" asp-controller="Quizzes" asp-route-id="@Model.Id" class="btn btn-outline-red">
-                <i class="bi bi-eye"></i> Preview Quiz
+                <i class="bi bi-eye"></i> Xem trước Quiz
             </a>
         </div>
 
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Question</th>
-                    <th>Type</th>
-                    <th>Options</th>
-                    <th>Actions</th>
+                    <th>Câu hỏi</th>
+                    <th>Loại</th>
+                    <th>Phương án</th>
+                    <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
@@ -107,11 +107,11 @@
                         </td>
                         <td class="d-flex gap-2">
                             <a asp-action="Edit" asp-controller="QuizQuestions" asp-route-id="@q.Id" class="btn btn-sm btn-warning">
-                                <i class="bi bi-pencil"></i> Edit
+                                <i class="bi bi-pencil"></i> Sửa
                             </a>
                             <form asp-action="Delete" asp-controller="QuizQuestions" asp-route-id="@q.Id" method="post" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this question?')">
-                                    <i class="bi bi-trash"></i> Delete
+                                    <i class="bi bi-trash"></i> Xóa
                                 </button>
                             </form>
                         </td>
@@ -121,7 +121,7 @@
         </table>
 
         <a asp-action="Details" asp-controller="Courses" asp-route-id="@courseId" class="btn btn-outline-red mt-3">
-            <i class="bi bi-arrow-left-circle"></i> Back to Course
+            <i class="bi bi-arrow-left-circle"></i> Về trang Khóa học
         </a>
     </div>
 </div>

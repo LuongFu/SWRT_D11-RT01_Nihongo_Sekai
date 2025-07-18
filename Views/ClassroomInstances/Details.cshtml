@@ -52,7 +52,7 @@
 
                 <dt class="col-sm-5">Giá:</dt>
                 <dd class="col-sm-7">
-                    @(Model.IsPaid? Model.Instance.Price.ToString("C") : "Miễn phí")
+                    @(Model.IsPaid? Model.Instance.Price.ToString("N0") : "Miễn phí")
                 </dd>
 
                 <dt class="col-sm-5">Số lượng học viên:</dt>
@@ -62,9 +62,19 @@
     </div>
 
     <div class="mt-5 d-flex justify-content-center gap-3 border-top pt-4">
-        <a href="javascript:history.back()" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back
-        </a>
+        @if (User.IsInRole("Partner"))
+        {
+            <a asp-action="MySession" asp-controller="ClassroomInstances" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Về trang chủ
+            </a>
+        }
+        else
+        {
+            <a asp-action="Index" asp-controller="ClassroomInstances" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Về trang chủ
+            </a>
+        }
+
 
         @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Learner))
         {
@@ -94,7 +104,7 @@
         @if (User.IsInRole(UserRoles.Partner))
         {
             <a asp-controller="ClassroomInstances" asp-action="Content" asp-route-id="@Model.Instance.Id" class="btn btn-primary">
-                <i class="bi bi-journal-bookmark"></i> View Contents
+                <i class="bi bi-journal-bookmark"></i> Xem nội dung
             </a>
         }
     </div>
