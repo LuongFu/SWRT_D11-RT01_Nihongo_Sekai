@@ -1,57 +1,247 @@
 ﻿@using JapaneseLearningPlatform.Data.ViewModels
 @using JapaneseLearningPlatform.Helpers
-@using JapaneseLearningPlatform.Data.Enums
 @model ReviewPartnerVM
 
-@section Styles {
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+@{
+    ViewData["Title"] = "Xem xét đơn ứng tuyển đối tác";
+    Layout = "_Layout";
+    ViewData["HideNavbar"] = false;
+    ViewData["HideFooter"] = false;
 }
 
-<div class="container mt-5">
-    <h2 class="mb-4">Xem xét đơn ứng tuyển đối tác</h2>
+@section Styles {
+    <!-- Google Fonts + Japanese Serif -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&family=Noto+Serif+JP:wght@500&display=swap" rel="stylesheet" />
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="d-flex align-items-center mb-3">
-                <img src="@( !string.IsNullOrEmpty(Model.Profile.User.ProfilePicturePath)
-                                                                       ? Model.Profile.User.ProfilePicturePath
-                                                                       : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id, 80) )"
-                     class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;" />
-                <div>
-                    <h4 class="mb-0">@Model.Profile.User.FullName</h4>
-                    <small class="text-muted">@Model.Profile.User.Email</small>
-                </div>
+    <style>
+        /* ===== NỀN HỌA TIẾT SEIGAIHA ===== */
+        body {
+            margin: 0;
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: #fdfaf6;
+            background-image: radial-gradient(circle at 50% -20%, transparent 20%, rgba(0,0,0,0.02) 21%, rgba(0,0,0,0.02) 34%, transparent 35%, transparent), radial-gradient(circle at 20% 120%, transparent 20%, rgba(0,0,0,0.02) 21%, rgba(0,0,0,0.02) 34%, transparent 35%, transparent);
+            background-size: 80px 60px;
+        }
+
+        /* ===== SAKURA PETALS ===== */
+        .sakura {
+            position: fixed;
+            top: -50px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+            .sakura span {
+                position: absolute;
+                display: block;
+                width: 15px;
+                height: 15px;
+                background: pink;
+                border-radius: 50% 20%;
+                opacity: 0.8;
+                animation: fall linear infinite;
+            }
+        @@keyframes fall {
+            0%
+
+        {
+            transform: translateY(-100px) rotate(0deg);
+        }
+
+        100% {
+            transform: translateY(110vh) rotate(360deg);
+        }
+
+        }
+
+        /* ===== CONTAINER CHÍNH ===== */
+        .review-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        h2 {
+            font-family: 'Noto Serif JP', serif;
+            color: #b71c1c;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* ===== CARD CHÍNH ===== */
+        .profile-card {
+            background: #fff;
+            border-radius: 1.25rem;
+            padding: 0;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+
+            .profile-card:hover {
+                transform: translateY(-6px);
+                box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1), 0 12px 36px rgba(0,0,0,0.12);
+            }
+
+        /* ===== HEADER ===== */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0e6e2;
+        }
+
+            .profile-header img {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                object-fit: cover;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+
+        .profile-details h4 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #333;
+        }
+
+        .profile-details small {
+            color: #777;
+        }
+
+        /* ===== BODY ===== */
+        .profile-body {
+            padding: 1.5rem;
+            font-size: 1rem;
+            color: #444;
+            line-height: 1.6;
+        }
+
+            .profile-body p {
+                margin-bottom: 1rem;
+            }
+
+        .badge-special {
+            background: #fde0dc;
+            color: #880e4f;
+            margin-right: .5rem;
+            padding: .3rem .6rem;
+            border-radius: .5rem;
+            font-size: .9rem;
+        }
+
+        /* ===== TÀI LIỆU ===== */
+        .docs-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            padding: 0 1.5rem 1.5rem;
+        }
+
+            .docs-row a {
+                overflow: hidden;
+                border-radius: .75rem;
+                display: block;
+                transition: transform .3s, box-shadow .3s;
+            }
+
+            .docs-row img {
+                width: 100%;
+                height: 120px;
+                object-fit: cover;
+            }
+
+            .docs-row a:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            }
+
+        /* ===== FOOTER ===== */
+        .profile-footer {
+            padding: 1rem 1.5rem;
+            text-align: right;
+            background: #f9f5f2;
+            border-top: 1px solid #f0e6e2;
+        }
+
+            .profile-footer .btn {
+                color: #b71c1c;
+                border-color: #b71c1c;
+                transition: background .3s, color .3s, transform .3s;
+            }
+
+                .profile-footer .btn:hover {
+                    background: #b71c1c;
+                    color: #fff;
+                    transform: translateY(-2px);
+                }
+    </style>
+}
+
+<div class="sakura">
+    @for (int i = 0; i < 12; i++)   
+    {
+        <span style="
+            left: @(Random.Shared.NextDouble() * 100)%;
+            animation-duration: @(6 + Random.Shared.NextDouble() * 6)s;
+            animation-delay: @(Random.Shared.NextDouble() * -6)s;
+            opacity: 0.6;               <!-- mờ hơn một chút -->
+            width: 12px; height: 12px;  <!-- nhỏ hơn -->
+        "></span>
+    }
+</div>
+
+
+<div class="review-container">
+    <h2>Xem xét đơn ứng tuyển đối tác</h2>
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <img src="@( !string.IsNullOrEmpty(Model.Profile.User.ProfilePicturePath)
+                                          ? Model.Profile.User.ProfilePicturePath
+                                          : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id, 80) )"
+                 alt="Avatar của @Model.Profile.User.FullName" />
+
+            <div class="profile-details">
+                <h4>@Model.Profile.User.FullName</h4>
+                <small>@Model.Profile.User.Email</small>
             </div>
+        </div>
 
+        <div class="profile-body">
             <p><strong>Kinh nghiệm:</strong> @Model.Profile.YearsOfExperience.GetDisplayName()</p>
             <p>
                 <strong>Chuyên môn:</strong>
                 @foreach (var spec in Model.Profile.Specializations.Select(s => s.Specialization))
                 {
-                    <span class="badge bg-secondary me-1">@spec</span>
+                    <span class="badge-special">@spec</span>
                 }
             </p>
         </div>
-        <h5>Tài liệu đã tải lên</h5>
-        <div class="row g-3">
+
+        <h5 class="px-3 pt-3">Tài liệu đã tải lên</h5>
+        <div class="docs-row">
             @foreach (var doc in Model.Profile.Documents)
             {
-                <div class="col-sm-6 col-md-4">
-                    <a href="@doc.FilePath" target="_blank">
-                        <img src="@doc.FilePath"
-                             class="img-fluid rounded"
-                             style="height:150px;object-fit:cover;" />
-                    </a>
-                </div>
+                <a href="@doc.FilePath" target="_blank" title="Xem tài liệu">
+                    <img src="@doc.FilePath" alt="Tài liệu của @Model.Profile.User.FullName" />
+                </a>
             }
         </div>
-        <div class="card-footer text-end">
-            <a asp-action="PartnerApplications" asp-controller="Admin" class="btn btn-outline-secondary ms-3">
-                Quay về danh sách
+
+        <div class="profile-footer">
+            <a asp-action="PartnerApplications" asp-controller="Admin"
+               class="btn btn-outline-danger">
+                ← Quay về danh sách
             </a>
         </div>
     </div>
 </div>
-
-
