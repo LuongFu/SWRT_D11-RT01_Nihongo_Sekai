@@ -294,7 +294,7 @@
                             <div class="content-wrapper">
                                 <h5 class="card-title">@item.Course.Name</h5>
                                 <p class="card-text">@item.Course.Description</p>
-                                <p class="text-muted">@item.Course.CourseCategory - <strong>@item.Course.FinalPrice.ToString("N0") ₫</strong></p>
+                                <p class="text-muted">@item.Course.CourseCategory.GetDisplayName() - <strong>@item.Course.FinalPrice.ToString("N0") ₫</strong></p>
                             </div>
                             <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-danger w-100 mt-2">
                                 Xem khóa học

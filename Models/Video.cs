@@ -9,11 +9,11 @@ namespace JapaneseLearningPlatform.Models
         public int Id { get; set; }
 
         [Display(Name = "URL Video Link")]
-        [Required(ErrorMessage = "URL Video Link is required")]
+        [Required(ErrorMessage = "URL Video Link là bắt buộc")]
         public string VideoURL { get; set; }
 
-        [Display(Name = "Video Description")]
-        [Required(ErrorMessage = "Video Description is required")]
+        [Display(Name = "Video mô tả")]
+        [Required(ErrorMessage = "Video mô tả là bắt buộc")]
         public string? VideoDescription { get; set; }
 
         //Relationships

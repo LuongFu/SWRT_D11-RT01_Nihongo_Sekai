@@ -6,6 +6,7 @@
 }
 
 <!-- Internal Theme Styles -->
+<style>
     h2 {
         color: #b91c1c;
         font-weight: bold;
@@ -90,7 +91,7 @@
                 {
                     <tr>
                         <td>@q.QuestionText</td>
-                        <td>@q.QuestionType</td>
+                        <td>@q.QuestionType.GetDisplayName()</td>
                         <td>
                             <ul>
                                 @foreach (var o in q.Options)

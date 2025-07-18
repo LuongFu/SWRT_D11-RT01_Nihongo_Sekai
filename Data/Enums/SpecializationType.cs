@@ -4,22 +4,22 @@ namespace JapaneseLearningPlatform.Data.Enums
 {
     public enum SpecializationType
     {
-        [Display(Name = "Conversation Practice")]
+        [Display(Name = "Luyện hội thoại")]
         ConversationPractice = 0,   // Luyện hội thoại
 
-        [Display(Name = "Business Japanese")]
+        [Display(Name = "Tiếng Nhật thương mại")]
         BusinessJapanese = 1,       // Tiếng Nhật thương mại
 
-        [Display(Name = "JLPT Preparation")]
+        [Display(Name = "Chuẩn bị JLPT")]
         JLPTPreparation = 2,        // Chuẩn bị JLPT
 
-        [Display(Name = "Grammar")]
+        [Display(Name = "Ngữ pháp")]
         Grammar = 3,                // Ngữ pháp
 
-        [Display(Name = "Cultural Studies")]
+        [Display(Name = "Văn hóa Nhật")]
         CulturalStudies = 4,        // Văn hóa Nhật
 
-        [Display(Name = "Pronunciation")]
+        [Display(Name = "Phát âm")]
         Pronunciation = 5           // Phát âm
     }
 }

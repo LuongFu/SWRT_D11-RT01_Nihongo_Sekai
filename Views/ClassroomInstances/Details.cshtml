@@ -33,7 +33,7 @@
                 <dd class="col-sm-7">@Model.Template.Description</dd>
 
                 <dt class="col-sm-5">Trình độ ngôn ngữ:</dt>
-                <dd class="col-sm-7">@Model.Template.LanguageLevel</dd>
+                <dd class="col-sm-7">@Model.Template.LanguageLevel.GetDisplayName()</dd>
 
                 <dt class="col-sm-5">Thời gian mỗi buổi:</dt>
                 <dd class="col-sm-7">@($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</dd>
@@ -48,7 +48,7 @@
                 <dd class="col-sm-7">@Model.PartnerName</dd>
 
                 <dt class="col-sm-5">Trạng thái lớp học:</dt>
-                <dd class="col-sm-7">@Model.Instance.Status</dd>
+                <dd class="col-sm-7">@Model.Instance.Status.GetDisplayName()</dd>
 
                 <dt class="col-sm-5">Giá:</dt>
                 <dd class="col-sm-7">
