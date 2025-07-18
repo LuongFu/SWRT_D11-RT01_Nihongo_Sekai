@@ -7,18 +7,211 @@
 @section Styles {
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ========== NỀN CHUNG ========== */
+        body {
+            margin: 0;
+            font-family: 'Source Sans Pro', sans-serif;
+            background: linear-gradient(135deg, #ffe4e1 0%, #e53935 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ========== HEADER & CONTAINER ========== */
+        .container {
+            flex: 1 0 auto;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        h4 {
+            color: #661414;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* ========== FILTER BAR ========== */
+        .filter-card {
+            background: #fff;
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 1rem;
+            align-items: center;
+            overflow-x: auto;
+        }
+
+            .filter-bar::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            .filter-bar::-webkit-scrollbar-thumb {
+                background: rgba(0,0,0,0.1);
+                border-radius: 3px;
+            }
+
+            .filter-bar input,
+            .filter-bar select {
+                flex: 1;
+                min-width: 180px;
+                transition: box-shadow .2s;
+            }
+
+                .filter-bar input:focus,
+                .filter-bar select:focus {
+                    box-shadow: 0 0 0 3px rgba(229,57,53,.3);
+                }
+
+            .filter-bar button {
+                flex: 0 0 auto;
+                background-color: #e53935;
+                border: none;
+                color: #fff;
+                padding: .6rem 1.2rem;
+                border-radius: .75rem;
+                cursor: pointer;
+                transition: background .2s, transform .2s;
+                min-width: 130px;
+            }
+
+                .filter-bar button:hover {
+                    background-color: #b71c1c;
+                    transform: translateY(-2px);
+                }
+
+        /* ========== BẢNG DỮ LIỆU ========== */
+        .table-wrapper {
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            overflow: hidden;
+            max-height: 600px; /* cố định chiều cao khi ít bản ghi */
+        }
+
+        #usersTable {
+            margin-bottom: 0;
+            border-collapse: separate;
+        }
+
+            #usersTable thead th {
+                background-color: #faebeb;
+                color: #661414;
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                border-bottom: 2px solid #ddd;
+            }
+
+            #usersTable tbody tr {
+                opacity: 0;
+                transform: translateY(10px);
+                animation: fadeInUp .4s forwards;
+            }
+
+                #usersTable tbody tr:nth-child(odd) {
+                    background-color: #fff5f5;
+                }
+
+                #usersTable tbody tr:hover {
+                    background-color: #ffe4e1;
+                    transform: translateY(-2px);
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+                }
+
+        @@keyframes fadeInUp {
+            to
+
+        {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* ========== FOOTER CỐ ĐỊNH ========== */
+        footer {
+            flex-shrink: 0;
+            background: #661414;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+            footer a {
+                color: #ffdede;
+                text-decoration: underline;
+            }
+        /* Thay đổi ở phần table-wrapper và footer */
+
+        /* 1) Loại bỏ max-height, cho phép table tự do dài ra */
+        .table-wrapper {
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            overflow: auto; /* cuộn nội dung khi cần */
+            margin-bottom: 2rem; /* thêm khoảng cách trước footer */
+        }
+
+        /* 2) Footer giữ nguyên ở cuối nội dung */
+        footer {
+            background: #661414;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            /* Nếu muốn dính luôn dưới viewport khi nội dung ít:
+             position: sticky;
+             bottom: 0;
+             width: 100%; */
+        }
+
+    </style>
 }
 
-<div class="row">
-    <div class="col-md-10 offset-1">
-        <h4 class="mb-4">Danh sách tất cả người dùng</h4>
+<div class="container">
+    <h4 class="mb-3">Danh sách tất cả người dùng</h4>
 
-        <table class="table table-bordered text-center">
-            <thead class="table-light">
+    <div class="filter-card">
+        <div class="filter-bar">
+            <input type="text" id="searchName" class="form-control" placeholder="Tìm theo tên..." />
+
+            <select id="sortOrder" class="form-select">
+                <option value="">Tất cả</option>
+                <option value="asc">A → Z</option>
+                <option value="desc">Z → A</option>
+            </select>
+
+            <select id="filterRole" class="form-select">
+                <option value="">Tất cả vai trò</option>
+                <option value="Learner">Learner</option>
+                <option value="Partner">Partner</option>
+                <option value="Admin">Admin</option>
+            </select>
+
+            <select id="filterStatus" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="Hoạt động">Hoạt động</option>
+                <option value="Bị cấm">Bị cấm</option>
+            </select>
+
+            <button id="resetFilters">Xóa bộ lọc</button>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="table text-center" id="usersTable">
+            <thead>
                 <tr>
-                    <th>@Html.DisplayNameFor(model => model.FullName)</th>
-                    <th>@Html.DisplayNameFor(model => model.UserName)</th>
-                    <th>@Html.DisplayNameFor(model => model.Email)</th>
+                    <th>Full Name</th>
+                    <th>UserName</th>
+                    <th>Email</th>
                     <th>Vai trò</th>
                     <th>Trạng thái</th>
                     <th>Thao tác</th>
@@ -27,7 +220,9 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr data-name="@item.FullName.ToLower()"
+                        data-role="@item.Role"
+                        data-status="@(item.IsBanned ? "Bị cấm" : "Hoạt động")">
                         <td>@item.FullName</td>
                         <td>@item.UserName</td>
                         <td>@item.Email</td>
@@ -46,7 +241,8 @@
                             @if (item.Role != "Admin")
                             {
                                 <form asp-action="ToggleBan" asp-route-id="@item.Id" method="post">
-                                    <button type="submit" class="btn @(item.IsBanned ? "btn-success" : "btn-danger") btn-sm">
+                                    <button type="submit"
+                                            class="btn @(item.IsBanned ? "btn-success" : "btn-danger") btn-sm">
                                         @(item.IsBanned ? "Bỏ cấm" : "Cấm")
                                     </button>
                                 </form>
@@ -63,3 +259,71 @@
     </div>
 </div>
 
+<footer>
+    <a href="@Url.Action("Index", "Home")">Về trang chủ</a>
+</footer>
+
+@section Scripts {
+    <script>
+        (function() {
+            const searchInput = document.getElementById('searchName');
+            const sortSelect  = document.getElementById('sortOrder');
+            const roleSelect  = document.getElementById('filterRole');
+            const statusSelect= document.getElementById('filterStatus');
+            const resetBtn    = document.getElementById('resetFilters');
+            const tbody       = document.querySelector('#usersTable tbody');
+
+            function applyFilters() {
+                const search = searchInput.value.toLowerCase();
+                const sortDir = sortSelect.value;
+                const roleF   = roleSelect.value;
+                const statusF = statusSelect.value;
+
+                // Lọc
+                Array.from(tbody.rows).forEach(row => {
+                    const name   = row.dataset.name;
+                    const role   = row.dataset.role;
+                    const status = row.dataset.status;
+                    const okSearch = !search || name.includes(search);
+                    const okRole   = !roleF   || role === roleF;
+                    const okStatus = !statusF || status === statusF;
+                    row.style.display = (okSearch && okRole && okStatus) ? '' : 'none';
+                });
+
+                // Sắp xếp nếu có chọn
+                if (sortDir) {
+                    const vis = Array.from(tbody.rows)
+                        .filter(r => r.style.display === '')
+                        .sort((a,b) => {
+                            const na = a.dataset.name;
+                            const nb = b.dataset.name;
+                            return sortDir === 'asc'
+                                ? na.localeCompare(nb)
+                                : nb.localeCompare(na);
+                        });
+                    vis.forEach(r => tbody.appendChild(r));
+                }
+            }
+
+            [searchInput, sortSelect, roleSelect, statusSelect]
+                .forEach(el => el.addEventListener('change', applyFilters));
+            searchInput.addEventListener('input', applyFilters);
+
+            resetBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                sortSelect.value  = '';
+                roleSelect.value  = '';
+                statusSelect.value= '';
+                applyFilters();
+            });
+
+            applyFilters();
+
+              [sortSelect, roleSelect, statusSelect].forEach(el => {
+          el.addEventListener('mouseenter', () => el.focus());
+          el.addEventListener('mouseleave', () => el.blur());
+        });
+
+        })();
+    </script>
+}
