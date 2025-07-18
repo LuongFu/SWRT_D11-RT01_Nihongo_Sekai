@@ -1,11 +1,22 @@
-﻿namespace JapaneseLearningPlatform.Data.Enums
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace JapaneseLearningPlatform.Data.Enums
 {
     public enum ClassroomStatus
     {
-        Draft = 0,         // Đang được tạo, chưa công bố
-        Published = 1,     // Đã công khai, có thể hiển thị trên trang Guest/Learner
-        InProgress = 2,    // Đang diễn ra (tự động hoặc thủ công cập nhật)
-        Completed = 3,     // Đã kết thúc
-        Cancelled = 4      // Bị hủy
+        [Display(Name = "Bản nháp")]
+        Draft = 0,
+
+        [Display(Name = "Đã công khai")]
+        Published = 1,
+
+        [Display(Name = "Đang diễn ra")]
+        InProgress = 2,
+
+        [Display(Name = "Đã kết thúc")]
+        Completed = 3,
+
+        [Display(Name = "Đã hủy")]
+        Cancelled = 4
     }
 }

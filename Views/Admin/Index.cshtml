@@ -152,7 +152,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <small class="text-muted">Doanh thu</small>
-                            <h5>$@String.Format("{0:N2}", ViewBag.TotalRevenue)</h5>
+                            <h5>@string.Format("{0:N0}", ViewBag.TotalRevenue) VND</h5>
                         </div>
                         <i class="bi bi-currency-dollar fs-2 text-success"></i>
                     </div>
@@ -208,7 +208,7 @@
                                 <td>@order.Id</td>
                                 <td>@order.Email</td>
                                 <td>@order.OrderDate.ToShortDateString()</td>
-                                <td>$@String.Format("{0:N2}", order.TotalAmount)</td>
+                                <td>@order.TotalAmount.ToString("N0") VND</td>
                                 <td>@order.OrderItems.Count</td>
                             </tr>
                         }

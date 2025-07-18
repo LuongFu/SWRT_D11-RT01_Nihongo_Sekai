@@ -48,9 +48,9 @@
                             <p class="card-text">
                                 <strong>Thời gian:</strong> @item.StartDate.ToString("yyyy-MM-dd") → @item.EndDate.ToString("yyyy-MM-dd")<br />
                                 <strong>Session Time:</strong> @item.SessionDurationHours giờ<br />
-                                <strong>Trạng thái:</strong> @item.Status.ToString()<br />
+                                <strong>Trạng thái:</strong> @item.Status.GetDisplayName().ToString()<br />
                                 <strong>Số học viên:</strong> @item.EnrollmentCount<br />
-                                <strong>Giá:</strong> @(item.IsPaid? item.Price.ToString("C0") : "Free")
+                                <strong>Giá:</strong> @(item.IsPaid? item.Price.ToString("N0") : "Free")
                             </p>
 
                             <div class="mt-auto">

@@ -8,41 +8,41 @@ namespace JapaneseLearningPlatform.Data.ViewModels
 {
     public class RegisterVM : IValidatableObject
     {
-        [Required(ErrorMessage = "Full name is required.")]
-        [Display(Name = "Full Name")]
+        [Required(ErrorMessage = "Tên đầy đủ là bắt buộc.")]
+        [Display(Name = "Tên đầy đủ")]
         public string FullName { get; set; } = null!;
 
-        [Required(ErrorMessage = "Email address is required.")]
-        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        [Required(ErrorMessage = "Email là bắt buộc.")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
         [Display(Name = "Email")]
         public string EmailAddress { get; set; } = null!;
 
-        [Required(ErrorMessage = "Password is required.")]
+        [Required(ErrorMessage = "Mật khẩu là bắt buộc.")]
         [StringLength(100, MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Mật khẩu")]
         public string Password { get; set; } = null!;
 
-        [Required(ErrorMessage = "Confirm password is required.")]
+        [Required(ErrorMessage = "Xác nhận mật khẩu là bắt buộc.")]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm Password")]
-        [Compare("Password", ErrorMessage = "Password and confirmation do not match.")]
+        [Display(Name = "Xác nhận mật khẩu")]
+        [Compare("Password", ErrorMessage = "Xác nhận mật khẩu không trùng khớp.")]
         public string ConfirmPassword { get; set; } = null!;
 
-        [Display(Name = "Apply as Partner")]
+        [Display(Name = "Đăng ký làm đối tác")]
         public bool ApplyAsPartner { get; set; }
 
-        [Display(Name = "Years of Experience")]
+        [Display(Name = "Năm kinh nghiệm")]
         public YearsOfExperience? YearsOfExperience { get; set; }
 
-        [Display(Name = "Specializations")]
+        [Display(Name = "Chuyên môn")]
         public List<SpecializationType> Specializations { get; set; } = new();
 
-        [Display(Name = "Certificates & Qualifications")]
+        [Display(Name = "Chứng chỉ")]
         public List<IFormFile> PartnerDocument { get; set; } = new();
 
-        [Required(ErrorMessage = "You need to respect our terms!")]
-        [Display(Name = "Agree to Terms")]
+        [Required(ErrorMessage = "Bạn phải đồng ý các điều khoản!")]
+        [Display(Name = "Đồng ý các điều khoản")]
         public bool AgreeTerms { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -51,7 +51,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
             if (!AgreeTerms)
             {
                 yield return new ValidationResult(
-                    "You must agree to the Terms & Conditions.",
+                    "Bạn phải đồng ý với các điều khoản và điều kiện.",
                     new[] { nameof(AgreeTerms) });
             }
 
@@ -61,21 +61,21 @@ namespace JapaneseLearningPlatform.Data.ViewModels
                 if (!YearsOfExperience.HasValue)
                 {
                     yield return new ValidationResult(
-                        "Please select your years of experience.",
+                        "Vui lòng chọn năm kinh nghiệm.",
                         new[] { nameof(YearsOfExperience) });
                 }
 
                 if (Specializations == null || !Specializations.Any())
                 {
                     yield return new ValidationResult(
-                        "Select at least one specialization.",
+                        "Chọn ít nhất một chuyên môn.",
                         new[] { nameof(Specializations) });
                 }
 
                 if (PartnerDocument == null || !PartnerDocument.Any())
                 {
                     yield return new ValidationResult(
-                        "Upload at least one verification document.",
+                        "Tải lên ít nhất một file tài liệu.",
                         new[] { nameof(PartnerDocument) });
                 }
             }

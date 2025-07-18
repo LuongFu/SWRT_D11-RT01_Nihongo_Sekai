@@ -16,13 +16,13 @@
         <input type="hidden" asp-for="QuizId" />
 
         <div class="mb-3">
-            <label asp-for="QuestionText" class="form-label fw-semibold text-dark">Question</label>
+            <label asp-for="QuestionText" class="form-label fw-semibold text-dark">Câu hỏi</label>
             <input asp-for="QuestionText" class="form-control border border-danger" />
             <span asp-validation-for="QuestionText" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="QuestionType" class="form-label fw-semibold text-dark">Question Type</label>
+            <label asp-for="QuestionType" class="form-label fw-semibold text-dark">Loại câu hỏi</label>
             <select asp-for="QuestionType" class="form-select border border-danger" asp-items="Html.GetEnumSelectList<QuestionType>()"></select>
         </div>
 

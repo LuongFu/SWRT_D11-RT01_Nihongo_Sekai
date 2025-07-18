@@ -6,8 +6,8 @@ namespace JapaneseLearningPlatform.Data.ViewModels
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Section title is required")]
-        [Display(Name = "Section Title")]
+        [Required(ErrorMessage = "Bắt buộc điền")]
+        [Display(Name = "Tiêu đề mục")]
         public string Title { get; set; }
 
         [Required]

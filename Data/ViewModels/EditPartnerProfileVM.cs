@@ -10,7 +10,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
     public class EditPartnerProfileVM
     {
         // User fields
-        [Display(Name = "Full Name")]
+        [Display(Name = "Tên đầy đủ")]
         [Required]
         public string FullName { get; set; } = "";
 
@@ -18,10 +18,10 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public string Email { get; set; } = "";
 
         // PartnerProfile fields
-        [Display(Name = "Years of Experience")]
+        [Display(Name = "Năm kinh nghiệm")]
         public YearsOfExperience YearsOfExperience { get; set; }
 
-        [Display(Name = "Specializations")]
+        [Display(Name = "Chuyên môn")]
         public List<SpecializationType> SelectedSpecializations { get; set; }
             = new();
 
@@ -33,7 +33,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
             = new();
 
         // File uploads
-        [Display(Name = "Upload New Documents")]
+        [Display(Name = "Tải tài liệu mới")]
         public IFormFileCollection? NewDocuments { get; set; }
         public List<int> DeletedDocumentIds { get; set; } = new();
 

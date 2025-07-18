@@ -132,21 +132,22 @@
         <div class="col-auto">
             <label class="form-label mb-0">Phân loại:</label>
         </div>
-        <div class="col-auto">
-            <select name="selectedCategory" class="form-select">
-                <option value="">Chọn loại...</option>
-                @foreach (CourseCategory category in Enum.GetValues(typeof(CourseCategory)))
-                {
-                    var isSelected = ViewBag.SelectedCategory != null && category.ToString() == ViewBag.SelectedCategory.ToString();
-                    var selectedAttr = isSelected ? "selected" : "";
-                    @: <option value="@category" @selectedAttr>@category</option>
-                }
-            </select>
-        </div>
+<div class="col-auto">
+    <select name="selectedCategory" class="form-select">
+        <option value="">Chọn loại...</option>
+        @foreach (CourseCategory category in Enum.GetValues(typeof(CourseCategory)))
+        {
+            var isSelected = ViewBag.SelectedCategory != null && category.ToString() == ViewBag.SelectedCategory.ToString();
+            var selectedAttr = isSelected ? "selected" : "";
+            @: <option value="@category" @selectedAttr>@category.GetDisplayName()</option>
+        }
+    </select>
+</div>
+
 
         <!-- Price Filter -->
         <div class="col-auto">
-            <label class="form-label mb-0">Price:</label>
+            <label class="form-label mb-0">Khoảng giá tiền:</label>
         </div>
         <div class="col-auto">
             <select id="priceFilter" name="minPrice" class="form-select">
@@ -154,7 +155,7 @@
                     // Tạo list tạm ngay trong view cho ví dụ
                     var priceOptions = new[]
                     {
-                        new { Value = (int?)null, Text = "Select a price..." },
+                        new { Value = (int?)null, Text = "Chọn khoảng giá tiền..." },
                         new { Value = (int?)0, Text = "Dưới 100.000₫" },
                         new { Value = (int?)101000, Text = "101.000–500.000₫" },
                         new { Value = (int?)501000, Text = "501.000–1.000.000₫" },
@@ -174,7 +175,7 @@
         </div>
 
         <div class="col-auto">
-            <input type="text" name="searchString" class="form-control" placeholder="Search by name..." value="@ViewBag.SearchString" />
+            <input type="text" name="searchString" class="form-control" placeholder="Tìm kiếm theo tên..." value="@ViewBag.SearchString" />
         </div>        
 
         <div class="col-auto">
@@ -195,7 +196,7 @@
                         <h5 class="card-title">@item.Course.Name</h5>
                         <p class="card-text">@item.Course.Description?.Substring(0, Math.Min(100, item.Course.Description.Length))...</p>
                         <p>
-                            <strong>Category:</strong> @item.Course.CourseCategory <br />
+                            <strong>Loại:</strong> @item.Course.CourseCategory.GetDisplayName() <br />
                             @if (item.DiscountPercent != null && item.Course.StartDate <= DateTime.Now && item.Course.EndDate >= DateTime.Now)
                             {
                             <p class="text-danger">

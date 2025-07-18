@@ -13,7 +13,7 @@
             <h4 class="card-title mb-2">@Model.Title</h4>
             <p class="card-text">@Model.Description</p>
 
-            <p><strong>Trình độ:</strong> @Model.LanguageLevel</p>
+            <p><strong>Trình độ:</strong> @Model.LanguageLevel.GetDisplayName()</p>
 
             @* Nếu có tài liệu thì hiển thị *@
             @if (!string.IsNullOrEmpty(Model.DocumentURL))
