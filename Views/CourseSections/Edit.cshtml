@@ -2,11 +2,11 @@
 @model CourseSectionVM
 
 @{
-    ViewData["Title"] = "Edit Section";
+    ViewData["Title"] = "Sửa mục";
     ViewData["Layout"] = "_Layout";
 }
 
-<h2 class="mb-4">Edit Section</h2>
+<h2 class="mb-4">Sửa mục</h2>
 
 <form asp-action="Edit" method="post" class="border p-4 rounded shadow-sm">
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -22,10 +22,10 @@
 
     <div class="mt-4 d-flex gap-2">
         <button type="submit" class="btn btn-primary">
-            <i class="bi bi-pencil-square"></i> Update
+            <i class="bi bi-pencil-square"></i> Cập nhật
         </button>
         <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary">
-            <i class="bi bi-arrow-left-circle"></i> Back
+            <i class="bi bi-arrow-left-circle"></i> Trở về
         </a>
     </div>
 </form>

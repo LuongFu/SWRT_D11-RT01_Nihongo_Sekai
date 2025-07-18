@@ -2,11 +2,11 @@
 @model CourseSectionVM
 
 @{
-    ViewData["Title"] = "Create Section";
+    ViewData["Title"] = "Tạo mục";
     ViewData["Layout"] = "_Layout";
 }
 
-<h2 class="mb-4">Create New Section</h2>
+<h2 class="mb-4">Tạo mục mới</h2>
 
 <form asp-action="Create" method="post" class="border p-4 rounded shadow-sm">
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -27,10 +27,10 @@
 
     <div class="mt-4 d-flex gap-2">
         <button type="submit" class="btn btn-success">
-            <i class="bi bi-check-circle"></i> Save
+            <i class="bi bi-check-circle"></i> Lưu
         </button>
         <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary">
-            <i class="bi bi-arrow-left-circle"></i> Back
+            <i class="bi bi-arrow-left-circle"></i> Trở về
         </a>
     </div>
 </form>

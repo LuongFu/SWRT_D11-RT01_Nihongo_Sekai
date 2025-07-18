@@ -6,7 +6,7 @@
 @model IEnumerable<CourseWithPurchaseVM>
 
 @{
-    ViewData["Title"] = "All Courses";
+    ViewData["Title"] = "Danh sách khóa học";
     ViewData["HideNavbar"] = false;
     ViewData["HideFooter"] = false;
 
@@ -95,7 +95,7 @@
     <div class="container animate-on-scroll">
         <div class="enhanced-hero-content">
             <h1 class="enhanced-hero-title">
-                Master Japanese Language
+                Làm chủ Tiếng Nhật
             </h1>
             <p class="enhanced-hero-subtitle">
                 Discover our comprehensive collection of Japanese courses designed
@@ -123,18 +123,18 @@
 }
 <!-- Courses Section -->
 <div class="container mt-4 animate-on-scroll">
-    <h2 class="fw-bold mb-4 text-center">Explore All Courses</h2>
+    <h2 class="fw-bold mb-4 text-center">Khám phá khóa học</h2>
 </div>
 <div id="wordOfTheDayContainer"></div>
 <div class="container animate-on-scroll">
     <div class="mb-4">
      <form asp-action="Filter" method="get" class="row g-2 align-items-center">
         <div class="col-auto">
-            <label class="form-label mb-0">Category:</label>
+            <label class="form-label mb-0">Phân loại:</label>
         </div>
         <div class="col-auto">
             <select name="selectedCategory" class="form-select">
-                <option value="">Select a category...</option>
+                <option value="">Chọn loại...</option>
                 @foreach (CourseCategory category in Enum.GetValues(typeof(CourseCategory)))
                 {
                     var isSelected = ViewBag.SelectedCategory != null && category.ToString() == ViewBag.SelectedCategory.ToString();
@@ -179,7 +179,7 @@
 
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-funnel"></i> Apply Filter
+                <i class="bi bi-funnel"></i> Áp dụng bộ lọc
             </button>
         </div>
     </form>
@@ -199,14 +199,14 @@
                             @if (item.DiscountPercent != null && item.Course.StartDate <= DateTime.Now && item.Course.EndDate >= DateTime.Now)
                             {
                             <p class="text-danger">
-                                <del>@item.Course.Price.ToString("C")</del>
-                                <strong>@item.Course.FinalPrice.ToString("C")</strong>
+                                <del>@item.Course.Price.ToString("N0") ₫</del>
+                                <strong>@item.Course.FinalPrice.ToString("N0") ₫</strong>
                                 <span class="badge bg-danger text-white">@item.Course.DiscountPercent% OFF</span>
                             </p>
                         }
                         else
                         {
-                            <p><strong>@item.Course.Price.ToString("C")</strong></p>
+                            <p><strong>@item.Course.Price.ToString("N0") ₫</strong></p>
                         }
                         </p>
                         <div class="mt-auto">
@@ -215,42 +215,42 @@
                                 if (item.IsPurchased)
                                 {
                                     <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-danger w-100 mt-2">
-                                    <i class="bi bi-play-btn"></i> Start Learning
+                                    <i class="bi bi-play-btn"></i> Bắt đầu học
                                 </a>
                                 }
                                 else if (item.IsInCart)
                                 {
                                     <a asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-info-circle"></i> Details
+                                <i class="bi bi-info-circle"></i> Chi tiết
                             </a>
                                     <button asp-controller="Orders" asp-action="ShoppingCart" class="btn btn-warning w-100 mt-2 disabled">
-                                        <i class="bi bi-cart-check"></i> In Cart
+                                        <i class="bi bi-cart-check"></i> Trong giỏ hàng
                                     </button>
                                 }
                                 else
                                 {
                                     <a asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-info-circle"></i> Details
+                                <i class="bi bi-info-circle"></i> Chi tiết
                             </a>
                                     <a asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@item.Course.Id"
                                        class="btn btn-danger w-100 mt-2">
-                                        <i class="bi bi-cart-plus"></i> Add to Cart
+                                        <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
                                     </a>
                                 }
                             }
                             @if (isAdmin)
                             {
                                 <a asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-info-circle"></i> Details
+                                <i class="bi bi-info-circle"></i> Chi tiết
                             </a>
                                 <div class="d-flex gap-2 mt-3">
                                     <a asp-action="Edit" asp-route-id="@item.Course.Id" class="btn btn-sm btn-outline-warning w-50">
-                                        <i class="bi bi-pencil-square"></i> Edit
+                                        <i class="bi bi-pencil-square"></i> Sửa
                                     </a>
                                     <form asp-action="DeleteConfirmed" asp-route-id="@item.Course.Id" method="post" class="w-50">
                                         <button type="submit" class="btn btn-sm btn-outline-danger w-100"
                                                 onclick="return confirm('Are you sure you want to delete this course?');">
-                                            <i class="bi bi-trash"></i> Delete
+                                            <i class="bi bi-trash"></i> Xóa
                                         </button>
                                     </form>
                                 </div>

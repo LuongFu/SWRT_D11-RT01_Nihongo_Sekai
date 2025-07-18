@@ -36,13 +36,13 @@
 }
 
 <div class="container mt-4">
-    <h2 class="fw-bold mb-4 text-center">Browse Classroom Sessions</h2>
+    <h2 class="fw-bold mb-4 text-center">Xem danh sách lớp học</h2>
 
     @if (ViewBag.IsPartner == true) // Nếu controller chưa set, bạn cần bổ sung ViewBag.IsPartner = User.IsInRole(...)
     {
         <div class="text-end mb-3">
             <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Create New Session
+                <i class="bi bi-plus-circle"></i> Tạo phiên mới
             </a>
         </div>
     }
@@ -92,8 +92,8 @@
                         else
                         {
                             <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-danger">@item.Price.ToString("N0") USD</span>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">View Details</a>
+                                <span class="fw-bold text-danger">@item.Price.ToString("N0") VND</span>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
                             </div>
                         }
                     </div>
@@ -103,7 +103,7 @@
                         <br />
                         @if (item.IsEnrolled)
                         {
-                            <span class="text-success">Enrolled</span>
+                            <span class="text-success">Đã tham gia</span>
                         }
                     </div>
                 </div>

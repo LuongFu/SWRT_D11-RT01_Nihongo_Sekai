@@ -377,6 +377,7 @@ namespace JapaneseLearningPlatform.Controllers
             var instance = await _context.ClassroomInstances
                 .AsQueryable()
                 .Include(c => c.Template)
+                    .ThenInclude(t => t.Partner) // 👈 Bổ sung để load Partner
                 .Include(c => c.Assignments!)
                     .ThenInclude(a => a.Submissions!)
                         .ThenInclude(s => s.Learner)

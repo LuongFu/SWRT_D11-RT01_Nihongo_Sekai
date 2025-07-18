@@ -1,7 +1,7 @@
 ﻿@model JapaneseLearningPlatform.Data.ViewModels.GradeSubmissionVM
 
 @{
-    ViewData["Title"] = "Grade Submission";
+    ViewData["Title"] = "Chấm điểm bài làm";
     Layout = "~/Views/Shared/_Layout.cshtml"; // dùng chung layout với content
 }
 
@@ -10,27 +10,27 @@
     <!-- 🔹 Header -->
     <div class="bg-light p-4 rounded shadow-sm mb-4">
         <h2 class="fw-bold">@Model.ClassTitle</h2>
-        <p class="mb-1"><strong>Partner:</strong> @Model.PartnerName</p>
-        <p class="mb-1"><strong>Schedule:</strong> @Model.StartDate.ToShortDateString() → @Model.EndDate.ToShortDateString()</p>
-        <p class="mb-1"><strong>Time:</strong> @($"{Model.ClassTime.Hours:D2}:{Model.ClassTime.Minutes:D2}")</p>
+        <p class="mb-1"><strong>Người hướng dẫn:</strong> @Model.PartnerName</p>
+        <p class="mb-1"><strong>Lịch:</strong> @Model.StartDate.ToShortDateString() → @Model.EndDate.ToShortDateString()</p>
+        <p class="mb-1"><strong>Thời gian:</strong> @($"{Model.ClassTime.Hours:D2}:{Model.ClassTime.Minutes:D2}")</p>
         <p class="mb-1"><strong>Meet Link:</strong> <a href="@Model.GoogleMeetLink" target="_blank">@Model.GoogleMeetLink</a></p>
     </div>
 
     <div class="bg-light p-4 rounded shadow-sm mb-4">
-        <h3 class="fw-bold">Grade Submission</h3>
-        <p><strong>Learner:</strong> @Model.LearnerName</p>
+        <h3 class="fw-bold">Chấm điểm bài làm</h3>
+        <p><strong>Học viên:</strong> @Model.LearnerName</p>
     </div>
 
     <div class="mb-4">
-        <label class="form-label fw-bold">Submitted Answer:</label>
+        <label class="form-label fw-bold">Bài làm:</label>
         <textarea class="form-control" rows="6" readonly>@Model.AnswerText</textarea>
     </div>
 
     @if (!string.IsNullOrEmpty(Model.FilePath))
     {
         <div class="mb-4">
-            <label class="form-label fw-bold">Submitted File:</label>
-            <p><a href="@Model.FilePath" target="_blank" download>Download Submission</a></p>
+            <label class="form-label fw-bold">File bài làm:</label>
+            <p><a href="@Model.FilePath" target="_blank" download>Tải file bài làm</a></p>
         </div>
     }
 
@@ -39,17 +39,19 @@
         <input type="hidden" asp-for="InstanceId" />
 
         <div class="mb-3">
-            <label asp-for="Score" class="form-label fw-bold">Score</label>
+            <label asp-for="Score" class="form-label fw-bold">Điểm</label>
             <input asp-for="Score" type="number" min="0" max="10" step="0.1" class="form-control" required />
         </div>
 
         <div class="mb-3">
-            <label asp-for="Feedback" class="form-label fw-bold">Feedback</label>
+            <label asp-for="Feedback" class="form-label fw-bold">Nhận xét</label>
             <textarea asp-for="Feedback" class="form-control" rows="3"></textarea>
         </div>
 
-        <button type="submit" class="btn btn-success">Submit Grade</button>
-        <a asp-action="Content" asp-controller="ClassroomInstances" asp-route-id="@Model.InstanceId" class="btn btn-secondary ms-2">← Back</a>
+        <button type="submit" class="btn btn-success">Chấm điểm</button>
+        <a href="@Url.Action("Content", "ClassroomInstances", new { id = Model.InstanceId })#assignment" class="btn btn-secondary ms-2">
+            ← Trở về
+        </a>
     </form>
 </div>
 <!-- Check điểm nhập vào nằm trong khoảng 0-10 -->

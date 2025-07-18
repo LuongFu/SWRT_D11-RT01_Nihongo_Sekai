@@ -34,17 +34,17 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (assignment == null)
             {
-                return NotFound("Assignment not found for this class.");
+                return NotFound("Không tìm thấy bài tập ở lớp này.");
             }
 
             if (assignment.DueDate != null && DateTime.Now > assignment.DueDate)
             {
-                return BadRequest("The assignment deadline has passed.");
+                return BadRequest("Hạn cuối của bài tập đã qua.");
             }
 
             if (string.IsNullOrWhiteSpace(answerText) && (SubmissionFile == null || SubmissionFile.Length == 0))
             {
-                TempData["Message"] = "❌ Please enter an answer or upload a file before submitting.";
+                TempData["Message"] = "❌ Vui lòng nhập câu trả lời hoặc tải file bài làm trước khi nộp.";
                 return Redirect($"/ClassroomInstances/Content/{instanceId}#assignment");
             }
 
@@ -73,7 +73,7 @@ namespace JapaneseLearningPlatform.Controllers
                 // ⚠️ Nếu đã được chấm điểm thì không cho sửa
                 if (existing.Score != null)
                 {
-                    TempData["Message"] = "❌ You cannot update your submission after it has been graded.";
+                    TempData["Message"] = "❌ Bạn không thể chỉnh sửa bài làm sau khi đã được chấm.";
                     return Redirect($"/ClassroomInstances/Content/{instanceId}#assignment");
                 }
 
@@ -107,7 +107,7 @@ namespace JapaneseLearningPlatform.Controllers
             }
 
             await _context.SaveChangesAsync();
-            TempData["Message"] = "Submitted successfully!";
+            TempData["Message"] = "Gửi bài làm thành công!";
 
             return Redirect($"/ClassroomInstances/Content/{instanceId}#assignment");
         }
@@ -120,6 +120,7 @@ namespace JapaneseLearningPlatform.Controllers
                 .Include(s => s.Assignment)
                     .ThenInclude(a => a.Instance)
                         .ThenInclude(i => i.Template)
+                              .ThenInclude(t => t.Partner) // 👈 Bổ sung Include Partner
                 .FirstOrDefaultAsync(s => s.Id == submissionId);
 
             if (submission == null) return NotFound();
@@ -172,7 +173,7 @@ namespace JapaneseLearningPlatform.Controllers
             submission.Feedback = vm.Feedback;
 
             await _context.SaveChangesAsync();
-            TempData["Message"] = "Graded successfully!";
+            TempData["Message"] = "Chấm điểm thành công!";
 
             return Redirect($"/ClassroomInstances/Content/{vm.InstanceId}#assignment");
         }
@@ -194,21 +195,21 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (!DateTime.TryParseExact(newDueDate, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDueDate))
             {
-                TempData["DeadlineMessage"] = "❌ Invalid date format.";
+                TempData["DeadlineMessage"] = "❌ Định dạng thời gian không hợp lệ.";
                 return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
             }
 
             //kiểm tra tính tương lai của deadline mới
             if (parsedDueDate <= assignment.DueDate)
             {
-                TempData["DeadlineMessage"] = "❌ New deadline must be later than the current one.";
+                TempData["DeadlineMessage"] = "❌ Hạn cuối mới phải sau hạn cuối cũ.";
                 return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
             }
 
             assignment.DueDate = parsedDueDate;
             await _context.SaveChangesAsync();
 
-            TempData["DeadlineMessage"] = "✅ Deadline updated successfully.";
+            TempData["DeadlineMessage"] = "✅ Cập nhật hạn cuối thành công.";
             return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
         }
 

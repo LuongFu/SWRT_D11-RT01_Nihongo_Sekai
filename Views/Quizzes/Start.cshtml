@@ -2,7 +2,7 @@
 @model JapaneseLearningPlatform.Data.ViewModels.TakeQuizVM
 
 @{
-    ViewData["Title"] = "Take Quiz";
+    ViewData["Title"] = "Làm Quiz";
 }
 
 <div class="container mt-5">
@@ -16,7 +16,7 @@
             {
                 var question = Model.Questions[i];
                 <div class="mb-4">
-                    <h5>Question @(i + 1): @question.QuestionText</h5>
+                    <h5>Câu @(i + 1): @question.QuestionText</h5>
                     <input type="hidden" asp-for="Questions[@i].QuestionId" />
                     <input type="hidden" asp-for="Questions[@i].QuestionText" />
 
@@ -61,13 +61,13 @@
             }
 
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-circle"></i> Submit Quiz
+                <i class="bi bi-check-circle"></i> Nộp bài
             </button>
         </form>
 
         <div class="mt-4">
             <a asp-controller="Courses" asp-action="Index" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left-circle"></i> Back to Courses
+                <i class="bi bi-arrow-left-circle"></i> Về trang Khóa học
             </a>
         </div>
     </div>
