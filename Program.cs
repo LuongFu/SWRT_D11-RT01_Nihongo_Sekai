@@ -56,6 +56,10 @@ namespace JapaneseLearningPlatform
             builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
             builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
 
+            // VNPay
+            builder.Services.AddSingleton<VNPayService>();
+            builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
             // Authentication and authorization
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()

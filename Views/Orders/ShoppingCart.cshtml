@@ -138,6 +138,11 @@
         <!-- Nút PayPal -->
         <div id="paypal-btn" class="mb-3 w-200"></div>
 
+        <form asp-action="VNPayCheckout" method="post">
+            <button type="submit" class="btn btn-danger w-100 mb-3">Thanh toán VNPay</button>
+        </form>
+
+
         <!-- Thêm khóa học -->
         <a class="btn-secondary d-block text-center" asp-controller="Courses" asp-action="Index">Thêm khóa học</a>
     </div>

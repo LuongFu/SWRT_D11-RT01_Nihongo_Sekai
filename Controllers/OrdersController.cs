@@ -2,6 +2,7 @@
 using JapaneseLearningPlatform.Data.Cart;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,13 +17,23 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly ShoppingCart _shoppingCart;
         private readonly IOrdersService _ordersService;
         private readonly AppDbContext _context;
+        private readonly IConfiguration _config;
+        private readonly VNPayService _vnPayService;
 
-        public OrdersController(ICoursesService coursesService, ShoppingCart shoppingCart, IOrdersService ordersService, AppDbContext context)
+        public OrdersController(
+            ICoursesService coursesService,
+            ShoppingCart shoppingCart,
+            IOrdersService ordersService,
+            AppDbContext context,
+            IConfiguration config,
+            VNPayService vnPayService)
         {
             _coursesService = coursesService;
             _shoppingCart = shoppingCart;
             _ordersService = ordersService;
             _context = context;
+            _config = config;
+            _vnPayService = vnPayService;
         }
 
         public async Task<IActionResult> Index()
@@ -65,7 +76,6 @@ namespace JapaneseLearningPlatform.Controllers
 
             return View(response);
         }
-
 
         public async Task<IActionResult> AddItemToShoppingCart(int id)
         {
@@ -119,6 +129,67 @@ namespace JapaneseLearningPlatform.Controllers
             };
 
             return View("OrderCompleted", vm);
+        }
+
+        [HttpPost]
+        public IActionResult VNPayCheckout()
+        {
+            var items = _shoppingCart.GetShoppingCartItems();
+            if (!items.Any()) return RedirectToAction("ShoppingCart");
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            decimal total = (decimal)_shoppingCart.GetShoppingCartTotal();
+
+            // Khởi tạo URL thanh toán
+            var vnpUrl = _vnPayService.CreatePaymentUrl(new Order
+            {
+                TotalAmount = total,
+                UserId = userId
+            }, HttpContext);
+
+            return Redirect(vnpUrl);
+        }
+
+        public async Task<IActionResult> VNPayReturn()
+        {
+            var cfg = _config.GetSection("Vnpay");
+            var query = Request.Query.ToDictionary(k => k.Key, v => v.Value.ToString());
+
+            // Xác thực checksum
+            var receivedHash = query["vnp_SecureHash"];
+            query.Remove("vnp_SecureHash");
+            query.Remove("vnp_SecureHashType");
+            var calcHash = VNPayHelper.HmacSHA512(cfg["HashSecret"],
+                string.Join("&", query.OrderBy(x => x.Key).Select(x => $"{x.Key}={x.Value}")));
+
+            if (calcHash != receivedHash)
+            {
+                TempData["Error"] = "Checksum không hợp lệ";
+                return RedirectToAction("ShoppingCart");
+            }
+
+            if (query["vnp_ResponseCode"] == "00")
+            {
+                // Thanh toán thành công
+                var items = _shoppingCart.GetShoppingCartItems();
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var email = User.FindFirstValue(ClaimTypes.Email);
+
+                await _ordersService.StoreOrderAsync(items, userId, email);
+                await _shoppingCart.ClearShoppingCartAsync();
+
+                var vm = new ShoppingCartVM
+                {
+                    ShoppingCart = _shoppingCart,
+                    ShoppingCartTotal = 0,
+                    RecommendedCourses = (await _coursesService.GetRecommendedCoursesAsync(userId)).ToList()
+                };
+
+                return View("OrderCompleted", vm);
+            }
+
+            TempData["Error"] = "VNPay không thành công";
+            return RedirectToAction("ShoppingCart");
         }
 
     }
