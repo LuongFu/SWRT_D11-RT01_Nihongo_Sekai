@@ -4,11 +4,123 @@
 
 @section Styles {
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        .confirmation-container {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .confirmation-card {
+            background: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2.5rem 2rem;
+            max-width: 480px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .confirmation-card::before {
+                content: "✔️";
+                font-size: 4rem;
+                position: absolute;
+                top: -10px;
+                left: -10px;
+                opacity: 0.15;
+            }
+
+        .confirmation-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #00796b;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-text {
+            color: #555;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .btn-login {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            background: #00796b;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            text-decoration: none;
+        }
+
+            .btn-login:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+                background: #004d40;
+            }
+
+        /* Optional petals animation */
+        .petal {
+            position: absolute;
+            width: 1.2rem;
+            height: 1.2rem;
+            background: url('/images/petal.png') no-repeat center/contain;
+            opacity: 0.8;
+            animation: drift 6s ease-in-out infinite;
+        }
+        @@keyframes drift {
+            0%
+
+        {
+            transform: translate(0, 0) rotate(0deg);
+        }
+
+        50% {
+            transform: translate(15px, 25px) rotate(180deg);
+        }
+
+        100% {
+            transform: translate(0, 50px) rotate(360deg);
+        }
+
+        }
+    </style>
 }
 
-<div class="text-center mt-5">
-    <h2>Xác nhận email thành công!</h2>
-    <p>Cảm ơn bạn đã xác minh email. Bạn có thể đóng trang này.</p>
-    <a asp-controller="Account" asp-action="Login" class="btn btn-success">Đăng nhập</a>
+<div class="confirmation-container">
+    <div class="confirmation-card">
+        <h2 class="confirmation-title">Xác nhận email thành công!</h2>
+        <p class="confirmation-text">
+            Cảm ơn bạn đã xác minh địa chỉ email.<br />
+            Bây giờ bạn có thể đăng nhập và bắt đầu trải nghiệm.
+        </p>
+        <a asp-controller="Account" asp-action="Login" class="btn-login">Đăng nhập</a>
+
+        @* Decorative petals *@
+        @for (int i = 0; i < 8; i++)
+        {
+            var left = new System.Random().Next(0, 100);
+            var delay = new System.Random().NextDouble() * 3;
+            var duration = 4 + new System.Random().NextDouble() * 4;
+            <div class="petal"
+                 style="left:@left% ; top:@(-20 + i * 6)% ;
+                            animation-delay:@($"{delay:F2}s") ;
+                            animation-duration:@($"{duration:F2}s")">
+            </div>
+        }
+    </div>
 </div>
