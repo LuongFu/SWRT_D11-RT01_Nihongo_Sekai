@@ -789,15 +789,6 @@
                      class="form-input"
                      placeholder="Tạo mật khẩu đủ mạnh"
                      minlength="8" required />
-              <button type="button"
-                      class="password-toggle"
-                      onclick="togglePassword('password')"
-                      aria-label="Toggle password visibility">
-                <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-              </button>
             </div>
 
             <!-- Strength & Requirements -->
@@ -838,15 +829,6 @@
                      class="form-input"
                      placeholder="Xác nhận mật khẩu"
                      required />
-              <button type="button"
-                      class="password-toggle"
-                      onclick="togglePassword('confirmPassword')"
-                      aria-label="Toggle confirm password visibility">
-                <svg id="eyeIcon2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-              </button>
             </div>
             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
           </div>
