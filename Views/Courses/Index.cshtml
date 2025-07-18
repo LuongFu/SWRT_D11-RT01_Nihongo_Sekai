@@ -82,7 +82,7 @@
 <div id="wordOfTheDayContainer"></div>
 <div class="container animate-on-scroll">
     <div class="mb-4">
-    <form asp-action="Filter" method="get" class="row g-2 align-items-center">
+     <form asp-action="Filter" method="get" class="row g-2 align-items-center">
         <div class="col-auto">
             <label class="form-label mb-0">Category:</label>
         </div>
@@ -97,9 +97,40 @@
                 }
             </select>
         </div>
+
+        <!-- Price Filter -->
+        <div class="col-auto">
+            <label class="form-label mb-0">Price:</label>
+        </div>
+        <div class="col-auto">
+            <select id="priceFilter" name="minPrice" class="form-select">
+                @{
+                    // Tạo list tạm ngay trong view cho ví dụ
+                    var priceOptions = new[]
+                    {
+                        new { Value = (int?)null, Text = "Select a price..." },
+                        new { Value = (int?)0, Text = "Dưới 100.000₫" },
+                        new { Value = (int?)101000, Text = "101.000–500.000₫" },
+                        new { Value = (int?)501000, Text = "501.000–1.000.000₫" },
+                        new { Value = (int?)1000001, Text = "Trên 1.000.000₫" }
+                    };
+                }
+
+                @foreach (var opt in priceOptions)
+                {
+                    // Xác định xem có đang được chọn hay không
+                    var isSelected = (ViewBag.MinPrice == null && opt.Value == null)
+                                      || (ViewBag.MinPrice != null && opt.Value != null && (int)ViewBag.MinPrice == opt.Value);
+                    var selectedAttr = isSelected ? "selected" : "";
+                    @:<option value="@(opt.Value?.ToString() ?? "")" @selectedAttr>@opt.Text</option>
+                }
+            </select>
+        </div>
+
         <div class="col-auto">
             <input type="text" name="searchString" class="form-control" placeholder="Search by name..." value="@ViewBag.SearchString" />
-        </div>
+        </div>        
+
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-funnel"></i> Apply Filter
@@ -201,6 +232,7 @@
         </nav>
     </div>
 </div>
+
 <!-- Enhanced Scripts -->
 <script src="~/js/script.js" asp-append-version="true"></script>
 <script>
@@ -236,10 +268,6 @@
     }
 
     function setupEventListeners() {
-      document
-        .getElementById("courseSearch")
-        .addEventListener("input", handleSearch);
-
       setupFilterHoverBehavior();
       document
         .getElementById("categoryFilter")
@@ -260,7 +288,7 @@
 
       document.querySelectorAll(".filter-pill select").forEach((select) => {
         select.addEventListener("change", updateFilterChipState);
-      });
+      });     
     }
 
     function setupFilterHoverBehavior() {
