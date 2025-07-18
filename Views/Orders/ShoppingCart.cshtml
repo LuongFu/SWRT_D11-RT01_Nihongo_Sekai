@@ -109,6 +109,38 @@
         width: 100% !important;
         max-width: 100% !important;
     }
+
+    .vnpay-btn {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .vnpay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+    .vnpay-logo {
+        width: 24px;
+        height: auto;
+    }
+
+    .vnpay-btn::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.2);
+        transform: skewX(-20deg);
+        transition: left 0.5s ease;
+    }
+
+    .vnpay-btn:hover::after {
+        left: 200%;
+    }
 </style>
 
 <div class="cart-header text-center">Giỏ hàng</div>
@@ -138,11 +170,14 @@
         <!-- Nút PayPal -->
         <div id="paypal-btn" class="mb-3 w-200"></div>
 
-        <form asp-action="VNPayCheckout" method="post">
-            <button type="submit" class="btn btn-danger w-100 mb-3">Thanh toán VNPay</button>
-        </form>
-
-
+        <div class="d-grid gap-2 mb-3">
+            <form asp-action="VNPayCheckout" method="post">
+                <button type="submit" class="btn btn-danger btn-lg vnpay-btn d-flex align-items-center justify-content-center">
+                    <img src="~/images/vnpay-logo.png" alt="VNPay" class="me-2 vnpay-logo" />
+                    <span>Thanh toán VNPay</span>
+                </button>
+            </form>
+        </div>
         <!-- Thêm khóa học -->
         <a class="btn-secondary d-block text-center" asp-controller="Courses" asp-action="Index">Thêm khóa học</a>
     </div>
