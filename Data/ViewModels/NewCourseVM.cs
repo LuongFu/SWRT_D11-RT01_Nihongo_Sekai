@@ -17,7 +17,7 @@ namespace JapaneseLearningPlatform.Models
 
         [Display(Name = "Giá tính theo VND")]
         [Required(ErrorMessage = "Bắt buộc điền")]
-        public double Price { get; set; }
+        public int Price { get; set; }
 
         [Display(Name = "URL Ảnh bìa khóa học")]
         [Required(ErrorMessage = "Bắt buộc điền")]
@@ -45,9 +45,5 @@ namespace JapaneseLearningPlatform.Models
         [Display(Name = "Chọn phân loại")]
         [Required(ErrorMessage = "Bắt buộc chọn")]
         public CourseCategory CourseCategory { get; set; }
-
-        [Display(Name = "Chọn video")]
-        [Required(ErrorMessage = "Bắt buộc chọn")]
-        public List<int> VideoIds { get; set; }
     }
 }
