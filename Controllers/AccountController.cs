@@ -68,7 +68,7 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (await _userManager.FindByEmailAsync(registerVM.EmailAddress!) != null)
             {
-                TempData["Error"] = "This email address is already in use.";
+                TempData["Error"] = "Email này đã được đăng ký. Hãy tiến hành đăng nhập.";
                 return View(registerVM);
             }
 
@@ -155,7 +155,7 @@ namespace JapaneseLearningPlatform.Controllers
             {
                 // instead of email confirmation:
                 TempData["PostRegisterMessage"] =
-                    "Thank you! Your application has been submitted. We will review it within 3 days.";
+                    "Bạn đã gửi đơn đăng ký thành công. Chúng tôi sẽ xem xét trong vòng 3 ngày.";
                 return View("RequestPending");
             }
             else
@@ -181,7 +181,7 @@ namespace JapaneseLearningPlatform.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email)!;
             if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
             {
-                TempData["Error"] = "Email isn't exists.";
+                TempData["Error"] = "Email không tồn tại.";
                 return View(model);
             }
 
@@ -210,7 +210,7 @@ namespace JapaneseLearningPlatform.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                TempData["Error"] = "User not found.";
+                TempData["Error"] = "Người dùng không tồn tại.";
                 return View();
             }
 
@@ -251,7 +251,7 @@ namespace JapaneseLearningPlatform.Controllers
             if (remoteError != null)
             {
                 // Google login bị hủy → quay về trang login
-                TempData["ErrorMessage"] = "Google login was cancelled or failed: " + remoteError;
+                TempData["ErrorMessage"] = "Đăng nhập Google thất bại: " + remoteError;
                 return RedirectToAction(nameof(Login));
             }
 
@@ -273,7 +273,7 @@ namespace JapaneseLearningPlatform.Controllers
                     // ✅ Kiểm tra bị ban
                     if (user.IsBanned)
                     {
-                        TempData["Error"] = "Your account has been banned by an administrator.";
+                        TempData["Error"] = "Tài khoản của bạn đã bị khóa bởi quản trị viên.";
                         return RedirectToAction("Login");
                     }
 
@@ -298,7 +298,7 @@ namespace JapaneseLearningPlatform.Controllers
                 }
             }
 
-            TempData["Error"] = "Email claim not received.";
+            TempData["Error"] = "Chưa nhận được email xác minh.";
             return RedirectToAction("Index", "Loading", new { returnUrl = "/Account/Login" });
         }
 
@@ -314,9 +314,9 @@ namespace JapaneseLearningPlatform.Controllers
                 {
                     var r = await _userManager.ConfirmEmailAsync(u, token);
                     if (r.Succeeded)
-                        TempData["Success"] = "Your email has been confirmed — you can now log in!";
+                        TempData["Success"] = "Xác nhận tài khoản thành công! Bạn đã có thể đăng nhập.";
                     else
-                        TempData["Error"] = "Email confirmation failed. Please contact support.";
+                        TempData["Error"] = "Xác nhận tài khoản thất bại. Vui lòng liên hệ hỗ trợ.";
                 }
                 // 2) Redirect để xóa query-string và trigger lần GET mới
                 return RedirectToAction(nameof(Login));
@@ -336,13 +336,13 @@ namespace JapaneseLearningPlatform.Controllers
             var user = await _userManager.FindByEmailAsync(loginVM.EmailAddress!);
             if (user == null)
             {
-                TempData["Error"] = "The email does not exist in the system. Please, try another email!";
+                TempData["Error"] = "Email không tồn tại trên hệ thống. Vui lòng thử lại Email khác.";
                 return View(loginVM);
             }
 
             if (user.Role == "Partner" && !user.IsApproved)
             {
-                TempData["Error"] = "Your partner application is still pending review. We’ll let you know via email within 24 hours.";
+                TempData["Error"] = "Đơn đăng ký làm đối tác hiện vẫn đang chờ phê duyệt.";
                 return RedirectToAction("Login");
             }
 
@@ -350,21 +350,21 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (user.IsBanned)
             {
-                TempData["Error"] = "This account has been banned. Please contact support.";
+                TempData["Error"] = "Tài khoản này đã bị cấm hoạt động. Vui lòng liên hệ hỗ trợ.";
                 return View(loginVM);
             }
 
             // Kiểm tra xác thực email trước
             if (!await _userManager.IsEmailConfirmedAsync(user))
             {
-                TempData["Error"] = "You must confirm your email before logging in.";
+                TempData["Error"] = "Bạn cần phải xác minh email trước khi đăng nhập.";
                 return View(loginVM);
             }
 
             var passwordValid = await _userManager.CheckPasswordAsync(user, loginVM.Password!);
             if (!passwordValid)
             {
-                TempData["Error"] = "There's something wrong with your password. Try again!";
+                TempData["Error"] = "Mật khẩu không đúng. Vui lòng thử lại.";
                 return View(loginVM);
             }
 
@@ -374,7 +374,7 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (!signInResult.Succeeded)
             {
-                TempData["Error"] = "Login failed. Please, check your credentials and try again.";
+                TempData["Error"] = "Đăng nhập thất bại. Vui lòng kiểm tra lại định danh của bạn.";
                 return View(loginVM);
             }
 
@@ -467,7 +467,7 @@ namespace JapaneseLearningPlatform.Controllers
         [HttpGet]
         public IActionResult LoginFailed(string? error)
         {
-            TempData["Error"] = error ?? "Something went wrong during Google login.";
+            TempData["Error"] = error ?? "Đã có lỗi xảy ra trong quá trình đăng nhập Google.";
             return RedirectToAction("Login");
         }
 

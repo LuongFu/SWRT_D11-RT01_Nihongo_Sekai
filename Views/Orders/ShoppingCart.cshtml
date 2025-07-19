@@ -185,7 +185,7 @@
                         <img src="@item.Course.ImageURL" alt="@item.Course.Name" class="cart-item-img" />
                         <div>
                             <div class="cart-course-title">@item.Course.Name</div>
-                            <div class="text-muted">@item.Course.FinalPrice.ToString("c")</div>
+                            <div class="text-muted">@item.Course.FinalPrice.ToString("N0") ₫</div>
                             <a class="cart-remove"
                                asp-controller="Orders"
                                asp-action="RemoveItemFromShoppingCart"
@@ -194,14 +194,14 @@
                             </a>
                         </div>
                     </div>
-                    <div class="fw-bold">@((item.Amount * item.Course.FinalPrice).ToString("c"))</div>
+                    <div class="fw-bold">@((item.Amount * item.Course.FinalPrice).ToString("N0")) ₫</div>
                 </div>
             }
         </div>
 
         <!-- Sidebar tổng tiền & thanh toán -->
         <div class="cart-right">
-            <h4>Tổng: @Model.ShoppingCartTotal.ToString("c")</h4>
+            <h4>Tổng: @Model.ShoppingCartTotal.ToString("N0") ₫</h4>
 
             <!-- PayPal Button -->
             <div id="paypal-btn" class="mb-3 w-100"></div>
@@ -243,7 +243,7 @@
                                 <h5 class="card-title">@item.Name</h5>
                                 <p class="card-text text-truncate">@item.Description</p>
                                 <div class="mt-auto">
-                                    <p class="fw-bold text-danger">@item.Tuition.ToString("c")</p>
+                                    <p class="fw-bold text-danger">@item.Tuition.ToString("N0") ₫</p>
                                     <a asp-controller="Courses"
                                        asp-action="Details"
                                        asp-route-id="@item.CourseId"

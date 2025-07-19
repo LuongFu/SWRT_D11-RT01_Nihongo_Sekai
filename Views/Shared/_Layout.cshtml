@@ -7,7 +7,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/footer.css" />
-    <link rel="stylesheet" href="~/css/styles.css" />
+    @* <link rel="stylesheet" href="~/css/styles.css" />  *@
 }
 
 <!DOCTYPE html>
@@ -18,6 +18,7 @@
     <title>@ViewData["Title"] - NihongoSekai</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
@@ -31,113 +32,104 @@
         @if (!hideNavbar)
         {
             <header class="header">
-                <nav class="navbar">
-                    <div class="nav-brand">
-                        <a asp-controller="Learner" asp-action="Index" class="brand-link">
-                            <span class="brand-icon">日</span>
-                            <span><span class="brand-nihongo">Nihongo</span><span class="brand-sekai">Sekai</span></span>
-                        </a>
-                    </div>
-                    <ul class="nav-list">
+                    <nav class="navbar custom-navbar">
+                        <div class="nav-brand">
+                            <a asp-controller="Learner" asp-action="Index" class="brand-link">
+                                <span class="brand-icon">日</span>
+                                <span><span class="brand-nihongo">Nihongo</span><span class="brand-sekai">Sekai</span></span>
+                            </a>
+                        </div>
+                        <ul class="nav-list">
 
-                        @* Admin *@
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                        {
-                            <li>
-                                <a asp-controller="Admin" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active-tab" : "")">
-                                    Trang chủ
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-controller="Account" asp-action="Users" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active-tab" : "")">
-                                    Danh sách người dùng
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-controller="Admin" asp-action="PartnerApplications" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "PartnerApplications" ? "active-tab" : "")">
-                                    Ứng tuyển Đối tác
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-controller="Courses" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")">
-                                    Khóa học
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-controller="ClassroomInstances" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")">
-                                    Lớp học
-                                </a>
-                            </li>
-                        }
-                        @* Partner *@
-                        else if (User.Identity.IsAuthenticated && User.IsInRole("Partner"))
-                        {
-                            <li>
-                                <a asp-controller="Partner" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Partner" ? "active-tab" : "")">
-                                    Trang chủ
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomTemplates" || ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")"
-                                   href="#" id="classroomDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Lớp học
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="classroomDropdown">
-                                    <li><a asp-controller="ClassroomInstances" asp-action="MySession" class="dropdown-item">Phiên học</a></li>
-                                    <li><a asp-controller="ClassroomTemplates" asp-action="MyTemplate" class="dropdown-item">Mẫu lớp</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a asp-controller="Dictionary" asp-action="Search" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dictionary" ? "active-tab" : "")">
-                                    Từ điển
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-controller="Schedule" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")">
-                                    Lịch học
-                                </a>
-                            </li>
-                        }
-                        @* Learner or guest *@
-                        else
-                        {
-                            <li>
-                                <a asp-controller="Learner" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" ? "active-tab" : "")">
-                                    Trang chủ
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-controller="Courses" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")">
-                                    Khóa học
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-controller="ClassroomInstances" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")">
-                                    Lớp học
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-controller="Schedule" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedule" ? "active-tab" : "")">
-                                    Lịch học
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-controller="Dictionary" asp-action="Search" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dictionary" ? "active-tab" : "")">
-                                    Từ điển
-                                </a>
-                            </li>
-                            <li>
-                                <a asp-controller="SidePages" asp-action="About" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SidePages" ? "active-tab" : "")">
-                                    Giới thiệu
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                    <div class="nav-actions">
-                        @await Component.InvokeAsync("ShoppingCartSummary")
-                        <partial name="_Identity.cshtml" />
-                    </div>
-                </nav>
+                            @* Admin *@
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <li>
+                                    <a asp-controller="Admin" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active-tab" : "")">
+                                        Trang chủ
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Account" asp-action="Users" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active-tab" : "")">
+                                        Danh sách người dùng
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Admin" asp-action="PartnerApplications" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PartnerApplications" ? "active-tab" : "")">
+                                        Ứng tuyển Đối tác
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Courses" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")">
+                                        Khóa học
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="ClassroomInstances" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")">
+                                        Lớp học
+                                    </a>
+                                </li>
+                            }
+                            @* Partner *@
+                            else if (User.Identity.IsAuthenticated && User.IsInRole("Partner"))
+                            {
+                                <li>
+                                    <a asp-controller="Partner" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Partner" ? "active-tab" : "")">
+                                        Trang chủ
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomTemplates" || ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")"
+                                       href="#" id="classroomDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Lớp học
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="classroomDropdown">
+                                        <li><a asp-controller="ClassroomInstances" asp-action="MySession" class="dropdown-item">Phiên học</a></li>
+                                        <li><a asp-controller="ClassroomTemplates" asp-action="MyTemplate" class="dropdown-item">Mẫu lớp</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a asp-controller="Dictionary" asp-action="Search" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dictionary" ? "active-tab" : "")">
+                                        Từ điển
+                                    </a>
+                                </li>
+                            }
+                            @* Learner or guest *@
+                            else
+                            {
+                                <li>
+                                    <a asp-controller="Learner" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learner" ? "active-tab" : "")">
+                                        Trang chủ
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Courses" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active-tab" : "")">
+                                        Khóa học
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="ClassroomInstances" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ClassroomInstances" ? "active-tab" : "")">
+                                        Lớp học
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Dictionary" asp-action="Search" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dictionary" ? "active-tab" : "")">
+                                        Từ điển
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="SidePages" asp-action="About" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SidePages" ? "active-tab" : "")">
+                                        Giới thiệu
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                        <div class="nav-actions">
+                            @await Component.InvokeAsync("ShoppingCartSummary")
+                            <partial name="_Identity.cshtml" />
+                        </div>
+                    </nav>
+                
             </header>
         }
 
@@ -162,7 +154,7 @@
         @if (!hideFooter)
         {
             <footer class="footer">
-                <div class="container">
+                <div class="container-fluid">
                     <div class="footer-content">
                         <!-- Thương hiệu & MXH -->
                         <div class="footer-section">
