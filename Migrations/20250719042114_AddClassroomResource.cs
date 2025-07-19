@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JapaneseLearningPlatform.Migrations
 {
     /// <inheritdoc />
+
     public partial class AddClassroomResource : Migration
     {
         /// <inheritdoc />
