@@ -1,6 +1,7 @@
 ﻿using JapaneseLearningPlatform.Data.Base;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,12 @@ namespace JapaneseLearningPlatform.Data.Services
     public class CoursesService : EntityBaseRepository<Course>, ICoursesService
     {
         private readonly AppDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public CoursesService(AppDbContext context) : base(context)
+        public CoursesService(AppDbContext context, IWebHostEnvironment webHostEnvironment) : base(context)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<List<CourseWithPurchaseVM>> GetAllCoursesWithPurchaseInfoAsync(string userId, string shoppingCartId)
         {
@@ -137,15 +140,12 @@ namespace JapaneseLearningPlatform.Data.Services
             var isInCart = _context.ShoppingCartItems
                 .Any(x => x.CourseId == courseId && x.ShoppingCartId == cartId);
 
-            // ✳ Lấy tất cả QuizId từ content items
-            var quizIds = course.Sections
-                .SelectMany(s => s.ContentItems)
-                .Where(ci => ci.Quiz != null)
-                .Select(ci => ci.Quiz.Id)
-                .ToList();
-
-            // ✳ Truy vấn điểm cao nhất từ QuizResults (nếu user đã đăng nhập)
             Dictionary<int, int> quizScores = new();
+            var quizIds = course.Sections.SelectMany(s => s.ContentItems)
+                                         .Where(ci => ci.Quiz != null)
+                                         .Select(ci => ci.Quiz.Id)
+                                         .ToList();
+
             if (!string.IsNullOrEmpty(userId))
             {
                 quizScores = await _context.QuizResults
@@ -155,15 +155,27 @@ namespace JapaneseLearningPlatform.Data.Services
                     .ToDictionaryAsync(g => g.QuizId, g => g.MaxScore);
             }
 
+            // NEW: Get completed content
+            var completedIds = await _context.CourseContentProgresses
+                .Where(p => p.UserId == userId && p.CourseId == courseId && p.IsCompleted)
+                .Select(p => p.ContentItemId)
+                .ToListAsync();
+
+            int totalItems = course.Sections.Sum(s => s.ContentItems.Count);
+            double progress = totalItems > 0 ? (completedIds.Count / (double)totalItems) * 100 : 0;
+
             return new CourseHierarchyVM
             {
                 Course = course,
                 Sections = course.Sections.ToList(),
                 IsPurchased = isPurchased,
                 IsInCart = isInCart,
-                QuizHighScores = quizScores
+                QuizHighScores = quizScores,
+                CompletedContentIds = completedIds,
+                ProgressPercent = progress
             };
         }
+
 
         // 🔥 API TRANG CHỦ: Lấy 3 khóa học nổi bật (có giá, mới nhất)
         public async Task<IEnumerable<CourseListItemVM>> GetFeaturedCoursesAsync()
@@ -211,6 +223,23 @@ namespace JapaneseLearningPlatform.Data.Services
                 .ToListAsync();
 
             return recommendedCourses;
+        }
+
+        public async Task<string> SaveFileAsync(IFormFile file, string folder)
+        {
+            var uploadsRoot = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+            if (!Directory.Exists(uploadsRoot))
+                Directory.CreateDirectory(uploadsRoot);
+
+            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsRoot, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return $"/{folder}/{fileName}";
         }
 
     }

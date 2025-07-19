@@ -10,5 +10,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public bool IsInCart { get; set; }
         public Dictionary<int, int> QuizHighScores { get; set; } = new();
         public Video Video { get; set; }
+        public List<int> CompletedContentIds { get; set; } = new();
+        public double ProgressPercent { get; set; }
     }
 }

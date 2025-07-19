@@ -439,6 +439,35 @@ namespace JapaneseLearningPlatform.Migrations
                     b.ToTable("Courses");
                 });
 
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.CourseContentProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ContentItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CourseContentProgresses");
+                });
+
             modelBuilder.Entity("JapaneseLearningPlatform.Models.DailyWord", b =>
                 {
                     b.Property<int>("Id")
