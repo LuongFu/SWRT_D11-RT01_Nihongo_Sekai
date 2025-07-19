@@ -169,6 +169,20 @@ namespace JapaneseLearningPlatform.Data
             .Property(p => p.DecisionAt)
             .IsRequired(false);
 
+            // ClassroomFeedback → ClassroomInstance
+            modelBuilder.Entity<ClassroomFeedback>()
+                .HasOne(f => f.ClassroomInstance)
+                .WithMany(ci => ci.Feedbacks)
+                .HasForeignKey(f => f.ClassroomInstanceId)
+                .OnDelete(DeleteBehavior.NoAction); // Tránh cascade vòng
+
+            // ClassroomFeedback → ApplicationUser (Learner)
+            modelBuilder.Entity<ClassroomFeedback>()
+                .HasOne(f => f.Learner)
+                .WithMany()
+                .HasForeignKey(f => f.LearnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // --- BEGIN: cấu hình cho Report.Subject enum → int ---
             modelBuilder.Entity<Report>()
                 .Property(r => r.Subject)
@@ -208,5 +222,6 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<PartnerDocument> PartnerDocuments { get; set; }
         public DbSet<ClassroomResource> ClassroomResources { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<ClassroomFeedback> ClassroomFeedbacks { get; set; }
     }
 }

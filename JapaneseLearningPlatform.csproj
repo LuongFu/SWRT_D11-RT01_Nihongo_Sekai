@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\submissions\" />
     <Folder Include="wwwroot\uploads\partners\" />
     <Folder Include="wwwroot\uploads\partner_docs\" />
