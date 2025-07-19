@@ -287,7 +287,23 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> ToggleContentCompletion([FromBody] ToggleCompletionVM model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId)) return Unauthorized(new { success = false });
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { success = false });
+
+            // Tính progress hiện tại
+            int totalItems = await _context.CourseContentItems
+                .CountAsync(ci => ci.Section.CourseId == model.CourseId);
+
+            int completedCountBefore = await _context.CourseContentProgresses
+                .CountAsync(p => p.UserId == userId && p.CourseId == model.CourseId && p.IsCompleted);
+
+            double currentProgress = totalItems > 0 ? (completedCountBefore / (double)totalItems) * 100 : 0;
+
+            // Nếu đã đạt 100% thì bỏ qua việc uncheck
+            if (currentProgress >= 100 && !model.IsCompleted)
+            {
+                return Json(new { success = false, progress = 100 });
+            }
 
             // Tìm content progress hiện có
             var existing = await _context.CourseContentProgresses
@@ -316,15 +332,12 @@ namespace JapaneseLearningPlatform.Controllers
             await _context.SaveChangesAsync();
 
             // Tính progress % mới
-            var totalItems = await _context.CourseContentItems
-                .CountAsync(ci => ci.Section.CourseId == model.CourseId);
-
-            var completedCount = await _context.CourseContentProgresses
+            int completedCount = await _context.CourseContentProgresses
                 .CountAsync(p => p.UserId == userId && p.CourseId == model.CourseId && p.IsCompleted);
 
             double progress = totalItems > 0 ? (completedCount / (double)totalItems) * 100 : 0;
 
-            return Json(new { success = true, progress = progress });
+            return Json(new { success = true, progress });
         }
 
 
@@ -333,7 +346,8 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> GetProgress(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
             int totalItems = await _context.CourseContentItems
                 .Where(ci => ci.Section.CourseId == id)
@@ -344,8 +358,11 @@ namespace JapaneseLearningPlatform.Controllers
                 .CountAsync();
 
             double progress = totalItems > 0 ? (completedItems / (double)totalItems) * 100 : 0;
+            if (progress > 100) progress = 100; // chặn vượt quá 100%
+
             return Json(new { progress = progress.ToString("0") });
         }
+
 
 
     }

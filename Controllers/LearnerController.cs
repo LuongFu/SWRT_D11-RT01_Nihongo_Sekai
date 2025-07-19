@@ -176,8 +176,12 @@ namespace JapaneseLearningPlatform.Controllers
         [HttpPost]
         public async Task<IActionResult> EditProfile(EditProfileVM model)
         {
+            // Loại bỏ validation cho ProfilePicturePath (nếu có)
+            ModelState.Remove(nameof(model.ProfilePicturePath));
+
             if (!ModelState.IsValid)
             {
+                // Giữ lại ảnh đại diện hiện tại
                 model.ProfilePicturePath = (await _userManager.GetUserAsync(User))?.ProfilePicturePath;
                 return View(model);
             }
@@ -185,18 +189,20 @@ namespace JapaneseLearningPlatform.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
 
-            user.FullName = model.FullName;
-            user.Address = model.Address;
+            // Cập nhật các trường
+            user.FullName = model.FullName?.Trim();
+            user.Address = model.Address?.Trim();
             user.BirthDate = model.BirthDate;
-            user.Gender = model.Gender;
-            user.Description = model.Description;
-            user.JobName = model.JobName;
-            user.Facebook = model.Facebook;
-            user.YouTube = model.YouTube;
+            user.Gender = model.Gender?.Trim();
+            user.Description = model.Description?.Trim();
+            user.JobName = model.JobName?.Trim();
+            user.Facebook = model.Facebook?.Trim();
+            user.YouTube = model.YouTube?.Trim();
 
+            // Cập nhật số điện thoại
             if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
             {
-                var phoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
+                var phoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber.Trim());
                 if (!phoneResult.Succeeded)
                 {
                     ModelState.AddModelError("PhoneNumber", "Số điện thoại không hợp lệ.");
@@ -205,6 +211,7 @@ namespace JapaneseLearningPlatform.Controllers
                 }
             }
 
+            // Lưu thay đổi
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
             {
@@ -219,6 +226,7 @@ namespace JapaneseLearningPlatform.Controllers
             TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
             return RedirectToAction("Profile");
         }
+
 
         // 🔐 Đổi mật khẩu Learner
         [HttpGet]

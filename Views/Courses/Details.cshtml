@@ -423,14 +423,18 @@
             });
         });
 
-                function updateProgressBar(progress) {
+                    function updateProgressBar(progress) {
             const bar = document.querySelector('.progress-bar');
-            if (!bar) return;
             const percent = parseFloat(progress) || 0;
             bar.style.width = percent + '%';
             bar.setAttribute('aria-valuenow', percent);
             bar.textContent = percent.toFixed(0) + '%';
+
+            if (percent >= 100) {
+                document.querySelectorAll('.content-checkbox').forEach(cb => cb.disabled = true);
+            }
         }
+
 
 
             document.addEventListener('DOMContentLoaded', function () {

@@ -994,3 +994,17 @@ form .form-control {
 .profile-container {
     margin-bottom: 120px !important; /* Đảm bảo khoảng cách dưới */
 }
+
+    .profile-container .card.text-center {
+        text-align: center;
+    }
+
+    .profile-container .badge {
+        display: inline-block;
+        margin: 0 auto;
+        font-size: 0.95rem;
+    }
+
+    .profile-container .btn {
+        text-align: center;
+    }
