@@ -129,38 +129,60 @@
 
   <!-- Filter Vai Trò / Trạng Thái / Tìm kiếm + Clear -->
   <div class="filter-section">
-    <div class="row gy-2 filter-form">
-  <div class="col-12 col-md-3">
-    <label for="roleFilter" class="form-label">Vai Trò</label>
-    <select id="roleFilter" class="form-select">
-      <option value="">Tất cả</option>
-      @foreach (var r in roles) {
-        <option value="@r" @@(r == currentRole ? "selected" : "")>@r</option>
-      }
-    </select>
-  </div>
-  <div class="col-12 col-md-3">
-    <label for="statusFilter" class="form-label">Trạng Thái</label>
-    <select id="statusFilter" class="form-select">
-      <option value="">Tất cả</option>
-      <option value="Đã Giải Quyết" @@(currentStat == "Đã Giải Quyết" ? "selected" : "")>Đã Giải Quyết</option>
-      <option value="Đang Chờ"       @@(currentStat == "Đang Chờ"       ? "selected" : "")>Đang Chờ</option>
-    </select>
-  </div>
-  <div class="col-12 col-md-4">
-    <label for="search" class="form-label">Tìm kiếm</label>
-    <input type="search"
-           id="search"
-           class="form-control"
-           placeholder="Nhập email hoặc nội dung…"
-           value="@q" />
-  </div>
-  <div class="col-12 col-md-2 filter-actions">
-    <button id="clearFilters" class="btn btn-outline-secondary btn-clear">Xóa bộ lọc</button>
+  <div class="row gy-2 align-items-end filter-form">
+    <!-- Vai Trò -->
+    <div class="col-12 col-md-2">
+      <label for="roleFilter" class="form-label">Vai Trò</label>
+      <select id="roleFilter" class="form-select">
+        <option value="">Tất cả</option>
+        @foreach (var r in roles) {
+          <option value="@r" @@(r == currentRole ? "selected" : "")>@r</option>
+        }
+      </select>
+    </div>
+
+    <!-- Trạng Thái -->
+    <div class="col-12 col-md-2">
+      <label for="statusFilter" class="form-label">Trạng Thái</label>
+      <select id="statusFilter" class="form-select">
+        <option value="">Tất cả</option>
+        <option value="Đã Giải Quyết" @@(currentStat=="Đã Giải Quyết"?"selected":"")>Đã Giải Quyết</option>
+        <option value="Đang Chờ"       @@(currentStat=="Đang Chờ"      ?"selected":"")>Đang Chờ</option>
+      </select>
+    </div>
+
+    <!-- Thời gian -->
+    <div class="col-12 col-md-2">
+      <label for="dateFilter" class="form-label">Thời gian</label>
+      <select id="dateFilter" class="form-select">
+        <option value="">Tất cả</option>
+        <option value="today" @@(ViewBag.CurrentDateFilter=="today"?"selected":"")>Hôm nay</option>
+        <option value="3days" @@(ViewBag.CurrentDateFilter=="3days"?"selected":"")>3 ngày trước</option>
+        <option value="7days" @@(ViewBag.CurrentDateFilter=="7days"?"selected":"")>7 ngày trước</option>
+      </select>
+    </div>
+
+    <!-- Tìm kiếm -->
+    <div class="col-12 col-md-4">
+      <label for="search" class="form-label">Tìm kiếm</label>
+      <input type="search"
+             id="search"
+             class="form-control"
+             placeholder="Nhập email hoặc nội dung…"
+             value="@q" />
+    </div>
+
+    <!-- Xóa bộ lọc -->
+    <div class="col-12 col-md-2 text-end">
+      <!-- đổi thành màu đỏ để nổi bật hơn -->
+      <button id="clearFilters"
+              class="btn btn-danger w-100">
+        Xóa bộ lọc
+      </button>
+    </div>
   </div>
 </div>
 
-  </div>
 
   <!-- Bảng Báo Cáo -->
   <table class="table table-hover reports-table">
@@ -182,7 +204,8 @@
       @foreach (var r in Model) {
         <tr data-subject="@r.Subject"
             data-role="@r.Role"
-                    data-status="@(r.IsResolved ? "Đã Giải Quyết" : "Đang Chờ")"
+            data-status="@(r.IsResolved ? "Đã Giải Quyết" : "Đang Chờ")"
+            data-submitted="@r.SubmittedAt.ToString("yyyy-MM-dd")"
             data-search="@($"{r.Email} {r.Message}".ToLower())">
           <td>@r.Id</td>
           <td>@r.Email</td>
@@ -244,75 +267,99 @@
         }
 
         // click filter Chủ Đề (vẫn dùng reload)
-        document.querySelectorAll(".btn-subject")
-          .forEach(btn => btn.addEventListener("click", e => {
+        document.querySelectorAll(".btn-subject").forEach(btn =>
+          btn.addEventListener("click", e => {
             document.querySelectorAll(".btn-subject").forEach(b => b.classList.remove("active"));
             e.currentTarget.classList.add("active");
             reload();
-          }));
+          })
+        );
 
-                // Client–side filter: Vai Trò / Trạng Thái, và hiển thị hàng "No Results" nếu cần
+        // Client–side filter cho Vai Trò / Trạng Thái / Thời gian / Live search
         function applyClientFilters() {
           const selSubj = document.querySelector(".btn-subject.active")?.dataset.subject || "";
           const selRole = document.getElementById("roleFilter").value;
           const selStat = document.getElementById("statusFilter").value;
+          const selDate = document.getElementById("dateFilter").value;
           const txt     = document.getElementById("search").value.trim().toLowerCase();
+
+          // Tính ngày cắt (cutoff) dựa trên selDate
+          let cutoff = null;
+          const today = new Date();
+          if (selDate === "today") {
+            cutoff = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+          } else if (selDate === "3days") {
+            cutoff = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 3);
+          } else if (selDate === "7days") {
+            cutoff = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+          }
 
           let anyVisible = false;
 
           document.querySelectorAll("#reportsBody tr").forEach(tr => {
-            // Bỏ qua hàng noResults
+            // Bỏ qua hàng thông báo "No Results"
             if (tr.id === "noResults") return;
 
-            const subj = tr.dataset.subject;
-            const role = tr.dataset.role;
-            const stat = tr.dataset.status;
-            const hay  = tr.dataset.search;
+            const subj      = tr.dataset.subject;
+            const role      = tr.dataset.role;
+            const stat      = tr.dataset.status;
+            const submitted = tr.dataset.submitted; // "YYYY-MM-DD"
+            const hay       = tr.dataset.search;
 
+            // Kiểm tra khoảng thời gian
+            let dateOk = true;
+            if (cutoff) {
+              const d = new Date(submitted);
+              dateOk = d >= cutoff;
+            }
+
+            // Kết hợp tất cả điều kiện lọc
             const ok =
               (!selSubj || subj === selSubj) &&
               (!selRole || role === selRole) &&
               (!selStat || stat === selStat) &&
+              dateOk &&
               (!txt    || hay.includes(txt));
 
             tr.style.display = ok ? "" : "none";
             if (ok) anyVisible = true;
           });
 
-          // Show/hide row noResults
+          // Hiển thị hoặc ẩn hàng "No Results"
           document.getElementById("noResults").style.display = anyVisible ? "none" : "";
         }
 
-
-        // Thay vì reload, lắng nghe thay đổi role/status và áp dụng client–side filter
-        document.getElementById("roleFilter")
-          .addEventListener("change", applyClientFilters);
-        document.getElementById("statusFilter")
-          .addEventListener("change", applyClientFilters);
-
-        // live search (vẫn hoạt động truy vấn ngay)
-        document.getElementById("search")
-          .addEventListener("input", e => {
-            const txt = e.target.value.trim().toLowerCase();
-            document.querySelectorAll("#reportsBody tr").forEach(tr => {
-              const hay = tr.dataset.search || "";
-              tr.style.display = hay.includes(txt) ? "" : "none";
-            });
-          });
-
-        // clear filters (vai trò, trạng thái, tìm kiếm) giữ chủ đề
-        document.getElementById("clearFilters")
-          .addEventListener("click", () => {
-            document.getElementById("roleFilter").value   = "";
-            document.getElementById("statusFilter").value = "";
-            document.getElementById("search").value       = "";
-            applyClientFilters();
-          });
-
-        // Nếu muốn khởi áp dụng filter ngay khi trang load (ví dụ nếu có q hoặc role/status mặc định)
         document.addEventListener("DOMContentLoaded", () => {
+          // Lắng nghe thay đổi các filter
+          document.getElementById("roleFilter")
+            .addEventListener("change", applyClientFilters);
+          document.getElementById("statusFilter")
+            .addEventListener("change", applyClientFilters);
+          document.getElementById("dateFilter")
+            .addEventListener("change", applyClientFilters);
+
+          // Live search với độ trễ debounce
+          const searchInput = document.getElementById("search");
+          let debounceTimer;
+          searchInput.addEventListener("input", () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(applyClientFilters, 200);
+          });
+
+          // Clear tất cả filter (giữ lại subject đang active)
+          document.getElementById("clearFilters")
+            .addEventListener("click", () => {
+              document.getElementById("roleFilter").value   = "";
+              document.getElementById("statusFilter").value = "";
+              document.getElementById("dateFilter").value   = "";
+              searchInput.value = "";
+              applyClientFilters();
+            });
+
+          // Chạy lần đầu để đồng bộ theo giá trị mặc định
           applyClientFilters();
         });
     </script>
 }
+
 
