@@ -1,0 +1,139 @@
+﻿@using JapaneseLearningPlatform.Data.Enums
+@using JapaneseLearningPlatform.Models
+@model Report
+
+@{
+    ViewData["Title"] = $"Chi tiết Báo cáo #{Model.Id}";
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .report-card {
+            background: #fff8f0;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            padding: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+            .report-card h2 {
+                color: #ad1457;
+                margin-bottom: 1.5rem;
+                border-bottom: 2px solid #f8bbd0;
+                padding-bottom: .5rem;
+            }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            row-gap: 1rem;
+            column-gap: 2rem;
+        }
+
+            .report-grid dt {
+                font-weight: 600;
+                color: #880e4f;
+                align-self: start;
+            }
+
+            .report-grid dd {
+                margin: 0;
+                color: #333;
+                align-self: start;
+            }
+
+        .report-actions {
+            text-align: right;
+            margin-top: 2rem;
+        }
+
+            .report-actions .btn {
+                margin-left: .5rem;
+                padding: .6rem 1.4rem;
+                border-radius: 8px;
+                font-weight: 500;
+            }
+
+        .btn-secondary {
+            background-color: #ece7e1;
+            border-color: #d8cbc0;
+            color: #5f4b3b;
+        }
+
+            .btn-secondary:hover {
+                background-color: #d8cbc0;
+            }
+
+        .btn-success {
+            background-color: #66bb6a;
+            border-color: #4caf50;
+            color: #fff;
+        }
+
+            .btn-success:hover {
+                background-color: #4caf50;
+            }
+    </style>
+}
+
+<main class="report-card">
+    <h2>@ViewData["Title"]</h2>
+
+    <dl class="report-grid">
+        <dt>Họ tên</dt>
+        <dd>@Model.FullName</dd>
+
+        <dt>Email</dt>
+        <dd>@Model.Email</dd>
+
+        <dt>Vai trò</dt>
+        <dd>@Model.Role</dd>
+
+        <dt>Chủ đề</dt>
+        <dd>
+            @(Model.Subject switch
+            {
+                ReportSubject.Technical => "Hỗ Trợ Kỹ Thuật",
+                ReportSubject.Billing => "Thanh Toán & Hóa Đơn",
+                ReportSubject.Courses => "Câu Hỏi Về Khóa Học",
+                ReportSubject.Partnerships => "Đối Tác Doanh Nghiệp",
+                ReportSubject.Feedback => "Phản Hồi & Góp Ý",
+                _ => "Khác"
+            })
+        </dd>
+
+        @if (!string.IsNullOrEmpty(Model.OrderNumber))
+        {
+            <dt>Mã đơn hàng</dt>
+            <dd>@Model.OrderNumber</dd>
+        }
+
+        <dt>Nội dung</dt>
+        <dd>@Model.Message</dd>
+
+        <dt>Gửi lúc</dt>
+        <dd>@Model.SubmittedAt.ToLocalTime():G</dd>
+
+        <dt>Trạng thái</dt>
+        <dd>@(Model.IsResolved ? "Đã giải quyết" : "Chưa giải quyết")</dd>
+    </dl>
+
+    <div class="report-actions">
+        <a asp-action="AdminIndex" class="btn btn-secondary">Quay về danh sách</a>
+        @if (!Model.IsResolved)
+        {
+            <form asp-action="Resolve" method="post" class="d-inline">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-success">Đánh dấu hoàn thành</button>
+            </form>
+        }
+    </div>
+</main>
