@@ -14,6 +14,6 @@ namespace JapaneseLearningPlatform.Data.Services
         Task<IEnumerable<CourseListItemVM>> GetFeaturedCoursesAsync();
         Task<List<CourseWithPurchaseVM>> GetAllCoursesWithPurchaseInfoAsync(string userId, string shoppingCartId);
         Task<IEnumerable<CourseListItemVM>> GetRecommendedCoursesAsync(string userId, int limit = 4);
-
+        Task<string> SaveFileAsync(IFormFile file, string folder);
     }
 }

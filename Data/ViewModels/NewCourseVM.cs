@@ -21,7 +21,9 @@ namespace JapaneseLearningPlatform.Models
 
         [Display(Name = "URL Ảnh bìa khóa học")]
         [Required(ErrorMessage = "Bắt buộc điền")]
-        public string ImageURL { get; set; }
+        public IFormFile? ImageFile { get; set; }  // THAY CHO ImageURL string
+
+        public string? ImageURL { get; set; } // Đường dẫn được lưu sau khi upload
         [Display(Name = "Phần trăm giảm giá")]
         [Required(ErrorMessage = "Bắt buộc điền. Nếu không giảm giá, hãy điền 0.")]
         public int? DiscountPercent { get; set; }

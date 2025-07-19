@@ -1,6 +1,7 @@
 ﻿using JapaneseLearningPlatform.Data.Base;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,12 @@ namespace JapaneseLearningPlatform.Data.Services
     public class CoursesService : EntityBaseRepository<Course>, ICoursesService
     {
         private readonly AppDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public CoursesService(AppDbContext context) : base(context)
+        public CoursesService(AppDbContext context, IWebHostEnvironment webHostEnvironment) : base(context)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<List<CourseWithPurchaseVM>> GetAllCoursesWithPurchaseInfoAsync(string userId, string shoppingCartId)
         {
@@ -211,6 +214,23 @@ namespace JapaneseLearningPlatform.Data.Services
                 .ToListAsync();
 
             return recommendedCourses;
+        }
+
+        public async Task<string> SaveFileAsync(IFormFile file, string folder)
+        {
+            var uploadsRoot = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+            if (!Directory.Exists(uploadsRoot))
+                Directory.CreateDirectory(uploadsRoot);
+
+            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsRoot, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return $"/{folder}/{fileName}";
         }
 
     }

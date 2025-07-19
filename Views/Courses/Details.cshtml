@@ -231,18 +231,18 @@
                                                asp-route-courseId="@Model.Course.Id"
                                                asp-route-sectionId="@sections.Id"
                                                class="btn btn-sm btn-nihongo-outline">
-                                                <i class="bi bi-plus-circle"></i>Nội dung
+                                                <i class="bi bi-plus-circle"></i>Sửa nội dung
                                             </a>
                                             <a asp-controller="CourseSections" asp-action="Edit"
                                                asp-route-id="@sections.Id"
                                                class="btn btn-sm btn-nihongo-outline">
-                                                <i class="bi bi-pencil"></i>Tên mục
+                                                <i class="bi bi-pencil"></i>Sửa tên mục
                                             </a>
                                             <a asp-controller="CourseSections" asp-action="Delete"
                                                asp-route-id="@sections.Id"
                                                class="btn btn-sm btn-nihongo-outline"
-                                               onclick="return confirm('Are you sure you want to delete this section?');">
-                                                <i class="bi bi-trash"></i> Mục
+                                               onclick="return confirm('Bạn có chắc xóa mục này chứ (Trong mục bao gồm nội dung sẽ mất)?');">
+                                                <i class="bi bi-trash"></i> Xóa mục
                                             </a>
                                            
                                             
@@ -290,14 +290,14 @@
                                                         <div>
                                                             <a asp-controller="CourseContentItems" asp-action="Edit" asp-route-id="@item.Id"
                                                                class="btn btn-sm btn-nihongo-outline me-1">
-                                                                <i class="bi bi-pencil"></i>Nội dung
+                                                                <i class="bi bi-pencil"></i>Sửa nội dung
                                                             </a>
                                                         </div>
                                                         <div>
                                                             <a asp-controller="CourseContentItems" asp-action="Delete" asp-route-id="@item.Id"
                                                                class="btn btn-sm btn-nihongo-outline"
-                                                               onclick="return confirm('Are you sure you want to delete this content item?');">
-                                                                <i class="bi bi-trash"></i>Nội dung
+                                                               onclick="return confirm('Bạn có chắc muốn xóa nội dung này chứ?');">
+                                                                <i class="bi bi-trash"></i>Xóa nội dung
                                                             </a>
                                                         </div>
                                                     </div>

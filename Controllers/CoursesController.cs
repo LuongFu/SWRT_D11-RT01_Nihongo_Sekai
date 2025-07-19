@@ -6,6 +6,7 @@ using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -190,6 +191,11 @@ namespace JapaneseLearningPlatform.Controllers
                 return View(course);
             }
 
+            if (course.ImageFile != null)
+            {
+                course.ImageURL = await _courseService.SaveFileAsync(course.ImageFile, "uploads/courses");
+            }
+
             await _service.AddNewCourseAsync(course);
             return RedirectToAction(nameof(Index));
         }
@@ -228,6 +234,10 @@ namespace JapaneseLearningPlatform.Controllers
         {
             if (id != course.Id) return View("NotFound");
 
+            if (course.ImageFile != null)
+            {
+                course.ImageURL = await _courseService.SaveFileAsync(course.ImageFile, "uploads/courses");
+            }
             if (!ModelState.IsValid)
             {
                 var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
