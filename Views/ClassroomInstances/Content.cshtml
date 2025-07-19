@@ -76,14 +76,14 @@
                     }
                     else
                     {
-                        <table class="table table-bordered table-hover">
-                            <thead class="table-light">
+                        <table class="table mt-3" style="border-collapse: collapse; border: 1px solid #dee2e6; width: 100%;">
+                            <thead style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
                                 <tr>
-                                    <th style="width: 5%">#</th>
-                                    <th>Tên</th>
-                                    <th>Email</th>
-                                    <th>Thời điểm tham gia</th>
-                                    <th style="width: 15%">Hành động</th>
+                                    <th style="width:5%; text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">STT</th>
+                                    <th style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Tên</th>
+                                    <th style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Email</th>
+                                    <th style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Thời điểm tham gia</th>
+                                    <th style="width:15%; text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Thông Tin Học Viên</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -91,17 +91,21 @@
                                     int index = 1;
                                     foreach (var enrollment in Model.Instance.Enrollments)
                                     {
-                                        <tr>
-                                            <td>@index</td>
-                                            <td>@enrollment.Learner?.FullName</td>
-                                            <td>@enrollment.Learner?.Email</td>
-                                            <td>@enrollment.EnrolledAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
-                                            <td>
+                                        <tr style="border: 1px solid #dee2e6;">
+                                            <td style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">@index</td>
+                                            <td style="vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">@enrollment.Learner?.FullName</td>
+                                            <td style="vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">@enrollment.Learner?.Email</td>
+                                            <td style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">
+                                                @enrollment.EnrolledAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                            </td>
+                                            <td style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">
                                                 <a asp-controller="Account"
                                                    asp-action="ViewProfile"
                                                    asp-route-learnerId="@enrollment.Learner?.Id"
                                                    asp-route-classroomId="@Model.Instance.Id"
-                                                   class="btn btn-info btn-sm">View Profile</a>
+                                                   class="btn btn-info btn-sm">
+                                                    Xem Hồ Sơ
+                                                </a>
                                             </td>
                                         </tr>
                                         index++;
