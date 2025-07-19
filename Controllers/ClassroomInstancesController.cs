@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -277,7 +278,7 @@ namespace JapaneseLearningPlatform.Controllers
                 vm.TemplateTitle = template.Title;
                 vm.TemplateDescription = template.Description;
                 vm.TemplateImageURL = template.ImageURL;
-                vm.LanguageLevel = template.LanguageLevel.ToString();
+                vm.LanguageLevel = template.LanguageLevel;
                 vm.DocumentURL = template.DocumentURL;
                 //vm.SessionTime = template.SessionTime;
             }
@@ -569,6 +570,80 @@ namespace JapaneseLearningPlatform.Controllers
 
             var mimeType = "application/octet-stream";
             return PhysicalFile(filePath, mimeType, resource.FileName);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index(ClassroomSearchVM filter, int page = 1)
+        {
+            var query = _context.ClassroomInstances
+                .Include(ci => ci.Template)
+                .AsQueryable();
+
+            // Keyword search
+            if (!string.IsNullOrEmpty(filter.Keyword))
+            {
+                query = query.Where(ci => ci.Template.Title.Contains(filter.Keyword)
+                                        || ci.Template.Description.Contains(filter.Keyword));
+            }
+
+            // Language level
+            if (filter.LanguageLevel.HasValue)
+            {
+                query = query.Where(ci => ci.Template.LanguageLevel == filter.LanguageLevel.Value);
+            }
+
+            // Price range
+            if (filter.MinPrice.HasValue)
+                query = query.Where(ci => ci.Price >= filter.MinPrice.Value);
+
+            if (filter.MaxPrice.HasValue)
+                query = query.Where(ci => ci.Price <= filter.MaxPrice.Value);
+
+            // Start date
+            if (filter.StartDate.HasValue)
+                query = query.Where(ci => ci.StartDate.Date >= filter.StartDate.Value.Date);
+
+            // Paging (nếu cần)
+            int pageSize = 9;
+            var totalItems = await query.CountAsync();
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.CurrentPage = page;
+            ViewBag.Levels = Enum.GetValues(typeof(LanguageLevel))
+                .Cast<LanguageLevel>()
+                .Select(e => new SelectListItem
+                {
+                    Text = GetDisplayName(e),
+                    Value = e.ToString(),
+                    Selected = (filter.LanguageLevel == e)
+                }).ToList();
+
+
+
+            var classrooms = await query
+                .OrderBy(ci => ci.StartDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(ci => new ClassroomInstanceVM
+                {
+                    Id = ci.Id,
+                    TemplateTitle = ci.Template.Title,
+                    TemplateDescription = ci.Template.Description,
+                    LanguageLevel = ci.Template.LanguageLevel, // <-- Lấy từ Template
+                    Price = ci.Price,
+                    StartDate = ci.StartDate,
+                    EndDate = ci.EndDate,
+                    TemplateImageURL = ci.Template.ImageURL
+                })
+                .ToListAsync();
+
+            ViewBag.Filter = filter; // Để giữ giá trị filter trên UI
+            return View(classrooms);
+        }
+        private string GetDisplayName(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = (DisplayAttribute)field.GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault();
+            return attribute?.Name ?? value.ToString();
         }
     }
 }
