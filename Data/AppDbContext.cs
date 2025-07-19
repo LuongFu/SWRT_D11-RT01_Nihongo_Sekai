@@ -78,12 +78,6 @@ namespace JapaneseLearningPlatform.Data
                 .HasForeignKey(qo => qo.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Video_Course>().HasKey(am => new
-            {
-                am.VideoId,
-                am.CourseId
-            });
-
             //for classroom instance
             modelBuilder.Entity<ClassroomInstance>().Property(c => c.Status).HasConversion<int>();
             modelBuilder.Entity<ClassroomInstance>()
@@ -148,11 +142,6 @@ namespace JapaneseLearningPlatform.Data
                 .HasForeignKey(e => e.LearnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
-
-            modelBuilder.Entity<Video_Course>().HasOne(m => m.Course).WithMany(am => am.Videos_Courses).HasForeignKey(m => m.CourseId);
-            modelBuilder.Entity<Video_Course>().HasOne(m => m.Video).WithMany(am => am.Videos_Courses).HasForeignKey(m => m.VideoId);
-
             // 1) Mối quan hệ 1 PartnerProfile có nhiều PartnerDocument,
             //    nhưng khi xóa profile thì không tự động xóa document (Restrict)
             modelBuilder.Entity<PartnerDocument>()
@@ -185,7 +174,6 @@ namespace JapaneseLearningPlatform.Data
 
         public DbSet<Video> Videos { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<Video_Course> Videos_Courses { get; set; }
         public DbSet<CourseSection> CourseSections { get; set; }
         public DbSet<CourseContentItem> CourseContentItems { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
