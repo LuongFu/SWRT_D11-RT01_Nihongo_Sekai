@@ -1,4 +1,4 @@
-﻿using JapaneseLearningPlatform.Data.Enums;
+﻿﻿using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using JapaneseLearningPlatform.Models.Partner;
@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JapaneseLearningPlatform.Data
 {
-    public class AppDbContext:IdentityDbContext<ApplicationUser>
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -164,10 +164,16 @@ namespace JapaneseLearningPlatform.Data
             .Property(p => p.Status)
             .HasConversion<int>()
             .HasDefaultValue(PartnerStatus.Pending);
-            
+
             modelBuilder.Entity<PartnerProfile>()
             .Property(p => p.DecisionAt)
             .IsRequired(false);
+
+            // --- BEGIN: cấu hình cho Report.Subject enum → int ---
+            modelBuilder.Entity<Report>()
+                .Property(r => r.Subject)
+                .HasConversion<int>();
+            // --- END ---
 
             base.OnModelCreating(modelBuilder);
         }
@@ -201,5 +207,6 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<PartnerSpecialization> PartnerSpecializations { get; set; }
         public DbSet<PartnerDocument> PartnerDocuments { get; set; }
         public DbSet<ClassroomResource> ClassroomResources { get; set; }
+        public DbSet<Report> Reports { get; set; }
     }
 }

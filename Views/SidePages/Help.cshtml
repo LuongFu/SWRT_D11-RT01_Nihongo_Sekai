@@ -185,10 +185,20 @@
                         Không tìm thấy câu trả lời bạn cần? Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng giúp bạn với bất kỳ câu hỏi nào về hành trình học tiếng Nhật.
                     </p>
                     <div class="support-actions">
-                        <a href="contact.html" class="btn btn-primary">Liên hệ hỗ trợ</a>
+                        <!-- Dùng Tag‑Helper để chuyển hướng đến /SidePages/Contact -->
+                        <a asp-controller="SidePages"
+                           asp-action="Contact"
+                           class="btn btn-primary">
+                            Liên hệ hỗ trợ
+                        </a>
+
+                        <!-- vẫn giữ mailto nếu bạn muốn -->
                         <a href="mailto:support@nihongosekai.com"
-                           class="btn btn-outline">Gửi Email</a>
+                           class="btn btn-outline">
+                            Gửi Email
+                        </a>
                     </div>
+
                 </div>
                 <div class="support-image">
                     <svg viewBox="0 0 24 24"

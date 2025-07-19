@@ -244,7 +244,7 @@ namespace JapaneseLearningPlatform.Controllers
 
             var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
             ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
-            
+
 
             return View(response);
         }
