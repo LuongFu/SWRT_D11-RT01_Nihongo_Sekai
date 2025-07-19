@@ -5,238 +5,270 @@
 @{
     ViewData["Title"] = "Quản lý Báo cáo";
 
-    // subjectsCount: dictionary Subject → count
+    // Lấy dữ liệu từ ViewBag
     var subjectsCount = ((IEnumerable<dynamic>)ViewBag.Subjects ?? Enumerable.Empty<dynamic>())
                         .ToDictionary(x => (ReportSubject)x.Key, x => (int)x.Count);
+    var totalAll      = subjectsCount.Values.Sum();
 
-    var roles = (string[])(ViewBag.Roles ?? Array.Empty<string>());
-    var statuses = (string[])(ViewBag.Statuses ?? Array.Empty<string>());
-    var currentSubject = (string)(ViewBag.CurrentSubject ?? "");
-    var currentRole = (string)(ViewBag.CurrentRole ?? "");
-    var currentStatus = (string)(ViewBag.CurrentStatus ?? "");
-    var q = (string)(ViewBag.Q ?? "");
-    var page = (int)(ViewBag.Page ?? 1);
-    var pageSize = (int)(ViewBag.PageSize ?? 10);
-    var total = (int)(ViewBag.Total ?? 0);
-    var totalPages = (int)Math.Ceiling((double)total / pageSize);
+    var roles         = (string[])(ViewBag.Roles    ?? Array.Empty<string>());
+    var statuses      = (string[])(ViewBag.Statuses ?? Array.Empty<string>());
+    var currentSubj   = (string)(ViewBag.CurrentSubject ?? "");
+    var currentRole   = (string)(ViewBag.CurrentRole    ?? "");
+    var currentStat   = (string)(ViewBag.CurrentStatus  ?? "");
+    var q             = (string)(ViewBag.Q              ?? "");
+    var page          = (int)(ViewBag.Page     ?? 1);
+    var pageSize      = (int)(ViewBag.PageSize ?? 10);
+    var total         = (int)(ViewBag.Total    ?? 0);
+    var totalPages    = (int)Math.Ceiling((double)total / pageSize);
 
-    // helper map enum → label
-    Func<ReportSubject, string> subjLabel = subj => subj switch
-    {
-        ReportSubject.Technical     => "Hỗ Trợ Kỹ Thuật",
-        ReportSubject.Billing       => "Thanh Toán & Hóa Đơn",
-        ReportSubject.Courses       => "Câu Hỏi Về Khóa Học",
-        ReportSubject.Partnerships  => "Đối Tác Doanh Nghiệp",
-        ReportSubject.Feedback       => "Phản Hồi & Góp Ý",
-        _                           => "Khác"
+    Func<ReportSubject, string> subjLabel = subj => subj switch {
+        ReportSubject.Technical    => "Hỗ Trợ Kỹ Thuật",
+        ReportSubject.Billing      => "Thanh Toán & Hóa Đơn",
+        ReportSubject.Courses      => "Câu Hỏi Về Khóa Học",
+        ReportSubject.Partnerships => "Đối Tác Doanh Nghiệp",
+        ReportSubject.Feedback     => "Phản Hồi & Góp Ý",
+        _                          => "Khác"
     };
 
-    // parse currentSubject (string) về enum để kiểm tra
-    ReportSubject? current = null;
-    if (Enum.TryParse<ReportSubject>(currentSubject, out var cs))
-    {
-        current = cs;
-    }
+    ReportSubject? currentEnum = null;
+    if (Enum.TryParse<ReportSubject>(currentSubj, out var cs)) currentEnum = cs;
 }
 
 @section Styles {
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: "Source Sans Pro", sans-serif; }
 
-    <style>
-        /* Phong cách Nhật Bản nhẹ nhàng */
-        .filter-row {
-            margin-bottom: 1rem;
-        }
-        .filter-row .btn-subject {
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-            padding: 0.5rem 1rem;
-            border: 1px solid #f8bbd0;
-            background: transparent;
-            color: #ad1457;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-        .filter-row .btn-subject.active {
-            background-color: #f8bbd0;
-            color: #880e4f;
-        }
-        .filter-row select,
-        .filter-row input {
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.8rem;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-        }
+    .container-fixed {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
 
-        .reports-table {
-            background: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .reports-table th,
-        .reports-table td {
-            vertical-align: middle !important;
-        }
+    h2.text-center {
+      color: #ad1457;
+      margin-bottom: 1.5rem;
+    }
 
-        .btn-info {
-            background-color: #29b6f6;
-            border-color: #29b6f6;
-            color: #fff;
-        }
-        .btn-success {
-            background-color: #66bb6a;
-            border-color: #66bb6a;
-            color: #fff;
-        }
-        .pagination {
-            justify-content: center;
-        }
-    </style>
+    .filter-section {
+      background: #fff1f1;
+      padding: 1rem;
+      border-radius: .5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-subject, .btn-subject:hover {
+      margin: .25rem;
+      padding: .5rem 1rem;
+      border: 1px solid #f8bbd0;
+      border-radius: .5rem;
+      background: transparent;
+      color: #ad1457;
+      transition: all .2s;
+    }
+    .btn-subject.active {
+      background: #f8bbd0;
+      color: #880e4f;
+    }
+
+    .reports-table {
+      background: #ffffff;
+      border-radius: .5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+    }
+    .reports-table th, .reports-table td {
+      vertical-align: middle;
+    }
+
+    .btn-info  { background-color: #29b6f6; border-color: #29b6f6; color: #fff; }
+    .btn-success { background-color: #66bb6a; border-color: #66bb6a; color: #fff; }
+
+    .pagination .page-item.active .page-link {
+      background-color: #29b6f6;
+      border-color: #29b6f6;
+    }
+
+    .filter-form .form-label {
+      font-weight: 600;
+      margin-bottom: .25rem;
+    }
+
+    .filter-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+    }
+    .filter-actions .btn-clear {
+      margin-left: 1rem;
+    }
+  </style>
 }
 
-<h2 class="mb-4" style="color: #ad1457;">@ViewData["Title"]</h2>
+<div class="container-fixed">
+  <h2 class="text-center">@ViewData["Title"]</h2>
 
-<!-- Hàng 1: Nút filter theo Chủ đề -->
-<div class="filter-row">
-    @foreach (var subj in Enum.GetValues<ReportSubject>().Cast<ReportSubject>())
-    {
-        var value = subj.ToString();
-        var isActive = value == currentSubject;
-        var count = subjectsCount.ContainsKey(subj) ? subjectsCount[subj] : 0;
-        <button type="button"
-                class="btn-subject @(isActive ? "active" : "")"
-                data-subject="@value">
-            @subjLabel(subj) (@count)
-        </button>
+  <!-- Filter Chủ Đề -->
+  <div class="filter-section text-center">
+    <button type="button"
+            class="btn-subject @(currentSubj == "" ? "active" : "")"
+            data-subject="">
+      Tất cả (@totalAll)
+    </button>
+    @foreach (var subj in Enum.GetValues<ReportSubject>().Cast<ReportSubject>()) {
+      var val = subj.ToString();
+      var cnt = subjectsCount.ContainsKey(subj) ? subjectsCount[subj] : 0;
+      <button type="button"
+              class="btn-subject @(val == currentSubj ? "active" : "")"
+              data-subject="@val">
+        @subjLabel(subj) (@cnt)
+      </button>
     }
-</div>
+  </div>
 
-<!-- Hàng 2: Vai trò, Trạng thái, Live Search -->
-<div class="filter-row d-flex flex-wrap align-items-center">
-    <select id="roleFilter" class="form-select w-auto">
-        <option value="">Tất cả vai trò</option>
-        @foreach (var r in roles)
-        {
+  <!-- Filter Vai Trò / Trạng Thái / Tìm kiếm + Clear -->
+  <div class="filter-section">
+    <div class="row gy-2 filter-form">
+      <div class="col-md-3">
+        <label for="roleFilter" class="form-label">Vai Trò</label>
+        <select id="roleFilter" class="form-select">
+          <option value="">Tất cả</option>
+          @foreach (var r in roles) {
             <option value="@r" @@(r == currentRole ? "selected" : "")>@r</option>
-        }
-    </select>
+          }
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="statusFilter" class="form-label">Trạng Thái</label>
+        <select id="statusFilter" class="form-select">
+          <option value="">Tất cả</option>
+          @foreach (var st in statuses) {
+            <option value="@st" @@(st == currentStat ? "selected" : "")>@st</option>
+          }
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="search" class="form-label">Tìm kiếm</label>
+        <input type="search"
+               id="search"
+               class="form-control"
+               placeholder="Nhập email hoặc nội dung..."
+               value="@q" />
+      </div>
+      <div class="col-md-2 filter-actions">
+        <button id="clearFilters" class="btn btn-outline-secondary btn-clear">Xóa bộ lọc</button>
+      </div>
+    </div>
+  </div>
 
-    <select id="statusFilter" class="form-select w-auto">
-        <option value="">Tất cả trạng thái</option>
-        @foreach (var st in statuses)
-        {
-            <option value="@st" @@(st == currentStatus ? "selected" : "")>@st</option>
-        }
-    </select>
-
-    <input type="text"
-           id="search"
-           class="form-control w-auto"
-           placeholder="Live search..."
-           value="@q" />
-</div>
-
-<table class="table table-hover reports-table">
+  <!-- Bảng Báo Cáo -->
+  <table class="table table-hover reports-table">
     <thead class="table-light">
-        <tr>
-            <th>Id</th>
-            <th>Email</th>
-            <th>Chủ đề</th>
-            <th>Vai trò</th>
-            @* Chỉ hiển thị cột OrderNumber khi filter = Billing *@
-            @if (current == ReportSubject.Billing)
-            {
-                <th>Mã đơn hàng</th>
-            }
-            <th>Ngày gửi</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
+      <tr>
+        <th>Id</th>
+        <th>Email</th>
+        <th>Chủ Đề</th>
+        <th>Vai Trò</th>
+        @if (currentEnum == ReportSubject.Billing) {
+          <th>Mã Đơn Hàng</th>
+        }
+        <th>Ngày Gửi</th>
+        <th>Trạng Thái</th>
+        <th>Hành Động</th>
+      </tr>
     </thead>
     <tbody id="reportsBody">
-        @foreach (var r in Model)
-        {
-            <tr data-subject="@r.Subject"
-                data-role="@r.Role"
-                data-status="@r.IsResolved"
-                data-search="@($"{r.Email} {r.Message}".ToLower())">
-                <td>@r.Id</td>
-                <td>@r.Email</td>
-                <td>@subjLabel(r.Subject)</td>
-                <td>@r.Role</td>
-                @if (current == ReportSubject.Billing)
-                {
-                    <td>@r.OrderNumber</td>
-                }
-                <td>@r.SubmittedAt.ToLocalTime():g</td>
-                <td>@(r.IsResolved ? "Đã" : "Chưa")</td>
-                <td>
-                    <a asp-action="Details"
-                       asp-route-id="@r.Id"
-                       class="btn btn-sm btn-info">Xem</a>
-                    @if (!r.IsResolved)
-                    {
-                        <form asp-action="Resolve"
-                              method="post"
-                              class="d-inline">
-                            <input type="hidden" name="id" value="@r.Id" />
-                            <button type="submit" class="btn btn-sm btn-success">
-                                Hoàn thành
-                            </button>
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
+      @foreach (var r in Model) {
+        <tr data-subject="@r.Subject"
+            data-role="@r.Role"
+            data-status="@r.IsResolved"
+            data-search="@($"{r.Email} {r.Message}".ToLower())">
+          <td>@r.Id</td>
+          <td>@r.Email</td>
+          <td>@subjLabel(r.Subject)</td>
+          <td>@r.Role</td>
+          @if (currentEnum == ReportSubject.Billing) {
+            <td>@r.OrderNumber</td>
+          }
+          <td>@r.SubmittedAt.ToLocalTime():g</td>
+          <td>@(r.IsResolved ? "Đã" : "Chưa")</td>
+          <td>
+            <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info">Xem</a>
+            @if (!r.IsResolved) {
+              <form asp-action="Resolve" method="post" class="d-inline">
+                <input type="hidden" name="id" value="@r.Id" />
+                <button type="submit" class="btn btn-sm btn-success">Hoàn thành</button>
+              </form>
+            }
+          </td>
+        </tr>
+      }
     </tbody>
-</table>
+  </table>
 
-<nav>
-    <ul class="pagination">
-        @for (int i = 1; i <= totalPages; i++)
-        {
-            <li class="page-item @(i == page ? "active" : "")">
-                <a class="page-link"
-                   asp-action="AdminIndex"
-                   asp-route-page="@i"
-                   asp-route-subject="@currentSubject"
-                   asp-route-role="@currentRole"
-                   asp-route-status="@currentStatus"
-                   asp-route-q="@q">
-                    @i
-                </a>
-            </li>
-        }
+  <!-- Phân Trang -->
+  <nav class="mb-5">
+    <ul class="pagination justify-content-center">
+      @for (int i = 1; i <= totalPages; i++) {
+        <li class="page-item @(i == page ? "active" : "")">
+          <a class="page-link"
+             asp-action="AdminIndex"
+             asp-route-page="@i"
+             asp-route-subject="@currentSubj"
+             asp-route-role="@currentRole"
+             asp-route-status="@currentStat"
+             asp-route-q="@q">
+            @i
+          </a>
+        </li>
+      }
     </ul>
-</nav>
+  </nav>
+</div>
 
 @section Scripts {
-    <script>
-        // Reload page when subject/role/status change
-        function reload() {
-            const s  = $(".btn-subject.active").data("subject") || "";
-            const r  = $("#roleFilter").val()    || "";
-            const st = $("#statusFilter").val()  || "";
-            location.href = `?subject=${s}&role=${r}&status=${st}&q=`;
-        }
-        $(".btn-subject").click(function() {
-            $(".btn-subject").removeClass("active");
-            $(this).addClass("active");
-            reload();
-        });
-        $("#roleFilter, #statusFilter").change(reload);
+  <script>
+    // reload với query string
+    function reload(role, status, query) {
+      const subj = document.querySelector(".btn-subject.active")?.dataset.subject || "";
+      const r    = role   ?? document.getElementById("roleFilter").value;
+      const s    = status ?? document.getElementById("statusFilter").value;
+      const q    = query  ?? "";
+      window.location = `?subject=${subj}&role=${r}&status=${s}&q=${q}`;
+    }
 
-        // Live search client‑side
-        $("#search").on("input", function() {
-            const q = $(this).val().trim().toLowerCase();
-            $("#reportsBody tr").each(function() {
-                const hay = $(this).data("search") || "";
-                $(this).toggle(hay.indexOf(q) !== -1);
-            });
+    // click filter Chủ Đề
+    document.querySelectorAll(".btn-subject")
+      .forEach(btn => btn.addEventListener("click", e => {
+        document.querySelectorAll(".btn-subject").forEach(b => b.classList.remove("active"));
+        e.currentTarget.classList.add("active");
+        reload();
+      }));
+
+    // change Vai Trò / Trạng Thái
+    document.getElementById("roleFilter")
+      .addEventListener("change", () => reload());
+    document.getElementById("statusFilter")
+      .addEventListener("change", () => reload());
+
+    // live search
+    document.getElementById("search")
+      .addEventListener("input", e => {
+        const txt = e.target.value.trim().toLowerCase();
+        // lọc table rows
+        document.querySelectorAll("#reportsBody tr").forEach(tr => {
+          const hay = tr.dataset.search || "";
+          tr.style.display = hay.includes(txt) ? "" : "none";
         });
-    </script>
+      });
+
+    // clear filters (role, status, search) giữ subject
+    document.getElementById("clearFilters")
+      .addEventListener("click", () => {
+        document.getElementById("roleFilter").value   = "";
+        document.getElementById("statusFilter").value = "";
+        document.getElementById("search").value       = "";
+        reload("", "", "");
+      });
+  </script>
 }
