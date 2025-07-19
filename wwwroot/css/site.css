@@ -1008,3 +1008,14 @@ form .form-control {
     .profile-container .btn {
         text-align: center;
     }
+
+.btn-change-pass {
+    background-color: #f7f7f7;
+    border: 1px solid #f0f0f0;
+    color: #b30000;
+}
+
+    .btn-change-pass:hover {
+        background-color: #e6e6e6;
+        color: #b30000;
+    }

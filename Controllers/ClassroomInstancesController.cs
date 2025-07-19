@@ -479,7 +479,6 @@ namespace JapaneseLearningPlatform.Controllers
             return View(vm);
         }
 
-
         [Authorize(Roles = UserRoles.Learner)]
         public async Task<IActionResult> CompletePayment(int id)
         {
@@ -492,14 +491,14 @@ namespace JapaneseLearningPlatform.Controllers
             if (instance == null) return NotFound();
 
             // Kiểm tra đã đăng ký chưa
-            bool isEnrolled = instance.Enrollments.Any(e => e.LearnerId == userId);
-            if (!isEnrolled)
+            var enrollment = instance.Enrollments.FirstOrDefault(e => e.LearnerId == userId);
+            if (enrollment == null)
             {
                 _context.ClassroomEnrollments.Add(new ClassroomEnrollment
                 {
                     LearnerId = userId,
                     InstanceId = id,
-                    IsPaid = true,
+                    IsPaid = instance.Price > 0, // Trả phí = true, miễn phí = false
                     EnrolledAt = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
