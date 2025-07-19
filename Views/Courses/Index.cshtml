@@ -215,6 +215,13 @@
                             {
                                 if (item.IsPurchased)
                                 {
+                                    <div class="progress my-2" style="height: 20px;">
+                                        <div class="progress-bar bg-danger" role="progressbar"
+                                             style="width:@item.ProgressPercent%"
+                                             aria-valuenow="@item.ProgressPercent" aria-valuemin="0" aria-valuemax="100">
+                                            @item.ProgressPercent.ToString("0")%
+                                        </div>
+                                    </div>
                                     <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-danger w-100 mt-2">
                                     <i class="bi bi-play-btn"></i> Bắt đầu học
                                 </a>
