@@ -130,36 +130,36 @@
   <!-- Filter Vai Trò / Trạng Thái / Tìm kiếm + Clear -->
   <div class="filter-section">
     <div class="row gy-2 filter-form">
-      <div class="col-md-3">
-        <label for="roleFilter" class="form-label">Vai Trò</label>
-        <select id="roleFilter" class="form-select">
-          <option value="">Tất cả</option>
-          @foreach (var r in roles) {
-            <option value="@r" @@(r == currentRole ? "selected" : "")>@r</option>
-          }
-        </select>
-      </div>
-      <div class="col-md-3">
-        <label for="statusFilter" class="form-label">Trạng Thái</label>
-        <select id="statusFilter" class="form-select">
-          <option value="">Tất cả</option>
-          @foreach (var st in statuses) {
-            <option value="@st" @@(st == currentStat ? "selected" : "")>@st</option>
-          }
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label for="search" class="form-label">Tìm kiếm</label>
-        <input type="search"
-               id="search"
-               class="form-control"
-               placeholder="Nhập email hoặc nội dung..."
-               value="@q" />
-      </div>
-      <div class="col-md-2 filter-actions">
-        <button id="clearFilters" class="btn btn-outline-secondary btn-clear">Xóa bộ lọc</button>
-      </div>
-    </div>
+  <div class="col-12 col-md-3">
+    <label for="roleFilter" class="form-label">Vai Trò</label>
+    <select id="roleFilter" class="form-select">
+      <option value="">Tất cả</option>
+      @foreach (var r in roles) {
+        <option value="@r" @@(r == currentRole ? "selected" : "")>@r</option>
+      }
+    </select>
+  </div>
+  <div class="col-12 col-md-3">
+    <label for="statusFilter" class="form-label">Trạng Thái</label>
+    <select id="statusFilter" class="form-select">
+      <option value="">Tất cả</option>
+      <option value="Đã Giải Quyết" @@(currentStat == "Đã Giải Quyết" ? "selected" : "")>Đã Giải Quyết</option>
+      <option value="Đang Chờ"       @@(currentStat == "Đang Chờ"       ? "selected" : "")>Đang Chờ</option>
+    </select>
+  </div>
+  <div class="col-12 col-md-4">
+    <label for="search" class="form-label">Tìm kiếm</label>
+    <input type="search"
+           id="search"
+           class="form-control"
+           placeholder="Nhập email hoặc nội dung…"
+           value="@q" />
+  </div>
+  <div class="col-12 col-md-2 filter-actions">
+    <button id="clearFilters" class="btn btn-outline-secondary btn-clear">Xóa bộ lọc</button>
+  </div>
+</div>
+
   </div>
 
   <!-- Bảng Báo Cáo -->
@@ -182,7 +182,7 @@
       @foreach (var r in Model) {
         <tr data-subject="@r.Subject"
             data-role="@r.Role"
-            data-status="@r.IsResolved"
+                    data-status="@(r.IsResolved ? "Đã Giải Quyết" : "Đang Chờ")"
             data-search="@($"{r.Email} {r.Message}".ToLower())">
           <td>@r.Id</td>
           <td>@r.Email</td>
@@ -192,7 +192,7 @@
             <td>@r.OrderNumber</td>
           }
           <td>@r.SubmittedAt.ToLocalTime():g</td>
-          <td>@(r.IsResolved ? "Đã" : "Chưa")</td>
+                    <td>@(r.IsResolved ? "Đã Giải Quyết" : "Đang Chờ")</td>
           <td>
             <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info">Xem</a>
             @if (!r.IsResolved) {
@@ -204,6 +204,11 @@
           </td>
         </tr>
       }
+            <tr id="noResults" style="display:none">
+                <td colspan="@(currentEnum == ReportSubject.Billing ? "7" : "6")" class="text-center text-muted">
+                    Không tìm thấy báo cáo nào
+                </td>
+            </tr>
     </tbody>
   </table>
 
@@ -228,48 +233,86 @@
 </div>
 
 @section Scripts {
-  <script>
-    // reload với query string
-    function reload(role, status, query) {
-      const subj = document.querySelector(".btn-subject.active")?.dataset.subject || "";
-      const r    = role   ?? document.getElementById("roleFilter").value;
-      const s    = status ?? document.getElementById("statusFilter").value;
-      const q    = query  ?? "";
-      window.location = `?subject=${subj}&role=${r}&status=${s}&q=${q}`;
-    }
+    <script>
+        // reload với query string (giữ nguyên để click vào Chủ Đề vẫn reload trang)
+        function reload(role, status, query) {
+          const subj = document.querySelector(".btn-subject.active")?.dataset.subject || "";
+          const r    = role   ?? document.getElementById("roleFilter").value;
+          const s    = status ?? document.getElementById("statusFilter").value;
+          const q    = query  ?? "";
+          window.location = `?subject=${subj}&role=${r}&status=${s}&q=${q}`;
+        }
 
-    // click filter Chủ Đề
-    document.querySelectorAll(".btn-subject")
-      .forEach(btn => btn.addEventListener("click", e => {
-        document.querySelectorAll(".btn-subject").forEach(b => b.classList.remove("active"));
-        e.currentTarget.classList.add("active");
-        reload();
-      }));
+        // click filter Chủ Đề (vẫn dùng reload)
+        document.querySelectorAll(".btn-subject")
+          .forEach(btn => btn.addEventListener("click", e => {
+            document.querySelectorAll(".btn-subject").forEach(b => b.classList.remove("active"));
+            e.currentTarget.classList.add("active");
+            reload();
+          }));
 
-    // change Vai Trò / Trạng Thái
-    document.getElementById("roleFilter")
-      .addEventListener("change", () => reload());
-    document.getElementById("statusFilter")
-      .addEventListener("change", () => reload());
+                // Client–side filter: Vai Trò / Trạng Thái, và hiển thị hàng "No Results" nếu cần
+        function applyClientFilters() {
+          const selSubj = document.querySelector(".btn-subject.active")?.dataset.subject || "";
+          const selRole = document.getElementById("roleFilter").value;
+          const selStat = document.getElementById("statusFilter").value;
+          const txt     = document.getElementById("search").value.trim().toLowerCase();
 
-    // live search
-    document.getElementById("search")
-      .addEventListener("input", e => {
-        const txt = e.target.value.trim().toLowerCase();
-        // lọc table rows
-        document.querySelectorAll("#reportsBody tr").forEach(tr => {
-          const hay = tr.dataset.search || "";
-          tr.style.display = hay.includes(txt) ? "" : "none";
+          let anyVisible = false;
+
+          document.querySelectorAll("#reportsBody tr").forEach(tr => {
+            // Bỏ qua hàng noResults
+            if (tr.id === "noResults") return;
+
+            const subj = tr.dataset.subject;
+            const role = tr.dataset.role;
+            const stat = tr.dataset.status;
+            const hay  = tr.dataset.search;
+
+            const ok =
+              (!selSubj || subj === selSubj) &&
+              (!selRole || role === selRole) &&
+              (!selStat || stat === selStat) &&
+              (!txt    || hay.includes(txt));
+
+            tr.style.display = ok ? "" : "none";
+            if (ok) anyVisible = true;
+          });
+
+          // Show/hide row noResults
+          document.getElementById("noResults").style.display = anyVisible ? "none" : "";
+        }
+
+
+        // Thay vì reload, lắng nghe thay đổi role/status và áp dụng client–side filter
+        document.getElementById("roleFilter")
+          .addEventListener("change", applyClientFilters);
+        document.getElementById("statusFilter")
+          .addEventListener("change", applyClientFilters);
+
+        // live search (vẫn hoạt động truy vấn ngay)
+        document.getElementById("search")
+          .addEventListener("input", e => {
+            const txt = e.target.value.trim().toLowerCase();
+            document.querySelectorAll("#reportsBody tr").forEach(tr => {
+              const hay = tr.dataset.search || "";
+              tr.style.display = hay.includes(txt) ? "" : "none";
+            });
+          });
+
+        // clear filters (vai trò, trạng thái, tìm kiếm) giữ chủ đề
+        document.getElementById("clearFilters")
+          .addEventListener("click", () => {
+            document.getElementById("roleFilter").value   = "";
+            document.getElementById("statusFilter").value = "";
+            document.getElementById("search").value       = "";
+            applyClientFilters();
+          });
+
+        // Nếu muốn khởi áp dụng filter ngay khi trang load (ví dụ nếu có q hoặc role/status mặc định)
+        document.addEventListener("DOMContentLoaded", () => {
+          applyClientFilters();
         });
-      });
-
-    // clear filters (role, status, search) giữ subject
-    document.getElementById("clearFilters")
-      .addEventListener("click", () => {
-        document.getElementById("roleFilter").value   = "";
-        document.getElementById("statusFilter").value = "";
-        document.getElementById("search").value       = "";
-        reload("", "", "");
-      });
-  </script>
+    </script>
 }
+

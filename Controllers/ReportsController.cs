@@ -191,5 +191,22 @@ namespace JapaneseLearningPlatform.Controllers
 
             return RedirectToAction(nameof(AdminIndex));
         }
+
+        [HttpGet, Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUnresolvedCounts()
+        {
+            var total = await _context.Reports.CountAsync(r => !r.IsResolved);
+            var bySubj = await _context.Reports
+                .Where(r => !r.IsResolved)
+                .GroupBy(r => r.Subject)
+                .Select(g => new {
+                    Subject = g.Key.ToString(),
+                    Count = g.Count()
+                })
+                .Where(x => x.Count > 0)
+                .ToListAsync();
+            return Json(new { total, bySubj });
+        }
+
     }
 }
