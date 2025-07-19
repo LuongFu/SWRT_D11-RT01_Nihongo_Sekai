@@ -22,14 +22,18 @@
                 <h5 class="fw-bold" style="color:#b30000;">@Model.FullName</h5>
 
                 <!-- Vai trò -->
-                <span class="badge bg-light text-dark border">@Model.Role</span>
+                <div class="mt-2">
+                    <span class="badge bg-light text-dark border px-3 py-2">@Model.Role</span>
+                </div>
 
                 <!-- Nút hành động -->
-                <div class="d-grid gap-2 mt-3">
-                    <a class="btn btn-danger" asp-controller="Learner" asp-action="EditProfile">
+                <div class="d-flex flex-column align-items-center mt-3 w-100">
+                    <a class="btn btn-danger mb-2" style="width: 170px;"
+                       asp-controller="Learner" asp-action="EditProfile">
                         <i class="bi bi-pencil-square"></i> Chỉnh sửa hồ sơ
                     </a>
-                    <a class="btn btn-outline-danger" asp-controller="Learner" asp-action="ChangePassword">
+                    <a class="btn btn-outline-danger" style="width: 170px;"
+                       asp-controller="Learner" asp-action="ChangePassword">
                         <i class="bi bi-lock"></i> Đổi mật khẩu
                     </a>
                 </div>
@@ -56,7 +60,7 @@
                         @if (!string.IsNullOrWhiteSpace(Model.Facebook))
                         {
                             <a href="@Model.Facebook" target="_blank" class="btn btn-primary btn-sm social-btn"
-                               style="background-color:#1877F2; border:none; width:150px;">
+                               style="background-color:#1877F2; border:none; width:130px;">
                                 <i class="bi bi-facebook"></i> Facebook
                             </a>
                         }
@@ -73,7 +77,7 @@
                         @if (!string.IsNullOrWhiteSpace(Model.YouTube))
                         {
                             <a href="@Model.YouTube" target="_blank" class="btn btn-danger btn-sm social-btn"
-                               style="background-color:#FF0000; border:none; width:150px;">
+                               style="background-color:#FF0000; border:none; width:130px;">
                                 <i class="bi bi-youtube"></i> YouTube
                             </a>
                         }
