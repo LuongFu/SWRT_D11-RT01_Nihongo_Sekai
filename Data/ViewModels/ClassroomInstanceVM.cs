@@ -48,7 +48,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public string? TemplateImageURL { get; set; }
 
         [Display(Name = "Trình độ ngôn ngữ")]
-        public string? LanguageLevel { get; set; }
+        public LanguageLevel LanguageLevel { get; set; }
 
         [Display(Name = "Tài liệu")]
         public string? DocumentURL { get; set; } // Tài liệu từ Template
