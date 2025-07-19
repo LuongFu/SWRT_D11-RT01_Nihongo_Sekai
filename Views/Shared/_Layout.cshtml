@@ -69,6 +69,17 @@
                                         Lớp học
                                     </a>
                                 </li>
+                            <li>
+                                <a asp-controller="Reports"
+                                   asp-action="AdminIndex"
+                                   class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports"
+                                            && ViewContext.RouteData.Values["action"]?.ToString() == "AdminIndex"
+                                            ? "active-tab" : "")">
+                                    Báo cáo
+                                </a>
+                            </li>
+
+
                             }
                             @* Partner *@
                             else if (User.Identity.IsAuthenticated && User.IsInRole("Partner"))

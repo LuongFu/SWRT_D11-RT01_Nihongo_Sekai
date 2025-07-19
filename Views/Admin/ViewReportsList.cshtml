@@ -1,0 +1,165 @@
+﻿@using JapaneseLearningPlatform.Data.Enums
+@using JapaneseLearningPlatform.Models
+@model List<Report>
+
+@{
+    ViewData["Title"]      = "Quản lý Báo cáo";
+    var subjects           = (ViewBag.Subjects as List<dynamic>) ?? new List<dynamic>();
+    var roles              = (string[])(ViewBag.Roles    ?? new string[0]);
+    var statuses           = (string[])(ViewBag.Statuses ?? new string[0]);
+    var currentSubject     = (string)(ViewBag.CurrentSubject ?? "");
+    var currentRole        = (string)(ViewBag.CurrentRole    ?? "");
+    var currentStatus      = (string)(ViewBag.CurrentStatus  ?? "");
+    var q                  = (string)(ViewBag.Q              ?? "");
+    var page               = (int)(ViewBag.Page     ?? 1);
+    var pageSize           = (int)(ViewBag.PageSize ?? 10);
+    var total              = (int)(ViewBag.Total    ?? 0);
+    var totalPages         = (int)Math.Ceiling((double)total / pageSize);
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row mb-3">
+    <div class="col-auto">
+        <select id="subjectFilter" class="form-select">
+            <option value="">Tất cả chủ đề</option>
+            @@foreach(var s in subjects)
+            {
+                @@{
+                    var subj = (ReportSubject)s.Key;
+                    var label = subj switch {
+                        ReportSubject.Technical    => "Hỗ Trợ Kỹ Thuật",
+                        ReportSubject.Billing      => "Thanh Toán & Hóa Đơn",
+                        ReportSubject.Courses      => "Câu Hỏi Về Khóa Học",
+                        ReportSubject.Partnerships => "Đối Tác Doanh Nghiệp",
+                        ReportSubject.Feedback     => "Phản Hồi & Góp Ý",
+                        _                          => "Khác"
+                    };
+                    var isSel = subj.ToString() == currentSubject;
+                }
+                <option value="@@subj" selected="@@(isSel)">
+                    @@label (@@s.Count)
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <select id="roleFilter" class="form-select">
+            <option value="">Tất cả vai trò</option>
+            @foreach(var r in roles)
+            {
+                <option value="@r" selected="@(r == currentRole)">@r</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <select id="statusFilter" class="form-select">
+            <option value="">Tất cả trạng thái</option>
+            @foreach(var st in statuses)
+            {
+                <option value="@st" selected="@(st == currentStatus)">@st</option>
+            }
+        </select>
+    </div>
+    <div class="col">
+        <input type="text"
+               id="search"
+               class="form-control"
+               placeholder="Live search..."
+               value="@q" />
+    </div>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Email</th>
+            <th>Chủ đề</th>
+            <th>Vai trò</th>
+            <th>Mã đơn hàng</th>
+            <th>Ngày gửi</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody id="tblBody">
+        @foreach(var r in Model)
+        {
+            <tr>
+                <td>@r.Id</td>
+                <td>@r.Email</td>
+                <td>
+                    @{
+                        var text = r.Subject switch {
+                            ReportSubject.Technical    => "Hỗ Trợ Kỹ Thuật",
+                            ReportSubject.Billing      => "Thanh Toán & Hóa Đơn",
+                            ReportSubject.Courses      => "Câu Hỏi Về Khóa Học",
+                            ReportSubject.Partnerships => "Đối Tác Doanh Nghiệp",
+                            ReportSubject.Feedback     => "Phản Hồi & Góp Ý",
+                            _                          => "Khác"
+                        };
+                    }
+                    @text
+                </td>
+                <td>@r.Role</td>
+                <td>@r.OrderNumber</td>
+                <td>@r.SubmittedAt.ToLocalTime():g</td>
+                <td>@(r.IsResolved ? "Đã" : "Chưa")</td>
+                <td>
+                    <a asp-action="Details"
+                       asp-route-id="@r.Id"
+                       class="btn btn-sm btn-info">
+                       Xem
+                    </a>
+                    @if(!r.IsResolved)
+                    {
+                        <form asp-action="Resolve"
+                              method="post"
+                              class="d-inline">
+                            <input type="hidden"
+                                   name="id"
+                                   value="@r.Id" />
+                            <button class="btn btn-sm btn-success">
+                                Hoàn thành
+                            </button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @for(int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == page ? "active" : "")">
+                <a class="page-link"
+                   asp-action="AdminIndex"
+                   asp-route-page="@i"
+                   asp-route-subject="@currentSubject"
+                   asp-route-role="@currentRole"
+                   asp-route-status="@currentStatus"
+                   asp-route-q="@q">
+                   @i
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@section Scripts {
+    <script>
+        function reload() {
+            const s  = $("#subjectFilter").val();
+            const r  = $("#roleFilter").val();
+            const st = $("#statusFilter").val();
+            const q  = $("#search").val();
+            location.href = `?subject=${s}&role=${r}&status=${st}&q=${q}`;
+        }
+        $("#subjectFilter,#roleFilter,#statusFilter").on("change", reload);
+        $("#search").on("keyup", reload);
+    </script>
+}
