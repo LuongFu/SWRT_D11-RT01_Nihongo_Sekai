@@ -470,6 +470,29 @@ namespace JapaneseLearningPlatform.Controllers
             TempData["Error"] = error ?? "Đã có lỗi xảy ra trong quá trình đăng nhập Google.";
             return RedirectToAction("Login");
         }
+        [Authorize(Roles = "Partner,Admin")]
+        public async Task<IActionResult> ViewProfile(string learnerId, int classroomId)
+        {
+            if (string.IsNullOrEmpty(learnerId)) return NotFound();
 
+            var learner = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == learnerId && u.Role == "Learner");
+
+            if (learner == null) return NotFound();
+
+            // ✅ Logic kiểm tra quyền sở hữu lớp học (chỉ Partner owner mới được xem)
+            if (User.IsInRole("Partner"))
+            {
+                var isOwner = await _context.ClassroomInstances
+                    .AnyAsync(ci => ci.Template.PartnerId == _userManager.GetUserId(User)
+                        && ci.Enrollments.Any(e => e.LearnerId == learnerId));
+
+                if (!isOwner) return Forbid();
+            }
+            // Gán classroomId để nút Back sử dụng
+            ViewBag.ClassroomId = classroomId;
+
+            return View("~/Views/Learner/ViewProfile.cshtml", learner);
+        }
     }
 }

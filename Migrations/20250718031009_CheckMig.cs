@@ -35,6 +35,13 @@ namespace JapaneseLearningPlatform.Migrations
                     IsApproved = table.Column<bool>(type: "bit", nullable: false),
                     IsBanned = table.Column<bool>(type: "bit", nullable: false),
                     ProfilePicturePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JobName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Facebook = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    YouTube = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -613,6 +620,28 @@ namespace JapaneseLearningPlatform.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClassroomResources",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClassroomInstanceId = table.Column<int>(type: "int", nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UploadedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClassroomResources", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClassroomResources_ClassroomInstances_ClassroomInstanceId",
+                        column: x => x.ClassroomInstanceId,
+                        principalTable: "ClassroomInstances",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FinalAssignments",
                 columns: table => new
                 {
@@ -795,6 +824,11 @@ namespace JapaneseLearningPlatform.Migrations
                 column: "TemplateId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClassroomResources_ClassroomInstanceId",
+                table: "ClassroomResources",
+                column: "ClassroomInstanceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ClassroomTemplates_PartnerId",
                 table: "ClassroomTemplates",
                 column: "PartnerId");
@@ -937,6 +971,9 @@ namespace JapaneseLearningPlatform.Migrations
 
             migrationBuilder.DropTable(
                 name: "ClassroomEvaluations");
+
+            migrationBuilder.DropTable(
+                name: "ClassroomResources");
 
             migrationBuilder.DropTable(
                 name: "CourseContentItems");

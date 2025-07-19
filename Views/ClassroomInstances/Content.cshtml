@@ -82,6 +82,7 @@
                                     <th>Tên</th>
                                     <th>Email</th>
                                     <th>Thời điểm tham gia</th>
+                                    <th style="width: 15%">Hành động</th> <!-- Thêm cột Action -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -94,6 +95,13 @@
                                             <td>@enrollment.Learner?.FullName</td>
                                             <td>@enrollment.Learner?.Email</td>
                                             <td>@enrollment.EnrolledAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>
+                                                <a asp-controller="Account"
+                                                   asp-action="ViewProfile"
+                                                   asp-route-learnerId="@enrollment.Learner?.Id"
+                                                   asp-route-classroomId="@Model.Instance.Id"
+                                                   class="btn btn-info btn-sm">View Profile</a>
+                                            </td>
                                         </tr>
                                         index++;
                                     }
@@ -106,24 +114,56 @@
             </div>
         }
 
-
         <!-- 🔹 Resources -->
         <div class="tab-pane fade" id="resources" role="tabpanel">
             <div class="p-3">
-                <h5 class="fw-bold">Tài nguyên học tập</h5>
-                <p class="text-muted">Chưa có tài nguyên học tập nào.</p>
 
-                <!-- TODO: Uncomment and use later when ResourceUrl is added -->
-                @*
-                @if (!string.IsNullOrEmpty(Model.Template.ResourceUrl))
+                <!-- Upload Form (Partner only) -->
+                @if (User.IsInRole("Partner"))
                 {
-                    <p><a href="@Model.Template.ResourceUrl" target="_blank">Download Resource</a></p>
+                    <form asp-action="UploadResource" asp-controller="ClassroomInstances"
+                          asp-route-classroomId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input type="file" name="file" class="form-control" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload File</button>
+                    </form>
+                }
+
+                <h5 class="fw-bold">Tài nguyên học tập</h5>
+
+                @if (Model.Resources == null || !Model.Resources.Any())
+                {
+                    <p class="text-muted">Chưa có tài liệu nào được thêm.</p>
                 }
                 else
                 {
-                    <p class="text-muted">No materials provided yet.</p>
+                    <ul class="list-group mt-2">
+                        @foreach (var resource in Model.Resources)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @resource.FileName
+
+                                @if (User.IsInRole("Partner"))
+                                {
+                                    <form asp-action="DeleteResource" asp-controller="ClassroomInstances"
+                                          asp-route-id="@resource.Id" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <a asp-action="DownloadResource" asp-controller="ClassroomInstances"
+                                       asp-route-id="@resource.Id" class="btn btn-sm btn-success">
+                                        Download
+                                    </a>
+                                }
+                            </li>
+                        }
+                    </ul>
                 }
-                *@
             </div>
         </div>
 

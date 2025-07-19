@@ -27,6 +27,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
 
         [Required(ErrorMessage = "Giá là bắt buộc")]
         [Display(Name = "Giá (VNĐ)")]
+        [Range(1, 99999999, ErrorMessage = "Giá quá cao, vui lòng nhập giá thấp hơn 99tr")]
         public decimal Price { get; set; }
 
         [Display(Name = "Link Google Meet")]
