@@ -206,63 +206,131 @@
                         <p><strong>Hạn nộp:</strong> @Model.FinalAssignment.DueDate.Value.ToString("dd/MM/yyyy HH:mm")</p>
                     }
 
-                    @if (User.IsInRole("Learner"))
+                    @if (User.IsInRole("Learner")) // Learner View
                     {
                         @if (TempData["Message"] != null)
                         {
-                            <div class="alert alert-success">@TempData["Message"]</div>
+                            <div class="alert alert-success">
+                                @TempData["Message"]
+                            </div>
                         }
 
                         @if (Model.HasSubmitted)
                         {
-                            <p class="text-success">✅ Bạn đã gửi bài làm.</p>
-                            <p><strong>Điểm:</strong> @(Model.Submission?.Score?.ToString() ?? "Chưa chấm")</p>
+                            <p class="text-success">✅ Bạn đã gửi bài làm của mình.</p>
+                            <p><strong>Điểm:</strong> @(Model.Submission?.Score?.ToString() ?? "Chưa được chấm")</p>
                             <p><strong>Nhận xét:</strong> @(Model.Submission?.Feedback ?? "Chưa có nhận xét")</p>
+
                             <div class="mb-3 mt-4">
                                 <label class="form-label fw-bold">Bài làm cũ:</label>
                                 <textarea class="form-control" rows="5" readonly>@Model.Submission?.AnswerText</textarea>
                             </div>
                         }
 
-                        @if (Model.Submission?.Score == null && (Model.FinalAssignment?.DueDate == null || Model.FinalAssignment.DueDate > DateTime.Now))
+                        @if (Model.Submission?.Score != null)
                         {
-                            <form id="assignmentForm" asp-action="SubmitAssignment" asp-controller="Assignments"
-                                  asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
+                            <p class="text-danger mt-3">✅ Bài làm của bạn đã được chấm và không thể thay đổi.</p>
+                        }
+                        else if (Model.FinalAssignment?.DueDate != null && Model.FinalAssignment.DueDate <= DateTime.Now)
+                        {
+                            <p class="text-danger mt-3">⛔ Đã quá hạn nộp bài làm.</p>
+                        }
+                        else
+                        {
+                            <!-- Form for new or resubmission -->
+                            <form id="assignmentForm" asp-action="SubmitAssignment" asp-controller="Assignments" asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
                                 <div class="mb-3">
-                                    <label for="AnswerText" class="form-label fw-bold">Bài làm:</label>
-                                    <textarea id="answerText" name="answerText" rows="5" class="form-control" placeholder="Nhập câu trả lời..."></textarea>
+                                    <label for="AnswerText" class="form-label fw-bold">Bài làm của bạn:</label>
+                                    <textarea id="answerText" name="answerText" rows="5" class="form-control" placeholder="Write your answer here..."></textarea>
                                 </div>
+
                                 <div class="mb-3">
-                                    <label for="submissionFile" class="form-label fw-bold">Tải file bài làm</label>
+                                    <label for="submission" class="form-label fw-bold">Tải lên file bài làm</label>
                                     <input id="submissionFile" type="file" name="SubmissionFile" class="form-control" />
                                 </div>
+
                                 <button type="submit" class="btn btn-success">@(Model.HasSubmitted ? "Resubmit" : "Submit")</button>
                             </form>
                         }
-                        else if (Model.FinalAssignment?.DueDate <= DateTime.Now)
-                        {
-                            <p class="text-danger mt-3">⛔ Đã quá hạn nộp bài.</p>
-                        }
                     }
 
-                    else if (User.IsInRole("Partner"))
+                    else if (User.IsInRole("Partner"))  //Partner View
                     {
-                        <form asp-action="UpdateDeadline" asp-controller="Assignments"
-                              asp-route-assignmentId="@Model.FinalAssignment.Id" method="post"
-                              class="d-flex align-items-center gap-2 mt-2">
-                            <input type="text" id="newDueDate" name="newDueDate" class="form-control" required placeholder="-- Chọn hạn nộp --" />
-                            <button type="submit" class="btn btn-outline-primary btn-sm">Cập nhật</button>
+                        <form asp-action="UpdateDeadline" asp-controller="Assignments" asp-route-assignmentId="@Model.FinalAssignment.Id" method="post" class="d-flex align-items-center gap-2 mt-2">
+                            <input type="text" id="newDueDate" name="newDueDate" class="form-control" required placeholder="-- Select a new due date --" />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Cập nhật hạn nộp</button>
                         </form>
+
+                        <!-- Nút xóa bài tập, chỉ để DEBUG -->
+                        <form id="deleteForm" asp-action="Delete" asp-controller="Assignments"
+                              asp-route-assignmentId="@Model.FinalAssignment.Id"
+                              method="post">
+                            <button type="button" class="btn btn-outline-danger btn-sm" id="btnDelete">
+                                <i class="bi bi-trash"></i> Xóa
+                            </button>
+                        </form>
+
+
+                        @if (TempData["DeadlineMessage"] != null)
+                        {
+                            <div class="alert alert-info mt-2">@TempData["DeadlineMessage"]</div>
+                        }
+                        @if (Model.AllSubmissions == null || !Model.AllSubmissions.Any())
+                        {
+                            <p class="text-muted mt-3">Chưa có học viên nào gửi bài làm.</p>
+                        }
+                        else
+                        {
+                            <table class="table table-bordered table-hover mt-4">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 5%">#</th>
+                                        <th>Tên</th>
+                                        <th>Email</th>
+                                        <th>Nộp vào lúc</th>
+                                        <th>Điểm</th>
+                                        <th>Feedback</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--Đã set local time rồi nên không sửa ở đây-->
+                                    @{
+                                        int index = 1;
+                                        foreach (var submission in Model.AllSubmissions)
+                                        {
+                                            var scoreStatus = submission.Score.HasValue ? submission.Score.ToString() : "Chưa chấm";
+                                            var feedbackStatus = !string.IsNullOrWhiteSpace(submission.Feedback) ? submission.Feedback : "Chưa nhận xét";
+                                            var actionLabel = submission.Score.HasValue ? "Sửa" : "Chấm";
+                                            <tr>
+                                                <td>@index</td>
+                                                <td>@submission.Learner?.FullName</td>
+                                                <td>@submission.Learner?.Email</td>
+                                                <td>@submission.SubmittedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td>@scoreStatus</td>
+                                                <td>@feedbackStatus</td>
+                                                <td>
+                                                    <a asp-controller="Assignments" asp-action="Grade"
+                                                       asp-route-submissionId="@submission.Id"
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        @actionLabel
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            index++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
                     }
                 }
                 else
                 {
-                    <p class="text-muted">Lớp học chưa có bài đánh giá cuối khóa.</p>
-                    @if (User.IsInRole("Partner"))
-                    {
-                        <a asp-action="Create" asp-controller="Assignments" asp-route-instanceId="@Model.Instance.Id"
-                           class="btn btn-primary mb-3"><i class="bi bi-plus-circle"></i> Tạo bài tập</a>
-                    }
+                    <p class="text-muted">Lớp học chưa có bài đánh giá cuối khóa nào.</p>
+                    <a asp-action="Create" asp-controller="Assignments" asp-route-instanceId="@Model.Instance.Id" class="btn btn-primary mb-3">
+                        <i class="bi bi-plus-circle"></i> Tạo bài tập cuối khóa
+                    </a>
                 }
             </div>
         </div>
