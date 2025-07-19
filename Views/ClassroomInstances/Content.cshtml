@@ -17,32 +17,37 @@
     </div>
 
     <!-- 🔸 Tabs -->
-    <ul class="nav nav-tabs mb-3" id="classTabs" role="tablist">
+    <ul class="nav nav-tabs mb-3" id="classTabs" role="tablist" style="border-bottom: 1px solid #ddd;">
         <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab">
+            <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab"
+               style="padding: 4px 10px; font-size: 14px; border: none; background: none;">
                 Tổng quan
             </a>
         </li>
         <li class="nav-item" role="presentation">
             @if (User.IsInRole("Partner") || User.IsInRole("Admin"))
             {
-                <a class="nav-link" id="learners-tab" data-bs-toggle="tab" href="#learners" role="tab">
+                <a class="nav-link" id="learners-tab" data-bs-toggle="tab" href="#learners" role="tab"
+                   style="padding: 4px 10px; font-size: 14px; border: none; background: none;">
                     Danh sách học viên
                 </a>
             }
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="resources-tab" data-bs-toggle="tab" href="#resources" role="tab">
+            <a class="nav-link" id="resources-tab" data-bs-toggle="tab" href="#resources" role="tab"
+               style="padding: 4px 10px; font-size: 14px; border: none; background: none;">
                 Tài nguyên
             </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="assignment-tab" data-bs-toggle="tab" href="#assignment" role="tab">
+            <a class="nav-link" id="assignment-tab" data-bs-toggle="tab" href="#assignment" role="tab"
+               style="padding: 4px 10px; font-size: 14px; border: none; background: none;">
                 Đánh giá cuối kỳ
             </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="review-tab" data-bs-toggle="tab" href="#review" role="tab">
+            <a class="nav-link" id="review-tab" data-bs-toggle="tab" href="#review" role="tab"
+               style="padding: 4px 10px; font-size: 14px; border: none; background: none;">
                 Feedback
             </a>
         </li>
@@ -114,34 +119,35 @@
             <div class="p-3">
                 @if (User.IsInRole("Partner"))
                 {
-                    <div class="mb-3">
-                        <input type="file" id="fileInput" class="form-control mb-2" multiple />
-                        <button type="button" class="btn btn-danger" onclick="uploadAllFiles()">Upload Files</button>
+                    <div class="mb-3" style="display:flex; gap:10px; align-items:center;">
+                        <input type="file" id="fileInput" class="form-control" style="max-width:305px;" multiple />
+                        <button type="button" class="btn btn-danger" onclick="uploadAllFiles()">Tải File Lên</button>
                         <small id="uploadMessage" class="d-block mt-1"></small>
                     </div>
                     <div id="uploadPreviewContainer" style="display:none;">
-                        <h6 class="fw-bold mt-3">Files to Upload</h6>
+                        <h6 class="fw-bold mt-3">File tải lên</h6>
                         <ul class="list-group mt-2" id="filePreview"></ul>
                     </div>
                 }
 
                 <h5 class="fw-bold mt-4">Tài nguyên học tập</h5>
-                <table class="table table-bordered mt-3" id="materialsList" style="border-collapse: collapse;">
-                    <thead class="table-light">
+                <table class="table mt-3" id="materialsList"
+                       style="border-collapse: collapse; border: 1px solid #dee2e6; width:100%;">
+                    <thead style="background-color:#f8f9fa; border: 1px solid #dee2e6;">
                         <tr>
-                            <th style="width:5%; text-align:center; vertical-align:middle; padding:6px;">STT</th>
-                            <th style="text-align:center; vertical-align:middle; padding:6px;">Tên File</th>
-                            <th style="width:20%; text-align:center; vertical-align:middle; padding:6px;">
+                            <th style="width:5%; text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">STT</th>
+                            <th style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Tên File</th>
+                            <th style="width:20%; text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">
                                 @(User.IsInRole("Partner") ? "Xóa" : "Tải xuống")
                             </th>
-                            <th style="width:20%; text-align:center; vertical-align:middle; padding:6px;">Ngày Tạo</th>
+                            <th style="width:20%; text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Ngày Tạo</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if (Model.Resources == null || !Model.Resources.Any())
                         {
                             <tr>
-                                <td colspan="4" class="text-muted text-center" style="padding:6px;">
+                                <td colspan="4" class="text-muted text-center" style="padding:6px; border: 1px solid #dee2e6;">
                                     Chưa có tài liệu nào được thêm.
                                 </td>
                             </tr>
@@ -151,10 +157,10 @@
                             int index = 1;
                             foreach (var resource in Model.Resources)
                             {
-                                <tr data-id="@resource.Id">
-                                    <td style="text-align:center; vertical-align:middle; padding:6px;">@index</td>
-                                    <td style="vertical-align:middle; padding:6px;">@resource.FileName</td>
-                                    <td style="text-align:center; vertical-align:middle; padding:6px;">
+                                <tr data-id="@resource.Id" style="border: 1px solid #dee2e6;">
+                                    <td style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">@index</td>
+                                    <td style="vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">@resource.FileName</td>
+                                    <td style="text-align:center; vertical-align:middle; padding:6px; display:flex; justify-content:center;">
                                         @if (User.IsInRole("Partner"))
                                         {
                                             <button type="button" class="btn btn-sm btn-danger" onclick="deleteResource(@resource.Id, this)">
@@ -169,7 +175,7 @@
                                             </a>
                                         }
                                     </td>
-                                    <td style="text-align:center; vertical-align:middle; padding:6px;">
+                                    <td style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">
                                         @resource.UploadedAt.ToString("dd/MM/yyyy HH:mm")
                                     </td>
                                 </tr>
@@ -178,7 +184,6 @@
                         }
                     </tbody>
                 </table>
-
             </div>
         </div>
 

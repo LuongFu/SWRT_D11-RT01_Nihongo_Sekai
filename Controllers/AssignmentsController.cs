@@ -237,7 +237,51 @@ namespace JapaneseLearningPlatform.Controllers
             TempData["Message"] = "Bài tập cuối khóa đã được thêm thành công.";
             return Redirect(Url.Action("Content", "ClassroomInstances", new { id = vm.ClassroomInstanceId }) + "#assignment");
         }
+        [HttpPost]
+        [Authorize(Roles = "Partner")]
+        public async Task<IActionResult> UpdateDeadline(int assignmentId, string newDueDate)
+        {
+            var assignment = await _context.FinalAssignments
+                .Include(a => a.Instance)
+                    .ThenInclude(i => i.Template)
+                .FirstOrDefaultAsync(a => a.Id == assignmentId);
 
+            if (assignment == null)
+                return NotFound();
+
+            // Kiểm tra quyền sở hữu của Partner
+            var userId = _userManager.GetUserId(User);
+            if (assignment.Instance.Template.PartnerId != userId)
+                return Forbid();
+
+            // Kiểm tra và parse thời gian mới
+            if (!DateTime.TryParseExact(newDueDate, "dd/MM/yyyy HH:mm",
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                TempData["DeadlineMessage"] = "❌ Định dạng thời gian không hợp lệ. Vui lòng nhập đúng định dạng dd/MM/yyyy HH:mm.";
+                return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
+            }
+
+            // Deadline mới phải lớn hơn deadline cũ và thời gian hiện tại
+            if (assignment.DueDate != null && parsedDate <= assignment.DueDate)
+            {
+                TempData["DeadlineMessage"] = "❌ Hạn mới phải lớn hơn hạn cũ.";
+                return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
+            }
+
+            if (parsedDate <= DateTime.Now)
+            {
+                TempData["DeadlineMessage"] = "❌ Hạn mới phải là thời gian trong tương lai.";
+                return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
+            }
+
+            // Cập nhật hạn nộp
+            assignment.DueDate = parsedDate;
+            await _context.SaveChangesAsync();
+
+            TempData["DeadlineMessage"] = "✅ Đã cập nhật hạn nộp thành công.";
+            return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
+        }
         private async Task LoadInstanceData(FinalAssignmentVM vm)
         {
             var instance = await _context.ClassroomInstances
