@@ -344,6 +344,45 @@
         <div class="tab-pane fade" id="review" role="tabpanel">
             <div class="p-3">
                 <h5 class="fw-bold">Gửi Feedback</h5>
+                @if (User.IsInRole("Partner"))
+                {
+                    <h5 class="fw-bold">Danh sách Feedback</h5>
+                    @if (Model.Feedbacks == null || !Model.Feedbacks.Any())
+                    {
+                        <p class="text-muted">Chưa có feedback nào từ học viên.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Learner</th>
+                                    <th>Rating</th>
+                                    <th>Comment</th>
+                                    <th>Gửi lúc</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int idx = 1;
+                                    foreach (var fb in Model.Feedbacks)
+                                    {
+                                        <tr>
+                                            <td>@idx</td>
+                                            <td>@fb.Learner?.FullName</td>
+                                            <td>@fb.Rating</td>
+                                            <td>@fb.Comment</td>
+                                            <td>@fb.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                        </tr>
+                                        idx++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                }
+                else{
                 @if (!Model.HasReviewed)
                 {
                     <form asp-action="SubmitReview" asp-route-instanceId="@Model.Instance.Id" method="post">
@@ -361,6 +400,18 @@
                 else
                 {
                     <p class="text-success">✅ Bạn đã gửi feedback.</p>
+                        <form asp-action="SubmitReview" asp-route-instanceId="@Model.Instance.Id" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Rating (1-5)</label>
+                                <input type="number" class="form-control" name="Rating" min="1" max="5" required value="@Model.UserFeedback?.Rating" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nhận xét</label>
+                                <textarea class="form-control" name="Comment" rows="3">@Model.UserFeedback?.Comment</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-warning">Cập nhật Feedback</button>
+                        </form>
+                }
                 }
             </div>
         </div>

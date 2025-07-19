@@ -19,5 +19,6 @@ namespace JapaneseLearningPlatform.Models
         public ClassroomStatus Status { get; set; } = ClassroomStatus.Draft;
         public ICollection<ClassroomEnrollment> Enrollments { get; set; } = new List<ClassroomEnrollment>();
         public List<FinalAssignment>? Assignments { get; set; }
+        public List<ClassroomFeedback>? Feedbacks { get; set; }
     }
 }
