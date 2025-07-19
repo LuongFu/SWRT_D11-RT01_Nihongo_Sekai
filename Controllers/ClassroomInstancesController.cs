@@ -504,17 +504,35 @@ namespace JapaneseLearningPlatform.Controllers
 
         [Authorize(Roles = "Partner")]
         [HttpPost]
-        public async Task<IActionResult> UploadResource(int classroomId, IFormFile file)
+        public async Task<IActionResult> UploadResource(int classroomId, List<IFormFile> files)
         {
-            if (file != null && file.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads/resources");
-                if (!Directory.Exists(uploadsFolder))
-                    Directory.CreateDirectory(uploadsFolder);
+            if (files == null || files.Count == 0)
+                return Json(new { success = false, message = "Không có file nào được chọn!" });
 
+            var allowedExtensions = new[] { ".pdf", ".docx", ".xlsx", ".png", ".jpg", ".jpeg", ".zip" };
+
+            foreach (var file in files)
+            {
+                var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(ext))
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"File \"{file.FileName}\" có định dạng không hợp lệ! " +
+                                  $"Chỉ chấp nhận: {string.Join(", ", allowedExtensions)}"
+                    });
+                }
+            }
+
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads/resources");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            foreach (var file in files)
+            {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 var filePath = Path.Combine(uploadsFolder, fileName);
-
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
@@ -527,11 +545,20 @@ namespace JapaneseLearningPlatform.Controllers
                     FilePath = "/uploads/resources/" + fileName,
                     UploadedAt = DateTime.UtcNow
                 };
-
                 _context.ClassroomResources.Add(resource);
-                await _context.SaveChangesAsync();
             }
-            return Redirect($"/ClassroomInstances/Content/{classroomId}#resources");
+
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true,
+                message = "Upload thành công!",
+                newResources = _context.ClassroomResources
+        .Where(r => r.ClassroomInstanceId == classroomId)
+        .Select(r => new { r.Id, r.FileName, UploadedAt = r.UploadedAt.ToString("dd/MM/yyyy") })
+        .ToList()
+            });
         }
 
         [Authorize(Roles = "Partner")]
@@ -539,16 +566,25 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> DeleteResource(int id)
         {
             var resource = await _context.ClassroomResources.FindAsync(id);
-            if (resource == null) return NotFound();
+            if (resource == null)
+                return Json(new { success = false, message = "Tài liệu không tồn tại!" });
 
-            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, resource.FilePath.TrimStart('/'));
-            if (System.IO.File.Exists(filePath))
-                System.IO.File.Delete(filePath);
+            try
+            {
+                // Xóa file vật lý
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, resource.FilePath.TrimStart('/'));
+                if (System.IO.File.Exists(filePath))
+                    System.IO.File.Delete(filePath);
 
-            _context.ClassroomResources.Remove(resource);
-            await _context.SaveChangesAsync();
+                _context.ClassroomResources.Remove(resource);
+                await _context.SaveChangesAsync();
 
-            return Redirect($"/ClassroomInstances/Content/{resource.ClassroomInstanceId}#resources");
+                return Json(new { success = true, message = $"Đã xóa tài liệu \"{resource.FileName}\"." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi khi xóa file: " + ex.Message });
+            }
         }
 
         [Authorize(Roles = "Learner,Partner,Admin")]

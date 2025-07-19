@@ -117,41 +117,44 @@
         <!-- 🔹 Resources -->
         <div class="tab-pane fade" id="resources" role="tabpanel">
             <div class="p-3">
-
                 <!-- Upload Form (Partner only) -->
                 @if (User.IsInRole("Partner"))
                 {
-                    <form asp-action="UploadResource" asp-controller="ClassroomInstances"
-                          asp-route-classroomId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <input type="file" name="file" class="form-control" />
-                        </div>
-                        <button type="submit" class="btn btn-primary">Upload File</button>
-                    </form>
-                }
+                    <div class="mb-3">
+                        <input type="file" id="fileInput" class="form-control mb-2" multiple />
+                        <button type="button" class="btn btn-danger" onclick="uploadAllFiles()">Upload Files</button>
+                        <small id="uploadMessage" class="d-block mt-1"></small>
+                    </div>
 
+                    <!-- Container preview file - ẩn mặc định -->
+                    <div id="uploadPreviewContainer" style="display:none;">
+                        <h6 class="fw-bold mt-3">Files to Upload</h6>
+                        <ul class="list-group mt-2" id="filePreview"></ul>
+                    </div>
+                }
                 <h5 class="mt-4">Learning Materials</h5>
-
-                @if (Model.Resources == null || !Model.Resources.Any())
-                {
-                    <p class="text-muted">Chưa có tài liệu nào được thêm.</p>
-                }
-                else
-                {
-                    <ul class="list-group mt-2">
+                <ul class="list-group mt-2" id="materialsList">
+                    @if (Model.Resources == null || !Model.Resources.Any())
+                    {
+                        <li class="list-group-item text-muted" id="noResourceMsg">
+                            Chưa có tài liệu nào được thêm.
+                        </li>
+                    }
+                    else
+                    {
                         @foreach (var resource in Model.Resources)
                         {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                @resource.FileName
-
+                            <li class="list-group-item d-flex justify-content-between align-items-center" data-id="@resource.Id">
+                                <span>
+                                    @resource.FileName
+                                    <small class="text-muted ms-2">(@resource.UploadedAt.ToString("dd/MM/yyyy"))</small>
+                                </span>
                                 @if (User.IsInRole("Partner"))
                                 {
-                                    <form asp-action="DeleteResource" asp-controller="ClassroomInstances"
-                                          asp-route-id="@resource.Id" method="post" style="display:inline;">
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                            onclick="deleteResource(@resource.Id, this)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 }
                                 else
                                 {
@@ -162,8 +165,8 @@
                                 }
                             </li>
                         }
-                    </ul>
-                }
+                    }
+                </ul>
             </div>
         </div>
 
@@ -358,20 +361,168 @@
 
 <!-- Chặn nếu learner không submit bất kỳ loại đáp án nào -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("assignmentForm");
-        if (form) {
-            form.addEventListener("submit", function (e) {
-                const answerText = document.getElementById("answerText")?.value?.trim();
-                const fileInput = document.getElementById("submissionFile");
-                const fileSelected = fileInput?.files?.length > 0;
+    const msgBox = document.getElementById("uploadMessage");
 
-                if (!answerText && !fileSelected) {
-                    e.preventDefault(); // ❌ chặn submit
-                    alert("⛔ Please enter an answer or upload a file before submitting.");
-                }
-            });
-        }
+    function showMessage(text, cssClass) {
+        msgBox.textContent = text;
+        msgBox.className = cssClass + " d-block mt-1";
+
+        // Tự động ẩn sau 3 giây
+        setTimeout(() => {
+            msgBox.textContent = "";
+            msgBox.className = "d-block mt-1";
+        }, 3000);
+    }
+
+    let fileList = [];
+    const allowedExtensions = [".pdf", ".docx", ".xlsx", ".png", ".jpg", ".jpeg", ".zip"];
+
+    // Khi chọn file
+    document.getElementById("fileInput")?.addEventListener("change", function (e) {
+        const newFiles = Array.from(e.target.files);
+        msgBox.textContent = "";
+        msgBox.className = "d-block mt-1";
+
+        newFiles.forEach(file => {
+            const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+
+            // 1. Kiểm tra định dạng
+            if (!allowedExtensions.includes(ext)) {
+                showMessage(
+                    `File "${file.name}" có định dạng không hợp lệ! Chỉ chấp nhận: ${allowedExtensions.join(", ")}`,
+                    "text-danger"
+                );
+            }
+            // 2. Kiểm tra trùng trong preview (fileList)
+            else if (fileList.some(f => f.name === file.name && f.size === file.size)) {
+                showMessage(
+                    `Bạn đã chọn file "${file.name}" rồi trong danh sách Files to Upload!`,
+                    "text-warning"
+                );
+            }
+            // 3. File hợp lệ
+            else {
+                fileList.push(file);
+            }
+        });
+
+        renderPreview();
+        document.getElementById("uploadPreviewContainer").style.display = fileList.length > 0 ? "block" : "none";
+        e.target.value = ""; // reset input
     });
+
+    // Hiển thị danh sách file preview
+    function renderPreview() {
+        const preview = document.getElementById("filePreview");
+        preview.innerHTML = "";
+
+        fileList.forEach((file, index) => {
+            const li = document.createElement("li");
+            li.className = "list-group-item d-flex justify-content-between align-items-center";
+            li.textContent = file.name;
+
+            const removeBtn = document.createElement("button");
+            removeBtn.className = "btn btn-sm btn-outline-danger";
+            removeBtn.textContent = "X";
+            removeBtn.onclick = () => {
+                fileList.splice(index, 1);
+                renderPreview();
+                document.getElementById("uploadPreviewContainer").style.display = fileList.length > 0 ? "block" : "none";
+            };
+
+            li.appendChild(removeBtn);
+            preview.appendChild(li);
+        });
+    }
+
+    // Upload file lên server
+    async function uploadAllFiles() {
+        msgBox.textContent = "";
+        msgBox.className = "d-block mt-1";
+
+        if (fileList.length === 0) {
+            showMessage("Không có file nào được chọn!", "text-danger");
+            return;
+        }
+
+        const formData = new FormData();
+        fileList.forEach(file => formData.append("files", file));
+        formData.append("classroomId", @Model.Instance.Id);
+
+        try {
+            const response = await fetch("/ClassroomInstances/UploadResource", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            showMessage(result.message, result.success ? "text-success" : "text-danger");
+
+            if (result.success && result.newResources) {
+                updateLearningMaterials(result.newResources);
+                fileList = [];
+                renderPreview();
+                document.getElementById("uploadPreviewContainer").style.display = "none";
+            }
+        } catch (err) {
+            console.error(err);
+            showMessage("Có lỗi xảy ra khi upload.", "text-danger");
+        }
+    }
+
+    // Cập nhật danh sách Learning Materials
+    function updateLearningMaterials(resources) {
+        const container = document.getElementById("materialsList");
+        container.innerHTML = "";
+
+        resources.forEach(r => {
+            const li = document.createElement("li");
+            li.className = "list-group-item d-flex justify-content-between align-items-center";
+            li.innerHTML = `
+                <span>
+                    ${r.fileName}
+                    <small class="text-muted ms-2">(${r.uploadedAt})</small>
+                </span>
+                <button type="button" class="btn btn-sm btn-danger" onclick="deleteResource(${r.id}, this)">
+                    <i class="bi bi-trash"></i>
+                </button>
+            `;
+            container.appendChild(li);
+        });
+    }
+
+    // Xóa tài liệu
+    async function deleteResource(id, btn) {
+        if (!confirm("Bạn có chắc chắn muốn xóa tài liệu này?")) return;
+
+        msgBox.textContent = "";
+        try {
+            const response = await fetch("/ClassroomInstances/DeleteResource", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `id=${id}`
+            });
+
+            const result = await response.json();
+            showMessage(result.message, result.success ? "text-success" : "text-danger");
+
+            if (result.success) {
+                const li = btn.closest("li");
+                li.remove();
+
+                const materialsList = document.getElementById("materialsList");
+                if (materialsList.querySelectorAll("li").length === 0) {
+                    materialsList.innerHTML = `<li class="list-group-item text-muted" id="noResourceMsg">
+                                                   Chưa có tài liệu nào được thêm.
+                                               </li>`;
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            showMessage("Có lỗi xảy ra khi xóa tài liệu.", "text-danger");
+        }
+    }
 </script>
+
+
 
