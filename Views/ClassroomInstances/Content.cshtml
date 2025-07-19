@@ -19,22 +19,32 @@
     <!-- 🔸 Tabs -->
     <ul class="nav nav-tabs mb-3" id="classTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab">Tổng quan</a>
+            <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab">
+                Tổng quan
+            </a>
         </li>
         <li class="nav-item" role="presentation">
             @if (User.IsInRole("Partner") || User.IsInRole("Admin"))
             {
-                <a class="nav-link" id="learners-tab" data-bs-toggle="tab" href="#learners" role="tab">Danh sách học viên</a>
+                <a class="nav-link" id="learners-tab" data-bs-toggle="tab" href="#learners" role="tab">
+                    Danh sách học viên
+                </a>
             }
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="resources-tab" data-bs-toggle="tab" href="#resources" role="tab">Tài nguyên</a>
+            <a class="nav-link" id="resources-tab" data-bs-toggle="tab" href="#resources" role="tab">
+                Tài nguyên
+            </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="assignment-tab" data-bs-toggle="tab" href="#assignment" role="tab">Đánh giá cuối kỳ</a>
+            <a class="nav-link" id="assignment-tab" data-bs-toggle="tab" href="#assignment" role="tab">
+                Đánh giá cuối kỳ
+            </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="review-tab" data-bs-toggle="tab" href="#review" role="tab">Feedback</a>
+            <a class="nav-link" id="review-tab" data-bs-toggle="tab" href="#review" role="tab">
+                Feedback
+            </a>
         </li>
     </ul>
 
@@ -48,6 +58,57 @@
             </div>
         </div>
 
+        <!-- 🔹 Learners List -->
+        @if (User.IsInRole("Partner") || User.IsInRole("Admin"))
+        {
+            <div class="tab-pane fade" id="learners" role="tabpanel" aria-labelledby="learners-tab">
+                <div class="p-3">
+                    <h5 class="fw-bold mb-3">Danh sách học viên</h5>
+
+                    @if (Model.Instance.Enrollments == null || !Model.Instance.Enrollments.Any())
+                    {
+                        <p class="text-muted">Chưa có học viên tham gia.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 5%">#</th>
+                                    <th>Tên</th>
+                                    <th>Email</th>
+                                    <th>Thời điểm tham gia</th>
+                                    <th style="width: 15%">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int index = 1;
+                                    foreach (var enrollment in Model.Instance.Enrollments)
+                                    {
+                                        <tr>
+                                            <td>@index</td>
+                                            <td>@enrollment.Learner?.FullName</td>
+                                            <td>@enrollment.Learner?.Email</td>
+                                            <td>@enrollment.EnrolledAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>
+                                                <a asp-controller="Account"
+                                                   asp-action="ViewProfile"
+                                                   asp-route-learnerId="@enrollment.Learner?.Id"
+                                                   asp-route-classroomId="@Model.Instance.Id"
+                                                   class="btn btn-info btn-sm">View Profile</a>
+                                            </td>
+                                        </tr>
+                                        index++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        }
+
         <!-- 🔹 Resources -->
         <div class="tab-pane fade" id="resources" role="tabpanel">
             <div class="p-3">
@@ -58,28 +119,29 @@
                         <button type="button" class="btn btn-danger" onclick="uploadAllFiles()">Upload Files</button>
                         <small id="uploadMessage" class="d-block mt-1"></small>
                     </div>
-
                     <div id="uploadPreviewContainer" style="display:none;">
-                        <h6 class="fw-bold mt-3">File tải lên</h6>
+                        <h6 class="fw-bold mt-3">Files to Upload</h6>
                         <ul class="list-group mt-2" id="filePreview"></ul>
                     </div>
                 }
 
-                <h5 class="mt-4">Tài nguyên học tập</h5>
-                <table class="table table-bordered table-hover mt-3" id="materialsList">
+                <h5 class="fw-bold mt-4">Tài nguyên học tập</h5>
+                <table class="table table-bordered mt-3" id="materialsList" style="border-collapse: collapse;">
                     <thead class="table-light">
                         <tr>
-                            <th style="width:5%;">STT</th>
-                            <th>Tên File</th>
-                            <th style="width:20%;">@(User.IsInRole("Partner") ? "Xóa" : "Tải xuống")</th>
-                            <th style="width:20%;">Ngày Tạo</th>
+                            <th style="width:5%; text-align:center; vertical-align:middle; padding:6px;">STT</th>
+                            <th style="text-align:center; vertical-align:middle; padding:6px;">Tên File</th>
+                            <th style="width:20%; text-align:center; vertical-align:middle; padding:6px;">
+                                @(User.IsInRole("Partner") ? "Xóa" : "Tải xuống")
+                            </th>
+                            <th style="width:20%; text-align:center; vertical-align:middle; padding:6px;">Ngày Tạo</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if (Model.Resources == null || !Model.Resources.Any())
                         {
                             <tr>
-                                <td colspan="4" class="text-muted text-center">
+                                <td colspan="4" class="text-muted text-center" style="padding:6px;">
                                     Chưa có tài liệu nào được thêm.
                                 </td>
                             </tr>
@@ -90,9 +152,9 @@
                             foreach (var resource in Model.Resources)
                             {
                                 <tr data-id="@resource.Id">
-                                    <td>@index</td>
-                                    <td>@resource.FileName</td>
-                                    <td>
+                                    <td style="text-align:center; vertical-align:middle; padding:6px;">@index</td>
+                                    <td style="vertical-align:middle; padding:6px;">@resource.FileName</td>
+                                    <td style="text-align:center; vertical-align:middle; padding:6px;">
                                         @if (User.IsInRole("Partner"))
                                         {
                                             <button type="button" class="btn btn-sm btn-danger" onclick="deleteResource(@resource.Id, this)">
@@ -107,19 +169,207 @@
                                             </a>
                                         }
                                     </td>
-                                    <td>@resource.UploadedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td style="text-align:center; vertical-align:middle; padding:6px;">
+                                        @resource.UploadedAt.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
                                 </tr>
                                 index++;
                             }
                         }
                     </tbody>
                 </table>
+
+            </div>
+        </div>
+
+        <!-- 🔹 Final Assignment -->
+        <div class="tab-pane fade" id="assignment" role="tabpanel">
+            <div class="p-3">
+                <h5 class="fw-bold">Bài luận đánh giá cuối khóa</h5>
+
+                @if (Model.FinalAssignment != null)
+                {
+                    <p><strong>Hướng dẫn:</strong></p>
+                    <p>@Html.Raw(Model.FinalAssignment.Instructions)</p>
+
+                    @if (Model.FinalAssignment?.DueDate != null)
+                    {
+                        <p><strong>Hạn nộp:</strong> @Model.FinalAssignment.DueDate.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                    }
+
+                    @if (User.IsInRole("Learner"))
+                    {
+                        @if (TempData["Message"] != null)
+                        {
+                            <div class="alert alert-success">@TempData["Message"]</div>
+                        }
+
+                        @if (Model.HasSubmitted)
+                        {
+                            <p class="text-success">✅ Bạn đã gửi bài làm.</p>
+                            <p><strong>Điểm:</strong> @(Model.Submission?.Score?.ToString() ?? "Chưa chấm")</p>
+                            <p><strong>Nhận xét:</strong> @(Model.Submission?.Feedback ?? "Chưa có nhận xét")</p>
+                            <div class="mb-3 mt-4">
+                                <label class="form-label fw-bold">Bài làm cũ:</label>
+                                <textarea class="form-control" rows="5" readonly>@Model.Submission?.AnswerText</textarea>
+                            </div>
+                        }
+
+                        @if (Model.Submission?.Score == null && (Model.FinalAssignment?.DueDate == null || Model.FinalAssignment.DueDate > DateTime.Now))
+                        {
+                            <form id="assignmentForm" asp-action="SubmitAssignment" asp-controller="Assignments"
+                                  asp-route-instanceId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="AnswerText" class="form-label fw-bold">Bài làm:</label>
+                                    <textarea id="answerText" name="answerText" rows="5" class="form-control" placeholder="Nhập câu trả lời..."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="submissionFile" class="form-label fw-bold">Tải file bài làm</label>
+                                    <input id="submissionFile" type="file" name="SubmissionFile" class="form-control" />
+                                </div>
+                                <button type="submit" class="btn btn-success">@(Model.HasSubmitted ? "Resubmit" : "Submit")</button>
+                            </form>
+                        }
+                        else if (Model.FinalAssignment?.DueDate <= DateTime.Now)
+                        {
+                            <p class="text-danger mt-3">⛔ Đã quá hạn nộp bài.</p>
+                        }
+                    }
+
+                    else if (User.IsInRole("Partner"))
+                    {
+                        <form asp-action="UpdateDeadline" asp-controller="Assignments"
+                              asp-route-assignmentId="@Model.FinalAssignment.Id" method="post"
+                              class="d-flex align-items-center gap-2 mt-2">
+                            <input type="text" id="newDueDate" name="newDueDate" class="form-control" required placeholder="-- Chọn hạn nộp --" />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Cập nhật</button>
+                        </form>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">Lớp học chưa có bài đánh giá cuối khóa.</p>
+                    @if (User.IsInRole("Partner"))
+                    {
+                        <a asp-action="Create" asp-controller="Assignments" asp-route-instanceId="@Model.Instance.Id"
+                           class="btn btn-primary mb-3"><i class="bi bi-plus-circle"></i> Tạo bài tập</a>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- 🔹 Feedback -->
+        <div class="tab-pane fade" id="review" role="tabpanel">
+            <div class="p-3">
+                <h5 class="fw-bold">Gửi Feedback</h5>
+                @if (!Model.HasReviewed)
+                {
+                    <form asp-action="SubmitReview" asp-route-instanceId="@Model.Instance.Id" method="post">
+                        <div class="mb-3">
+                            <label for="Rating" class="form-label">Rating (1-5)</label>
+                            <input type="number" class="form-control" name="Rating" min="1" max="5" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="Comment" class="form-label">Nhận xét</label>
+                            <textarea class="form-control" name="Comment" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gửi</button>
+                    </form>
+                }
+                else
+                {
+                    <p class="text-success">✅ Bạn đã gửi feedback.</p>
+                }
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    main.flex-grow-1 {
+        background-color: white;
+    }
+
+    .custom-popup {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        position: relative;
+    }
+
+    .popup-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .nav-tabs .nav-link::after {
+        content: none !important;
+    }
+</style>
+
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script>
+    flatpickr("#newDueDate", { enableTime: true, dateFormat: "d/m/Y H:i" });
+
+    window.onload = function () {
+        const hash = window.location.hash;
+        if (hash) {
+            const triggerEl =
+                document.querySelector(`button[data-bs-toggle="tab"][data-bs-target="${hash}"]`) ||
+                document.querySelector(`a[data-bs-toggle="tab"][href="${hash}"]`);
+            if (triggerEl) new bootstrap.Tab(triggerEl).show();
+        }
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("assignmentForm");
+        if (form) {
+            form.addEventListener("submit", function (e) {
+                const answerText = document.getElementById("answerText")?.value?.trim();
+                const fileInput = document.getElementById("submissionFile");
+                const fileSelected = fileInput?.files?.length > 0;
+                if (!answerText && !fileSelected) {
+                    e.preventDefault();
+                    alert("⛔ Vui lòng gửi bài làm hoặc file bài làm.");
+                }
+            });
+        }
+    });
+
     const msgBox = document.getElementById("uploadMessage");
     const isPartner = @User.IsInRole("Partner").ToString().ToLower();
     let fileList = [];
@@ -128,23 +378,16 @@
     function showMessage(text, cssClass) {
         msgBox.textContent = text;
         msgBox.className = cssClass + " d-block mt-1";
-        setTimeout(() => {
-            msgBox.textContent = "";
-            msgBox.className = "d-block mt-1";
-        }, 3000);
+        setTimeout(() => { msgBox.textContent = ""; msgBox.className = "d-block mt-1"; }, 3000);
     }
 
     document.getElementById("fileInput")?.addEventListener("change", function (e) {
         const newFiles = Array.from(e.target.files);
         newFiles.forEach(file => {
             const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
-            if (!allowedExtensions.includes(ext)) {
-                showMessage(`File "${file.name}" có định dạng không hợp lệ! Chỉ chấp nhận: ${allowedExtensions.join(", ")}`, "text-danger");
-            } else if (fileList.some(f => f.name === file.name && f.size === file.size)) {
-                showMessage(`Bạn đã chọn file "${file.name}" rồi trong danh sách Files to Upload!`, "text-warning");
-            } else {
-                fileList.push(file);
-            }
+            if (!allowedExtensions.includes(ext)) showMessage(`File "${file.name}" không hợp lệ!`, "text-danger");
+            else if (fileList.some(f => f.name === file.name && f.size === file.size)) showMessage(`File "${file.name}" đã có!`, "text-warning");
+            else fileList.push(file);
         });
         renderPreview();
         document.getElementById("uploadPreviewContainer").style.display = fileList.length > 0 ? "block" : "none";
@@ -179,12 +422,8 @@
         const formData = new FormData();
         fileList.forEach(file => formData.append("files", file));
         formData.append("classroomId", @Model.Instance.Id);
-
         try {
-            const response = await fetch("/ClassroomInstances/UploadResource", {
-                method: "POST",
-                body: formData
-            });
+            const response = await fetch("/ClassroomInstances/UploadResource", { method: "POST", body: formData });
             const result = await response.json();
             showMessage(result.message, result.success ? "text-success" : "text-danger");
             if (result.success && result.newResources) {
@@ -203,12 +442,12 @@
         const container = document.querySelector("#materialsList tbody");
         container.innerHTML = "";
         if (!resources || resources.length === 0) {
-            container.innerHTML = `<tr><td colspan="4" class="text-muted text-center">Chưa có tài liệu nào được thêm.</td></tr>`;
+            container.innerHTML = `<tr><td colspan="4" class="text-muted text-center">Chưa có tài liệu nào.</td></tr>`;
         } else {
             resources.forEach((r, index) => {
                 const actionBtn = isPartner
-                    ? `<button type="button" class="btn btn-sm btn-danger" onclick="deleteResource(${r.id}, this)"><i class="bi bi-trash"></i> Delete</button>`
-                    : `<a href="/ClassroomInstances/DownloadResource/${r.id}" class="btn btn-sm btn-primary">Download File</a>`;
+                    ? `<button type="button" class="btn btn-sm btn-danger" onclick="deleteResource(${r.id}, this)"><i class="bi bi-trash"></i> Xóa</button>`
+                    : `<a href="/ClassroomInstances/DownloadResource/${r.id}" class="btn btn-sm btn-primary">Tải File</a>`;
                 container.innerHTML += `
                     <tr data-id="${r.id}">
                         <td>${index + 1}</td>
@@ -234,9 +473,7 @@
             if (result.success) {
                 btn.closest("tr").remove();
                 const rows = document.querySelectorAll("#materialsList tbody tr");
-                if (rows.length === 0) {
-                    updateLearningMaterials([]);
-                }
+                if (rows.length === 0) updateLearningMaterials([]);
             }
         } catch (error) {
             console.error(error);
