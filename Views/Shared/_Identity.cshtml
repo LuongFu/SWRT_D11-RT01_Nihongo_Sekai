@@ -1,22 +1,27 @@
-@inject UserManager<ApplicationUser> UserManager;
+﻿@inject UserManager<ApplicationUser> UserManager;
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+}
 
 @if (!User.Identity.IsAuthenticated)
 {
     <div class="dropdown">
         <button class="btn btn-outline-danger dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
                 type="button" id="guestDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person"></i> Account
+            <i class="bi bi-person"></i> Tài khoản
         </button>
 
         <ul class="dropdown-menu dropdown-menu-end shadow-sm mt-2" aria-labelledby="guestDropdown">
             <li>
                 <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Account" asp-action="Login">
-                    <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
                 </a>
             </li>
             <li>
                 <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Account" asp-action="Register">
-                    <i class="bi bi-person-plus"></i> Sign Up
+                    <i class="bi bi-person-plus"></i> Đăng ký
                 </a>
             </li>
         </ul>
@@ -35,12 +40,12 @@ else
             {
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Account" asp-action="Users">
-                        <i class="bi bi-people"></i> Users
+                        <i class="bi bi-people"></i> Quản lý người dùng
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Videos" asp-action="Index">
-                        <i class="bi bi-camera-video"></i> Videos
+                        <i class="bi bi-camera-video"></i> Quản lý video
                     </a>
                 </li>
             }
@@ -48,17 +53,17 @@ else
             {
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="ClassroomTemplates" asp-action="MyTemplate">
-                        <i class="bi bi-tv"></i> My Classroom Templates
+                        <i class="bi bi-tv"></i> Mẫu lớp học của tôi
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="ClassroomInstances" asp-action="MySession">
-                        <i class="bi bi-tv"></i> My Classroom Sessions
+                        <i class="bi bi-tv"></i> Phiên lớp học của tôi
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Account" asp-action="Profile">
-                        <i class="bi bi-person-circle"></i> My Profile
+                        <i class="bi bi-person-circle"></i> Hồ sơ của tôi
                     </a>
                 </li>
             }
@@ -66,22 +71,22 @@ else
             {
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Orders" asp-action="Index">
-                        <i class="bi bi-list"></i> Order History
+                        <i class="bi bi-list"></i> Lịch sử đơn hàng
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Learner" asp-action="MyPurchasedCourses">
-                        <i class="bi bi-book"></i> My Purchased Courses
+                        <i class="bi bi-book"></i> Khóa học đã mua
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Learner" asp-action="MyEnrolledClassrooms">
-                        <i class="bi bi-easel"></i> My Enrolled Classrooms
+                        <i class="bi bi-easel"></i> Lớp học đã đăng ký
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Account" asp-action="Profile">
-                        <i class="bi bi-person-circle"></i> My Profile
+                        <i class="bi bi-person-circle"></i> Hồ sơ của tôi
                     </a>
                 </li>
             }
@@ -90,7 +95,7 @@ else
             <li>
                 <form asp-controller="Account" asp-action="Logout" method="post" class="dropdown-item m-0 p-0">
                     <button type="submit" class="btn btn-link dropdown-item d-flex align-items-center gap-2 text-danger">
-                        <i class="bi bi-box-arrow-right"></i> Log out
+                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
                     </button>
                 </form>
             </li>

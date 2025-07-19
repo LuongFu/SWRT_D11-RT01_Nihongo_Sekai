@@ -1,163 +1,247 @@
-﻿@using JapaneseLearningPlatform.Data.Enums
+﻿@using JapaneseLearningPlatform.Data.ViewModels
 @using JapaneseLearningPlatform.Helpers
-@model JapaneseLearningPlatform.Data.ViewModels.ReviewPartnerVM
+@model ReviewPartnerVM
+
+@{
+    ViewData["Title"] = "Xem xét đơn ứng tuyển đối tác";
+    Layout = "_Layout";
+    ViewData["HideNavbar"] = false;
+    ViewData["HideFooter"] = false;
+}
 
 @section Styles {
-  <style>
-    /* Fade-in wrapper */
-    .review-wrapper {
-      display:flex; flex-wrap:wrap; gap:2rem;
-      opacity:0; transform:translateY(20px);
-      animation:fadeInUp .6s forwards .2s;
-    }
-    @@keyframes fadeInUp {
-      to { opacity:1; transform:translateY(0); }
-    }
+    <!-- Google Fonts + Japanese Serif -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&family=Noto+Serif+JP:wght@500&display=swap" rel="stylesheet" />
 
-    .review-card {
-      background:linear-gradient(135deg,#fff,#f8f8f8);
-      border-radius:1rem; padding:1.5rem;
-      box-shadow:0 8px 20px rgba(0,0,0,0.05);
-      transition:transform .3s,box-shadow .3s;
-    }
-    .review-card:hover {
-      transform:translateY(-4px);
-      box-shadow:0 12px 30px rgba(0,0,0,0.1);
-    }
+    <style>
+        /* ===== NỀN HỌA TIẾT SEIGAIHA ===== */
+        body {
+            margin: 0;
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: #fdfaf6;
+            background-image: radial-gradient(circle at 50% -20%, transparent 20%, rgba(0,0,0,0.02) 21%, rgba(0,0,0,0.02) 34%, transparent 35%, transparent), radial-gradient(circle at 20% 120%, transparent 20%, rgba(0,0,0,0.02) 21%, rgba(0,0,0,0.02) 34%, transparent 35%, transparent);
+            background-size: 80px 60px;
+        }
 
-    .review-avatar {
-      width:160px; height:160px; border-radius:50%;
-      object-fit:cover; box-shadow:0 4px 15px rgba(0,0,0,0.1);
-      margin-bottom:1rem;
-    }
+        /* ===== SAKURA PETALS ===== */
+        .sakura {
+            position: fixed;
+            top: -50px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 10;
+        }
 
-    .specs-container {
-      display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.5rem;
-    }
-    .spec-badge {
-      background:#0d6efd; color:#fff; padding:.25rem .75rem;
-      border-radius:.5rem; font-size:.875rem;
-    }
-  </style>
+            .sakura span {
+                position: absolute;
+                display: block;
+                width: 15px;
+                height: 15px;
+                background: pink;
+                border-radius: 50% 20%;
+                opacity: 0.8;
+                animation: fall linear infinite;
+            }
+        @@keyframes fall {
+            0%
+
+        {
+            transform: translateY(-100px) rotate(0deg);
+        }
+
+        100% {
+            transform: translateY(110vh) rotate(360deg);
+        }
+
+        }
+
+        /* ===== CONTAINER CHÍNH ===== */
+        .review-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        h2 {
+            font-family: 'Noto Serif JP', serif;
+            color: #b71c1c;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* ===== CARD CHÍNH ===== */
+        .profile-card {
+            background: #fff;
+            border-radius: 1.25rem;
+            padding: 0;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+
+            .profile-card:hover {
+                transform: translateY(-6px);
+                box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1), 0 12px 36px rgba(0,0,0,0.12);
+            }
+
+        /* ===== HEADER ===== */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0e6e2;
+        }
+
+            .profile-header img {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                object-fit: cover;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+
+        .profile-details h4 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #333;
+        }
+
+        .profile-details small {
+            color: #777;
+        }
+
+        /* ===== BODY ===== */
+        .profile-body {
+            padding: 1.5rem;
+            font-size: 1rem;
+            color: #444;
+            line-height: 1.6;
+        }
+
+            .profile-body p {
+                margin-bottom: 1rem;
+            }
+
+        .badge-special {
+            background: #fde0dc;
+            color: #880e4f;
+            margin-right: .5rem;
+            padding: .3rem .6rem;
+            border-radius: .5rem;
+            font-size: .9rem;
+        }
+
+        /* ===== TÀI LIỆU ===== */
+        .docs-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            padding: 0 1.5rem 1.5rem;
+        }
+
+            .docs-row a {
+                overflow: hidden;
+                border-radius: .75rem;
+                display: block;
+                transition: transform .3s, box-shadow .3s;
+            }
+
+            .docs-row img {
+                width: 100%;
+                height: 120px;
+                object-fit: cover;
+            }
+
+            .docs-row a:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            }
+
+        /* ===== FOOTER ===== */
+        .profile-footer {
+            padding: 1rem 1.5rem;
+            text-align: right;
+            background: #f9f5f2;
+            border-top: 1px solid #f0e6e2;
+        }
+
+            .profile-footer .btn {
+                color: #b71c1c;
+                border-color: #b71c1c;
+                transition: background .3s, color .3s, transform .3s;
+            }
+
+                .profile-footer .btn:hover {
+                    background: #b71c1c;
+                    color: #fff;
+                    transform: translateY(-2px);
+                }
+    </style>
 }
 
-@section Scripts {
-  <script>
-    document.addEventListener('DOMContentLoaded',()=>{
-      // nothing extra
-    });
-  </script>
-}
+<div class="sakura">
+    @for (int i = 0; i < 12; i++)   
+    {
+        <span style="
+            left: @(Random.Shared.NextDouble() * 100)%;
+            animation-duration: @(6 + Random.Shared.NextDouble() * 6)s;
+            animation-delay: @(Random.Shared.NextDouble() * -6)s;
+            opacity: 0.6;               <!-- mờ hơn một chút -->
+            width: 12px; height: 12px;  <!-- nhỏ hơn -->
+        "></span>
+    }
+</div>
 
-<div class="container mt-5">
-    <div class="row review-wrapper">
-        <!-- LEFT -->
-        <div class="col-md-4">
-            <div class="review-card text-center p-3">
-                <img src="@(
-                     !string.IsNullOrEmpty(Model.Profile.User.ProfilePicturePath)
-                         ? Model.Profile.User.ProfilePicturePath
-                         : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id, 140))"
-                     class="review-avatar mb-2"
-                     alt="@Model.Profile.User.FullName" />
 
+<div class="review-container">
+    <h2>Xem xét đơn ứng tuyển đối tác</h2>
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <img src="@( !string.IsNullOrEmpty(Model.Profile.User.ProfilePicturePath)
+                                          ? Model.Profile.User.ProfilePicturePath
+                                          : AvatarHelper.GetAvatarUrl(Model.Profile.User.Id, 80) )"
+                 alt="Avatar của @Model.Profile.User.FullName" />
+
+            <div class="profile-details">
                 <h4>@Model.Profile.User.FullName</h4>
-                <p class="text-muted">@Model.Profile.User.Email</p>
-
-                <p class="mt-3">
-                    <strong>Experience:</strong><br />
-                    @Model.Profile.YearsOfExperience.GetDisplayName()
-                </p>
-
-                <div class="specs-container mb-3">
-                    @foreach (var spec in Model.Profile.Specializations)
-                    {
-                        <span class="spec-badge">@spec.Specialization</span>
-                    }
-                </div>
-
-                @if (Model.Profile.Status == PartnerStatus.Pending)
-                {
-                    <div class="card-footer bg-white">
-                        <button class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
-                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">Approve</button>
-                    </div>
-                }
+                <small>@Model.Profile.User.Email</small>
             </div>
         </div>
 
-        <!-- RIGHT: Documents -->
-        <div class="col-md-8">
-            <h5 class="mb-3">Uploaded Documents</h5>
-            <div class="row g-3">
-                @foreach (var doc in Model.Profile.Documents)
+        <div class="profile-body">
+            <p><strong>Kinh nghiệm:</strong> @Model.Profile.YearsOfExperience.GetDisplayName()</p>
+            <p>
+                <strong>Chuyên môn:</strong>
+                @foreach (var spec in Model.Profile.Specializations.Select(s => s.Specialization))
                 {
-                    <div class="col-sm-6">
-                        <div class="card doc-thumb h-100">
-                            <a href="@doc.FilePath" target="_blank">
-                                <img src="@doc.FilePath" class="card-img-top" style="height:150px;object-fit:cover" />
-                            </a>
-                        </div>
-                    </div>
+                    <span class="badge-special">@spec</span>
                 }
-            </div>
+            </p>
+        </div>
 
-            <div class="mt-4">
-                <a asp-action="PartnerApplications" asp-controller="Admin" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to List
+        <h5 class="px-3 pt-3">Tài liệu đã tải lên</h5>
+        <div class="docs-row">
+            @foreach (var doc in Model.Profile.Documents)
+            {
+                <a href="@doc.FilePath" target="_blank" title="Xem tài liệu">
+                    <img src="@doc.FilePath" alt="Tài liệu của @Model.Profile.User.FullName" />
                 </a>
-            </div>
+            }
         </div>
-    </div>
-</div>
 
-<!-- Approve/Reject modals giữ nguyên như bạn có sẵn -->
-<!-- APPROVE CONFIRM MODAL -->
-<div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form asp-action="ApprovePartner" method="post" class="modal-content">
-            <input type="hidden" name="id" value="@Model.Profile.Id" />
-            <div class="modal-header">
-                <h5 class="modal-title text-success">Confirm Approval</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to <strong>approve</strong>
-                <em>@Model.Profile.User.FullName</em>’s application?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Cancel
-                </button>
-                <button type="submit" class="btn btn-success">
-                    Yes, Approve
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- REJECT CONFIRM MODAL -->
-<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form asp-action="RejectPartner" method="post" class="modal-content">
-            <input type="hidden" name="id" value="@Model.Profile.Id" />
-            <div class="modal-header">
-                <h5 class="modal-title text-danger">Confirm Rejection</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to <strong>reject</strong>
-                <em>@Model.Profile.User.FullName</em>’s application?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Cancel
-                </button>
-                <button type="submit" class="btn btn-danger">
-                    Yes, Reject
-                </button>
-            </div>
-        </form>
+        <div class="profile-footer">
+            <a asp-action="PartnerApplications" asp-controller="Admin"
+               class="btn btn-outline-danger">
+                ← Quay về danh sách
+            </a>
+        </div>
     </div>
 </div>

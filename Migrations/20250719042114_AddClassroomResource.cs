@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JapaneseLearningPlatform.Migrations
 {
     /// <inheritdoc />
+
     public partial class AddClassroomResource : Migration
     {
         /// <inheritdoc />
@@ -274,7 +275,8 @@ namespace JapaneseLearningPlatform.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     DecisionAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    YearsOfExperience = table.Column<int>(type: "int", nullable: false)
+                    YearsOfExperience = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

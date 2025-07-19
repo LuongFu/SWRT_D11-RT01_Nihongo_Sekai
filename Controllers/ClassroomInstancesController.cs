@@ -262,7 +262,8 @@ namespace JapaneseLearningPlatform.Controllers
                 EnrollmentCount = instance.Enrollments.Count,
                 PartnerName = instance.Template.Partner.FullName,
                 IsEnrolled = enrollment != null,
-                HasPaid = enrollment?.IsPaid == true // ✅ thêm dòng này
+                HasPaid = enrollment?.IsPaid == true, // ✅ thêm dòng này
+                    IsPaid = instance.IsPaid // ✅ Gán IsPaid từ instance
             };
             return View(vm);
         }
@@ -378,8 +379,10 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> Content(int id)
         {
             var instance = await _context.ClassroomInstances
-                .AsQueryable()
+                .AsSplitQuery()              // ⚡ Chia query để tránh JOIN khổng lồ
+                .AsNoTracking()              // ⚡ Không cần tracking vì chỉ đọc dữ liệu
                 .Include(c => c.Template)
+                    .ThenInclude(t => t.Partner)
                 .Include(c => c.Assignments!)
                     .ThenInclude(a => a.Submissions!)
                         .ThenInclude(s => s.Learner)
@@ -413,6 +416,7 @@ namespace JapaneseLearningPlatform.Controllers
                 if (isLearner)
                 {
                     submission = await _context.AssignmentSubmissions
+                        .AsNoTracking()
                         .FirstOrDefaultAsync(s => s.FinalAssignmentId == finalAssignment.Id && s.LearnerId == userId);
                 }
 
@@ -423,6 +427,7 @@ namespace JapaneseLearningPlatform.Controllers
             }
 
             var reviewed = await _context.ClassroomEvaluations
+                .AsNoTracking()
                 .AnyAsync(e => e.InstanceId == id && e.LearnerId == userId);
 
             // Nạp tài liệu học tập

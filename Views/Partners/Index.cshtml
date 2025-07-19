@@ -1,12 +1,576 @@
 ﻿@using JapaneseLearningPlatform.Data.ViewModels
-@model LoginVM
+@* @model LoginVM *@
 
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Trang chủ";
     Layout = "_Layout";
     ViewData["HideNavbar"] = false;
-    ViewData["HideFooter"] = true;
+    ViewData["HideFooter"] = false;
 }
-<div class="role-page partner-style">
-    Partner 💼
-</div>
+
+@section Head {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nihongo Sekai - Nền tảng học tiếng Nhật</title>
+    <meta name="description"
+          content="Làm chủ tiếng Nhật qua các buổi trò chuyện nhập vai, hiểu biết văn hóa và lộ trình học cá nhân hóa với người bản xứ." />
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+    <style>
+        /* ==================== SECTION HEADER — XẾP DỌC, CĂN GIỮA ==================== */
+        .section-header {
+            display: flex !important;
+            flex-direction: column; /* Ép xếp dọc */
+            align-items: center; /* Căn giữa theo trục ngang */
+            text-align: center; /* Căn chữ giữa */
+            gap: var(--spacing-md); /* Khoảng cách giữa các dòng */
+            margin-bottom: var(--spacing-2xl);
+        }
+
+            /* Reset margin mặc định */
+            .section-header h2,
+            .section-header p,
+            .section-header .btn {
+                margin: 0;
+            }
+
+            /* Nếu có nút .btn trong header, đẩy xuống xa hơn */
+            .section-header .btn {
+                margin-top: var(--spacing-lg);
+            }
+
+
+        /* Ở mobile: ép xuống hàng, căn giữa */
+        @@media (max-width: 768px) {
+            .section-header {
+                flex-direction: column !important;
+                text-align: center;
+            }
+
+                .section-header h2 {
+                    font-size: 1.75rem;
+                }
+
+                .section-header p {
+                    font-size: 1rem;
+                }
+
+                .section-header .btn {
+                    margin-top: var(--spacing-md);
+                }
+        }
+        /* Why Choose Section */
+        .why-choose {
+            padding: var(--spacing-3xl) 0;
+            background: var(--color-gray-50);
+        }
+
+        .learn-more-btn {
+            color: #fafafa;
+            transition: color var(--transition-base);
+        }
+
+            .learn-more-btn:hover {
+                color: #ffffff;
+            }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-2xl);
+        }
+
+        .feature-card {
+            background: var(--color-white);
+            padding: var(--spacing-2xl);
+            border-radius: var(--radius-xl);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-gray-200);
+            transition: all var(--transition-base);
+        }
+
+            .feature-card:hover {
+                transform: translateY(-4px);
+                box-shadow: var(--shadow-lg);
+            }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-lg);
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-gray-900);
+        }
+
+        .feature-card p {
+            color: var(--color-gray-600);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: var(--spacing-3xl) 0;
+            background: var(--color-white);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-2xl);
+        }
+
+        .testimonial-card {
+            background: var(--color-white);
+            padding: var(--spacing-2xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-gray-200);
+            transition: all var(--transition-base);
+        }
+
+            .testimonial-card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-lg);
+            }
+
+        .testimonial-content {
+            margin-bottom: var(--spacing-xl);
+        }
+
+            .testimonial-content p {
+                font-style: italic;
+                font-size: 1.125rem;
+                line-height: 1.6;
+                color: var(--color-gray-700);
+                margin: 0;
+            }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+            .author-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .author-info h4 {
+            font-size: 1.125rem;
+            margin: 0 0 var(--spacing-xs) 0;
+            color: var(--color-gray-900);
+        }
+
+        .author-info p {
+            font-size: 0.875rem;
+            color: var(--color-gray-600);
+            margin: 0 0 var(--spacing-sm) 0;
+        }
+
+        .author-rating {
+            color: var(--color-accent-600);
+            font-size: 0.875rem;
+        }
+
+    </style>
+}
+
+<!--Header Advertisement-->
+@if (!User.Identity.IsAuthenticated || !User.IsInRole("Learner"))
+{
+    <section class="hero animate-on-scroll">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    Chinh phục tiếng Nhật với <span class="highlight-yellow">Người bản xứ</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Tham gia cộng đồng học nhập vai và khám phá vẻ đẹp của ngôn ngữ, văn hóa Nhật Bản qua các khóa học cá nhân hóa và buổi trò chuyện trực tiếp.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/Courses" class="btn btn-primary btn-large">
+                        <i class="bi bi-play-circle me-1"></i> Bắt đầu học ngay
+                    </a>
+                    <a href="~/About" class="btn btn-outline btn-large">Tìm hiểu thêm</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item"><strong>20+</strong> <span class="stat-label">Học viên</span></div>
+                    <div class="stat-item"><strong>10+</strong> <span class="stat-label">Khóa học</span></div>
+                    <div class="stat-item"><strong>10+</strong> <span class="stat-label">Đối tác</span></div>
+                    <div class="stat-item"><strong>70%</strong> <span class="stat-label">Tỷ lệ thành công</span></div>
+                </div>
+            </div>
+            <div class="hero-image-wrapper float-animation shadow-lg">
+                <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&h=400&fit=crop" alt="Banner" />
+                <div class="kanji-overlay">日</div>
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Why Choose Nihongo Sekai -->
+<section class="why-choose animate-on-scroll" id="features">
+    <div class="container">
+        <div class="section-header">
+            <h2>
+                Tại sao Nihongo Sekai là đối tác học tiếng Nhật tối ưu của bạn
+            </h2>
+            <p>
+                Các khóa học tương tác, buổi học trực tiếp với người bản xứ và lộ trình cá nhân hóa—tất cả trong một.
+            </p>
+            <a href="~/About" class="btn btn-primary learn-more-btn">Tìm hiểu thêm</a>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">💬</div>
+                <h3>Hội thoại trực tiếp</h3>
+                <p>
+                    Luyện nói với người bản xứ qua các buổi video trực tiếp, phù hợp với trình độ của bạn.
+                </p>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">📚</div>
+                <h3>Khóa học có cấu trúc</h3>
+                <p>
+                    Chương trình toàn diện từ cơ bản đến nâng cao, thiết kế bởi các chuyên gia.
+                </p>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🎯</div>
+                <h3>Học cá nhân hóa</h3>
+                <p>
+                    Đề xuất AI và lộ trình tùy chỉnh dựa trên mục tiêu của bạn.
+                </p>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🏆</div>
+                <h3>Hòa nhập văn hóa</h3>
+                <p>
+                    Học không chỉ ngôn ngữ mà còn hiểu sâu văn hóa và ngữ cảnh thực tế.
+                </p>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">📱</div>
+                <h3>Học mọi nơi</h3>
+                <p>
+                    Truy cập bài học trên mọi thiết bị, tiếp tục học khi di chuyển.
+                </p>
+            </div>
+
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🌟</div>
+                <h3>Giáo viên chuyên gia</h3>
+                <p>
+                    Học với người bản xứ và giảng viên tiếng Nhật được cấp chứng chỉ.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials animate-on-scroll">
+    <div class="container">
+        <div class="section-header">
+            <h2>Phản hồi từ học viên</h2>
+            <p>
+                Tham gia cùng hàng nghìn học viên đã nâng cao kỹ năng tiếng Nhật
+            </p>
+        </div>
+
+        <div class="testimonials-grid">
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-content">
+                    <p>
+                        "Nihongo Sekai đã thay đổi trải nghiệm học tiếng Nhật của tôi. Các buổi hội thoại trực tiếp với người bản xứ đã mang lại cho tôi sự tự tin chưa từng có."
+                    </p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" alt="Sarah Kim" />
+                    </div>
+                    <div class="author-info">
+                        <h4>Sarah Kim</h4>
+                        <p>Kỹ sư phần mềm</p>
+                        <div class="author-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-content">
+                    <p>
+                        "Phương pháp có cấu trúc và những hiểu biết văn hóa đã khiến việc học trở nên thú vị và hiệu quả. Tôi đã từ con số 0 đến giao tiếp thành thạo chỉ trong 6 tháng!"
+                    </p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mike" alt="Mike Chen" />
+                    </div>
+                    <div class="author-info">
+                        <h4>Mike Chen</h4>
+                        <p>Chuyên viên phân tích kinh doanh</p>
+                        <div class="author-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card animate-on-scroll">
+                <div class="testimonial-content">
+                    <p>
+                        "Sự linh hoạt để học theo nhịp độ của tôi và vẫn có thể truy cập giáo viên trực tiếp khi cần là chính xác những gì tôi cần."
+                    </p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Emma" alt="Emma Rodriguez" />
+                    </div>
+                    <div class="author-info">
+                        <h4>Emma Rodriguez</h4>
+                        <p>Quản lý tiếp thị</p>
+                        <div class="author-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section text-center animate-on-scroll"
+         style="background: linear-gradient(135deg, #e02424, #ec4899); padding: 100px 0 80px; margin-bottom: 0;">
+    <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
+        <h2 class="fw-bold mb-3 display-6" style="color: #0F172A;">
+            Sẵn sàng bắt đầu hành trình học tiếng Nhật?
+        </h2>
+        <p class="lead mb-4 text-white">
+            Tham gia cùng hàng nghìn học viên đã thành công với chúng tôi
+        </p>
+        <div class="d-flex gap-3 flex-wrap justify-content-center">
+            @if (!User.Identity.IsAuthenticated || !User.IsInRole("Learner"))
+            {
+                <a href="/Account/Register" class="btn fw-semibold px-4 py-2 rounded"
+                   style="background-color: #fff; color: #e02424; min-width: 180px;">
+                    Bắt đầu miễn phí
+                </a>
+            }
+            <a href="/Courses" class="btn fw-semibold px-4 py-2 rounded"
+               style="color: #fff; border: 2px solid #fff; background-color: transparent; min-width: 180px;">
+                Duyệt khóa học
+            </a>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        /**
+         * JavaScript Trang Chủ
+         * Xử lý nội dung nổi bật, hiệu ứng cuộn và chức năng riêng của trang
+         */
+        document.addEventListener("DOMContentLoaded", function () {
+            // Nội dung khi DOM đã sẵn sàng
+        });
+
+        class HomePage {
+          constructor() {
+            this.init();
+          }
+
+          init() {
+            this.initializeAnimations();
+            this.setupSakuraEffect();
+          }
+
+          initializeAnimations() {
+            // Thiết lập Intersection Observer cho hiệu ứng khi cuộn
+            const observerOptions = {
+              threshold: 0.1,
+              rootMargin: "0px 0px -50px 0px",
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  entry.target.style.animationPlayState = "running";
+                  observer.unobserve(entry.target);
+                }
+              });
+            }, observerOptions);
+
+            // Quan sát tất cả phần tử có lớp .animate-on-scroll
+            document.querySelectorAll(".animate-on-scroll").forEach((el) => {
+              observer.observe(el);
+            });
+
+            // Thiết lập độ trễ cho hoạt ảnh các thẻ feature-card
+            const featureCards = document.querySelectorAll(".feature-card");
+            featureCards.forEach((card, index) => {
+              card.style.animationDelay = `${index * 0.2}s`;
+            });
+
+            // Thiết lập độ trễ cho hoạt ảnh các thẻ testimonial-card
+            const testimonialCards = document.querySelectorAll(".testimonial-card");
+            testimonialCards.forEach((card, index) => {
+              card.style.animationDelay = `${index * 0.3}s`;
+            });
+          }
+
+          setupSakuraEffect() {
+            const container = document.getElementById("sakuraContainer");
+            if (!container) return;
+
+            const createSakuraPetal = () => {
+              const petal = document.createElement("div");
+              petal.className = "sakura-petal";
+
+              // Vị trí ngang ngẫu nhiên
+              petal.style.left = Math.random() * 100 + "%";
+
+              // Kích thước ngẫu nhiên
+              const size = Math.random() * 8 + 6;
+              petal.style.width = size + "px";
+              petal.style.height = size + "px";
+
+              // Thời lượng hoạt ảnh ngẫu nhiên
+              const duration = Math.random() * 10 + 15;
+              petal.style.animationDuration = duration + "s";
+
+              // Độ trễ hoạt ảnh ngẫu nhiên
+              petal.style.animationDelay = Math.random() * 5 + "s";
+
+              container.appendChild(petal);
+
+              // Xóa cánh hoa sau khi hoạt ảnh kết thúc
+              setTimeout(
+                () => {
+                  if (petal.parentNode) {
+                    petal.parentNode.removeChild(petal);
+                  }
+                },
+                (duration + 5) * 1000,
+              );
+            };
+
+            // Tạo các cánh hoa ban đầu
+            for (let i = 0; i < 15; i++) {
+              setTimeout(createSakuraPetal, i * 1000);
+            }
+
+            // Liên tục tạo thêm cánh hoa
+            setInterval(createSakuraPetal, 3000);
+          }
+        }
+
+        // Khởi tạo HomePage khi DOM đã tải xong
+        let homePage;
+
+        document.addEventListener("DOMContentLoaded", () => {
+          homePage = new HomePage();
+
+          // Thêm cuộn mượt cho các liên kết nội bộ
+          document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+            anchor.addEventListener("click", function (e) {
+              e.preventDefault();
+              const target = document.querySelector(this.getAttribute("href"));
+              if (target) {
+                target.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
+            });
+          });
+
+          // Thêm hiệu ứng parallax cho nền hero
+          let ticking = false;
+
+          function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            const heroBackground = document.querySelector(".hero-background");
+
+            if (heroBackground) {
+              heroBackground.style.transform = `translateY(${rate}px)`;
+            }
+
+            ticking = false;
+          }
+
+          function requestTick() {
+            if (!ticking) {
+              requestAnimationFrame(updateParallax);
+              ticking = true;
+            }
+          }
+
+          window.addEventListener("scroll", requestTick, { passive: true });
+        });
+
+        // Xử lý khi thay đổi kích thước cửa sổ
+        window.addEventListener(
+          "resize",
+          Utils.debounce(() => {
+            // Làm mới các hiệu ứng và bố cục nếu cần
+            if (homePage) {
+              homePage.addCardAnimations();
+            }
+          }, 250),
+        );
+
+    </script>
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const totalPetals = 20;
+        const half = totalPetals / 2;
+
+        for (let i = 0; i < totalPetals; i++) {
+            const petal = document.createElement("div");
+            petal.classList.add("sakura-petal");
+
+            if (i < half) {
+                petal.style.left = (Math.random() * 50) + "vw";
+            } else {
+                petal.style.left = (50 + Math.random() * 50) + "vw";
+            }
+
+            const rotate = Math.random() * 360;
+            petal.style.transform = `rotate(${rotate}deg)`;
+
+            petal.style.animationDelay = (Math.random() * 5) + "s";
+            petal.style.animationDuration = (5 + Math.random() * 5) + "s";
+
+            document.body.appendChild(petal);
+        }
+    });
+</script>

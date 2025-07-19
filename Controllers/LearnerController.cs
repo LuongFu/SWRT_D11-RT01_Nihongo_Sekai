@@ -230,7 +230,7 @@ namespace JapaneseLearningPlatform.Controllers
             // ❌ Nếu mật khẩu mới trùng mật khẩu hiện tại
             if (model.CurrentPassword == model.NewPassword)
             {
-                TempData["ChangePasswordError"] = "New password must not be the same as the current password.";
+                TempData["ChangePasswordError"] = "Mật khẩu mới phải trùng với mật khẩu cũ.";
                 return RedirectToAction("ChangePassword");
             }
 
@@ -260,15 +260,21 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (profilePicture == null || profilePicture.Length == 0)
             {
-                TempData["UploadError"] = "Please select a photo before uploading.";
+                TempData["UploadError"] = "Vui lòng chọn ảnh trước khi tải lên.";
                 return RedirectToAction("Profile");
             }
 
             var extension = Path.GetExtension(profilePicture.FileName)?.ToLower();
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                TempData["UploadError"] = "File không hợp lệ. Không tìm thấy phần mở rộng.";
+                return RedirectToAction("Profile");
+            }
+
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
             if (!allowedExtensions.Contains(extension))
             {
-                TempData["UploadError"] = "Invalid file type.";
+                TempData["UploadError"] = "File không hợp lệ. Vui lòng chọn ảnh thuộc một trong các định dạng: .jpg, .jpeg, .png, .gif, .webp.";
                 return RedirectToAction("Profile");
             }
 

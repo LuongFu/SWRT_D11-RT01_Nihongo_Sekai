@@ -1,24 +1,23 @@
 ﻿@{
-    ViewData["Title"] = "Terms of Service - Nihongo Sekai";
+    ViewData["Title"] = "Điều Khoản Dịch Vụ";
     Layout = "_Layout";
 }
 
 @section Head {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Terms of Service - Nihongo Sekai</title>
+    <title>Điều Khoản Dịch Vụ</title>
     <meta name="description"
-          content="Terms of Service for Nihongo Sekai. Learn about our platform rules, user responsibilities, and service conditions." />
+          content="Điều khoản dịch vụ của Nihongo Sekai. Tìm hiểu về quy định nền tảng, trách nhiệm người dùng và điều kiện sử dụng dịch vụ." />
 }
 
 @section Styles {
-    <meta name="description" content="Terms of Service for Nihongo Sekai. Learn about our platform rules, user responsibilities, and service conditions." />
+    <meta name="description" content="Điều khoản dịch vụ của Nihongo Sekai. Tìm hiểu về quy định nền tảng, trách nhiệm người dùng và điều kiện sử dụng dịch vụ." />
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
 
-    <!-- Page-specific Styles -->
+    <!-- Trang-specific Styles -->
     <link rel="stylesheet" href="~/css/terms.css" />
     <link rel="stylesheet" href="~/css/styles.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
@@ -29,278 +28,277 @@
 }
 
 <main class="main legal-page">
-    <!-- Hero Section -->
+    <!-- Phần Hero -->
     <section class="legal-hero">
         <div class="container">
             <div class="legal-hero-content">
                 <div class="legal-breadcrumb">
-                    <a asp-page="/Index">Home</a>
+                    <a asp-page="/Index">Trang Chủ</a>
                     <span class="legal-breadcrumb-separator">›</span>
-                    <span>Terms of Service</span>
+                    <span>Điều Khoản Dịch Vụ</span>
                 </div>
-                <h1 class="legal-page-title">Terms of Service</h1>
+                <h1 class="legal-page-title">Điều Khoản Dịch Vụ</h1>
                 <p class="legal-page-subtitle">
-                    These terms govern your use of Nihongo Sekai's platform and
-                    services. Please read them carefully before getting started.
+                    Những điều khoản này điều chỉnh việc bạn sử dụng nền tảng và dịch vụ của Nihongo Sekai. Vui lòng đọc kỹ trước khi bắt đầu.
                 </p>
                 <div class="legal-last-updated">
-                    <strong>Last Updated:</strong> January 15, 2024
+                    <strong>Cập Nhật Lần Cuối:</strong> 15 tháng 1, 2024
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Terms Content -->
+    <!-- Nội dung Điều Khoản -->
     <section class="legal-content">
         <div class="container">
             <div class="legal-wrapper">
                 <aside class="legal-sidebar">
                     <div class="legal-nav-card">
-                        <h3 class="legal-nav-title">Table of Contents</h3>
+                        <h3 class="legal-nav-title">Mục Lục</h3>
                         <ul class="legal-nav-list">
-                            <li><a href="#acceptance" class="legal-nav-link">Acceptance</a></li>
-                            <li><a href="#description" class="legal-nav-link">Service Description</a></li>
-                            <li><a href="#user-accounts" class="legal-nav-link">User Accounts</a></li>
-                            <li><a href="#acceptable-use" class="legal-nav-link">Acceptable Use</a></li>
-                            <li><a href="#intellectual-property" class="legal-nav-link">Intellectual Property</a></li>
-                            <li><a href="#payments" class="legal-nav-link">Payments & Refunds</a></li>
-                            <li><a href="#teacher-terms" class="legal-nav-link">Teacher Terms</a></li>
-                            <li><a href="#privacy" class="legal-nav-link">Privacy & Data</a></li>
-                            <li><a href="#disclaimers" class="legal-nav-link">Disclaimers</a></li>
-                            <li><a href="#limitation" class="legal-nav-link">Limitation of Liability</a></li>
-                            <li><a href="#termination" class="legal-nav-link">Termination</a></li>
-                            <li><a href="#governing-law" class="legal-nav-link">Governing Law</a></li>
-                            <li><a href="#contact" class="legal-nav-link">Contact</a></li>
+                            <li><a href="#acceptance" class="legal-nav-link">Chấp Thuận</a></li>
+                            <li><a href="#description" class="legal-nav-link">Mô Tả Dịch Vụ</a></li>
+                            <li><a href="#user-accounts" class="legal-nav-link">Tài Khoản Người Dùng</a></li>
+                            <li><a href="#acceptable-use" class="legal-nav-link">Chính Sách Sử Dụng</a></li>
+                            <li><a href="#intellectual-property" class="legal-nav-link">Quyền Sở Hữu Trí Tuệ</a></li>
+                            <li><a href="#payments" class="legal-nav-link">Thanh Toán & Hoàn Tiền</a></li>
+                            <li><a href="#teacher-terms" class="legal-nav-link">Điều Khoản Giáo Viên</a></li>
+                            <li><a href="#privacy" class="legal-nav-link">Quyền Riêng Tư & Dữ Liệu</a></li>
+                            <li><a href="#disclaimers" class="legal-nav-link">Tuyên Bố Miễn Trách</a></li>
+                            <li><a href="#limitation" class="legal-nav-link">Giới Hạn Trách Nhiệm</a></li>
+                            <li><a href="#termination" class="legal-nav-link">Chấm Dứt</a></li>
+                            <li><a href="#governing-law" class="legal-nav-link">Luật Áp Dụng</a></li>
+                            <li><a href="#contact" class="legal-nav-link">Liên Hệ</a></li>
                         </ul>
                     </div>
                 </aside>
 
                 <article class="legal-main">
                     <section id="acceptance" class="legal-section">
-                        <h2>1. Acceptance of Terms</h2>
-                        <p>By accessing or using Nihongo Sekai's website, mobile application, or services (collectively, the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use our Service.</p>
-                        <p>These Terms apply to all users of the Service, including students, teachers, and administrative users. Additional terms may apply to specific features or services.</p>
+                        <h2>1. Chấp Thuận Điều Khoản</h2>
+                        <p>Bằng việc truy cập hoặc sử dụng trang web, ứng dụng di động hoặc bất kỳ dịch vụ nào của Nihongo Sekai (gọi chung là "Dịch Vụ"), bạn đồng ý bị ràng buộc bởi Điều Khoản Dịch Vụ này ("Điều Khoản"). Nếu bạn không đồng ý, vui lòng không sử dụng Dịch Vụ.</p>
+                        <p>Điều Khoản này áp dụng cho tất cả người dùng, bao gồm học viên, giáo viên và quản trị viên. Các tính năng hoặc dịch vụ cụ thể có thể kèm theo điều khoản bổ sung.</p>
                     </section>
 
                     <section id="description" class="legal-section">
-                        <h2>2. Service Description</h2>
-                        <p>Nihongo Sekai provides an online platform for learning Japanese language through:</p>
+                        <h2>2. Mô Tả Dịch Vụ</h2>
+                        <p>Nihongo Sekai cung cấp nền tảng học tiếng Nhật trực tuyến thông qua:</p>
                         <ul>
-                            <li>Self-paced online courses with video lessons and quizzes</li>
-                            <li>Live virtual classrooms with certified teachers</li>
-                            <li>Interactive community features and forums</li>
-                            <li>Progress tracking and certification programs</li>
-                            <li>Cultural learning resources and materials</li>
+                            <li>Các khóa học tự học với bài giảng video và câu đố</li>
+                            <li>Lớp học ảo trực tiếp với giáo viên được chứng nhận</li>
+                            <li>Tính năng cộng đồng tương tác và diễn đàn</li>
+                            <li>Theo dõi tiến trình học tập và chương trình chứng nhận</li>
+                            <li>Tài liệu và nguồn học về văn hóa</li>
                         </ul>
                         <div class="legal-info-box">
-                            <h4>📝 Service Updates</h4>
-                            <p>We reserve the right to modify, suspend, or discontinue any part of our Service at any time with reasonable notice.</p>
+                            <h4>📝 Cập Nhật Dịch Vụ</h4>
+                            <p>Chúng tôi có quyền sửa đổi, tạm ngưng hoặc ngừng bất kỳ phần nào của Dịch Vụ vào bất kỳ lúc nào với thông báo hợp lý.</p>
                         </div>
                     </section>
 
                     <section id="user-accounts" class="legal-section">
-                        <h2>3. User Accounts</h2>
-                        <h3>Account Creation</h3>
-                        <p>To access certain features, you must create an account. You agree to:</p>
+                        <h2>3. Tài Khoản Người Dùng</h2>
+                        <h3>Tạo Tài Khoản</h3>
+                        <p>Để truy cập một số tính năng, bạn phải tạo tài khoản. Bạn đồng ý:</p>
                         <ul>
-                            <li>Provide accurate and complete information</li>
-                            <li>Keep your account information updated</li>
-                            <li>Maintain the confidentiality of your password</li>
-                            <li>Accept responsibility for all activities under your account</li>
-                            <li>Notify us immediately of any unauthorized access</li>
+                            <li>Cung cấp thông tin chính xác và đầy đủ</li>
+                            <li>Cập nhật thông tin tài khoản kịp thời</li>
+                            <li>Bảo mật mật khẩu của mình</li>
+                            <li>Chịu trách nhiệm cho mọi hoạt động dưới tài khoản</li>
+                            <li>Thông báo ngay cho chúng tôi nếu phát hiện truy cập trái phép</li>
                         </ul>
-                        <h3>Account Types</h3>
+                        <h3>Loại Tài Khoản</h3>
                         <div class="legal-contact-grid">
                             <div class="legal-contact-card">
-                                <h4>Student Accounts</h4>
-                                <p>Access to courses, classrooms, and community features</p>
+                                <h4>Tài Khoản Học Viên</h4>
+                                <p>Truy cập khóa học, lớp học và tính năng cộng đồng</p>
                             </div>
                             <div class="legal-contact-card">
-                                <h4>Teacher Accounts</h4>
-                                <p>Additional ability to create and teach classes (subject to approval)</p>
+                                <h4>Tài Khoản Giáo Viên</h4>
+                                <p>Cho phép tạo và giảng dạy lớp (theo phê duyệt)</p>
                             </div>
                             <div class="legal-contact-card">
-                                <h4>Admin Accounts</h4>
-                                <p>Platform management capabilities (by invitation only)</p>
+                                <h4>Tài Khoản Admin</h4>
+                                <p>Quản lý nền tảng (chỉ theo lời mời)</p>
                             </div>
                         </div>
-                        <h3>Account Eligibility</h3>
-                        <p>You must be at least 13 years old to create an account. Users between 13–18 may require parental consent in certain jurisdictions.</p>
+                        <h3>Đủ Điều Kiện</h3>
+                        <p>Bạn phải ít nhất 13 tuổi để tạo tài khoản. Người dùng từ 13–18 tuổi có thể cần sự đồng ý của cha mẹ tại một số khu vực.</p>
                     </section>
 
                     <section id="acceptable-use" class="legal-section">
-                        <h2>4. Acceptable Use Policy</h2>
-                        <h3>Permitted Use</h3>
-                        <p>You may use our Service for lawful educational purposes.</p>
-                        <h3>Prohibited Activities</h3>
-                        <p>You may not:</p>
+                        <h2>4. Chính Sách Sử Dụng</h2>
+                        <h3>Sử Dụng Được Phép</h3>
+                        <p>Bạn có thể sử dụng Dịch Vụ cho mục đích giáo dục hợp pháp.</p>
+                        <h3>Hoạt Động Bị Cấm</h3>
+                        <p>Bạn không được:</p>
                         <ul>
-                            <li>Post harmful, offensive, or inappropriate content</li>
-                            <li>Harass, intimidate, or discriminate against other users</li>
-                            <li>Share copyrighted material without proper authorization</li>
-                            <li>Attempt to gain unauthorized access to our systems</li>
-                            <li>Use automated tools to scrape or download content</li>
-                            <li>Impersonate other users or entities</li>
-                            <li>Distribute malware, viruses, or harmful code</li>
-                            <li>Violate any applicable laws or regulations</li>
-                            <li>Share account credentials with others</li>
-                            <li>Use the Service for commercial purposes without permission</li>
+                            <li>Đăng nội dung có hại, xúc phạm hoặc không phù hợp</li>
+                            <li>Quấy rối, đe dọa hoặc phân biệt đối xử với người khác</li>
+                            <li>Chia sẻ tài liệu có bản quyền trái phép</li>
+                            <li>Cố gắng truy cập trái phép vào hệ thống của chúng tôi</li>
+                            <li>Sử dụng công cụ tự động để thu thập hoặc tải xuống nội dung</li>
+                            <li>Mạo danh người dùng hoặc tổ chức khác</li>
+                            <li>Phát tán phần mềm độc hại, virus hoặc mã có hại</li>
+                            <li>Vi phạm bất kỳ luật lệ hoặc quy định nào</li>
+                            <li>Chia sẻ thông tin đăng nhập với người khác</li>
+                            <li>Sử dụng Dịch Vụ cho mục đích thương mại mà không được phép</li>
                         </ul>
                         <div class="legal-info-box">
-                            <h4>🌸 Community Guidelines</h4>
-                            <p>Our community thrives on respect and mutual learning. We encourage constructive feedback, cultural exchange, patience with all learners, and reporting inappropriate behavior.</p>
+                            <h4>🌸 Nguyên Tắc Cộng Đồng</h4>
+                            <p>Cộng đồng của chúng tôi phát triển dựa trên sự tôn trọng và học hỏi lẫn nhau. Chúng tôi khuyến khích phản hồi mang tính xây dựng, trao đổi văn hóa, kiên nhẫn với mọi học viên và báo cáo hành vi không phù hợp.</p>
                         </div>
                     </section>
 
                     <section id="intellectual-property" class="legal-section">
-                        <h2>5. Intellectual Property Rights</h2>
-                        <h3>Our Content</h3>
-                        <p>All content on our platform, including courses, videos, text, graphics, logos, and software, is owned by Nihongo Sekai or our licensors and is protected by copyright and other intellectual property laws.</p>
-                        <h3>Limited License</h3>
-                        <p>We grant you a limited, non-exclusive, non-transferable license to access and use our content for personal, non-commercial educational purposes.</p>
-                        <h3>User-Generated Content</h3>
-                        <p>By posting content on our platform, you grant us a non-exclusive, royalty-free license to use, modify, and display your content in connection with our Service. You retain ownership of your content.</p>
-                        <h3>Copyright Policy</h3>
-                        <p>We respect intellectual property rights. If you believe your copyrighted work has been infringed, please contact us at <a href="mailto:copyright@nihongosekai.com" class="legal-link">copyright@nihongosekai.com</a>.</p>
+                        <h2>5. Quyền Sở Hữu Trí Tuệ</h2>
+                        <h3>Nội Dung Của Chúng Tôi</h3>
+                        <p>Tất cả nội dung trên nền tảng, bao gồm khóa học, video, văn bản, đồ họa, logo và phần mềm, thuộc sở hữu của Nihongo Sekai hoặc bên cấp phép và được bảo vệ bởi luật bản quyền và các luật sở hữu trí tuệ khác.</p>
+                        <h3>Giấy Phép Hạn Chế</h3>
+                        <p>Chúng tôi cấp cho bạn giấy phép hạn chế, không độc quyền, không chuyển nhượng để truy cập và sử dụng nội dung cho mục đích giáo dục cá nhân, không thương mại.</p>
+                        <h3>Nội Dung Người Dùng Tạo Ra</h3>
+                        <p>Bằng cách đăng nội dung lên nền tảng, bạn cấp cho chúng tôi giấy phép không độc quyền, miễn phí bản quyền để sử dụng, chỉnh sửa và hiển thị nội dung đó. Bạn vẫn giữ quyền sở hữu nội dung của mình.</p>
+                        <h3>Chính Sách Bản Quyền</h3>
+                        <p>Nếu bạn cho rằng tác phẩm có bản quyền của bạn bị xâm phạm, vui lòng liên hệ chúng tôi tại <a href="mailto:copyright@nihongosekai.com" class="legal-link">copyright@nihongosekai.com</a>.</p>
                     </section>
 
                     <section id="payments" class="legal-section">
-                        <h2>6. Payments and Refunds</h2>
-                        <h3>Pricing</h3>
-                        <p>Course prices are displayed in USD and may vary by region. Prices are subject to change with reasonable notice.</p>
-                        <h3>Payment Processing</h3>
-                        <p>Payments are processed securely through PayPal. By making a purchase, you agree to PayPal's terms and conditions.</p>
-                        <h3>Refund Policy</h3>
+                        <h2>6. Thanh Toán và Hoàn Tiền</h2>
+                        <h3>Giá Cả</h3>
+                        <p>Giá khóa học hiển thị bằng USD và có thể thay đổi theo khu vực. Giá có thể được điều chỉnh với thông báo hợp lý.</p>
+                        <h3>Xử Lý Thanh Toán</h3>
+                        <p>Thanh toán được thực hiện an toàn qua PayPal. Bằng việc mua hàng, bạn đồng ý với điều khoản của PayPal.</p>
+                        <h3>Chính Sách Hoàn Tiền</h3>
                         <div class="legal-table-wrapper">
                             <table class="legal-table">
                                 <thead>
                                     <tr>
-                                        <th>Service Type</th>
-                                        <th>Refund Terms</th>
-                                        <th>Conditions</th>
+                                        <th>Loại Dịch Vụ</th>
+                                        <th>Điều Khoản Hoàn Tiền</th>
+                                        <th>Điều Kiện</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Individual Courses</td>
-                                        <td>30-day guarantee</td>
-                                        <td>Less than 30% content accessed</td>
+                                        <td>Khóa Học Cá Nhân</td>
+                                        <td>Đảm bảo 30 ngày</td>
+                                        <td>Dưới 30% nội dung đã truy cập</td>
                                     </tr>
                                     <tr>
-                                        <td>Live Classes</td>
-                                        <td>Full refund</td>
-                                        <td>24+ hours before class start</td>
+                                        <td>Lớp Học Trực Tiếp</td>
+                                        <td>Hoàn tiền đầy đủ</td>
+                                        <td>Trước 24 giờ so với thời gian lớp học</td>
                                     </tr>
                                     <tr>
-                                        <td>Subscriptions</td>
-                                        <td>Prorated refund</td>
-                                        <td>Cancel anytime, unused periods</td>
+                                        <td>Đăng Ký Theo Gói</td>
+                                        <td>Hoàn tiền tính theo thời gian chưa sử dụng</td>
+                                        <td>Hủy bất cứ lúc nào, phần còn lại chưa sử dụng</td>
                                     </tr>
                                     <tr>
-                                        <td>Technical Issues</td>
-                                        <td>Full refund</td>
-                                        <td>Unresolvable access problems</td>
+                                        <td>Sự Cố Kỹ Thuật</td>
+                                        <td>Hoàn tiền đầy đủ</td>
+                                        <td>Vấn đề truy cập không thể khắc phục</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <h3>Billing</h3>
-                        <p>For subscription services, billing occurs automatically on your renewal date. You can cancel your subscription at any time through your account settings.</p>
+                        <h3>Thanh Toán Định Kỳ</h3>
+                        <p>Với dịch vụ theo gói, việc thanh toán được thực hiện tự động vào ngày gia hạn. Bạn có thể hủy gói bất kỳ lúc nào trong cài đặt tài khoản.</p>
                     </section>
 
                     <section id="teacher-terms" class="legal-section">
-                        <h2>7. Teacher-Specific Terms</h2>
-                        <h3>Teacher Application</h3>
-                        <p>Prospective teachers must complete our application process, including background verification and demonstration of teaching qualifications.</p>
-                        <h3>Teaching Standards</h3>
-                        <p>Teachers must:</p>
+                        <h2>7. Điều Khoản Dành Cho Giáo Viên</h2>
+                        <h3>Đăng Ký Giáo Viên</h3>
+                        <p>Ứng viên giáo viên phải hoàn tất quy trình đăng ký, bao gồm xác minh lý lịch và chứng minh năng lực giảng dạy.</p>
+                        <h3>Tiêu Chuẩn Giảng Dạy</h3>
+                        <p>Giáo viên phải:</p>
                         <ul>
-                            <li>Maintain professional conduct in all interactions</li>
-                            <li>Deliver high-quality educational content</li>
-                            <li>Follow our curriculum guidelines and teaching standards</li>
-                            <li>Respond to student inquiries within 24 hours</li>
-                            <li>Maintain appropriate certifications and qualifications</li>
+                            <li>Duy trì hành vi chuyên nghiệp trong mọi tương tác</li>
+                            <li>Cung cấp nội dung giảng dạy chất lượng cao</li>
+                            <li>Tuân thủ hướng dẫn chương trình và tiêu chuẩn giảng dạy</li>
+                            <li>Phản hồi thắc mắc của học viên trong vòng 24 giờ</li>
+                            <li>Duy trì chứng chỉ và bằng cấp phù hợp</li>
                         </ul>
-                        <h3>Revenue Sharing</h3>
-                        <p>Teachers receive 70% of net revenue from their courses and classes, with payment processing fees deducted. Payments are made monthly via PayPal.</p>
+                        <h3>Chia Sẻ Doanh Thu</h3>
+                        <p>Giáo viên nhận 70% doanh thu ròng từ khóa học và lớp học, trừ phí xử lý. Thanh toán hàng tháng qua PayPal.</p>
                     </section>
 
                     <section id="privacy" class="legal-section">
-                        <h2>8. Privacy and Data Protection</h2>
-                        <p>Your privacy is important to us. Our collection, use, and protection of your personal information is governed by our <a asp-page="/Privacy" class="legal-link">Privacy Policy</a>, which is incorporated into these Terms by reference.</p>
-                        <p>By using our Service, you consent to the collection and use of your information as described in our Privacy Policy.</p>
+                        <h2>8. Quyền Riêng Tư và Bảo Vệ Dữ Liệu</h2>
+                        <p>Bảo mật thông tin cá nhân của bạn rất quan trọng với chúng tôi. Việc thu thập, sử dụng và bảo vệ thông tin của bạn được điều chỉnh bởi <a asp-page="/Privacy" class="legal-link">Chính Sách Quyền Riêng Tư</a> của chúng tôi, được nhập làm một phần của Điều Khoản này.</p>
+                        <p>Bằng cách sử dụng Dịch Vụ, bạn đồng ý với việc thu thập và sử dụng thông tin như mô tả trong Chính Sách Quyền Riêng Tư.</p>
                     </section>
 
                     <section id="disclaimers" class="legal-section">
-                        <h2>9. Disclaimers</h2>
-                        <h3>Service Availability</h3>
-                        <p>We strive to provide uninterrupted service but cannot guarantee 100% uptime. The Service is provided "as is" and "as available."</p>
-                        <h3>Educational Outcomes</h3>
-                        <p>While we provide high-quality educational content, we cannot guarantee specific learning outcomes or proficiency levels. Success depends on individual effort and circumstances.</p>
+                        <h2>9. Tuyên Bố Miễn Trách</h2>
+                        <h3>Khả Năng Cung Cấp Dịch Vụ</h3>
+                        <p>Chúng tôi nỗ lực cung cấp dịch vụ liên tục nhưng không thể đảm bảo 100% thời gian hoạt động. Dịch Vụ được cung cấp “nguyên trạng” và “tại thời điểm có sẵn”.</p>
+                        <h3>Kết Quả Giáo Dục</h3>
+                        <p>Dù chúng tôi cung cấp nội dung chất lượng, chúng tôi không thể đảm bảo kết quả học tập hoặc trình độ cụ thể. Thành công phụ thuộc vào nỗ lực và hoàn cảnh cá nhân.</p>
                         <div class="legal-warning-box">
-                            <h4>⚠️ Third-Party Services</h4>
-                            <p>Our platform may include links to third-party websites or services. We are not responsible for their content, privacy practices, or availability.</p>
+                            <h4>⚠️ Dịch Vụ Bên Thứ Ba</h4>
+                            <p>Nền tảng có thể liên kết đến trang web hoặc dịch vụ bên thứ ba. Chúng tôi không chịu trách nhiệm về nội dung, chính sách riêng tư hoặc khả năng truy cập của họ.</p>
                         </div>
                     </section>
 
                     <section id="limitation" class="legal-section">
-                        <h2>10. Limitation of Liability</h2>
-                        <p>To the fullest extent permitted by law, Nihongo Sekai shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or other intangible losses.</p>
-                        <p>Our total liability to you for any claim arising from or relating to these Terms or the Service shall not exceed the amount you paid us in the twelve months preceding the claim.</p>
+                        <h2>10. Giới Hạn Trách Nhiệm</h2>
+                        <p>Trong phạm vi pháp luật cho phép, Nihongo Sekai không chịu trách nhiệm cho bất kỳ thiệt hại gián tiếp, phụ, đặc biệt, hậu quả hoặc trừng phạt nào, bao gồm mất lợi nhuận, dữ liệu hoặc các tổn thất vô hình khác.</p>
+                        <p>Tổng trách nhiệm của chúng tôi đối với bạn liên quan đến Điều Khoản hoặc Dịch Vụ không vượt quá số tiền bạn đã thanh toán trong vòng mười hai tháng trước khi phát sinh khiếu nại.</p>
                     </section>
 
                     <section id="termination" class="legal-section">
-                        <h2>11. Termination</h2>
-                        <h3>Termination by You</h3>
-                        <p>You may terminate your account at any time through your account settings or by contacting us.</p>
-                        <h3>Termination by Us</h3>
-                        <p>We may suspend or terminate your account if you:</p>
+                        <h2>11. Chấm Dứt</h2>
+                        <h3>Chấm Dứt Bởi Bạn</h3>
+                        <p>Bạn có thể hủy tài khoản bất cứ lúc nào trong cài đặt tài khoản hoặc liên hệ chúng tôi.</p>
+                        <h3>Chấm Dứt Bởi Chúng Tôi</h3>
+                        <p>Chúng tôi có thể đình chỉ hoặc xóa tài khoản nếu bạn:</p>
                         <ul>
-                            <li>Violate these Terms or our policies</li>
-                            <li>Engage in fraudulent or illegal activities</li>
-                            <li>Fail to pay required fees</li>
-                            <li>Have been inactive for an extended period</li>
+                            <li>Vi phạm Điều Khoản hoặc chính sách của chúng tôi</li>
+                            <li>Tham gia hoạt động gian lận hoặc bất hợp pháp</li>
+                            <li>Không thanh toán các khoản phí cần thiết</li>
+                            <li>Không hoạt động trong thời gian dài</li>
                         </ul>
-                        <h3>Effect of Termination</h3>
-                        <p>Upon termination, your access to the Service will cease, but certain provisions of these Terms will survive, including intellectual property rights and limitation of liability.</p>
+                        <h3>Hậu Quả Khi Chấm Dứt</h3>
+                        <p>Sau khi chấm dứt, quyền truy cập của bạn vào Dịch Vụ sẽ ngừng, nhưng một số điều khoản vẫn còn hiệu lực, bao gồm quyền sở hữu trí tuệ và giới hạn trách nhiệm.</p>
                     </section>
 
                     <section id="governing-law" class="legal-section">
-                        <h2>12. Governing Law and Dispute Resolution</h2>
-                        <h3>Governing Law</h3>
-                        <p>These Terms are governed by the laws of Japan, without regard to conflict of law principles.</p>
-                        <h3>Dispute Resolution</h3>
-                        <p>We encourage resolving disputes through direct communication. If that fails, disputes will be resolved through binding arbitration in Tokyo, Japan.</p>
+                        <h2>12. Luật Áp Dụng và Giải Quyết Tranh Chấp</h2>
+                        <h3>Luật Áp Dụng</h3>
+                        <p>Điều Khoản này được điều chỉnh bởi pháp luật Nhật Bản, không xét đến nguyên tắc xung đột luật.</p>
+                        <h3>Giải Quyết Tranh Chấp</h3>
+                        <p>Chúng tôi khuyến khích bạn giải quyết tranh chấp thông qua thương lượng. Nếu không thành công, tranh chấp sẽ giải quyết bằng trọng tài bắt buộc tại Tokyo, Nhật Bản.</p>
                         <div class="legal-info-box">
-                            <h4>⚖️ Class Action Waiver</h4>
-                            <p>You agree to resolve disputes individually and waive the right to participate in class action lawsuits.</p>
+                            <h4>⚖️ Miễn Tham Gia Kiện Tập Thể</h4>
+                            <p>Bạn đồng ý giải quyết tranh chấp cá nhân và từ bỏ quyền tham gia kiện tập thể.</p>
                         </div>
                     </section>
 
                     <section id="contact" class="legal-section">
-                        <h2>13. Contact Information</h2>
-                        <p>If you have questions about these Terms, please contact us:</p>
+                        <h2>13. Thông Tin Liên Hệ</h2>
+                        <p>Nếu bạn có thắc mắc về Điều Khoản, vui lòng liên hệ:</p>
                         <div class="legal-contact-grid">
                             <div class="legal-contact-card">
                                 <h4>Email</h4>
                                 <p><a href="mailto:legal@nihongosekai.com" class="legal-link">legal@nihongosekai.com</a></p>
                             </div>
                             <div class="legal-contact-card">
-                                <h4>Mailing Address</h4>
+                                <h4>Địa Chỉ</h4>
                                 <p>
-                                    Nihongo Sekai Legal Department<br />
-                                    1-2-3 Shibuya, Shibuya-ku<br />
-                                    Tokyo 150-0002, Japan
+                                    Phòng Pháp Chế Nihongo Sekai<br />
+                                    1-2-3 Shibuya, Quận Shibuya<br />
+                                    Tokyo 150-0002, Nhật Bản
                                 </p>
                             </div>
                             <div class="legal-contact-card">
-                                <h4>Phone</h4>
+                                <h4>Điện Thoại</h4>
                                 <p>+81-3-1234-5678</p>
                             </div>
                         </div>
                         <div class="legal-info-box">
-                            <h4>📄 Changes to Terms</h4>
-                            <p>We may update these Terms from time to time. We will notify you of material changes by email or through our Service. Continued use after changes constitutes acceptance of the new Terms.</p>
+                            <h4>📄 Thay Đổi Điều Khoản</h4>
+                            <p>Chúng tôi có thể cập nhật Điều Khoản này theo thời gian. Chúng tôi sẽ thông báo các thay đổi quan trọng qua email hoặc qua Dịch Vụ. Việc tiếp tục sử dụng sau khi có thay đổi đồng nghĩa bạn đã chấp nhận Điều Khoản mới.</p>
                         </div>
                     </section>
                 </article>

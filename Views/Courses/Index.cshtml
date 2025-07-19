@@ -6,7 +6,7 @@
 @model IEnumerable<CourseWithPurchaseVM>
 
 @{
-    ViewData["Title"] = "All Courses";
+    ViewData["Title"] = "Danh sách khóa học";
     ViewData["HideNavbar"] = false;
     ViewData["HideFooter"] = false;
 
@@ -29,6 +29,52 @@
     <!-- Page-specific CSS -->
     <link rel="stylesheet" href="~/css/courses.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
+    <style>
+       /* Container pill-style */
+        .pagination {
+          display: flex !important;
+          justify-content: center;
+          align-items: center;
+          gap: 0.5rem;
+          margin-top: 2rem;
+          padding-left: 0;
+          list-style: none;
+        }
+
+        /* Các nút số */
+        .pagination .page-item {
+          /* giữ nguyên cấu trúc để Bootstrap không can thiệp */
+        }
+        .pagination .page-item .page-link {
+          padding: 0.5rem 0.75rem;
+          border-radius: 999px;
+          background: var(--bs-gray-100);
+          color: var(--bs-gray-700);
+          font-weight: 500;
+          transition: background 0.2s, box-shadow 0.2s;
+          border: none;
+        }
+
+        /* Hover hiệu ứng */
+        .pagination .page-item .page-link:hover {
+          background: var(--bs-gray-200);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Nút active */
+        .pagination .page-item.active .page-link {
+          background: var(--bs-primary) !important;
+          color: #fff !important;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        /* Disable (nếu có prev/next) */
+        .pagination .page-item.disabled .page-link {
+          opacity: 0.5;
+          cursor: default;
+          background: #fff;
+        }
+    </style>
 }
 
 @section Scripts {
@@ -49,7 +95,7 @@
     <div class="container animate-on-scroll">
         <div class="enhanced-hero-content">
             <h1 class="enhanced-hero-title">
-                Master Japanese Language
+                Làm chủ Tiếng Nhật
             </h1>
             <p class="enhanced-hero-subtitle">
                 Discover our comprehensive collection of Japanese courses designed
@@ -77,32 +123,64 @@
 }
 <!-- Courses Section -->
 <div class="container mt-4 animate-on-scroll">
-    <h2 class="fw-bold mb-4 text-center">Explore All Courses</h2>
+    <h2 class="fw-bold mb-4 text-center">Khám phá khóa học</h2>
 </div>
 <div id="wordOfTheDayContainer"></div>
 <div class="container animate-on-scroll">
     <div class="mb-4">
-    <form asp-action="Filter" method="get" class="row g-2 align-items-center">
+     <form asp-action="Filter" method="get" class="row g-2 align-items-center">
         <div class="col-auto">
-            <label class="form-label mb-0">Category:</label>
+            <label class="form-label mb-0">Phân loại:</label>
+        </div>
+<div class="col-auto">
+    <select name="selectedCategory" class="form-select">
+        <option value="">Chọn loại...</option>
+        @foreach (CourseCategory category in Enum.GetValues(typeof(CourseCategory)))
+        {
+            var isSelected = ViewBag.SelectedCategory != null && category.ToString() == ViewBag.SelectedCategory.ToString();
+            var selectedAttr = isSelected ? "selected" : "";
+            @: <option value="@category" @selectedAttr>@category.GetDisplayName()</option>
+        }
+    </select>
+</div>
+
+
+        <!-- Price Filter -->
+        <div class="col-auto">
+            <label class="form-label mb-0">Khoảng giá tiền:</label>
         </div>
         <div class="col-auto">
-            <select name="selectedCategory" class="form-select">
-                <option value="">Select a category...</option>
-                @foreach (CourseCategory category in Enum.GetValues(typeof(CourseCategory)))
+            <select id="priceFilter" name="minPrice" class="form-select">
+                @{
+                    // Tạo list tạm ngay trong view cho ví dụ
+                    var priceOptions = new[]
+                    {
+                        new { Value = (int?)null, Text = "Chọn khoảng giá tiền..." },
+                        new { Value = (int?)0, Text = "Dưới 100.000₫" },
+                        new { Value = (int?)101000, Text = "101.000–500.000₫" },
+                        new { Value = (int?)501000, Text = "501.000–1.000.000₫" },
+                        new { Value = (int?)1000001, Text = "Trên 1.000.000₫" }
+                    };
+                }
+
+                @foreach (var opt in priceOptions)
                 {
-                    var isSelected = ViewBag.SelectedCategory != null && category.ToString() == ViewBag.SelectedCategory.ToString();
+                    // Xác định xem có đang được chọn hay không
+                    var isSelected = (ViewBag.MinPrice == null && opt.Value == null)
+                                      || (ViewBag.MinPrice != null && opt.Value != null && (int)ViewBag.MinPrice == opt.Value);
                     var selectedAttr = isSelected ? "selected" : "";
-                    @: <option value="@category" @selectedAttr>@category</option>
+                    @:<option value="@(opt.Value?.ToString() ?? "")" @selectedAttr>@opt.Text</option>
                 }
             </select>
         </div>
+
         <div class="col-auto">
-            <input type="text" name="searchString" class="form-control" placeholder="Search by name..." value="@ViewBag.SearchString" />
-        </div>
+            <input type="text" name="searchString" class="form-control" placeholder="Tìm kiếm theo tên..." value="@ViewBag.SearchString" />
+        </div>        
+
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-funnel"></i> Apply Filter
+                <i class="bi bi-funnel"></i> Áp dụng bộ lọc
             </button>
         </div>
     </form>
@@ -118,18 +196,18 @@
                         <h5 class="card-title">@item.Course.Name</h5>
                         <p class="card-text">@item.Course.Description?.Substring(0, Math.Min(100, item.Course.Description.Length))...</p>
                         <p>
-                            <strong>Category:</strong> @item.Course.CourseCategory <br />
+                            <strong>Loại:</strong> @item.Course.CourseCategory.GetDisplayName() <br />
                             @if (item.DiscountPercent != null && item.Course.StartDate <= DateTime.Now && item.Course.EndDate >= DateTime.Now)
                             {
                             <p class="text-danger">
-                                <del>@item.Course.Price.ToString("C")</del>
-                                <strong>@item.Course.FinalPrice.ToString("C")</strong>
+                                <del>@item.Course.Price.ToString("N0") ₫</del>
+                                <strong>@item.Course.FinalPrice.ToString("N0") ₫</strong>
                                 <span class="badge bg-danger text-white">@item.Course.DiscountPercent% OFF</span>
                             </p>
                         }
                         else
                         {
-                            <p><strong>@item.Course.Price.ToString("C")</strong></p>
+                            <p><strong>@item.Course.Price.ToString("N0") ₫</strong></p>
                         }
                         </p>
                         <div class="mt-auto">
@@ -138,42 +216,42 @@
                                 if (item.IsPurchased)
                                 {
                                     <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-danger w-100 mt-2">
-                                    <i class="bi bi-play-btn"></i> Start Learning
+                                    <i class="bi bi-play-btn"></i> Bắt đầu học
                                 </a>
                                 }
                                 else if (item.IsInCart)
                                 {
                                     <a asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-info-circle"></i> Details
+                                <i class="bi bi-info-circle"></i> Chi tiết
                             </a>
                                     <button asp-controller="Orders" asp-action="ShoppingCart" class="btn btn-warning w-100 mt-2 disabled">
-                                        <i class="bi bi-cart-check"></i> In Cart
+                                        <i class="bi bi-cart-check"></i> Trong giỏ hàng
                                     </button>
                                 }
                                 else
                                 {
                                     <a asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-info-circle"></i> Details
+                                <i class="bi bi-info-circle"></i> Chi tiết
                             </a>
                                     <a asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@item.Course.Id"
                                        class="btn btn-danger w-100 mt-2">
-                                        <i class="bi bi-cart-plus"></i> Add to Cart
+                                        <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
                                     </a>
                                 }
                             }
                             @if (isAdmin)
                             {
                                 <a asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-info-circle"></i> Details
+                                <i class="bi bi-info-circle"></i> Chi tiết
                             </a>
                                 <div class="d-flex gap-2 mt-3">
                                     <a asp-action="Edit" asp-route-id="@item.Course.Id" class="btn btn-sm btn-outline-warning w-50">
-                                        <i class="bi bi-pencil-square"></i> Edit
+                                        <i class="bi bi-pencil-square"></i> Sửa
                                     </a>
                                     <form asp-action="DeleteConfirmed" asp-route-id="@item.Course.Id" method="post" class="w-50">
                                         <button type="submit" class="btn btn-sm btn-outline-danger w-100"
                                                 onclick="return confirm('Are you sure you want to delete this course?');">
-                                            <i class="bi bi-trash"></i> Delete
+                                            <i class="bi bi-trash"></i> Xóa
                                         </button>
                                     </form>
                                 </div>
@@ -187,20 +265,22 @@
 
     @await Html.PartialAsync("_CreateItem", "Courses")
 
-    @* Pagination *@
+
+    <!-- @* Pagination *@ -->
     <div class="mt-4 text-center">
-        <nav>
-            <ul class="pagination justify-content-center">
-                @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                {
-                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-                    </li>
-                }
-            </ul>
-        </nav>
+      <nav>
+        <ul class="pagination justify-content-center">
+          @for (int i = 1; i <= ViewBag.TotalPages; i++)
+          {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+              <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+            </li>
+          }
+        </ul>
+      </nav>
     </div>
 </div>
+
 <!-- Enhanced Scripts -->
 <script src="~/js/script.js" asp-append-version="true"></script>
 <script>
@@ -236,10 +316,6 @@
     }
 
     function setupEventListeners() {
-      document
-        .getElementById("courseSearch")
-        .addEventListener("input", handleSearch);
-
       setupFilterHoverBehavior();
       document
         .getElementById("categoryFilter")
@@ -260,7 +336,7 @@
 
       document.querySelectorAll(".filter-pill select").forEach((select) => {
         select.addEventListener("change", updateFilterChipState);
-      });
+      });     
     }
 
     function setupFilterHoverBehavior() {
@@ -522,6 +598,6 @@
     };
 
     updateFilterChipStates();
-    updateClearButton();
+    updateClearButton();   
   });
 </script>

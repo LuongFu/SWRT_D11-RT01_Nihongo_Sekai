@@ -33,26 +33,26 @@
                 <dd class="col-sm-7">@Model.Template.Description</dd>
 
                 <dt class="col-sm-5">Trình độ ngôn ngữ:</dt>
-                <dd class="col-sm-7">@Model.Template.LanguageLevel</dd>
+                <dd class="col-sm-7">@Model.Template.LanguageLevel.GetDisplayName()</dd>
 
                 <dt class="col-sm-5">Thời gian mỗi buổi:</dt>
                 <dd class="col-sm-7">@($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</dd>
 
                 <dt class="col-sm-5">Ngày bắt đầu:</dt>
-                <dd class="col-sm-7">@Model.Instance.StartDate.ToShortDateString()</dd>
+                <dd class="col-sm-7">@Model.Instance.StartDate.ToString("dd/MM/yyyy")</dd>
 
                 <dt class="col-sm-5">Ngày kết thúc:</dt>
-                <dd class="col-sm-7">@Model.Instance.EndDate.ToShortDateString()</dd>
+                <dd class="col-sm-7">@Model.Instance.EndDate.ToString("dd/MM/yyyy")</dd>
 
                 <dt class="col-sm-5">Người hướng dẫn:</dt>
                 <dd class="col-sm-7">@Model.PartnerName</dd>
 
                 <dt class="col-sm-5">Trạng thái lớp học:</dt>
-                <dd class="col-sm-7">@Model.Instance.Status</dd>
+                <dd class="col-sm-7">@Model.Instance.Status.GetDisplayName()</dd>
 
                 <dt class="col-sm-5">Giá:</dt>
                 <dd class="col-sm-7">
-                    @(Model.IsPaid? Model.Instance.Price.ToString("C") : "Miễn phí")
+                    @(Model.Instance.Price > 0 ? Model.Instance.Price.ToString("N0") + " đ" : "Miễn phí")
                 </dd>
 
                 <dt class="col-sm-5">Số lượng học viên:</dt>
@@ -62,9 +62,19 @@
     </div>
 
     <div class="mt-5 d-flex justify-content-center gap-3 border-top pt-4">
-        <a href="javascript:history.back()" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back
-        </a>
+        @if (User.IsInRole("Partner"))
+        {
+            <a asp-action="MySession" asp-controller="ClassroomInstances" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Về trang chủ
+            </a>
+        }
+        else
+        {
+            <a asp-action="Index" asp-controller="ClassroomInstances" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Về trang chủ
+            </a>
+        }
+
 
         @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Learner))
         {
@@ -94,7 +104,7 @@
         @if (User.IsInRole(UserRoles.Partner))
         {
             <a asp-controller="ClassroomInstances" asp-action="Content" asp-route-id="@Model.Instance.Id" class="btn btn-primary">
-                <i class="bi bi-journal-bookmark"></i> View Contents
+                <i class="bi bi-journal-bookmark"></i> Xem nội dung
             </a>
         }
     </div>

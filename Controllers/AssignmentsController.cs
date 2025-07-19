@@ -34,17 +34,17 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (assignment == null)
             {
-                return NotFound("Assignment not found for this class.");
+                return NotFound("Không tìm thấy bài tập ở lớp này.");
             }
 
             if (assignment.DueDate != null && DateTime.Now > assignment.DueDate)
             {
-                return BadRequest("The assignment deadline has passed.");
+                return BadRequest("Hạn cuối của bài tập đã qua.");
             }
 
             if (string.IsNullOrWhiteSpace(answerText) && (SubmissionFile == null || SubmissionFile.Length == 0))
             {
-                TempData["Message"] = "❌ Please enter an answer or upload a file before submitting.";
+                TempData["Message"] = "❌ Vui lòng nhập câu trả lời hoặc tải file bài làm trước khi nộp.";
                 return Redirect($"/ClassroomInstances/Content/{instanceId}#assignment");
             }
 
@@ -73,7 +73,7 @@ namespace JapaneseLearningPlatform.Controllers
                 // ⚠️ Nếu đã được chấm điểm thì không cho sửa
                 if (existing.Score != null)
                 {
-                    TempData["Message"] = "❌ You cannot update your submission after it has been graded.";
+                    TempData["Message"] = "❌ Bạn không thể chỉnh sửa bài làm sau khi đã được chấm.";
                     return Redirect($"/ClassroomInstances/Content/{instanceId}#assignment");
                 }
 
@@ -107,7 +107,7 @@ namespace JapaneseLearningPlatform.Controllers
             }
 
             await _context.SaveChangesAsync();
-            TempData["Message"] = "Submitted successfully!";
+            TempData["Message"] = "Gửi bài làm thành công!";
 
             return Redirect($"/ClassroomInstances/Content/{instanceId}#assignment");
         }
@@ -120,6 +120,7 @@ namespace JapaneseLearningPlatform.Controllers
                 .Include(s => s.Assignment)
                     .ThenInclude(a => a.Instance)
                         .ThenInclude(i => i.Template)
+                              .ThenInclude(t => t.Partner) // 👈 Bổ sung Include Partner
                 .FirstOrDefaultAsync(s => s.Id == submissionId);
 
             if (submission == null) return NotFound();
@@ -172,45 +173,112 @@ namespace JapaneseLearningPlatform.Controllers
             submission.Feedback = vm.Feedback;
 
             await _context.SaveChangesAsync();
-            TempData["Message"] = "Graded successfully!";
+            TempData["Message"] = "Chấm điểm thành công!";
 
             return Redirect($"/ClassroomInstances/Content/{vm.InstanceId}#assignment");
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Partner")]
+        public async Task<IActionResult> Create(int instanceId)
+        {
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Template)
+                    .ThenInclude(t => t.Partner)
+                .FirstOrDefaultAsync(i => i.Id == instanceId);
+
+            if (instance == null)
+                return NotFound();
+
+            var vm = new FinalAssignmentVM
+            {
+                ClassroomInstanceId = instanceId,
+                DueDate = DateTime.Now.AddDays(7).ToString("dd/MM/yyyy HH:mm:ss"),
+                Instance = instance,
+                Template = instance.Template,
+                PartnerName = instance.Template.Partner?.FullName ?? "N/A"
+            };
+
+            return View("~/Views/ClassroomInstances/CreateAssignment.cshtml", vm);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Partner")]
-        public async Task<IActionResult> UpdateDeadline(int assignmentId, string newDueDate)
+        public async Task<IActionResult> Create(FinalAssignmentVM vm)
+        {
+            ModelState.Remove("Instance");
+            ModelState.Remove("Template");
+            ModelState.Remove("PartnerName");
+
+            if (!ModelState.IsValid)
+            {
+                await LoadInstanceData(vm);
+                return View("~/Views/ClassroomInstances/CreateAssignment.cshtml", vm);
+            }
+
+            if (!DateTime.TryParseExact(vm.DueDate, "dd/MM/yyyy HH:mm:ss",
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDueDate))
+            {
+                ModelState.AddModelError("DueDate", "Định dạng thời gian không hợp lệ.");
+                await LoadInstanceData(vm);
+                return View("~/Views/ClassroomInstances/CreateAssignment.cshtml", vm);
+            }
+
+            var finalAssignment = new FinalAssignment
+            {
+                ClassroomInstanceId = vm.ClassroomInstanceId,
+                Instructions = vm.Instructions,
+                DueDate = parsedDueDate
+            };
+
+            _context.FinalAssignments.Add(finalAssignment);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Bài tập cuối khóa đã được thêm thành công.";
+            return Redirect(Url.Action("Content", "ClassroomInstances", new { id = vm.ClassroomInstanceId }) + "#assignment");
+        }
+
+        private async Task LoadInstanceData(FinalAssignmentVM vm)
+        {
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Template)
+                    .ThenInclude(t => t.Partner)
+                .FirstOrDefaultAsync(i => i.Id == vm.ClassroomInstanceId);
+
+            if (instance != null)
+            {
+                vm.Instance = instance;
+                vm.Template = instance.Template;
+                vm.PartnerName = instance.Template.Partner?.FullName ?? "N/A";
+            }
+        }
+        //DELETE ASSIGNMENT ONLY FOR DEBUG
+        [Authorize(Roles = "Partner")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(int assignmentId)
         {
             var assignment = await _context.FinalAssignments
                 .Include(a => a.Instance)
-                    .ThenInclude(i => i.Template)
+                .ThenInclude(i => i.Template)
                 .FirstOrDefaultAsync(a => a.Id == assignmentId);
 
-            if (assignment == null) return NotFound();
+            if (assignment == null)
+                return NotFound();
 
             var userId = _userManager.GetUserId(User);
             if (assignment.Instance.Template.PartnerId != userId)
                 return Forbid();
 
-            if (!DateTime.TryParseExact(newDueDate, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDueDate))
-            {
-                TempData["DeadlineMessage"] = "❌ Invalid date format.";
-                return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
-            }
+            // Xóa tất cả submissions của bài tập này (nếu có)
+            var submissions = _context.AssignmentSubmissions
+                .Where(s => s.FinalAssignmentId == assignment.Id);
+            _context.AssignmentSubmissions.RemoveRange(submissions);
 
-            //kiểm tra tính tương lai của deadline mới
-            if (parsedDueDate <= assignment.DueDate)
-            {
-                TempData["DeadlineMessage"] = "❌ New deadline must be later than the current one.";
-                return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
-            }
-
-            assignment.DueDate = parsedDueDate;
+            _context.FinalAssignments.Remove(assignment);
             await _context.SaveChangesAsync();
 
-            TempData["DeadlineMessage"] = "✅ Deadline updated successfully.";
+            TempData["Message"] = "Bài tập cuối khóa đã được xóa.";
             return Redirect($"/ClassroomInstances/Content/{assignment.ClassroomInstanceId}#assignment");
         }
-
     }
 }

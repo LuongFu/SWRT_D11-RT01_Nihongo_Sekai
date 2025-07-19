@@ -2,21 +2,20 @@
 @model List<CourseWithPurchaseVM>
 
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Trang chủ";
 }
 
 @section Head {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nihongo Sekai - Japanese Learning Platform</title>
+    <title>Nihongo Sekai - Nền tảng học tiếng Nhật</title>
     <meta name="description"
-          content="Master Japanese through immersive conversations, cultural insights, and personalized learning paths with native speakers." />
+          content="Làm chủ tiếng Nhật thông qua các buổi trò chuyện nhập vai, hiểu biết văn hóa và lộ trình học cá nhân hóa với người bản xứ." />
 }
 
 @section Styles {
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
     <!-- Page-specific CSS -->
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
     <style>
@@ -196,6 +195,53 @@
             font-size: 0.875rem;
         }
 
+        /* Container chung cho card */
+        .card.h-100 {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Phần ảnh và tiêu đề vẫn auto */
+        /* Phần nội dung chính (body) cố định chiều cao */
+        .card-body {
+            flex: 1; /* đẩy phần footer (nút) xuống dưới */
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        /* Phần mô tả + title + price sẽ nằm trong .content-wrapper */
+        .content-wrapper {
+            flex: 1; /* chiếm hết không gian thân card */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .clamp-3 {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3; /* Chỉ hiện tối đa 3 dòng */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            /* Nếu cần hỗ trợ non-WebKit (Firefox): */
+            /* display: block;
+             display: -moz-box;
+             -moz-box-orient: vertical;
+             line-clamp: 3; */
+        }
+
+        @@media (max-width: 768px) {
+            .card-body
+
+        {
+            padding: 0.75rem;
+        }
+
+        .clamp-3 {
+            -webkit-line-clamp: 2; /* Ví dụ chỉ 2 dòng trên mobile */
+        }
+
+        }
     </style>
 }
 
@@ -206,22 +252,22 @@
         <div class="container hero-content">
             <div class="hero-text">
                 <h1 class="hero-title">
-                    Master Japanese with <span class="highlight-yellow">Native Speakers</span>
+                    Chinh phục tiếng Nhật với <span class="highlight-yellow">Người bản xứ</span>
                 </h1>
                 <p class="hero-subtitle">
-                    Join our immersive learning community and discover the beauty of Japanese language and culture through personalized courses and live conversations.
+                    Tham gia cộng đồng học nhập vai và khám phá vẻ đẹp của ngôn ngữ và văn hóa Nhật Bản qua các khóa học cá nhân hóa và buổi hội thoại trực tiếp.
                 </p>
                 <div class="hero-buttons">
                     <a href="/Courses" class="btn btn-primary btn-large">
-                        <i class="bi bi-play-circle me-1"></i> Start Learning Today
+                        <i class="bi bi-play-circle me-1"></i> Bắt đầu học ngay hôm nay
                     </a>
-                    <a href="~/About" class="btn btn-outline btn-large">Learn More</a>
+                    <a href="~/About" class="btn btn-outline btn-large">Tìm hiểu thêm</a>
                 </div>
                 <div class="hero-stats">
-                    <div class="stat-item"><strong>10,000+</strong> <span class="stat-label">Students</span></div>
-                    <div class="stat-item"><strong>150+</strong> <span class="stat-label">Courses</span></div>
-                    <div class="stat-item"><strong>50+</strong> <span class="stat-label">Partners</span></div>
-                    <div class="stat-item"><strong>95%</strong> <span class="stat-label">Success Rate</span></div>
+                    <div class="stat-item"><strong>20+</strong> <span class="stat-label">Học viên</span></div>
+                    <div class="stat-item"><strong>10+</strong> <span class="stat-label">Khóa học</span></div>
+                    <div class="stat-item"><strong>10+</strong> <span class="stat-label">Đối tác</span></div>
+                    <div class="stat-item"><strong>70%</strong> <span class="stat-label">Tỷ lệ thành công</span></div>
                 </div>
             </div>
             <div class="hero-image-wrapper float-animation shadow-lg">
@@ -234,8 +280,8 @@
 <section class="section bg-light py-5 animate-on-scroll">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4 px-3 py-2 bg-white rounded shadow-sm">
-            <h2 class="fw-bold m-0">Featured Courses</h2>
-            <p class="text-muted m-0">Start your Japanese journey with our most popular courses</p>
+            <h2 class="fw-bold m-0">Khóa học nổi bật</h2>
+            <p class="text-muted m-0">Bắt đầu hành trình học tiếng Nhật với các khóa học phổ biến nhất</p>
         </div>
 
         <div class="row g-4">
@@ -245,11 +291,13 @@
                     <div class="card h-100 shadow-sm border-0">
                         <img src="@item.Course.ImageURL" class="card-img-top" alt="@item.Course.Name" style="height: 200px; object-fit: cover;" />
                         <div class="card-body">
-                            <h5 class="card-title">@item.Course.Name</h5>
-                            <p class="card-text">@item.Course.Description</p>
-                            <p class="text-muted">@item.Course.CourseCategory - <strong>@item.Course.FinalPrice.ToString("C")</strong></p>
+                            <div class="content-wrapper">
+                                <h5 class="card-title">@item.Course.Name</h5>
+                                <p class="card-text">@item.Course.Description</p>
+                                <p class="text-muted">@item.Course.CourseCategory.GetDisplayName() - <strong>@item.Course.FinalPrice.ToString("N0") ₫</strong></p>
+                            </div>
                             <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-danger w-100 mt-2">
-                                View Course
+                                Xem khóa học
                             </a>
                         </div>
                     </div>
@@ -259,7 +307,7 @@
 
         <div class="text-center mt-4">
             <a asp-controller="Courses" asp-action="Index" class="btn btn-danger">
-                View All Courses <i class="bi bi-arrow-right"></i>
+                Xem tất cả khóa học <i class="bi bi-arrow-right"></i>
             </a>
         </div>
     </div>
@@ -270,66 +318,60 @@
     <div class="container">
         <div class="section-header">
             <h2>
-                Why Nihongo Sekai Is Your Ultimate Japanese Learning Partner
+                Tại sao Nihongo Sekai là đối tác học tiếng Nhật tuyệt vời nhất của bạn
             </h2>
             <p>
-                Interactive courses, live native-speaker sessions, and
-                personalized paths—all in one place.
+                Các khóa học tương tác, buổi học trực tiếp với người bản xứ, và lộ trình học cá nhân hóa—tất cả trong một.
             </p>
-            <a href="about.html" class="btn btn-primary learn-more-btn">Learn More</a>
+            <a href="about.html" class="btn btn-primary learn-more-btn">Tìm hiểu thêm</a>
         </div>
 
         <div class="features-grid">
             <div class="feature-card animate-on-scroll">
                 <div class="feature-icon">💬</div>
-                <h3>Live Conversations</h3>
+                <h3>Hội thoại trực tiếp</h3>
                 <p>
-                    Practice with native speakers in real-time video sessions
-                    tailored to your level.
+                    Luyện tập với người bản xứ qua các buổi video trực tiếp được điều chỉnh theo trình độ của bạn.
                 </p>
             </div>
 
             <div class="feature-card animate-on-scroll">
                 <div class="feature-icon">📚</div>
-                <h3>Structured Courses</h3>
+                <h3>Khóa học có cấu trúc</h3>
                 <p>
-                    Comprehensive curriculum from beginner to advanced, designed by
-                    language experts.
+                    Chương trình toàn diện từ cơ bản đến nâng cao, được thiết kế bởi các chuyên gia ngôn ngữ.
                 </p>
             </div>
 
             <div class="feature-card animate-on-scroll">
                 <div class="feature-icon">🎯</div>
-                <h3>Personalized Learning</h3>
+                <h3>Học tập cá nhân hóa</h3>
                 <p>
-                    AI-powered recommendations and custom learning paths based on
-                    your goals.
+                    Đề xuất AI và lộ trình học tùy chỉnh dựa trên mục tiêu của bạn.
                 </p>
             </div>
 
             <div class="feature-card animate-on-scroll">
                 <div class="feature-icon">🏆</div>
-                <h3>Cultural Immersion</h3>
+                <h3>Hòa nhập văn hóa</h3>
                 <p>
-                    Learn beyond language with cultural insights and real-world
-                    context.
+                    Học không chỉ ngôn ngữ mà còn hiểu sâu về văn hóa và bối cảnh thực tế.
                 </p>
             </div>
 
             <div class="feature-card animate-on-scroll">
                 <div class="feature-icon">📱</div>
-                <h3>Learn Anywhere</h3>
+                <h3>Học mọi nơi</h3>
                 <p>
-                    Access your lessons on any device, continue learning on the go.
+                    Truy cập bài học trên mọi thiết bị, tiếp tục học khi di chuyển.
                 </p>
             </div>
 
             <div class="feature-card animate-on-scroll">
                 <div class="feature-icon">🌟</div>
-                <h3>Expert Teachers</h3>
+                <h3>Giáo viên chuyên gia</h3>
                 <p>
-                    Learn from qualified native speakers and certified Japanese
-                    instructors.
+                    Học từ người bản xứ và giảng viên tiếng Nhật được chứng nhận.
                 </p>
             </div>
         </div>
@@ -340,10 +382,9 @@
 <section class="testimonials animate-on-scroll">
     <div class="container">
         <div class="section-header">
-            <h2>What Our Students Say</h2>
+            <h2>Những gì học viên nói</h2>
             <p>
-                Join thousands of learners who've transformed their Japanese
-                skills
+                Tham gia cùng hàng nghìn học viên đã cải thiện kỹ năng tiếng Nhật
             </p>
         </div>
 
@@ -351,9 +392,7 @@
             <div class="testimonial-card animate-on-scroll">
                 <div class="testimonial-content">
                     <p>
-                        "Nihongo Sekai transformed my Japanese learning experience.
-                        The live conversations with native speakers gave me confidence
-                        I never had before."
+                        "Nihongo Sekai đã thay đổi trải nghiệm học tiếng Nhật của tôi. Các buổi hội thoại trực tiếp với người bản xứ đã mang lại cho tôi sự tự tin chưa từng có."
                     </p>
                 </div>
                 <div class="testimonial-author">
@@ -363,7 +402,7 @@
                     </div>
                     <div class="author-info">
                         <h4>Sarah Kim</h4>
-                        <p>Software Engineer</p>
+                        <p>Kỹ sư phần mềm</p>
                         <div class="author-rating">⭐⭐⭐⭐⭐</div>
                     </div>
                 </div>
@@ -372,9 +411,7 @@
             <div class="testimonial-card animate-on-scroll">
                 <div class="testimonial-content">
                     <p>
-                        "The structured approach and cultural insights made learning
-                        Japanese enjoyable and effective. I went from zero to
-                        conversational in 6 months!"
+                        "Phương pháp có cấu trúc và những hiểu biết văn hóa đã làm cho việc học tiếng Nhật trở nên thú vị và hiệu quả. Tôi đã từ con số không trở nên thành thạo giao tiếp chỉ trong 6 tháng!"
                     </p>
                 </div>
                 <div class="testimonial-author">
@@ -384,7 +421,7 @@
                     </div>
                     <div class="author-info">
                         <h4>Mike Chen</h4>
-                        <p>Business Analyst</p>
+                        <p>Chuyên viên phân tích kinh doanh</p>
                         <div class="author-rating">⭐⭐⭐⭐⭐</div>
                     </div>
                 </div>
@@ -393,9 +430,7 @@
             <div class="testimonial-card animate-on-scroll">
                 <div class="testimonial-content">
                     <p>
-                        "The flexibility to learn at my own pace while having access
-                        to live teachers when needed is exactly what I was looking
-                        for."
+                        "Sự linh hoạt để học theo nhịp độ của tôi trong khi vẫn có thể truy cập giáo viên trực tiếp khi cần là điều tôi tìm kiếm."
                     </p>
                 </div>
                 <div class="testimonial-author">
@@ -405,7 +440,7 @@
                     </div>
                     <div class="author-info">
                         <h4>Emma Rodriguez</h4>
-                        <p>Marketing Manager</p>
+                        <p>Quản lý tiếp thị</p>
                         <div class="author-rating">⭐⭐⭐⭐⭐</div>
                     </div>
                 </div>
@@ -415,43 +450,42 @@
 </section>
 
 <!-- Call to Action Section -->
-
-    <section class="cta-section text-center animate-on-scroll"
-    style="background: linear-gradient(135deg, #e02424, #ec4899); padding: 100px 0 80px 0; margin-bottom: 0;">
-        <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
-            <h2 class="fw-bold mb-3 display-6" style="color: #0F172A;">
-                Ready to Start Your Japanese Journey?
-            </h2>
-            <p class="lead mb-4 text-white">
-                Join thousands of students who have successfully learned Japanese with us
-            </p>
-            <div class="d-flex gap-3 flex-wrap justify-content-center">
-@if (!User.Identity.IsAuthenticated || !User.IsInRole("Learner"))
-{
+<section class="cta-section text-center animate-on-scroll"
+         style="background: linear-gradient(135deg, #e02424, #ec4899); padding: 100px 0 80px 0; margin-bottom: 0;">
+    <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
+        <h2 class="fw-bold mb-3 display-6" style="color: #0F172A;">
+            Sẵn sàng bắt đầu hành trình học tiếng Nhật?
+        </h2>
+        <p class="lead mb-4 text-white">
+            Tham gia cùng hàng nghìn học viên đã thành công với chúng tôi
+        </p>
+        <div class="d-flex gap-3 flex-wrap justify-content-center">
+            @if (!User.Identity.IsAuthenticated || !User.IsInRole("Learner"))
+            {
                 <a href="/Account/Register" class="btn fw-semibold px-4 py-2 rounded"
-                style="background-color: #fff; color: #e02424; min-width: 180px;">
-                    Get Started Free
+                   style="background-color: #fff; color: #e02424; min-width: 180px;">
+                    Bắt đầu miễn phí
                 </a>
-}
-                <a href="/Courses" class="btn fw-semibold px-4 py-2 rounded"
-                style="color: #fff; border: 2px solid #fff; background-color: transparent; min-width: 180px;">
-                    Browse Courses
-                </a>
-            </div>
+            }
+            <a href="/Courses" class="btn fw-semibold px-4 py-2 rounded"
+               style="color: #fff; border: 2px solid #fff; background-color: transparent; min-width: 180px;">
+                Duyệt khóa học
+            </a>
         </div>
-    </section>
+    </div>
+</section>
 
 @section Scripts {
     <script>
         /**
-         * Home Page JavaScript
-         * Handles featured content, animations, and page-specific functionality
+         * JavaScript Trang Chủ
+         * Xử lý nội dung nổi bật, hiệu ứng cuộn và các chức năng đặc thù của trang
          */
         document.addEventListener("DOMContentLoaded", function () {
             loadFeaturedCourses();
             loadPopularClassrooms();
         });
-         
+
         class HomePage {
           constructor() {
             this.init();
@@ -463,7 +497,7 @@
           }
 
           initializeAnimations() {
-            // Add intersection observer for scroll animations
+            // Tạo Intersection Observer để khởi động hiệu ứng khi cuộn
             const observerOptions = {
               threshold: 0.1,
               rootMargin: "0px 0px -50px 0px",
@@ -478,18 +512,18 @@
               });
             }, observerOptions);
 
-            // Observe all animated elements
+            // Quan sát tất cả các phần tử có lớp .animate-on-scroll
             document.querySelectorAll(".animate-on-scroll").forEach((el) => {
               observer.observe(el);
             });
 
-            // Stagger feature cards animation
+            // Thiết lập độ trễ cho hoạt ảnh các feature-card
             const featureCards = document.querySelectorAll(".feature-card");
             featureCards.forEach((card, index) => {
               card.style.animationDelay = `${index * 0.2}s`;
             });
 
-            // Stagger testimonial cards animation
+            // Thiết lập độ trễ cho hoạt ảnh các testimonial-card
             const testimonialCards = document.querySelectorAll(".testimonial-card");
             testimonialCards.forEach((card, index) => {
               card.style.animationDelay = `${index * 0.3}s`;
@@ -504,100 +538,88 @@
               const petal = document.createElement("div");
               petal.className = "sakura-petal";
 
-              // Random horizontal position
+              // Vị trí ngang ngẫu nhiên
               petal.style.left = Math.random() * 100 + "%";
 
-              // Random size
+              // Kích thước ngẫu nhiên
               const size = Math.random() * 8 + 6;
               petal.style.width = size + "px";
               petal.style.height = size + "px";
 
-              // Random animation duration
+              // Thời lượng hoạt ảnh ngẫu nhiên
               const duration = Math.random() * 10 + 15;
               petal.style.animationDuration = duration + "s";
 
-              // Random delay
+              // Độ trễ ngẫu nhiên trước khi hoạt ảnh bắt đầu
               petal.style.animationDelay = Math.random() * 5 + "s";
 
               container.appendChild(petal);
 
-              // Remove petal after animation
-              setTimeout(
-                () => {
+              // Xóa cánh hoa sau khi hoạt ảnh kết thúc
+              setTimeout(() => {
                   if (petal.parentNode) {
                     petal.parentNode.removeChild(petal);
                   }
                 },
-                (duration + 5) * 1000,
+                (duration + 5) * 1000
               );
             };
 
-            // Create initial petals
+            // Tạo cánh hoa ban đầu
             for (let i = 0; i < 15; i++) {
               setTimeout(createSakuraPetal, i * 1000);
             }
 
-            // Continuously create new petals
+            // Liên tục tạo cánh hoa mới
             setInterval(createSakuraPetal, 3000);
           }
         }
 
-        // Initialize home page when DOM is loaded
+        // Khởi tạo HomePage khi DOM đã sẵn sàng
         let homePage;
-
         document.addEventListener("DOMContentLoaded", () => {
           homePage = new HomePage();
 
-          // Add smooth scrolling for internal links
+          // Thêm cuộn mượt cho các liên kết nội bộ
           document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
             anchor.addEventListener("click", function (e) {
               e.preventDefault();
               const target = document.querySelector(this.getAttribute("href"));
               if (target) {
-                target.scrollIntoView({
-                  behavior: "smooth",
-                  block: "start",
-                });
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
               }
             });
           });
 
-          // Add parallax effect to hero background
+          // Thêm hiệu ứng parallax cho nền hero
           let ticking = false;
-
           function updateParallax() {
             const scrolled = window.pageYOffset;
             const rate = scrolled * -0.5;
             const heroBackground = document.querySelector(".hero-background");
-
             if (heroBackground) {
               heroBackground.style.transform = `translateY(${rate}px)`;
             }
-
             ticking = false;
           }
-
           function requestTick() {
             if (!ticking) {
               requestAnimationFrame(updateParallax);
               ticking = true;
             }
           }
-
           window.addEventListener("scroll", requestTick, { passive: true });
         });
 
-        // Handle window resize for responsive adjustments
+        // Xử lý thay đổi kích thước cửa sổ để điều chỉnh responsive
         window.addEventListener(
           "resize",
           Utils.debounce(() => {
-            // Refresh animations and layouts if needed
             if (homePage) {
               homePage.addCardAnimations();
             }
           }, 250),
         );
-
     </script>
 }
 

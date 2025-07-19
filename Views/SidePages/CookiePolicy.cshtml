@@ -1,595 +1,492 @@
 ﻿@{
-    ViewData["Title"] = "Cookie Policy - Nihongo Sekai";
+    ViewData["Title"] = "Chính sách Cookie";
     Layout = "_Layout";
 }
 
 @section Head {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cookie Policy - Nihongo Sekai</title>
-    <meta
-      name="description"
-      content="Learn about how Nihongo Sekai uses cookies and similar technologies to enhance your learning experience."
-    />
+    <title>Chính sách Cookie</title>
+    <meta name="description"
+          content="Tìm hiểu cách Nihongo Sekai sử dụng cookie và các công nghệ tương tự để nâng cao trải nghiệm học tập của bạn." />
 }
 
 @section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+
     <link rel="stylesheet" href="~/css/styles.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
 }
 
-    <!-- Main Content -->
-    <main class="main">
-        <!-- Hero Section -->
-        <section class="legal-hero">
-            <div class="container">
-                <div class="legal-hero-content">
-                    <div class="legal-breadcrumb">
-                        <a href="index.html">Home</a>
-                        <span class="legal-breadcrumb-separator">›</span>
-                        <span>Cookie Policy</span>
-                    </div>
-                    <h1 class="legal-page-title">Cookie Policy</h1>
-                    <p class="legal-page-subtitle">
-                        Learn how we use cookies and similar technologies to improve your
-                        learning experience on Nihongo Sekai with complete transparency.
-                    </p>
-                    <div class="legal-last-updated">
-                        <strong>Last Updated:</strong> January 15, 2024
-                    </div>
+<!-- Main Content -->
+<main class="main">
+    <!-- Hero Section -->
+    <section class="legal-hero">
+        <div class="container">
+            <div class="legal-hero-content">
+                <div class="legal-breadcrumb">
+                    <a href="index.html">Trang chủ</a>
+                    <span class="legal-breadcrumb-separator">›</span>
+                    <span>Chính sách Cookie</span>
+                </div>
+                <h1 class="legal-page-title">Chính sách Cookie</h1>
+                <p class="legal-page-subtitle">
+                    Tìm hiểu cách chúng tôi sử dụng cookie và các công nghệ tương tự để cải thiện trải nghiệm học tập của bạn trên Nihongo Sekai với sự minh bạch hoàn toàn.
+                </p>
+                <div class="legal-last-updated">
+                    <strong>Cập nhật lần cuối:</strong> January 15, 2024
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Cookie Content -->
-        <section class="legal-content">
-            <div class="container">
-                <div class="legal-wrapper">
-                    <div class="legal-sidebar">
-                        <div class="legal-nav-card">
-                            <h3 class="legal-nav-title">Table of Contents</h3>
-                            <ul class="legal-nav-list">
-                                <li>
-                                    <a href="#what-are-cookies" class="legal-nav-link">What Are Cookies</a>
-                                </li>
-                                <li>
-                                    <a href="#why-we-use" class="legal-nav-link">Why We Use Cookies</a>
-                                </li>
-                                <li>
-                                    <a href="#types-of-cookies" class="legal-nav-link">Types of Cookies</a>
-                                </li>
-                                <li>
-                                    <a href="#essential-cookies" class="legal-nav-link">Essential Cookies</a>
-                                </li>
-                                <li>
-                                    <a href="#analytics-cookies" class="legal-nav-link">Analytics Cookies</a>
-                                </li>
-                                <li>
-                                    <a href="#preference-cookies" class="legal-nav-link">Preference Cookies</a>
-                                </li>
-                                <li>
-                                    <a href="#third-party" class="legal-nav-link">Third-Party Cookies</a>
-                                </li>
-                                <li>
-                                    <a href="#managing-cookies" class="legal-nav-link">Managing Cookies</a>
-                                </li>
-                                <li>
-                                    <a href="#browser-settings" class="legal-nav-link">Browser Settings</a>
-                                </li>
-                                <li>
-                                    <a href="#contact" class="legal-nav-link">Contact Us</a>
-                                </li>
+    <!-- Nội dung Cookie -->
+    <section class="legal-content">
+        <div class="container">
+            <div class="legal-wrapper">
+                <div class="legal-sidebar">
+                    <div class="legal-nav-card">
+                        <h3 class="legal-nav-title">Mục lục</h3>
+                        <ul class="legal-nav-list">
+                            <li>
+                                <a href="#what-are-cookies" class="legal-nav-link">Cookie là gì</a>
+                            </li>
+                            <li>
+                                <a href="#why-we-use" class="legal-nav-link">Tại sao chúng tôi sử dụng Cookie</a>
+                            </li>
+                            <li>
+                                <a href="#types-of-cookies" class="legal-nav-link">Các loại Cookie</a>
+                            </li>
+                            <li>
+                                <a href="#essential-cookies" class="legal-nav-link">Cookie cần thiết</a>
+                            </li>
+                            <li>
+                                <a href="#analytics-cookies" class="legal-nav-link">Cookie phân tích</a>
+                            </li>
+                            <li>
+                                <a href="#preference-cookies" class="legal-nav-link">Cookie tùy chọn</a>
+                            </li>
+                            <li>
+                                <a href="#third-party" class="legal-nav-link">Cookie bên thứ ba</a>
+                            </li>
+                            <li>
+                                <a href="#managing-cookies" class="legal-nav-link">Quản lý Cookie</a>
+                            </li>
+                            <li>
+                                <a href="#browser-settings" class="legal-nav-link">Cài đặt trình duyệt</a>
+                            </li>
+                            <li>
+                                <a href="#contact" class="legal-nav-link">Liên hệ</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <div class="legal-main">
+                    <article class="legal-article">
+                        <section id="what-are-cookies" class="legal-section">
+                            <h2>1. Cookie là gì?</h2>
+                            <p>
+                                Cookie là các tệp văn bản nhỏ được lưu trữ trên thiết bị của bạn
+                                (máy tính, máy tính bảng hoặc điện thoại di động) khi bạn truy cập
+                                trang web của chúng tôi. Chúng giúp chúng tôi nhận diện thiết bị
+                                của bạn và ghi nhớ một số thông tin về sở thích hoặc hành động trước
+                                đó của bạn.
+                            </p>
+                            <p>
+                                Các công nghệ tương tự bao gồm web beacon, pixel và local storage,
+                                mà chúng tôi cũng có thể sử dụng để nâng cao trải nghiệm của bạn
+                                trên nền tảng.
+                            </p>
+                            <div class="legal-info-box">
+                                <h4>🍪 Mẹo nhanh</h4>
+                                <p>
+                                    Cookie không thể làm hại thiết bị của bạn hoặc truy cập vào tệp
+                                    cá nhân. Chúng chỉ lưu trữ những thông tin nhỏ để cải thiện trải
+                                    nghiệm duyệt web.
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="why-we-use" class="legal-section">
+                            <h2>2. Tại sao chúng tôi sử dụng Cookie</h2>
+                            <p>
+                                Chúng tôi sử dụng cookie và các công nghệ tương tự để cung cấp cho
+                                bạn trải nghiệm học tập tốt nhất có thể. Cụ thể, chúng tôi dùng
+                                chúng để:
+                            </p>
+                            <ul>
+                                <li><strong>Giữ bạn đăng nhập:</strong> Ghi nhớ phiên đăng nhập để bạn không phải đăng nhập lại nhiều lần</li>
+                                <li><strong>Lưu tiến độ học:</strong> Theo dõi tiến độ khóa học và tiếp tục từ nơi bạn đã dừng lại</li>
+                                <li><strong>Cá nhân hóa nội dung:</strong> Hiển thị khóa học và gợi ý phù hợp với sở thích của bạn</li>
+                                <li><strong>Cải thiện hiệu năng:</strong> Tải trang nhanh hơn và mang lại trải nghiệm mượt mà</li>
+                                <li><strong>Phân tích sử dụng:</strong> Hiểu cách người dùng tương tác để cải thiện nền tảng</li>
+                                <li><strong>Đảm bảo bảo mật:</strong> Bảo vệ khỏi hoạt động gian lận và duy trì an toàn</li>
                             </ul>
-                        </div>
-                    </div>
+                        </section>
 
-                    <div class="legal-main">
-                        <article class="legal-article">
-                            <section id="what-are-cookies" class="legal-section">
-                                <h2>1. What Are Cookies?</h2>
+                        <section id="types-of-cookies" class="legal-section">
+                            <h2>3. Các loại Cookie chúng tôi sử dụng</h2>
+                            <p>
+                                Chúng tôi phân loại cookie theo mục đích sử dụng và thời gian lưu:
+                            </p>
+                            <div class="legal-contact-grid">
+                                <div class="legal-contact-card">
+                                    <h4>Session Cookies</h4>
+                                    <p>Cookie tạm thời, sẽ bị xóa khi bạn đóng trình duyệt. Cần thiết cho chức năng cơ bản.</p>
+                                </div>
+                                <div class="legal-contact-card">
+                                    <h4>Persistent Cookies</h4>
+                                    <p>Cookie tồn tại trên thiết bị của bạn trong một khoảng thời gian nhất định hoặc đến khi bạn xóa chúng. Ghi nhớ sở thích qua nhiều lần truy cập.</p>
+                                </div>
+                                <div class="legal-contact-card">
+                                    <h4>First-Party Cookies</h4>
+                                    <p>Được đặt trực tiếp bởi Nihongo Sekai để cung cấp chức năng cốt lõi và cải thiện trải nghiệm.</p>
+                                </div>
+                                <div class="legal-contact-card">
+                                    <h4>Third-Party Cookies</h4>
+                                    <p>Được đặt bởi dịch vụ bên ngoài mà chúng tôi sử dụng, như nhà cung cấp phân tích hoặc nền tảng lưu trữ video.</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="essential-cookies" class="legal-section">
+                            <h2>4. Cookie cần thiết</h2>
+                            <p>
+                                Đây là cookie cần thiết để trang web của chúng tôi hoạt động đúng.
+                                Bạn không thể từ chối chúng nếu muốn sử dụng Dịch vụ.
+                            </p>
+                            <div class="legal-table-wrapper">
+                                <table class="legal-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên Cookie</th>
+                                            <th>Mục đích</th>
+                                            <th>Thời gian lưu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>auth_session</td>
+                                            <td>Duy trì phiên đăng nhập của bạn</td>
+                                            <td>Phiên</td>
+                                        </tr>
+                                        <tr>
+                                            <td>csrf_token</td>
+                                            <td>Bảo vệ chống tấn công CSRF</td>
+                                            <td>Phiên</td>
+                                        </tr>
+                                        <tr>
+                                            <td>language_pref</td>
+                                            <td>Ghi nhớ ngôn ngữ ưa thích của bạn</td>
+                                            <td>1 năm</td>
+                                        </tr>
+                                        <tr>
+                                            <td>course_progress</td>
+                                            <td>Theo dõi tiến độ học của bạn</td>
+                                            <td>1 năm</td>
+                                        </tr>
+                                        <tr>
+                                            <td>user_preferences</td>
+                                            <td>Lưu trữ cài đặt tài khoản của bạn</td>
+                                            <td>1 năm</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <section id="analytics-cookies" class="legal-section">
+                            <h2>5. Cookie phân tích</h2>
+                            <p>
+                                Những cookie này giúp chúng tôi hiểu cách người dùng tương tác với
+                                trang web, từ đó cải thiện nền tảng và nội dung.
+                            </p>
+                            <div class="legal-table-wrapper">
+                                <table class="legal-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên Cookie</th>
+                                            <th>Mục đích</th>
+                                            <th>Thời gian lưu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>_analytics_id</td>
+                                            <td>Theo dõi khách truy cập duy nhất và lượt xem trang ẩn danh</td>
+                                            <td>2 năm</td>
+                                        </tr>
+                                        <tr>
+                                            <td>_session_analytics</td>
+                                            <td>Đo thời gian phiên và hành vi</td>
+                                            <td>30 phút</td>
+                                        </tr>
+                                        <tr>
+                                            <td>_page_performance</td>
+                                            <td>Giám sát thời gian tải và hiệu năng trang</td>
+                                            <td>7 ngày</td>
+                                        </tr>
+                                        <tr>
+                                            <td>_error_tracking</td>
+                                            <td>Giúp xác định và khắc phục sự cố kỹ thuật</td>
+                                            <td>30 ngày</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="legal-info-box">
+                                <h4>🔧 Có thể tắt</h4>
                                 <p>
-                                    Cookies are small text files that are stored on your device
-                                    (computer, tablet, or mobile) when you visit our website.
-                                    They help us recognize your device and remember certain
-                                    information about your preferences or past actions.
+                                    Bạn có thể tắt cookie phân tích qua cài đặt cookie của chúng tôi
+                                    hoặc cài đặt trình duyệt mà không ảnh hưởng đến chức năng cơ bản.
                                 </p>
+                            </div>
+                        </section>
 
-                                <p>
-                                    Similar technologies include web beacons, pixels, and local
-                                    storage, which we may also use to enhance your experience on
-                                    our platform.
-                                </p>
+                        <section id="preference-cookies" class="legal-section">
+                            <h2>6. Cookie tùy chọn</h2>
+                            <p>
+                                Những cookie này ghi nhớ lựa chọn và sở thích của bạn để cung cấp
+                                trải nghiệm cá nhân hóa.
+                            </p>
+                            <div class="legal-table-wrapper">
+                                <table class="legal-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên Cookie</th>
+                                            <th>Mục đích</th>
+                                            <th>Thời gian lưu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>theme_preference</td>
+                                            <td>Ghi nhớ chế độ sáng/tối bạn chọn</td>
+                                            <td>1 năm</td>
+                                        </tr>
+                                        <tr>
+                                            <td>sidebar_state</td>
+                                            <td>Lưu trạng thái mở/thu gọn thanh bên</td>
+                                            <td>30 ngày</td>
+                                        </tr>
+                                        <tr>
+                                            <td>notification_settings</td>
+                                            <td>Lưu cài đặt thông báo của bạn</td>
+                                            <td>1 năm</td>
+                                        </tr>
+                                        <tr>
+                                            <td>study_reminders</td>
+                                            <td>Ghi nhớ cài đặt nhắc học</td>
+                                            <td>1 năm</td>
+                                        </tr>
+                                        <tr>
+                                            <td>dashboard_layout</td>
+                                            <td>Lưu bố cục bảng điều khiển tùy chỉnh</td>
+                                            <td>6 tháng</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
 
-                                <div class="legal-info-box">
-                                    <h4>🍪 Quick Fact</h4>
+                        <section id="third-party" class="legal-section">
+                            <h2>7. Cookie bên thứ ba</h2>
+                            <p>
+                                Chúng tôi sử dụng các dịch vụ bên thứ ba đáng tin cậy, có thể đặt
+                                cookie riêng. Các dịch vụ này giúp chúng tôi cung cấp chức năng tốt
+                                hơn và thu thập thông tin.
+                            </p>
+                            <div class="legal-contact-grid">
+                                <div class="legal-contact-card">
+                                    <h4>PayPal</h4>
                                     <p>
-                                        Cookies cannot harm your device or access your personal
-                                        files. They simply store small pieces of information to
-                                        make your browsing experience better.
+                                        <strong>Mục đích:</strong> Xử lý thanh toán an toàn<br />
+                                        <strong>Cookie:</strong> Phiên thanh toán, phòng chống gian lận<br />
+                                        <a href="https://www.paypal.com/privacy" class="legal-link" target="_blank">Chính sách bảo mật →</a>
                                     </p>
                                 </div>
-                            </section>
-
-                            <section id="why-we-use" class="legal-section">
-                                <h2>2. Why We Use Cookies</h2>
-                                <p>
-                                    We use cookies and similar technologies to provide you with
-                                    the best possible learning experience. Specifically, we use
-                                    them to:
-                                </p>
-
-                                <ul>
-                                    <li>
-                                        <strong>Keep you logged in:</strong> Remember your login
-                                        session so you don't have to sign in repeatedly
-                                    </li>
-                                    <li>
-                                        <strong>Save your progress:</strong> Track your course
-                                        progress and resume where you left off
-                                    </li>
-                                    <li>
-                                        <strong>Personalize content:</strong> Show you relevant
-                                        courses and recommendations based on your interests
-                                    </li>
-                                    <li>
-                                        <strong>Improve performance:</strong> Load pages faster
-                                        and provide a smoother user experience
-                                    </li>
-                                    <li>
-                                        <strong>Analyze usage:</strong> Understand how our
-                                        platform is used to make improvements
-                                    </li>
-                                    <li>
-                                        <strong>Ensure security:</strong> Protect against
-                                        fraudulent activity and maintain platform security
-                                    </li>
-                                </ul>
-                            </section>
-
-                            <section id="types-of-cookies" class="legal-section">
-                                <h2>3. Types of Cookies We Use</h2>
-                                <p>
-                                    We categorize cookies based on their purpose and duration:
-                                </p>
-
-                                <div class="legal-contact-grid">
-                                    <div class="legal-contact-card">
-                                        <h4>Session Cookies</h4>
-                                        <p>
-                                            Temporary cookies that are deleted when you close your
-                                            browser. These are essential for basic functionality.
-                                        </p>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>Persistent Cookies</h4>
-                                        <p>
-                                            Remain on your device for a specified period or until
-                                            you delete them. These remember your preferences across
-                                            visits.
-                                        </p>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>First-Party Cookies</h4>
-                                        <p>
-                                            Set directly by Nihongo Sekai to provide core
-                                            functionality and improve your experience.
-                                        </p>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>Third-Party Cookies</h4>
-                                        <p>
-                                            Set by external services we use, such as analytics
-                                            providers or video hosting platforms.
-                                        </p>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section id="essential-cookies" class="legal-section">
-                                <h2>4. Essential Cookies</h2>
-                                <p>
-                                    These cookies are necessary for our website to function
-                                    properly. You cannot opt out of these cookies if you want to
-                                    use our Service.
-                                </p>
-
-                                <div class="legal-table-wrapper">
-                                    <table class="legal-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Cookie Name</th>
-                                                <th>Purpose</th>
-                                                <th>Duration</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>auth_session</td>
-                                                <td>Maintains your login session</td>
-                                                <td>Session</td>
-                                            </tr>
-                                            <tr>
-                                                <td>csrf_token</td>
-                                                <td>
-                                                    Security protection against cross-site attacks
-                                                </td>
-                                                <td>Session</td>
-                                            </tr>
-                                            <tr>
-                                                <td>language_pref</td>
-                                                <td>Remembers your language preference</td>
-                                                <td>1 year</td>
-                                            </tr>
-                                            <tr>
-                                                <td>course_progress</td>
-                                                <td>Tracks your learning progress</td>
-                                                <td>1 year</td>
-                                            </tr>
-                                            <tr>
-                                                <td>user_preferences</td>
-                                                <td>Stores your account settings</td>
-                                                <td>1 year</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </section>
-
-                            <section id="analytics-cookies" class="legal-section">
-                                <h2>5. Analytics Cookies</h2>
-                                <p>
-                                    These cookies help us understand how visitors interact with
-                                    our website, allowing us to improve our platform and
-                                    content.
-                                </p>
-
-                                <div class="legal-table-wrapper">
-                                    <table class="legal-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Cookie Name</th>
-                                                <th>Purpose</th>
-                                                <th>Duration</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>_analytics_id</td>
-                                                <td>
-                                                    Tracks unique visitors and page views anonymously
-                                                </td>
-                                                <td>2 years</td>
-                                            </tr>
-                                            <tr>
-                                                <td>_session_analytics</td>
-                                                <td>Measures session duration and behavior</td>
-                                                <td>30 minutes</td>
-                                            </tr>
-                                            <tr>
-                                                <td>_page_performance</td>
-                                                <td>Monitors page load times and performance</td>
-                                                <td>7 days</td>
-                                            </tr>
-                                            <tr>
-                                                <td>_error_tracking</td>
-                                                <td>Helps identify and fix technical issues</td>
-                                                <td>30 days</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <div class="legal-info-box">
-                                    <h4>🔧 Opt-Out Available</h4>
+                                <div class="legal-contact-card">
+                                    <h4>YouTube</h4>
                                     <p>
-                                        You can opt out of analytics cookies through our cookie
-                                        settings or browser preferences without affecting
-                                        essential functionality.
+                                        <strong>Mục đích:</strong> Lưu trữ nội dung video khóa học<br />
+                                        <strong>Cookie:</strong> Tùy chọn video, cài đặt phát lại<br />
+                                        <a href="https://policies.google.com/privacy" class="legal-link" target="_blank">Chính sách bảo mật →</a>
                                     </p>
                                 </div>
-                            </section>
-
-                            <section id="preference-cookies" class="legal-section">
-                                <h2>6. Preference Cookies</h2>
-                                <p>
-                                    These cookies remember your choices and preferences to
-                                    provide a personalized experience.
-                                </p>
-
-                                <div class="legal-table-wrapper">
-                                    <table class="legal-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Cookie Name</th>
-                                                <th>Purpose</th>
-                                                <th>Duration</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>theme_preference</td>
-                                                <td>Remembers your light/dark mode choice</td>
-                                                <td>1 year</td>
-                                            </tr>
-                                            <tr>
-                                                <td>sidebar_state</td>
-                                                <td>
-                                                    Saves whether sidebar is expanded or collapsed
-                                                </td>
-                                                <td>30 days</td>
-                                            </tr>
-                                            <tr>
-                                                <td>notification_settings</td>
-                                                <td>Stores your notification preferences</td>
-                                                <td>1 year</td>
-                                            </tr>
-                                            <tr>
-                                                <td>study_reminders</td>
-                                                <td>Remembers your study reminder settings</td>
-                                                <td>1 year</td>
-                                            </tr>
-                                            <tr>
-                                                <td>dashboard_layout</td>
-                                                <td>Saves your custom dashboard arrangement</td>
-                                                <td>6 months</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </section>
-
-                            <section id="third-party" class="legal-section">
-                                <h2>7. Third-Party Cookies</h2>
-                                <p>
-                                    We use trusted third-party services that may set their own
-                                    cookies. These services help us provide better functionality
-                                    and insights.
-                                </p>
-
-                                <div class="legal-contact-grid">
-                                    <div class="legal-contact-card">
-                                        <h4>PayPal</h4>
-                                        <p>
-                                            <strong>Purpose:</strong> Secure payment processing<br />
-                                            <strong>Cookies:</strong> Payment session, fraud
-                                            prevention<br />
-                                            <a href="https://www.paypal.com/privacy"
-                                               class="legal-link"
-                                               target="_blank">Privacy Policy →</a>
-                                        </p>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>YouTube</h4>
-                                        <p>
-                                            <strong>Purpose:</strong> Video course content
-                                            hosting<br />
-                                            <strong>Cookies:</strong> Video preferences, playback
-                                            settings<br />
-                                            <a href="https://policies.google.com/privacy"
-                                               class="legal-link"
-                                               target="_blank">Privacy Policy →</a>
-                                        </p>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>Jitsi Meet</h4>
-                                        <p>
-                                            <strong>Purpose:</strong> Live classroom video calls<br />
-                                            <strong>Cookies:</strong> Session management, call
-                                            quality<br />
-                                            <a href="https://jitsi.org/meet-jit-si-privacy/"
-                                               class="legal-link"
-                                               target="_blank">Privacy Policy →</a>
-                                        </p>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>Google Fonts</h4>
-                                        <p>
-                                            <strong>Purpose:</strong> Website typography and
-                                            design<br />
-                                            <strong>Cookies:</strong> Font loading optimization<br />
-                                            <a href="https://policies.google.com/privacy"
-                                               class="legal-link"
-                                               target="_blank">Privacy Policy →</a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section id="managing-cookies" class="legal-section">
-                                <h2>8. Managing Your Cookie Preferences</h2>
-
-                                <h3>Cookie Consent Manager</h3>
-                                <p>
-                                    When you first visit our website, you'll see a cookie banner
-                                    allowing you to accept or customize your cookie preferences.
-                                    You can change these settings at any time by clicking the
-                                    cookie settings link in our footer.
-                                </p>
-
-                                <div class="legal-contact-grid">
-                                    <div class="legal-contact-card"
-                                         style="
-                        border-left: 4px solid var(--color-primary-600);
-                        background: var(--color-gray-50);
-                      ">
-                                        <h4 style="color: var(--color-primary-600)">
-                                            Essential Cookies
-                                        </h4>
-                                        <p>Always enabled (required for functionality)</p>
-                                        <span style="
-                          display: inline-block;
-                          background: var(--color-gray-400);
-                          color: white;
-                          padding: 4px 12px;
-                          border-radius: 16px;
-                          font-size: 0.875rem;
-                        ">Required</span>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>Analytics Cookies</h4>
-                                        <p>Help us improve the platform</p>
-                                        <span style="
-                          display: inline-block;
-                          background: var(--color-success);
-                          color: white;
-                          padding: 4px 12px;
-                          border-radius: 16px;
-                          font-size: 0.875rem;
-                        ">Toggle Available</span>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>Preference Cookies</h4>
-                                        <p>Remember your settings and choices</p>
-                                        <span style="
-                          display: inline-block;
-                          background: var(--color-success);
-                          color: white;
-                          padding: 4px 12px;
-                          border-radius: 16px;
-                          font-size: 0.875rem;
-                        ">Toggle Available</span>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>Third-Party Cookies</h4>
-                                        <p>Enable features from external services</p>
-                                        <span style="
-                          display: inline-block;
-                          background: var(--color-success);
-                          color: white;
-                          padding: 4px 12px;
-                          border-radius: 16px;
-                          font-size: 0.875rem;
-                        ">Toggle Available</span>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section id="browser-settings" class="legal-section">
-                                <h2>9. Browser Cookie Settings</h2>
-                                <p>
-                                    You can also manage cookies through your browser settings.
-                                    Here's how to access cookie settings in popular browsers:
-                                </p>
-
-                                <div class="legal-contact-grid">
-                                    <div class="legal-contact-card">
-                                        <h4>🌐 Chrome</h4>
-                                        <ol style="
-                          margin: var(--spacing-md) 0;
-                          padding-left: var(--spacing-lg);
-                        ">
-                                            <li>Click the three dots menu → Settings</li>
-                                            <li>Advanced → Privacy and security</li>
-                                            <li>Site Settings → Cookies and site data</li>
-                                        </ol>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>🦊 Firefox</h4>
-                                        <ol style="
-                          margin: var(--spacing-md) 0;
-                          padding-left: var(--spacing-lg);
-                        ">
-                                            <li>Click the menu button → Options</li>
-                                            <li>Privacy & Security</li>
-                                            <li>Cookies and Site Data</li>
-                                        </ol>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>🧭 Safari</h4>
-                                        <ol style="
-                          margin: var(--spacing-md) 0;
-                          padding-left: var(--spacing-lg);
-                        ">
-                                            <li>Safari menu → Preferences</li>
-                                            <li>Privacy tab</li>
-                                            <li>Cookies and website data</li>
-                                        </ol>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>💠 Edge</h4>
-                                        <ol style="
-                          margin: var(--spacing-md) 0;
-                          padding-left: var(--spacing-lg);
-                        ">
-                                            <li>Click the three dots menu → Settings</li>
-                                            <li>Site permissions</li>
-                                            <li>Cookies and site data</li>
-                                        </ol>
-                                    </div>
-                                </div>
-
-                                <div class="legal-warning-box">
-                                    <h4>⚠️ Important Note</h4>
+                                <div class="legal-contact-card">
+                                    <h4>Jitsi Meet</h4>
                                     <p>
-                                        Disabling all cookies may affect the functionality of our
-                                        platform. Some features may not work properly without
-                                        essential cookies.
+                                        <strong>Mục đích:</strong> Video lớp học trực tiếp<br />
+                                        <strong>Cookie:</strong> Quản lý phiên, chất lượng cuộc gọi<br />
+                                        <a href="https://jitsi.org/meet-jit-si-privacy/" class="legal-link" target="_blank">Chính sách bảo mật →</a>
                                     </p>
                                 </div>
-                            </section>
-
-                            <section id="contact" class="legal-section">
-                                <h2>10. Questions About Cookies</h2>
-                                <p>
-                                    If you have any questions about our use of cookies or this
-                                    Cookie Policy, please contact us:
-                                </p>
-
-                                <div class="legal-contact-grid">
-                                    <div class="legal-contact-card">
-                                        <h4>Email</h4>
-                                        <p>
-                                            <a href="mailto:privacy@nihongosekai.com"
-                                               class="legal-link">privacy@nihongosekai.com</a>
-                                        </p>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>Support Center</h4>
-                                        <p>
-                                            Visit our
-                                            <a href="help.html" class="legal-link">Help Center</a>
-                                            for more information about cookies and privacy settings.
-                                        </p>
-                                    </div>
-
-                                    <div class="legal-contact-card">
-                                        <h4>Related Policies</h4>
-                                        <p>
-                                            <a href="privacy.html" class="legal-link">Privacy Policy</a>
-                                            |
-                                            <a href="terms.html" class="legal-link">Terms of Service</a>
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="legal-info-box">
-                                    <h4>📄 Policy Updates</h4>
+                                <div class="legal-contact-card">
+                                    <h4>Google Fonts</h4>
                                     <p>
-                                        We may update this Cookie Policy from time to time to
-                                        reflect changes in our practices or for legal reasons. We
-                                        will notify you of any significant changes.
+                                        <strong>Mục đích:</strong> Kiểu chữ và thiết kế trang web<br />
+                                        <strong>Cookie:</strong> Tối ưu tải font<br />
+                                        <a href="https://policies.google.com/privacy" class="legal-link" target="_blank">Chính sách bảo mật →</a>
                                     </p>
                                 </div>
-                            </section>
-                        </article>
-                    </div>
+                            </div>
+                        </section>
+
+                        <section id="managing-cookies" class="legal-section">
+                            <h2>8. Quản lý tùy chọn Cookie của bạn</h2>
+
+                            <h3>Trình quản lý Sự đồng ý Cookie</h3>
+                            <p>
+                                Khi bạn lần đầu truy cập trang web, bạn sẽ thấy một banner cookie
+                                cho phép bạn chấp nhận hoặc tùy chỉnh thiết lập cookie.
+                                Bạn có thể thay đổi những cài đặt này bất cứ lúc nào bằng cách
+                                nhấp vào liên kết “Cài đặt cookie” ở chân trang.
+                            </p>
+
+                            <div class="legal-contact-grid">
+                                <div class="legal-contact-card"
+                                     style="border-left: 4px solid var(--color-primary-600); background: var(--color-gray-50);">
+                                    <h4 style="color: var(--color-primary-600)">Cookie Cần thiết</h4>
+                                    <p>Luôn bật (bắt buộc cho chức năng)</p>
+                                    <span style="display: inline-block; background: var(--color-gray-400); color: white; padding: 4px 12px; border-radius: 16px; font-size: 0.875rem;">
+                                        Bắt buộc
+                                    </span>
+                                </div>
+
+                                <div class="legal-contact-card">
+                                    <h4>Cookie Phân tích</h4>
+                                    <p>Giúp chúng tôi cải thiện nền tảng</p>
+                                    <span style="display: inline-block; background: var(--color-success); color: white; padding: 4px 12px; border-radius: 16px; font-size: 0.875rem;">
+                                        Có thể tắt
+                                    </span>
+                                </div>
+
+                                <div class="legal-contact-card">
+                                    <h4>Cookie Tùy chọn</h4>
+                                    <p>Ghi nhớ cài đặt và lựa chọn của bạn</p>
+                                    <span style="display: inline-block; background: var(--color-success); color: white; padding: 4px 12px; border-radius: 16px; font-size: 0.875rem;">
+                                        Có thể tắt
+                                    </span>
+                                </div>
+
+                                <div class="legal-contact-card">
+                                    <h4>Cookie Bên thứ ba</h4>
+                                    <p>Kích hoạt tính năng từ dịch vụ bên ngoài</p>
+                                    <span style="display: inline-block; background: var(--color-success); color: white; padding: 4px 12px; border-radius: 16px; font-size: 0.875rem;">
+                                        Có thể tắt
+                                    </span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="browser-settings" class="legal-section">
+                            <h2>9. Cài đặt Cookie trên Trình duyệt</h2>
+                            <p>
+                                Bạn cũng có thể quản lý cookie thông qua cài đặt trình duyệt. Dưới đây là
+                                cách truy cập cài đặt cookie trên các trình duyệt phổ biến:
+                            </p>
+
+                            <div class="legal-contact-grid">
+                                <div class="legal-contact-card">
+                                    <h4>🌐 Chrome</h4>
+                                    <ol style="margin: var(--spacing-md) 0; padding-left: var(--spacing-lg);">
+                                        <li>Nhấp vào menu ba chấm → Cài đặt</li>
+                                        <li>Nâng cao → Quyền riêng tư và bảo mật</li>
+                                        <li>Cài đặt trang → Cookie và dữ liệu trang</li>
+                                    </ol>
+                                </div>
+
+                                <div class="legal-contact-card">
+                                    <h4>🦊 Firefox</h4>
+                                    <ol style="margin: var(--spacing-md) 0; padding-left: var(--spacing-lg);">
+                                        <li>Nhấp vào nút menu → Tùy chọn</li>
+                                        <li>Quyền riêng tư & Bảo mật</li>
+                                        <li>Cookie và dữ liệu trang</li>
+                                    </ol>
+                                </div>
+
+                                <div class="legal-contact-card">
+                                    <h4>🧭 Safari</h4>
+                                    <ol style="margin: var(--spacing-md) 0; padding-left: var(--spacing-lg);">
+                                        <li>Menu Safari → Preferences (Tùy chọn)</li>
+                                        <li>Tab Privacy (Riêng tư)</li>
+                                        <li>Cookie và dữ liệu trang web</li>
+                                    </ol>
+                                </div>
+
+                                <div class="legal-contact-card">
+                                    <h4>💠 Edge</h4>
+                                    <ol style="margin: var(--spacing-md) 0; padding-left: var(--spacing-lg);">
+                                        <li>Nhấp vào menu ba chấm → Cài đặt</li>
+                                        <li>Quyền trang</li>
+                                        <li>Cookie và dữ liệu trang</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <div class="legal-warning-box">
+                                <h4>⚠️ Lưu ý quan trọng</h4>
+                                <p>
+                                    Tắt tất cả cookie có thể ảnh hưởng đến chức năng của nền tảng.
+                                    Một số tính năng có thể không hoạt động đúng nếu không có cookie cần thiết.
+                                </p>
+                            </div>
+                        </section>
+
+                        <section id="contact" class="legal-section">
+                            <h2>10. Thắc mắc về Cookie</h2>
+                            <p>
+                                Nếu bạn có bất kỳ câu hỏi nào về việc chúng tôi sử dụng cookie hoặc chính sách
+                                Cookie này, vui lòng liên hệ với chúng tôi:
+                            </p>
+
+                            <div class="legal-contact-grid">
+                                <div class="legal-contact-card">
+                                    <h4>Email</h4>
+                                    <p>
+                                        <a href="mailto:privacy@nihongosekai.com" class="legal-link">
+                                            privacy@nihongosekai.com
+                                        </a>
+                                    </p>
+                                </div>
+
+                                <div class="legal-contact-card">
+                                    <h4>Trung tâm hỗ trợ</h4>
+                                    <p>
+                                        Truy cập
+                                        <a href="help.html" class="legal-link">Help Center</a>
+                                        để biết thêm thông tin về cookie và cài đặt quyền riêng tư.
+                                    </p>
+                                </div>
+
+                                <div class="legal-contact-card">
+                                    <h4>Chính sách liên quan</h4>
+                                    <p>
+                                        <a href="privacy.html" class="legal-link">Chính sách bảo mật</a>
+                                        |
+                                        <a href="terms.html" class="legal-link">Điều khoản dịch vụ</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="legal-info-box">
+                                <h4>📄 Cập nhật Chính sách</h4>
+                                <p>
+                                    Chúng tôi có thể cập nhật Chính sách Cookie này từ khi để phù hợp với
+                                    thay đổi trong thực tiễn hoặc yêu cầu pháp lý. Chúng tôi sẽ thông báo cho
+                                    bạn về bất kỳ thay đổi quan trọng nào.
+                                </p>
+                            </div>
+                        </section>
+                    </article>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
+</main>
 
 @section Scripts {
         <script src="~/js/script.js"></script>

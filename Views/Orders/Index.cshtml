@@ -1,58 +1,138 @@
-@using JapaneseLearningPlatform.Models
+﻿@using JapaneseLearningPlatform.Models
 @model List<Order>
 
-@{ 
-    ViewData["Title"] = "All orders";
+@{
+    ViewData["Title"] = "Tất cả đơn hàng";
     ViewData["HideNavbar"] = false;
     ViewData["HideFooter"] = false;
 }
 
-<div class="row">
-    <div class="col-md-8 offset-2">
-        <p>
-            <h4>List of all your orders</h4>
-        </p>
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap"
+          rel="stylesheet" />
 
-        <table class="table">
+    <style>
+        /* 1) Cả body dùng nền nhạt để table nổi bật */
+        body {
+            background-color: #f0f4f8;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        /* 2) Bọc orders container trong một card */
+        .orders-container {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            margin-bottom: 4rem;
+        }
+
+            /* 3) Tiêu đề */
+            .orders-container h3 {
+                margin-bottom: 1.5rem;
+                color: #333;
+            }
+
+        /* 4) Table reset & shadow */
+        .orders-table {
+            border: none;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+            .orders-table thead th {
+                border-bottom: 2px solid #e2e8f0;
+                background: transparent;
+                color: #555;
+            }
+
+            /* 5) Row stripe & hover */
+            .orders-table tbody tr:nth-child(odd) {
+                background-color: #fafbfc;
+            }
+
+            .orders-table tbody tr:nth-child(even) {
+                background-color: #ffffff;
+            }
+
+            .orders-table tbody tr:hover {
+                background-color: #e2edf9;
+                transform: translateX(4px);
+                transition: all 0.2s;
+            }
+
+            /* 6) Alert-info bản nhạt hơn */
+            .orders-table .alert-info {
+                background-color: #eaf6ff;
+                border-color: #cfeafd;
+                transition: background 0.2s;
+            }
+
+                .orders-table .alert-info:hover {
+                    background-color: #d3edff;
+                }
+
+        /* 7) Badge style */
+        .badge-amount {
+            min-width: 1.8rem;
+            text-align: center;
+            font-size: .9rem;
+        }
+        /* Ẩn thanh cuộn ngang */
+        .table-responsive {
+            overflow-x: hidden !important;
+        }
+    </style>
+}
+
+<div class="container my-5 orders-container">
+    <h3>Danh sách tất cả đơn hàng của bạn</h3>
+
+    <div class="table-responsive">
+        <table class="table orders-table">
             <thead>
                 <tr>
-                    <th>Order ID</th>
-                    <th>Items</th>
-                    <th>Total</th>
+                    <th scope="col">Mã đơn hàng</th>
+                    <th scope="col">Số lượng &amp; Khóa học</th>
+                    <th scope="col">Tổng cộng</th>
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                     {
-                        <th>User</th>
+                        <th scope="col">Người dùng</th>
                     }
                 </tr>
             </thead>
             <tbody>
                 @foreach (var order in Model)
                 {
-                <tr>
-                    <td class="align-middle">@order.Id</td>
-                    <td class="align-middle">
-                        <ul style="list-style-type:none">
-                            @foreach (var item in order.OrderItems)
-                            {
-                                <li>
-                                    <div class="alert alert-info" role="alert">
-                                        <span class="badge bg-success">@item.Amount</span> [@item.Price.ToString("c")] - @item.Course.Name
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                    </td>
-                    <td class="align-middle">
-                        @order.OrderItems.Select(m => m.Course.FinalPrice * m.Amount).Sum().ToString("c")
-                    </td>
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                    {
-                        <td class="align-middle"> @order.User.FullName </td>
-                    }
+                    var total = order.OrderItems.Sum(i => i.Course.FinalPrice * i.Amount);
+                    <tr>
+                        <td class="align-middle">@order.Id</td>
+                        <td class="align-middle">
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var item in order.OrderItems)
+                                {
+                                    <li>
+                                        <div class="alert alert-info py-1 px-2 d-flex justify-content-between align-items-center" role="alert">
+                                            <span>
+                                                <span class="badge bg-success badge-amount me-2">@item.Amount</span>
+                                                [@item.Price.ToString("N0") ₫] – @item.Course.Name
+                                            </span>
+                                            <span class="text-muted">@((item.Price * item.Amount).ToString("N0")) ₫</span>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                        <td class="align-middle fw-semibold">@total.ToString("N0") ₫</td>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <td class="align-middle">@order.User.FullName</td>
+                        }
                     </tr>
                 }
             </tbody>
         </table>
-
     </div>
 </div>

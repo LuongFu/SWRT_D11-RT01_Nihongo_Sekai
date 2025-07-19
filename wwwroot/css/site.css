@@ -1,5 +1,6 @@
 ﻿/* Reset & layout basics */
 html, body {
+    overflow-x: hidden;
     margin: 0;
     padding: 0;
     width: 100vw;
@@ -13,7 +14,7 @@ html, body {
 
 /* Gradient text (for "Sekai") */
 .gradient-text {
-    background: linear-gradient(270deg, #A5EAED, #FDB5DA, #A5EAED);
+    background: linear-gradient(270deg, #DD2931, #F5365C, #FFFFFF);
     background-size: 600% 600%;
     animation: moveGradient 5s ease infinite;
     -webkit-background-clip: text;
@@ -49,10 +50,9 @@ html, body {
 }
 
     .gradient-btn:hover {
-        background: linear-gradient(90deg, #A5EAED, #FDB5DA);
+        background: linear-gradient(90deg, #DD2931, #F5365C);
         color: white;
         transform: scale(1.05);
-        box-shadow: 0 8転職 System: 8px 20px rgba(165, 234, 237, 0.3);
     }
 
 /* Hero video background */
@@ -102,15 +102,6 @@ html, body {
     z-index: 1000;
 }
 
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-}
-
 .nav-list {
     display: flex;
     gap: 2rem;
@@ -121,19 +112,9 @@ html, body {
     font-size: 1.1rem;
 }
 
-.nav-link {
-    text-decoration: none;
-    font-weight: 500;
-    color: #333;
-    transition: all 0.3s;
-    position: relative;
-    padding-bottom: 3px;
-}
-
 .nav-link:hover,
 .nav-link.active-tab {
     color: #d9232e;
-    font-weight: 700;
 }
 
 .nav-link.active-tab::after {
@@ -567,32 +548,12 @@ footer.footer {
     margin: auto;
 }
 
-.loading-text {
-    margin-top: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    animation: colorShift 3s ease-in-out infinite;
-}
-
 @keyframes spin {
     to {
         transform: rotate(360deg);
     }
 }
 
-@keyframes colorShift {
-    0% {
-        color: #ffffff;
-    }
-
-    50% {
-        color: #ffdeeb;
-    }
-
-    100% {
-        color: #ffffff;
-    }
-}
 
 .card .card-body p {
     font-size: 15px;
@@ -784,7 +745,7 @@ footer.footer {
 .spinner {
     width: 80px;
     height: 80px;
-    border: 8px solid rgba(255, 255, 255, 0.2);
+    border: 8px solid #DD2931;
     border-top-color: #ffffff;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -802,10 +763,23 @@ footer.footer {
     font-size: 24px;
     font-weight: bold;
     animation: colorShift 3s ease-in-out infinite;
-    color: #ffe4ea;
+    color: #DD2931;
     text-align: center;
 }
 
+@keyframes colorShift {
+    0% {
+        color: #DD2931;
+    }
+
+    50% {
+        color: #F5365C;
+    }
+
+    100% {
+        color: #aaa;
+    }
+}
 
 /*My purchase course*/
 .course-card {
@@ -826,20 +800,6 @@ footer.footer {
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
 
-@keyframes colorShift {
-    0% {
-        color: #ffffff;
-    }
-
-    50% {
-        color: #ffdeeb;
-    }
-
-    100% {
-        color: #ffffff;
-    }
-}
-
 .card .card-body p {
     font-size: 15px;
 }
@@ -859,11 +819,6 @@ footer.footer {
     background-color: rgba(255,255,255,0.15);
     border-radius: 0.5rem;
     font-weight: 600;
-}
-
-.navbar-nav .nav-link {
-    border-radius: 0.375rem;
-    transition: background-color 0.2s ease;
 }
 
     .navbar-nav .nav-link:hover,

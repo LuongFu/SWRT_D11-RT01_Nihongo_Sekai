@@ -1,80 +1,78 @@
-﻿
-@{
-    ViewData["Title"] = "Pricing - Nihongo Sekai";
+﻿@{
+    ViewData["Title"] = "Bảng Giá";
     Layout = "_Layout";
 }
 
 @section Head {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pricing - Nihongo Sekai</title>
+    <title>Bảng Giá</title>
     <meta name="description"
-          content="Choose the perfect Japanese learning plan for your needs. Flexible pricing for courses, live classes, and premium features." />
+          content="Chọn gói học tiếng Nhật phù hợp với bạn. Giá linh hoạt cho các khóa học, lớp trực tiếp và tính năng cao cấp." />
 }
 
 @section Styles {
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
 
-    <!-- Page-specific CSS -->
+    <!-- CSS dành cho trang này -->
     <link rel="stylesheet" href="~/css/pricing.css" />
     <link rel="stylesheet" href="~/css/styles.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
 
-    <!-- Favicon -->
+    <!-- Biểu tượng favicon -->
     <link rel="icon"
           href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎌</text></svg>" />
 }
 
-<!-- Main Content -->
+<!-- Nội dung chính -->
 <main class="main">
-    <!-- Hero Section -->
+    <!-- Phần Hero -->
     <section class="legal-hero pricing-hero">
         <div class="container">
             <div class="legal-hero-content">
                 <div class="legal-breadcrumb">
-                    <a href="index.html">Home</a>
+                    <a href="index.html">Trang chủ</a>
                     <span class="legal-breadcrumb-separator">›</span>
-                    <span>Pricing</span>
+                    <span>Bảng giá</span>
                 </div>
-                <h1 class="legal-page-title">Choose Your Learning Path</h1>
+                <h1 class="legal-page-title">Chọn Lộ trình Học của Bạn</h1>
                 <p class="legal-page-subtitle">
-                    Flexible plans designed to fit your learning style and budget.
-                    Start your Japanese journey today with confidence.
+                    Các gói linh hoạt được thiết kế phù hợp phong cách và ngân sách của bạn.
+                    Bắt đầu hành trình học tiếng Nhật ngay hôm nay với sự tự tin.
                 </p>
 
-                <!-- Billing Toggle -->
+                <!-- Chuyển đổi kỳ thanh toán -->
                 <div class="billing-toggle">
-                    <span class="billing-label">Monthly</span>
+                    <span class="billing-label">Hàng tháng</span>
                     <label class="toggle-switch">
                         <input type="checkbox" id="billingToggle" />
                         <span class="slider"></span>
                     </label>
                     <span class="billing-label">
-                        Annual
-                        <span class="save-badge">Save 20%</span>
+                        Hàng năm
+                        <span class="save-badge">Tiết kiệm 20%</span>
                     </span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Subscription Plans -->
+    <!-- Các gói đăng ký -->
     <section class="pricing-plans">
         <div class="container">
             <div class="plans-grid">
-                <!-- Free Plan -->
+                <!-- Gói Miễn phí -->
                 <div class="plan-card">
                     <div class="plan-header">
-                        <h3 class="plan-name">Free</h3>
+                        <h3 class="plan-name">Miễn phí</h3>
                         <div class="plan-price">
                             <span class="currency">$</span>
                             <span class="amount">0</span>
-                            <span class="period">/month</span>
+                            <span class="period">/tháng</span>
                         </div>
                         <p class="plan-description">
-                            Perfect for getting started with Japanese basics
+                            Hoàn hảo để bắt đầu với các kiến thức cơ bản
                         </p>
                     </div>
 
@@ -82,52 +80,52 @@
                         <ul class="features-list">
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Access to 3 beginner courses</span>
+                                <span class="feature-text">Truy cập 3 khóa học cơ bản</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Basic hiragana & katakana</span>
+                                <span class="feature-text">Học hiragana & katakana cơ bản</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Community forum access</span>
+                                <span class="feature-text">Tham gia diễn đàn cộng đồng</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Progress tracking</span>
+                                <span class="feature-text">Theo dõi tiến độ học</span>
                             </li>
                             <li class="feature excluded">
                                 <span class="feature-icon">✗</span>
-                                <span class="feature-text">Live classes</span>
+                                <span class="feature-text">Lớp học trực tiếp</span>
                             </li>
                             <li class="feature excluded">
                                 <span class="feature-icon">✗</span>
-                                <span class="feature-text">Downloadable content</span>
+                                <span class="feature-text">Tải tài liệu về</span>
                             </li>
                             <li class="feature excluded">
                                 <span class="feature-icon">✗</span>
-                                <span class="feature-text">One-on-one sessions</span>
+                                <span class="feature-text">Buổi học riêng</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="plan-action">
-                        <a href="register.html" class="btn btn-outline btn-plan">Get Started Free</a>
+                        <a href="register.html" class="btn btn-outline btn-plan">Bắt đầu Miễn phí</a>
                     </div>
                 </div>
 
-                <!-- Basic Plan -->
+                <!-- Gói Cơ bản -->
                 <div class="plan-card">
                     <div class="plan-header">
-                        <h3 class="plan-name">Basic</h3>
+                        <h3 class="plan-name">Cơ bản</h3>
                         <div class="plan-price">
                             <span class="currency">$</span>
                             <span class="amount monthly-price">19</span>
                             <span class="amount annual-price" style="display: none">15</span>
-                            <span class="period">/month</span>
+                            <span class="period">/tháng</span>
                         </div>
                         <p class="plan-description">
-                            Essential tools for dedicated learners
+                            Công cụ thiết yếu cho người học nghiêm túc
                         </p>
                     </div>
 
@@ -135,53 +133,53 @@
                         <ul class="features-list">
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">All Free plan features</span>
+                                <span class="feature-text">Tất cả tính năng gói Miễn phí</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Access to 20+ courses</span>
+                                <span class="feature-text">Truy cập 20+ khóa học</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Downloadable materials</span>
+                                <span class="feature-text">Tải tài liệu về</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Mobile app access</span>
+                                <span class="feature-text">Truy cập ứng dụng di động</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Email support</span>
+                                <span class="feature-text">Hỗ trợ qua email</span>
                             </li>
                             <li class="feature excluded">
                                 <span class="feature-icon">✗</span>
-                                <span class="feature-text">Live classes</span>
+                                <span class="feature-text">Lớp học trực tiếp</span>
                             </li>
                             <li class="feature excluded">
                                 <span class="feature-icon">✗</span>
-                                <span class="feature-text">One-on-one sessions</span>
+                                <span class="feature-text">Buổi học riêng</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="plan-action">
-                        <a href="register.html" class="btn btn-primary btn-plan">Choose Basic</a>
+                        <a href="register.html" class="btn btn-primary btn-plan">Chọn Cơ bản</a>
                     </div>
                 </div>
 
-                <!-- Premium Plan -->
+                <!-- Gói Cao cấp -->
                 <div class="plan-card popular">
-                    <div class="plan-badge">Most Popular</div>
+                    <div class="plan-badge">Phổ biến nhất</div>
                     <div class="plan-header">
-                        <h3 class="plan-name">Premium</h3>
+                        <h3 class="plan-name">Cao cấp</h3>
                         <div class="plan-price">
                             <span class="currency">$</span>
                             <span class="amount monthly-price">39</span>
                             <span class="amount annual-price" style="display: none">31</span>
-                            <span class="period">/month</span>
+                            <span class="period">/tháng</span>
                         </div>
                         <p class="plan-description">
-                            Complete learning experience with live instruction
+                            Trải nghiệm học tập toàn diện với hướng dẫn trực tiếp
                         </p>
                     </div>
 
@@ -189,41 +187,41 @@
                         <ul class="features-list">
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">All Basic plan features</span>
+                                <span class="feature-text">Tất cả tính năng gói Cơ bản</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Unlimited live classes</span>
+                                <span class="feature-text">Lớp học trực tiếp không giới hạn</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Interactive exercises</span>
+                                <span class="feature-text">Bài tập tương tác</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Priority support</span>
+                                <span class="feature-text">Hỗ trợ ưu tiên</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Certificate programs</span>
+                                <span class="feature-text">Chứng chỉ hoàn thành</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Study groups</span>
+                                <span class="feature-text">Nhóm học tập</span>
                             </li>
                             <li class="feature excluded">
                                 <span class="feature-icon">✗</span>
-                                <span class="feature-text">One-on-one sessions</span>
+                                <span class="feature-text">Buổi học riêng</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="plan-action">
-                        <a href="register.html" class="btn btn-primary btn-plan">Choose Premium</a>
+                        <a href="register.html" class="btn btn-primary btn-plan">Chọn Cao cấp</a>
                     </div>
                 </div>
 
-                <!-- Pro Plan -->
+                <!-- Gói Pro -->
                 <div class="plan-card">
                     <div class="plan-header">
                         <h3 class="plan-name">Pro</h3>
@@ -231,10 +229,10 @@
                             <span class="currency">$</span>
                             <span class="amount monthly-price">79</span>
                             <span class="amount annual-price" style="display: none">63</span>
-                            <span class="period">/month</span>
+                            <span class="period">/tháng</span>
                         </div>
                         <p class="plan-description">
-                            Premium features plus personalized tutoring
+                            Gói Cao cấp cộng với kèm cá nhân
                         </p>
                     </div>
 
@@ -242,44 +240,44 @@
                         <ul class="features-list">
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">All Premium plan features</span>
+                                <span class="feature-text">Tất cả tính năng gói Cao cấp</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">4 one-on-one sessions/month</span>
+                                <span class="feature-text">4 buổi kèm riêng/tháng</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Custom learning path</span>
+                                <span class="feature-text">Lộ trình học tùy chỉnh</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">24/7 chat support</span>
+                                <span class="feature-text">Hỗ trợ trò chuyện 24/7</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Advanced analytics</span>
+                                <span class="feature-text">Phân tích nâng cao</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Exclusive content</span>
+                                <span class="feature-text">Nội dung độc quyền</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Priority class booking</span>
+                                <span class="feature-text">Đặt chỗ lớp ưu tiên</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="plan-action">
-                        <a href="register.html" class="btn btn-primary btn-plan">Choose Pro</a>
+                        <a href="register.html" class="btn btn-primary btn-plan">Chọn Pro</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Individual Course Pricing -->
+    <!-- Giá Khóa Học Riêng Lẻ -->
     <section class="section"
              style="background: var(--color-gray-50); padding: var(--spacing-3xl) 0">
         <div class="container">
@@ -287,251 +285,254 @@
                  style="text-align: center; margin-bottom: var(--spacing-3xl)">
                 <h2 class="section-title"
                     style="
-                font-family: var(--font-heading);
-                font-size: 2.5rem;
-                font-weight: 700;
-                color: var(--color-gray-900);
-                margin-bottom: var(--spacing-lg);
-              ">
-                    Individual Course Pricing
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-lg);
+          ">
+                    Giá Khóa Học Riêng Lẻ
                 </h2>
                 <p class="section-subtitle"
                    style="
-                font-size: 1.25rem;
-                color: var(--color-gray-600);
-                max-width: 600px;
-                margin: 0 auto;
-              ">
-                    Prefer to buy courses individually? Choose from our comprehensive
-                    catalog with lifetime access.
+            font-size: 1.25rem;
+            color: var(--color-gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+          ">
+                    Muốn mua từng khóa học riêng lẻ? Chọn từ danh mục toàn diện của chúng tôi với quyền truy cập trọn đời.
                 </p>
             </div>
 
             <div class="legal-contact-grid">
+                <!-- Khóa Học Cơ Bản -->
                 <div class="legal-contact-card" style="text-align: center">
                     <h3 style="
-                  color: var(--color-primary-600);
-                  margin-bottom: var(--spacing-md);
-                ">
-                        Beginner Courses
+              color: var(--color-primary-600);
+              margin-bottom: var(--spacing-md);
+            ">
+                        Khóa Học Cơ Bản
                     </h3>
                     <div style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-gray-900);
-                  margin-bottom: var(--spacing-sm);
-                ">
+              font-size: 2rem;
+              font-weight: 700;
+              color: var(--color-gray-900);
+              margin-bottom: var(--spacing-sm);
+            ">
                         $29 - $49
                     </div>
                     <p style="
-                  color: var(--color-gray-600);
-                  margin-bottom: var(--spacing-lg);
-                ">
-                        Perfect for starting your Japanese journey
+              color: var(--color-gray-600);
+              margin-bottom: var(--spacing-lg);
+            ">
+                        Hoàn hảo để bắt đầu hành trình tiếng Nhật của bạn
                     </p>
                     <ul style="
-                  list-style: none;
-                  padding: 0;
-                  margin-bottom: var(--spacing-xl);
-                  text-align: left;
-                ">
+              list-style: none;
+              padding: 0;
+              margin-bottom: var(--spacing-xl);
+              text-align: left;
+            ">
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ 10-15 video lessons
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ 10-15 bài học video
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Interactive quizzes
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Bài quiz tương tác
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Downloadable resources
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Tài nguyên có thể tải về
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Certificate of completion
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Chứng nhận hoàn thành
                         </li>
                     </ul>
-                    <a href="courses.html" class="btn btn-outline" style="width: 100%">Browse Beginner Courses</a>
+                    <a href="courses.html" class="btn btn-outline" style="width: 100%">Xem Khóa Học Cơ Bản</a>
                 </div>
 
+                <!-- Khóa Học Trung Cấp -->
                 <div class="legal-contact-card" style="text-align: center">
                     <h3 style="
-                  color: var(--color-primary-600);
-                  margin-bottom: var(--spacing-md);
-                ">
-                        Intermediate Courses
+              color: var(--color-primary-600);
+              margin-bottom: var(--spacing-md);
+            ">
+                        Khóa Học Trung Cấp
                     </h3>
                     <div style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-gray-900);
-                  margin-bottom: var(--spacing-sm);
-                ">
+              font-size: 2rem;
+              font-weight: 700;
+              color: var(--color-gray-900);
+              margin-bottom: var(--spacing-sm);
+            ">
                         $49 - $79
                     </div>
                     <p style="
-                  color: var(--color-gray-600);
-                  margin-bottom: var(--spacing-lg);
-                ">
-                        Build upon your foundation with advanced concepts
+              color: var(--color-gray-600);
+              margin-bottom: var(--spacing-lg);
+            ">
+                        Xây dựng nền tảng của bạn với các khái niệm nâng cao
                     </p>
                     <ul style="
-                  list-style: none;
-                  padding: 0;
-                  margin-bottom: var(--spacing-xl);
-                  text-align: left;
-                ">
+              list-style: none;
+              padding: 0;
+              margin-bottom: var(--spacing-xl);
+              text-align: left;
+            ">
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ 15-25 video lessons
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ 15-25 bài học video
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Cultural context lessons
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Bài học bối cảnh văn hóa
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Speaking practice exercises
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Bài tập luyện nói
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Progress assignments
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Bài tập theo dõi tiến độ
                         </li>
                     </ul>
-                    <a href="courses.html" class="btn btn-outline" style="width: 100%">Browse Intermediate Courses</a>
+                    <a href="courses.html" class="btn btn-outline" style="width: 100%">Xem Khóa Học Trung Cấp</a>
                 </div>
 
+                <!-- Khóa Học Nâng Cao -->
                 <div class="legal-contact-card" style="text-align: center">
                     <h3 style="
-                  color: var(--color-primary-600);
-                  margin-bottom: var(--spacing-md);
-                ">
-                        Advanced Courses
+              color: var(--color-primary-600);
+              margin-bottom: var(--spacing-md);
+            ">
+                        Khóa Học Nâng Cao
                     </h3>
                     <div style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-gray-900);
-                  margin-bottom: var(--spacing-sm);
-                ">
+              font-size: 2rem;
+              font-weight: 700;
+              color: var(--color-gray-900);
+              margin-bottom: var(--spacing-sm);
+            ">
                         $79 - $129
                     </div>
                     <p style="
-                  color: var(--color-gray-600);
-                  margin-bottom: var(--spacing-lg);
-                ">
-                        Master complex topics and achieve fluency
+              color: var(--color-gray-600);
+              margin-bottom: var(--spacing-lg);
+            ">
+                        Thành thạo các chủ đề phức tạp và đạt độ trôi chảy
                     </p>
                     <ul style="
-                  list-style: none;
-                  padding: 0;
-                  margin-bottom: var(--spacing-xl);
-                  text-align: left;
-                ">
+              list-style: none;
+              padding: 0;
+              margin-bottom: var(--spacing-xl);
+              text-align: left;
+            ">
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ 20-30 comprehensive lessons
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ 20-30 bài học toàn diện
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Business Japanese focus
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Tập trung tiếng Nhật thương mại
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Live practice sessions
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Buổi thực hành trực tiếp
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Professional certification
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Chứng nhận chuyên nghiệp
                         </li>
                     </ul>
-                    <a href="courses.html" class="btn btn-outline" style="width: 100%">Browse Advanced Courses</a>
+                    <a href="courses.html" class="btn btn-outline" style="width: 100%">Xem Khóa Học Nâng Cao</a>
                 </div>
 
+                <!-- Luyện Thi JLPT -->
                 <div class="legal-contact-card" style="text-align: center">
                     <h3 style="
-                  color: var(--color-primary-600);
-                  margin-bottom: var(--spacing-md);
-                ">
-                        JLPT Preparation
+              color: var(--color-primary-600);
+              margin-bottom: var(--spacing-md);
+            ">
+                        Luyện Thi JLPT
                     </h3>
                     <div style="
-                  font-size: 2rem;
-                  font-weight: 700;
-                  color: var(--color-gray-900);
-                  margin-bottom: var(--spacing-sm);
-                ">
+              font-size: 2rem;
+              font-weight: 700;
+              color: var(--color-gray-900);
+              margin-bottom: var(--spacing-sm);
+            ">
                         $99 - $199
                     </div>
                     <p style="
-                  color: var(--color-gray-600);
-                  margin-bottom: var(--spacing-lg);
-                ">
-                        Specialized courses for Japanese proficiency tests
+              color: var(--color-gray-600);
+              margin-bottom: var(--spacing-lg);
+            ">
+                        Khóa học chuyên sâu cho kỳ thi năng lực tiếng Nhật
                     </p>
                     <ul style="
-                  list-style: none;
-                  padding: 0;
-                  margin-bottom: var(--spacing-xl);
-                  text-align: left;
-                ">
+              list-style: none;
+              padding: 0;
+              margin-bottom: var(--spacing-xl);
+              text-align: left;
+            ">
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Comprehensive test preparation
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Luyện thi toàn diện
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Practice exams & timing
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Đề thi thử & quản lý thời gian
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Expert teacher guidance
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Giảng viên chuyên gia hướng dẫn
                         </li>
                         <li style="
-                    padding: var(--spacing-xs) 0;
-                    color: var(--color-gray-700);
-                  ">
-                            ✓ Pass guarantee program
+                padding: var(--spacing-xs) 0;
+                color: var(--color-gray-700);
+              ">
+                            ✓ Chương trình đảm bảo đậu
                         </li>
                     </ul>
-                    <a href="courses.html" class="btn btn-outline" style="width: 100%">View JLPT Courses</a>
+                    <a href="courses.html" class="btn btn-outline" style="width: 100%">Xem Khóa Học JLPT</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Live Class Pricing -->
+    <!-- Giá Lớp Học Trực Tiếp -->
     <section class="section"
              style="background: var(--color-white); padding: var(--spacing-3xl) 0">
         <div class="container">
@@ -539,36 +540,36 @@
                  style="text-align: center; margin-bottom: var(--spacing-3xl)">
                 <h2 class="section-title"
                     style="
-                font-family: var(--font-heading);
-                font-size: 2.5rem;
-                font-weight: 700;
-                color: var(--color-gray-900);
-                margin-bottom: var(--spacing-lg);
-              ">
-                    Live Class Options
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-lg);
+          ">
+                    Lựa Chọn Lớp Học Trực Tiếp
                 </h2>
                 <p class="section-subtitle"
                    style="
-                font-size: 1.25rem;
-                color: var(--color-gray-600);
-                max-width: 600px;
-                margin: 0 auto;
-              ">
-                    Interactive learning with certified Japanese teachers
+            font-size: 1.25rem;
+            color: var(--color-gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+          ">
+                    Học tương tác với giáo viên tiếng Nhật được chứng nhận
                 </p>
             </div>
 
             <div class="plans-grid" style="max-width: 1000px; margin: 0 auto">
                 <div class="plan-card">
                     <div class="plan-header">
-                        <h3 class="plan-name">Group Classes</h3>
+                        <h3 class="plan-name">Lớp Nhóm</h3>
                         <div class="plan-price">
                             <span class="currency">$</span>
                             <span class="amount">25</span>
-                            <span class="period" style="font-size: 0.875rem">/60-min session</span>
+                            <span class="period" style="font-size: 0.875rem">/60 phút</span>
                         </div>
                         <p class="plan-description">
-                            Interactive group learning experience
+                            Trải nghiệm học nhóm tương tác
                         </p>
                     </div>
 
@@ -576,42 +577,42 @@
                         <ul class="features-list">
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">5-8 students per class</span>
+                                <span class="feature-text">5–8 học viên mỗi lớp</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Certified native teachers</span>
+                                <span class="feature-text">Giáo viên bản ngữ chứng nhận</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Interactive activities</span>
+                                <span class="feature-text">Hoạt động tương tác</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Class recordings available</span>
+                                <span class="feature-text">Ghi hình lớp học</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Multiple time zones</span>
+                                <span class="feature-text">Dịch vụ theo nhiều múi giờ</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="plan-action">
-                        <a href="classrooms.html" class="btn btn-primary btn-plan">Book Group Class</a>
+                        <a href="classrooms.html" class="btn btn-primary btn-plan">Đặt Lớp Nhóm</a>
                     </div>
                 </div>
 
                 <div class="plan-card">
                     <div class="plan-header">
-                        <h3 class="plan-name">Semi-Private Classes</h3>
+                        <h3 class="plan-name">Lớp Bán Riêng</h3>
                         <div class="plan-price">
                             <span class="currency">$</span>
                             <span class="amount">45</span>
-                            <span class="period" style="font-size: 0.875rem">/60-min session</span>
+                            <span class="period" style="font-size: 0.875rem">/60 phút</span>
                         </div>
                         <p class="plan-description">
-                            More personalized attention and flexibility
+                            Chú ý cá nhân hơn và linh hoạt hơn
                         </p>
                     </div>
 
@@ -619,43 +620,43 @@
                         <ul class="features-list">
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">2-3 students per class</span>
+                                <span class="feature-text">2–3 học viên mỗi lớp</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">More personalized attention</span>
+                                <span class="feature-text">Chú ý cá nhân hơn</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Customizable curriculum</span>
+                                <span class="feature-text">Giáo trình tùy chỉnh</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Flexible scheduling</span>
+                                <span class="feature-text">Lịch học linh hoạt</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Rapid progress tracking</span>
+                                <span class="feature-text">Theo dõi tiến độ nhanh</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="plan-action">
-                        <a href="classrooms.html" class="btn btn-primary btn-plan">Book Semi-Private</a>
+                        <a href="classrooms.html" class="btn btn-primary btn-plan">Đặt Lớp Bán Riêng</a>
                     </div>
                 </div>
 
                 <div class="plan-card popular">
-                    <div class="plan-badge">Most Effective</div>
+                    <div class="plan-badge">Hiệu Quả Nhất</div>
                     <div class="plan-header">
-                        <h3 class="plan-name">Private Tutoring</h3>
+                        <h3 class="plan-name">Gia Sư Riêng</h3>
                         <div class="plan-price">
                             <span class="currency">$</span>
                             <span class="amount">75</span>
-                            <span class="period" style="font-size: 0.875rem">/60-min session</span>
+                            <span class="period" style="font-size: 0.875rem">/60 phút</span>
                         </div>
                         <p class="plan-description">
-                            One-on-one instruction tailored to your needs
+                            Giảng dạy 1:1 theo nhu cầu của bạn
                         </p>
                     </div>
 
@@ -663,36 +664,36 @@
                         <ul class="features-list">
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">One-on-one instruction</span>
+                                <span class="feature-text">Giảng dạy từng cá nhân</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Fully customized lessons</span>
+                                <span class="feature-text">Bài học hoàn toàn tùy chỉnh</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Choose your teacher</span>
+                                <span class="feature-text">Chọn giáo viên yêu thích</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Flexible rescheduling</span>
+                                <span class="feature-text">Lịch học linh hoạt</span>
                             </li>
                             <li class="feature included">
                                 <span class="feature-icon">✓</span>
-                                <span class="feature-text">Fastest progress guarantee</span>
+                                <span class="feature-text">Cam kết tiến bộ nhanh nhất</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="plan-action">
-                        <a href="partners.html" class="btn btn-primary btn-plan">Find a Tutor</a>
+                        <a href="partners.html" class="btn btn-primary btn-plan">Tìm Gia Sư</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Comparison -->
+    <!-- So Sánh Các Gói -->
     <section class="section"
              style="background: var(--color-gray-50); padding: var(--spacing-3xl) 0">
         <div class="container">
@@ -700,17 +701,17 @@
                  style="text-align: center; margin-bottom: var(--spacing-3xl)">
                 <h2 class="section-title"
                     style="
-                font-family: var(--font-heading);
-                font-size: 2.5rem;
-                font-weight: 700;
-                color: var(--color-gray-900);
-                margin-bottom: var(--spacing-lg);
-              ">
-                    Plan Comparison
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-lg);
+          ">
+                    So Sánh Các Gói
                 </h2>
                 <p class="section-subtitle"
                    style="font-size: 1.25rem; color: var(--color-gray-600)">
-                    See what's included in each subscription plan
+                    Xem những tính năng đi kèm với mỗi gói đăng ký
                 </p>
             </div>
 
@@ -718,149 +719,81 @@
                 <table class="legal-table">
                     <thead>
                         <tr>
-                            <th style="text-align: left">Features</th>
-                            <th style="text-align: center">Free</th>
-                            <th style="text-align: center">Basic</th>
+                            <th style="text-align: left">Tính Năng</th>
+                            <th style="text-align: center">Miễn Phí</th>
+                            <th style="text-align: center">Cơ Bản</th>
                             <th style="
-                      text-align: center;
-                      background: linear-gradient(
-                        135deg,
-                        var(--color-primary-50),
-                        var(--color-secondary-50)
-                      );
-                      color: var(--color-primary-700);
-                    ">
-                                Premium
+                  text-align: center;
+                  background: linear-gradient(
+                    135deg,
+                    var(--color-primary-50),
+                    var(--color-secondary-50)
+                  );
+                  color: var(--color-primary-700);
+                ">
+                                Cao Cấp
                             </th>
-                            <th style="text-align: center">Pro</th>
+                            <th style="text-align: center">Chuyên Nghiệp</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="font-weight: 500">Course Access</td>
-                            <td style="text-align: center">3 courses</td>
-                            <td style="text-align: center">20+ courses</td>
-                            <td style="
-                      text-align: center;
-                      background: var(--color-primary-50);
-                    ">
-                                All courses
+                            <td style="font-weight: 500">Truy cập khóa học</td>
+                            <td style="text-align: center">3 khóa</td>
+                            <td style="text-align: center">20+ khóa</td>
+                            <td style="text-align: center; background: var(--color-primary-50);">
+                                Tất cả
                             </td>
-                            <td style="text-align: center">All courses</td>
+                            <td style="text-align: center">Tất cả</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: 500">Live Classes</td>
-                            <td style="text-align: center; color: var(--color-gray-400)">
-                                ✗
-                            </td>
-                            <td style="text-align: center; color: var(--color-gray-400)">
-                                ✗
-                            </td>
-                            <td style="
-                      text-align: center;
-                      color: var(--color-success);
-                      background: var(--color-primary-50);
-                    ">
-                                Unlimited
-                            </td>
-                            <td style="text-align: center; color: var(--color-success)">
-                                Unlimited
-                            </td>
+                            <td style="font-weight: 500">Lớp học trực tiếp</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">✗</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">✗</td>
+                            <td style="text-align: center; color: var(--color-success); background: var(--color-primary-50);">Không giới hạn</td>
+                            <td style="text-align: center; color: var(--color-success)">Không giới hạn</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: 500">One-on-One Sessions</td>
-                            <td style="text-align: center; color: var(--color-gray-400)">
-                                ✗
-                            </td>
-                            <td style="text-align: center; color: var(--color-gray-400)">
-                                ✗
-                            </td>
-                            <td style="
-                      text-align: center;
-                      color: var(--color-gray-400);
-                      background: var(--color-primary-50);
-                    ">
-                                ✗
-                            </td>
-                            <td style="text-align: center; color: var(--color-success)">
-                                4/month
-                            </td>
+                            <td style="font-weight: 500">Buổi học 1:1</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">✗</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">✗</td>
+                            <td style="text-align: center; color: var(--color-gray-400); background: var(--color-primary-50);">✗</td>
+                            <td style="text-align: center; color: var(--color-success)">4 buổi/tháng</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: 500">Downloadable Content</td>
-                            <td style="text-align: center; color: var(--color-gray-400)">
-                                ✗
-                            </td>
-                            <td style="text-align: center; color: var(--color-success)">
-                                ✓
-                            </td>
-                            <td style="
-                      text-align: center;
-                      color: var(--color-success);
-                      background: var(--color-primary-50);
-                    ">
-                                ✓
-                            </td>
-                            <td style="text-align: center; color: var(--color-success)">
-                                ✓
-                            </td>
+                            <td style="font-weight: 500">Nội dung tải về</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">✗</td>
+                            <td style="text-align: center; color: var(--color-success)">✓</td>
+                            <td style="text-align: center; color: var(--color-success); background: var(--color-primary-50);">✓</td>
+                            <td style="text-align: center; color: var(--color-success)">✓</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: 500">Mobile App</td>
-                            <td style="text-align: center; color: var(--color-gray-400)">
-                                ✗
-                            </td>
-                            <td style="text-align: center; color: var(--color-success)">
-                                ✓
-                            </td>
-                            <td style="
-                      text-align: center;
-                      color: var(--color-success);
-                      background: var(--color-primary-50);
-                    ">
-                                ✓
-                            </td>
-                            <td style="text-align: center; color: var(--color-success)">
-                                ✓
-                            </td>
+                            <td style="font-weight: 500">Ứng dụng di động</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">✗</td>
+                            <td style="text-align: center; color: var(--color-success)">✓</td>
+                            <td style="text-align: center; color: var(--color-success); background: var(--color-primary-50);">✓</td>
+                            <td style="text-align: center; color: var(--color-success)">✓</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: 500">Certificates</td>
-                            <td style="text-align: center; color: var(--color-gray-400)">
-                                ✗
-                            </td>
-                            <td style="text-align: center">Basic</td>
-                            <td style="
-                      text-align: center;
-                      background: var(--color-primary-50);
-                    ">
-                                Professional
-                            </td>
-                            <td style="text-align: center">Professional</td>
+                            <td style="font-weight: 500">Chứng chỉ</td>
+                            <td style="text-align: center; color: var(--color-gray-400)">✗</td>
+                            <td style="text-align: center">Cơ bản</td>
+                            <td style="text-align: center; background: var(--color-primary-50);">Chuyên nghiệp</td>
+                            <td style="text-align: center">Chuyên nghiệp</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: 500">Support</td>
-                            <td style="text-align: center">Community</td>
+                            <td style="font-weight: 500">Hỗ trợ</td>
+                            <td style="text-align: center">Diễn đàn</td>
                             <td style="text-align: center">Email</td>
-                            <td style="
-                      text-align: center;
-                      background: var(--color-primary-50);
-                    ">
-                                Priority
-                            </td>
-                            <td style="text-align: center">24/7 Chat</td>
+                            <td style="text-align: center; background: var(--color-primary-50);">Ưu tiên</td>
+                            <td style="text-align: center">Chat 24/7</td>
                         </tr>
                         <tr>
-                            <td style="font-weight: 500">Progress Analytics</td>
-                            <td style="text-align: center">Basic</td>
-                            <td style="text-align: center">Standard</td>
-                            <td style="
-                      text-align: center;
-                      background: var(--color-primary-50);
-                    ">
-                                Advanced
-                            </td>
-                            <td style="text-align: center">Advanced</td>
+                            <td style="font-weight: 500">Phân tích tiến độ</td>
+                            <td style="text-align: center">Cơ bản</td>
+                            <td style="text-align: center">Tiêu chuẩn</td>
+                            <td style="text-align: center; background: var(--color-primary-50);">Nâng cao</td>
+                            <td style="text-align: center">Nâng cao</td>
                         </tr>
                     </tbody>
                 </table>
@@ -868,100 +801,98 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
+    <!-- Phần Kêu Gọi Hành Động (CTA) -->
     <section class="section"
              style="
-          background: linear-gradient(
-            135deg,
-            var(--color-primary-600),
-            var(--color-primary-800)
-          );
-          color: var(--color-white);
-          padding: var(--spacing-3xl) 0;
-          text-align: center;
-        ">
+      background: linear-gradient(
+        135deg,
+        var(--color-primary-600),
+        var(--color-primary-800)
+      );
+      color: var(--color-white);
+      padding: var(--spacing-3xl) 0;
+      text-align: center;
+    ">
         <div class="container">
             <div style="max-width: 800px; margin: 0 auto">
                 <h2 style="
-                font-family: var(--font-heading);
-                font-size: 2.5rem;
-                font-weight: 700;
-                margin-bottom: var(--spacing-lg);
-              ">
-                    Ready to Start Your Japanese Journey?
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+          ">
+                    Sẵn Sàng Bắt Đầu Hành Trình Tiếng Nhật?
                 </h2>
                 <p style="
-                font-size: 1.25rem;
-                line-height: 1.6;
-                opacity: 0.9;
-                margin-bottom: var(--spacing-2xl);
-              ">
-                    Join thousands of learners who trust Nihongo Sekai for their
-                    Japanese education. Start with our free plan or choose the option
-                    that best fits your goals.
+            font-size: 1.25rem;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: var(--spacing-2xl);
+          ">
+                    Tham gia cùng hàng ngàn học viên đã tin tưởng Nihongo Sekai cho hành trình học tiếng Nhật của họ. Bắt đầu với gói miễn phí hoặc chọn lựa chọn phù hợp nhất với mục tiêu của bạn.
                 </p>
                 <div style="
-                display: flex;
-                gap: var(--spacing-lg);
-                justify-content: center;
-                flex-wrap: wrap;
-                margin-bottom: var(--spacing-2xl);
-              ">
+            display: flex;
+            gap: var(--spacing-lg);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-2xl);
+          ">
                     <a href="register.html"
                        class="btn"
                        style="
-                  background: var(--color-white);
-                  color: var(--color-primary-600);
-                  padding: var(--spacing-lg) var(--spacing-2xl);
-                  font-weight: 600;
-                  font-size: 1.125rem;
-                ">Start Free Trial</a>
+              background: var(--color-white);
+              color: var(--color-primary-600);
+              padding: var(--spacing-lg) var(--spacing-2xl);
+              font-weight: 600;
+              font-size: 1.125rem;
+            ">Dùng Thử Miễn Phí</a>
                     <a href="contact.html"
                        class="btn btn-outline"
                        style="
-                  border-color: var(--color-white);
-                  color: var(--color-white);
-                  padding: var(--spacing-lg) var(--spacing-2xl);
-                  font-weight: 600;
-                  font-size: 1.125rem;
-                ">Contact Sales</a>
+              border-color: var(--color-white);
+              color: var(--color-white);
+              padding: var(--spacing-lg) var(--spacing-2xl);
+              font-weight: 600;
+              font-size: 1.125rem;
+            ">Liên Hệ Bán Hàng</a>
                 </div>
 
                 <div style="
-                display: flex;
-                justify-content: center;
-                gap: var(--spacing-3xl);
-                flex-wrap: wrap;
-              ">
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-3xl);
+            flex-wrap: wrap;
+          ">
                     <div>
                         <div style="
-                    font-size: 2.5rem;
-                    font-weight: 700;
-                    margin-bottom: var(--spacing-xs);
-                  ">
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: var(--spacing-xs);
+              ">
                             50K+
                         </div>
-                        <div style="opacity: 0.8">Active Students</div>
+                        <div style="opacity: 0.8">Học Viên Hoạt Động</div>
                     </div>
                     <div>
                         <div style="
-                    font-size: 2.5rem;
-                    font-weight: 700;
-                    margin-bottom: var(--spacing-xs);
-                  ">
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: var(--spacing-xs);
+              ">
                             95%
                         </div>
-                        <div style="opacity: 0.8">Success Rate</div>
+                        <div style="opacity: 0.8">Tỷ Lệ Thành Công</div>
                     </div>
                     <div>
                         <div style="
-                    font-size: 2.5rem;
-                    font-weight: 700;
-                    margin-bottom: var(--spacing-xs);
-                  ">
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: var(--spacing-xs);
+              ">
                             30+
                         </div>
-                        <div style="opacity: 0.8">Countries</div>
+                        <div style="opacity: 0.8">Quốc Gia</div>
                     </div>
                 </div>
             </div>

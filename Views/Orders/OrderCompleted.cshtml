@@ -1,12 +1,124 @@
-<div class="row">
-    <div class="col-md-6 offset-3 alert alert-success text-center">
-        <h2>Order completed successfully</h2>
-        <p>You can check all your orders in the Orders section of your profile</p>
+﻿@{
+    ViewData["Title"] = "Đặt hàng thành công";
+    Layout = "_Layout";  // hoặc bỏ dòng này nếu bạn đã khai báo Layout ở _ViewStart.cshtml
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* 1) Toàn trang dùng gradient dịu nhẹ */
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        /* 2) Fade-in cho container */
+        .success-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 70vh;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* 3) Card chính giữa */
+        .success-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 4) Hiệu ứng bounce cho icon */
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+            animation: bounce 1.2s ease infinite alternate;
+        }
+
+        @@keyframes bounce {
+            from
+
+        {
+            transform: translateY(0);
+        }
+
+        to {
+            transform: translateY(-10px);
+        }
+
+        }
+
+        /* 5) Tiêu đề & văn bản */
+        .success-card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+        }
+
+        .success-card p {
+            font-size: 1rem;
+            color: #4a5568;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        /* 6) Nút link */
+        .success-card a {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.6rem 1.4rem;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+            .success-card a:hover {
+                background: #1e40af;
+                transform: translateY(-2px);
+            }
+    </style>
+}
+
+<div class="success-wrapper">
+    <div class="success-card">
+        <div class="success-icon">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <h2>Đặt hàng hoàn tất thành công!</h2>
+        <p>Bạn có thể xem lại toàn bộ đơn hàng của mình trong trang <strong>Đơn hàng</strong> của hồ sơ.</p>
         <hr />
-        <p>Thank you!</p>
+        <p>Cảm ơn bạn đã tin tưởng và ủng hộ!</p>
 
         <a asp-controller="Learner" asp-action="MyPurchasedCourses">
-            <i class="bi bi-book"></i> My Purchased Courses
+            <i class="bi bi-book"></i>&nbsp;Khóa học đã mua
         </a>
     </div>
 </div>

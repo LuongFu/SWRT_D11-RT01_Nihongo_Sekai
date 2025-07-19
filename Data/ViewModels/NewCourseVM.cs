@@ -1,4 +1,4 @@
-using JapaneseLearningPlatform.Data.Enums;
+﻿using JapaneseLearningPlatform.Data.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace JapaneseLearningPlatform.Models
@@ -7,47 +7,43 @@ namespace JapaneseLearningPlatform.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "Course name")]
-        [Required(ErrorMessage = "Name is required")]
+        [Display(Name = "Tên khóa học")]
+        [Required(ErrorMessage = "Bắt buộc điền")]
         public string Name { get; set; }
 
-        [Display(Name = "Course description")]
-        [Required(ErrorMessage = "Description is required")]
+        [Display(Name = "Mô tả khóa học")]
+        [Required(ErrorMessage = "Bắt buộc điền")]
         public string Description { get; set; }
 
-        [Display(Name = "Price in $")]
-        [Required(ErrorMessage = "Price is required")]
-        public double Price { get; set; }
+        [Display(Name = "Giá tính theo VND")]
+        [Required(ErrorMessage = "Bắt buộc điền")]
+        public int Price { get; set; }
 
-        [Display(Name = "Course poster URL")]
-        [Required(ErrorMessage = "Course poster URL is required")]
+        [Display(Name = "URL Ảnh bìa khóa học")]
+        [Required(ErrorMessage = "Bắt buộc điền")]
         public string ImageURL { get; set; }
-        [Display(Name = "Discount Percent")]
-        [Required(ErrorMessage = "Discount Percent is required. If you want, you can set to 0%.")]
+        [Display(Name = "Phần trăm giảm giá")]
+        [Required(ErrorMessage = "Bắt buộc điền. Nếu không giảm giá, hãy điền 0.")]
         public int? DiscountPercent { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (DiscountPercent < 0 || DiscountPercent > 99)
             {
-                yield return new ValidationResult("Discount must be between 0% and 99%.", new[] { "DiscountPercent" });
+                yield return new ValidationResult("Phần trăm giảm giá phải nằm trong khoảng từ 0% đến 99%.", new[] { "DiscountPercent" });
             }
         }
 
-        [Display(Name = "Course start date")]
-        [Required(ErrorMessage = "Start date is required")]
+        [Display(Name = "Thời gian áp dụng")]
+        [Required(ErrorMessage = "Bắt buộc điền")]
         public DateTime StartDate { get; set; }
 
-        [Display(Name = "Course end date")]
-        [Required(ErrorMessage = "End date is required")]
+        [Display(Name = "Hạn hết giảm giá")]
+        [Required(ErrorMessage = "Bắt buộc điền")]
         public DateTime EndDate { get; set; }
 
-        [Display(Name = "Select a category")]
-        [Required(ErrorMessage = "Course category is required")]
+        [Display(Name = "Chọn phân loại")]
+        [Required(ErrorMessage = "Bắt buộc chọn")]
         public CourseCategory CourseCategory { get; set; }
-
-        [Display(Name = "Select video(s)")]
-        [Required(ErrorMessage = "Course video(s) is required")]
-        public List<int> VideoIds { get; set; }
     }
 }

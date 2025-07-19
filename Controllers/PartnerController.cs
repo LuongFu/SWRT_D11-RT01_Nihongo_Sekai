@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Helpers;
 using JapaneseLearningPlatform.Models;
 using JapaneseLearningPlatform.Models.Partner;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +10,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -34,8 +37,11 @@ namespace JapaneseLearningPlatform.Controllers
 
         // ✅ Default landing for /Partner
         [HttpGet]
-        public IActionResult Index() =>
-            RedirectToAction(nameof(Profile));
+        [Authorize(Roles = "Partner")]
+        public IActionResult Index()
+        {
+            return View("~/Views/Partners/Index.cshtml");
+        }
 
         // 👤 Partner Profile – now includes Documents
         [Authorize(Roles = "Partner")]
@@ -46,6 +52,8 @@ namespace JapaneseLearningPlatform.Controllers
             var user = await _context.Users
                 .Include(u => u.PartnerProfile)
                     .ThenInclude(p => p.Documents)
+                    .Include(u => u.PartnerProfile)
+            .ThenInclude(p => p.Specializations)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null) return NotFound();
@@ -57,23 +65,156 @@ namespace JapaneseLearningPlatform.Controllers
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var userId = _userManager.GetUserId(User);
+            var user = await _context.Users
+                .Include(u => u.PartnerProfile)
+                    .ThenInclude(p => p.Specializations)
+                .Include(u => u.PartnerProfile)
+                    .ThenInclude(p => p.Documents)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
             if (user == null) return NotFound();
-            return View("~/Views/Partners/EditProfile.cshtml", user);
+
+            var vm = new EditPartnerProfileVM
+            {
+                FullName = user.FullName ?? "",
+                Email = user.Email,
+                YearsOfExperience = user.PartnerProfile?.YearsOfExperience
+                                      ?? YearsOfExperience.OneToTwo,
+                SelectedSpecializations = user.PartnerProfile?
+                    .Specializations.Select(s => s.Specialization).ToList()
+                    ?? new(),
+                ExistingDocuments = user.PartnerProfile?.Documents.ToList()
+                    ?? new()
+            };
+
+            // Populate dropdown & checkbox lists
+            vm.ExperienceOptions = Enum.GetValues(typeof(YearsOfExperience))
+                .Cast<YearsOfExperience>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.GetDisplayName(),
+                    Selected = e == vm.YearsOfExperience
+                }).ToList();
+
+            vm.AllSpecializations = Enum.GetValues(typeof(SpecializationType))
+                .Cast<SpecializationType>()
+                .ToList();
+
+            return View("~/Views/Partners/EditProfile.cshtml", vm);
         }
 
+
+        [Authorize(Roles = "Partner")]
         [HttpPost]
-        public async Task<IActionResult> EditProfile(ApplicationUser updatedUser)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(EditPartnerProfileVM vm)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound();
+            // ── ADD THIS CUSTOM VALIDATION ──
+            if (vm.SelectedSpecializations == null || !vm.SelectedSpecializations.Any())
+            {
+                ModelState.AddModelError(
+                    nameof(vm.SelectedSpecializations),
+                    "Please select at least one specialization."
+                );
+            }
 
-            user.FullName = updatedUser.FullName;
-            // …update any other fields you expose…
+            if (!ModelState.IsValid)
+            {
+                // re-populate dropdown & checklist on error
+                vm.ExperienceOptions = Enum.GetValues(typeof(YearsOfExperience))
+                    .Cast<YearsOfExperience>()
+                    .Select(e => new SelectListItem
+                    {
+                        Value = ((int)e).ToString(),
+                        Text = e.GetDisplayName(),
+                        Selected = e == vm.YearsOfExperience
+                    }).ToList();
+                vm.AllSpecializations = Enum.GetValues(typeof(SpecializationType))
+                    .Cast<SpecializationType>().ToList();
+
+                return View("~/Views/Partners/EditProfile.cshtml", vm);
+            }
+
+            var userId = _userManager.GetUserId(User);
+            var user = await _context.Users
+                .Include(u => u.PartnerProfile)
+                    .ThenInclude(p => p.Specializations)
+                .Include(u => u.PartnerProfile)
+                    .ThenInclude(p => p.Documents)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null || user.PartnerProfile == null) return BadRequest();
+
+            // 1) Update basic
+            user.FullName = vm.FullName;
+            user.PartnerProfile.YearsOfExperience = vm.YearsOfExperience;
+
+            // 2) Update specializations
+            user.PartnerProfile.Specializations.Clear();
+            foreach (var spec in vm.SelectedSpecializations)
+            {
+                user.PartnerProfile.Specializations.Add(
+                    new PartnerSpecialization
+                    {
+                        PartnerProfileId = user.PartnerProfile.Id,
+                        Specialization = spec
+                    });
+            }
+
+            // 2.5) Remove any documents the user clicked “×” on in the UI
+            if (vm.DeletedDocumentIds?.Any() == true)
+            {
+                // Find the tracked EF entities
+                var docsToDelete = user.PartnerProfile.Documents
+                                   .Where(d => vm.DeletedDocumentIds.Contains(d.Id))
+                                   .ToList();
+
+                foreach (var doc in docsToDelete)
+                {
+                    // a) delete the physical file
+                    var physical = Path.Combine(_env.WebRootPath!,
+                        doc.FilePath.TrimStart('/')
+                                    .Replace('/', Path.DirectorySeparatorChar));
+                    if (System.IO.File.Exists(physical))
+                        System.IO.File.Delete(physical);
+
+                    // b) remove from EF
+                    _context.PartnerDocuments.Remove(doc);
+                    // or: user.PartnerProfile.Documents.Remove(doc);
+                }
+            }
+
+            // 3) Handle new documents
+            if (vm.NewDocuments?.Any() == true)
+            {
+                var webRoot = _env.WebRootPath!;
+                var uploads = Path.Combine(webRoot, "uploads", "partner_docs", userId);
+                Directory.CreateDirectory(uploads);
+
+                foreach (var file in vm.NewDocuments)
+                {
+                    var ext = Path.GetExtension(file.FileName);
+                    var fname = $"{Guid.NewGuid()}{ext}";
+                    var full = Path.Combine(uploads, fname);
+                    using var fs = new FileStream(full, FileMode.Create);
+                    await file.CopyToAsync(fs);
+
+                    user.PartnerProfile.Documents.Add(new PartnerDocument
+                    {
+                        UserId = userId,
+                        PartnerProfileId = user.PartnerProfile.Id,
+                        FilePath = $"/uploads/partner_docs/{userId}/{fname}"
+                    });
+                }
+            }
+
             await _userManager.UpdateAsync(user);
-
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Profile));
         }
+
 
         // 🔒 Reset Password
         [Authorize(Roles = "Partner")]
@@ -175,7 +316,7 @@ namespace JapaneseLearningPlatform.Controllers
             {
                 UserId = userId,
                 PartnerProfileId = profile.Id,
-                FilePath = $"/uploads/partners/{userId}/{fname}"
+                FilePath = $"/uploads/partner_docs/{userId}/{fname}"
             };
             _context.PartnerDocuments.Add(doc);
             await _context.SaveChangesAsync();

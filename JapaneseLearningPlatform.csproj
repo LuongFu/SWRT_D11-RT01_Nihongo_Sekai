@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -11,6 +11,15 @@
     <Content Remove="Views\Classrooms\**" />
     <EmbeddedResource Remove="Views\Classrooms\**" />
     <None Remove="Views\Classrooms\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20250716155540_InitialSync.cs" />
+    <Compile Remove="Migrations\20250716155540_InitialSync.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="project-structure.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +39,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\submissions\" />
     <Folder Include="wwwroot\uploads\partners\" />
+    <Folder Include="wwwroot\uploads\partner_docs\" />
     <Folder Include="wwwroot\uploads\profile\" />
   </ItemGroup>
 

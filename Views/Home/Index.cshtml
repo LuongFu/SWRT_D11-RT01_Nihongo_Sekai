@@ -1,9 +1,14 @@
 ﻿@model dynamic
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Trang chủ";
     ViewData["HideNavbar"] = true;
     ViewData["HideFooter"] = true;
     ViewData["LockScroll"] = true;
+}
+
+@section Styles {
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
 }
 
 <section class="position-relative vw-100 vh-100 text-white d-flex align-items-center justify-content-center overflow-hidden p-0 m-0" style="z-index: 0;">
@@ -12,12 +17,12 @@
     </video>
 
     <div class="position-relative z-1 text-center px-4">
-        <h1 class="display-4 animate__animated animate__fadeInDown">
-            Welcome to Nihongo<span class="display-4 animate__animated animate__fadeInDown gradient-text">Sekai</span>
+        <h1 class="text-white display-4 animate__animated animate__fadeInDown">
+            Chào mừng đến với Nihongo<span class="display-4 animate__animated animate__fadeInDown gradient-text">Sekai</span>
         </h1>
-        <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Learn Japanese with cultural depth</p>
+        <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Học tiếng Nhật với chiều sâu văn hóa</p>
         @{
-            string targetController = "Learner"; // default
+            string targetController = "Learner"; // mặc định
             string targetAction = "Index";
 
             if (User.Identity.IsAuthenticated)
@@ -32,9 +37,10 @@
                 }
             }
         }
-        <a asp-controller="@targetController" asp-action="@targetAction" class="btn gradient-btn mt-3 animate__animated animate__fadeInUp animate__delay-2s">Explore Now</a>
+        <a asp-controller="@targetController" asp-action="@targetAction" class="btn gradient-btn mt-3 animate__animated animate__fadeInUp animate__delay-2s">Khám phá ngay</a>
     </div>
 </section>
+
 <style>
     body.home-lock-scroll {
         overflow: hidden;

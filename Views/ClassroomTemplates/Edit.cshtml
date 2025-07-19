@@ -2,11 +2,11 @@
 @using JapaneseLearningPlatform.Data.Enums
 
 @{
-    ViewData["Title"] = "Edit Classroom Template";
+    ViewData["Title"] = "Sửa mẫu lớp học";
 }
 
 <div class="container mt-4">
-    <h2 class="fw-bold mb-4 text-center">Edit Classroom Template</h2>
+    <h2 class="fw-bold mb-4 text-center">Sửa mẫu lớp</h2>
 
     <div class="card shadow-sm border-0">
         <div class="card-body">
@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Current Image</label><br />
+                    <label class="form-label">Ảnh hiện tại</label><br />
                     @if (!string.IsNullOrEmpty(Model.ImageURL))
                     {
                         <img src="@Model.ImageURL" class="img-thumbnail mb-2" style="max-width:200px;" />
@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Current Document</label><br />
+                    <label class="form-label">Tài liệu hiện tại</label><br />
                     @if (!string.IsNullOrEmpty(Model.DocumentURL))
                     {
                         <a href="@Model.DocumentURL" target="_blank" class="btn btn-outline-info btn-sm mb-2">
@@ -55,7 +55,7 @@
 
                 <div class="d-flex gap-2 mt-4">
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-circle me-1"></i> Update
+                        <i class="bi bi-check-circle me-1"></i> Cập nhật
                     </button>
                     <a href="javascript:history.back()" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Back

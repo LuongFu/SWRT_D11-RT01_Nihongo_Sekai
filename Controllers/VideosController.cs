@@ -1,4 +1,4 @@
-using JapaneseLearningPlatform.Data.Services;
+﻿using JapaneseLearningPlatform.Data.Services;
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -16,72 +16,81 @@ namespace JapaneseLearningPlatform.Controllers
             _service = service;
         }
 
+        // GET: Videos
+        // Cho phép mọi người (AllowAnonymous) xem toàn bộ video, không phân trang
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var data = await _service.GetAllAsync();
-            return View(data);
+            var allVideos = await _service.GetAllAsync();
+            return View(allVideos); // model is IEnumerable<Video>
         }
 
-        //Get: Videos/Create
+        // GET: Videos/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([Bind("VideoURL,VideoDescription")]Video video)
+        // POST: Videos/Create
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("VideoURL,VideoDescription")] Video video)
         {
             if (!ModelState.IsValid)
-            {
                 return View(video);
-            }
+
             await _service.AddAsync(video);
             return RedirectToAction(nameof(Index));
         }
 
-        //Get: Videos/Details/1
+        // GET: Videos/Details/5
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
             var videoDetails = await _service.GetByIdAsync(id);
+            if (videoDetails == null)
+                return View("NotFound");
 
-            if (videoDetails == null) return View("NotFound");
             return View(videoDetails);
         }
 
-        //Get: Videos/Edit/1
+        // GET: Videos/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var videoDetails = await _service.GetByIdAsync(id);
-            if (videoDetails == null) return View("NotFound");
+            if (videoDetails == null)
+                return View("NotFound");
+
             return View(videoDetails);
         }
 
-        [HttpPost]
+        // POST: Videos/Edit/5
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,VideoURL,VideoDescription")] Video video)
         {
             if (!ModelState.IsValid)
-            {
                 return View(video);
-            }
+
             await _service.UpdateAsync(id, video);
             return RedirectToAction(nameof(Index));
         }
 
-        //Get: Videos/Delete/1
+        // GET: Videos/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var videoDetails = await _service.GetByIdAsync(id);
-            if (videoDetails == null) return View("NotFound");
+            if (videoDetails == null)
+                return View("NotFound");
+
             return View(videoDetails);
         }
 
-        [HttpPost, ActionName("Delete")]
+        // POST: Videos/Delete/5
+        [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var videoDetails = await _service.GetByIdAsync(id);
-            if (videoDetails == null) return View("NotFound");
+            if (videoDetails == null)
+                return View("NotFound");
 
             await _service.DeleteAsync(id);
             return RedirectToAction(nameof(Index));

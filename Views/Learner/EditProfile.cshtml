@@ -1,13 +1,12 @@
 ﻿@model JapaneseLearningPlatform.Data.ViewModels.EditProfileVM
 
 @{
-    ViewData["Title"] = "Edit Profile";
+    ViewData["Title"] = "Chỉnh sửa hồ sơ";
     Layout = "_Layout";
 }
 
 <div class="container mt-5">
     <div class="shadow-box p-4">
-
         <!-- Hiển thị thông báo thành công -->
         @if (TempData["SuccessMessage"] != null)
         {
@@ -44,7 +43,7 @@
                     }
 
                     <button type="submit" class="btn btn-outline-danger btn-sm">
-                        <i class="bi bi-upload"></i> Upload New Photo
+                        <i class="bi bi-upload"></i> Tải ảnh mới
                     </button>
                 </form>
             </div>
@@ -64,7 +63,7 @@
                     <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
                     <div class="mb-3">
-                        <label asp-for="FullName" class="form-label">Tên</label>
+                        <label asp-for="FullName" class="form-label">Họ và tên</label>
                         <input asp-for="FullName" class="form-control" />
                         <span asp-validation-for="FullName" class="text-danger small"></span>
                     </div>

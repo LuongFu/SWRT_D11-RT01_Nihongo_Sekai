@@ -2,18 +2,18 @@
 @model ClassroomTemplateVM
 
 @{
-    ViewData["Title"] = "Template Details";
+    ViewData["Title"] = "Chi tiết mẫu";
 }
 
 <div class="container mt-4">
-    <h2 class="fw-bold mb-3 text-center">Template Details</h2>
+    <h2 class="fw-bold mb-3 text-center">Chi tiết mẫu</h2>
 
     <div class="card shadow-sm border-0">
         <div class="card-body">
             <h4 class="card-title mb-2">@Model.Title</h4>
             <p class="card-text">@Model.Description</p>
 
-            <p><strong>Level:</strong> @Model.LanguageLevel</p>
+            <p><strong>Trình độ:</strong> @Model.LanguageLevel.GetDisplayName()</p>
 
             @* Nếu có tài liệu thì hiển thị *@
             @if (!string.IsNullOrEmpty(Model.DocumentURL))
@@ -29,7 +29,7 @@
 
         <div class="card-footer bg-transparent border-0 d-flex gap-2">
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                <i class="bi bi-pencil-square me-1"></i> Update
+                <i class="bi bi-pencil-square me-1"></i> Cập nhật
             </a>
             <a href="javascript:history.back()" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Back
