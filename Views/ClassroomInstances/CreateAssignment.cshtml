@@ -1,0 +1,61 @@
+﻿@model JapaneseLearningPlatform.Data.ViewModels.FinalAssignmentVM
+
+@{
+    ViewData["Title"] = "Thêm bài tập cuối khóa";
+}
+
+<!-- Bootstrap JS (Modal cần bundle) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="bg-light p-4 rounded shadow-sm mb-4">
+    <h2 class="fw-bold">@Model.Template.Title</h2>
+    <p class="mb-1"><strong>Người hướng dẫn:</strong> @Model.PartnerName</p>
+    <p class="mb-1"><strong>Lịch:</strong> @Model.Instance.StartDate.ToShortDateString() → @Model.Instance.EndDate.ToShortDateString()</p>
+    <p class="mb-1"><strong>Thời gian:</strong> @($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</p>
+    <p class="mb-1"><strong>Meet Link:</strong> <a href="@Model.Instance.GoogleMeetLink" target="_blank">@Model.Instance.GoogleMeetLink</a></p>
+</div>
+
+<div class="container mt-4">
+    <h3 class="mb-3">Thêm bài tập cuối khóa</h3>
+    <p class="text-muted" style="font-size: 0.9rem;">
+        ⚠️ <strong>Lưu ý:</strong> Sau khi tạo bài tập cuối khóa, bạn sẽ không thể chỉnh sửa nội dung này.
+        Hãy kiểm tra kỹ trước khi xác nhận.
+    </p>
+
+    <form asp-action="Create" asp-controller="Assignments" method="post">
+        <input type="hidden" asp-for="ClassroomInstanceId" />
+        <div class="mb-3">
+            <label asp-for="Instructions" class="form-label"></label>
+            <textarea asp-for="Instructions" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="Instructions" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DueDate" class="form-label"></label>
+            <input id="DueDatePicker" asp-for="DueDate" class="form-control" autocomplete="off" />
+            <span asp-validation-for="DueDate" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Tạo</button>
+        <a asp-action="Content" asp-controller="ClassroomInstances" asp-route-id="@Model.ClassroomInstanceId" class="btn btn-secondary">Quay lại</a>
+    </form>
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var message = '@(TempData["Message"] ?? "")';
+        if (message && message.trim() !== "") {
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        }
+    });
+
+    flatpickr("#DueDatePicker", {
+        enableTime: true,
+        time_24hr: true,
+        dateFormat: "d/m/Y H:i:S"  // Định dạng dd/MM/yyyy HH:mm:ss
+    });
+</script>

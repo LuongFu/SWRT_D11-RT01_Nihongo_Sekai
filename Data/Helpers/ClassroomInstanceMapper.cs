@@ -19,7 +19,7 @@ public static class ClassroomInstanceMapper
             TemplateTitle = template?.Title ?? string.Empty,
             TemplateDescription = template?.Description ?? string.Empty,
             TemplateImageURL = template?.ImageURL ?? string.Empty,
-            LanguageLevel = template?.LanguageLevel.ToString() ?? string.Empty,
+            LanguageLevel = template.LanguageLevel,
             DocumentURL = template?.DocumentURL,
 
             // ✅ Thông tin phiên học

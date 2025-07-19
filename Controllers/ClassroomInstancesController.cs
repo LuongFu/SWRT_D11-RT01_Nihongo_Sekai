@@ -1,18 +1,20 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Helpers;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -21,12 +23,14 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ClassroomInstancesController> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ClassroomInstancesController(AppDbContext context, UserManager<ApplicationUser> userManager, ILogger<ClassroomInstancesController> logger)
+        public ClassroomInstancesController(AppDbContext context, UserManager<ApplicationUser> userManager, ILogger<ClassroomInstancesController> logger, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [AllowAnonymous]
@@ -259,7 +263,8 @@ namespace JapaneseLearningPlatform.Controllers
                 EnrollmentCount = instance.Enrollments.Count,
                 PartnerName = instance.Template.Partner.FullName,
                 IsEnrolled = enrollment != null,
-                HasPaid = enrollment?.IsPaid == true // ✅ thêm dòng này
+                HasPaid = enrollment?.IsPaid == true, // ✅ thêm dòng này
+                    IsPaid = instance.IsPaid // ✅ Gán IsPaid từ instance
             };
             return View(vm);
         }
@@ -273,7 +278,7 @@ namespace JapaneseLearningPlatform.Controllers
                 vm.TemplateTitle = template.Title;
                 vm.TemplateDescription = template.Description;
                 vm.TemplateImageURL = template.ImageURL;
-                vm.LanguageLevel = template.LanguageLevel.ToString();
+                vm.LanguageLevel = template.LanguageLevel;
                 vm.DocumentURL = template.DocumentURL;
                 //vm.SessionTime = template.SessionTime;
             }
@@ -426,6 +431,11 @@ namespace JapaneseLearningPlatform.Controllers
                 .AsNoTracking()
                 .AnyAsync(e => e.InstanceId == id && e.LearnerId == userId);
 
+            // Nạp tài liệu học tập
+            var resources = await _context.ClassroomResources
+                .Where(r => r.ClassroomInstanceId == id)
+                .ToListAsync();
+
             var vm = new ClassroomContentVM
             {
                 Instance = instance,
@@ -435,7 +445,8 @@ namespace JapaneseLearningPlatform.Controllers
                 Submission = submission,
                 HasSubmitted = submission != null,
                 HasReviewed = reviewed,
-                AllSubmissions = allSubmissions
+                AllSubmissions = allSubmissions,
+                Resources = resources  // Gán danh sách tài liệu vào VM
             };
 
             return View(vm);
@@ -495,6 +506,180 @@ namespace JapaneseLearningPlatform.Controllers
             }
 
             return RedirectToAction("Details", new { id });
+        }
+
+        [Authorize(Roles = "Partner")]
+        [HttpPost]
+        public async Task<IActionResult> UploadResource(int classroomId, List<IFormFile> files)
+        {
+            if (files == null || files.Count == 0)
+                return Json(new { success = false, message = "Không có file nào được chọn!" });
+
+            var allowedExtensions = new[] { ".pdf", ".docx", ".xlsx", ".png", ".jpg", ".jpeg", ".zip" };
+
+            foreach (var file in files)
+            {
+                var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(ext))
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"File \"{file.FileName}\" có định dạng không hợp lệ! " +
+                                  $"Chỉ chấp nhận: {string.Join(", ", allowedExtensions)}"
+                    });
+                }
+            }
+
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads/resources");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            foreach (var file in files)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                var filePath = Path.Combine(uploadsFolder, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var resource = new ClassroomResource
+                {
+                    ClassroomInstanceId = classroomId,
+                    FileName = file.FileName,
+                    FilePath = "/uploads/resources/" + fileName,
+                    UploadedAt = DateTime.UtcNow
+                };
+                _context.ClassroomResources.Add(resource);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true,
+                message = "Upload thành công!",
+                newResources = _context.ClassroomResources
+        .Where(r => r.ClassroomInstanceId == classroomId)
+        .Select(r => new { r.Id, r.FileName, UploadedAt = r.UploadedAt.ToString("dd/MM/yyyy") })
+        .ToList()
+            });
+        }
+
+        [Authorize(Roles = "Partner")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteResource(int id)
+        {
+            var resource = await _context.ClassroomResources.FindAsync(id);
+            if (resource == null)
+                return Json(new { success = false, message = "Tài liệu không tồn tại!" });
+
+            try
+            {
+                // Xóa file vật lý
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, resource.FilePath.TrimStart('/'));
+                if (System.IO.File.Exists(filePath))
+                    System.IO.File.Delete(filePath);
+
+                _context.ClassroomResources.Remove(resource);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"Đã xóa tài liệu \"{resource.FileName}\"." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi khi xóa file: " + ex.Message });
+            }
+        }
+
+        [Authorize(Roles = "Learner,Partner,Admin")]
+        public async Task<IActionResult> DownloadResource(int id)
+        {
+            var resource = await _context.ClassroomResources.FindAsync(id);
+            if (resource == null) return NotFound();
+
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, resource.FilePath.TrimStart('/'));
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound();
+
+            var mimeType = "application/octet-stream";
+            return PhysicalFile(filePath, mimeType, resource.FileName);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index(ClassroomSearchVM filter, int page = 1)
+        {
+            var query = _context.ClassroomInstances
+                .Include(ci => ci.Template)
+                .AsQueryable();
+
+            // Keyword search
+            if (!string.IsNullOrEmpty(filter.Keyword))
+            {
+                query = query.Where(ci => ci.Template.Title.Contains(filter.Keyword)
+                                        || ci.Template.Description.Contains(filter.Keyword));
+            }
+
+            // Language level
+            if (filter.LanguageLevel.HasValue)
+            {
+                query = query.Where(ci => ci.Template.LanguageLevel == filter.LanguageLevel.Value);
+            }
+
+            // Price range
+            if (filter.MinPrice.HasValue)
+                query = query.Where(ci => ci.Price >= filter.MinPrice.Value);
+
+            if (filter.MaxPrice.HasValue)
+                query = query.Where(ci => ci.Price <= filter.MaxPrice.Value);
+
+            // Start date
+            if (filter.StartDate.HasValue)
+                query = query.Where(ci => ci.StartDate.Date >= filter.StartDate.Value.Date);
+
+            // Paging (nếu cần)
+            int pageSize = 9;
+            var totalItems = await query.CountAsync();
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.CurrentPage = page;
+            ViewBag.Levels = Enum.GetValues(typeof(LanguageLevel))
+                .Cast<LanguageLevel>()
+                .Select(e => new SelectListItem
+                {
+                    Text = GetDisplayName(e),
+                    Value = e.ToString(),
+                    Selected = (filter.LanguageLevel == e)
+                }).ToList();
+
+
+
+            var classrooms = await query
+                .OrderBy(ci => ci.StartDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(ci => new ClassroomInstanceVM
+                {
+                    Id = ci.Id,
+                    TemplateTitle = ci.Template.Title,
+                    TemplateDescription = ci.Template.Description,
+                    LanguageLevel = ci.Template.LanguageLevel, // <-- Lấy từ Template
+                    Price = ci.Price,
+                    StartDate = ci.StartDate,
+                    EndDate = ci.EndDate,
+                    TemplateImageURL = ci.Template.ImageURL
+                })
+                .ToListAsync();
+
+            ViewBag.Filter = filter; // Để giữ giá trị filter trên UI
+            return View(classrooms);
+        }
+        private string GetDisplayName(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = (DisplayAttribute)field.GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault();
+            return attribute?.Name ?? value.ToString();
         }
     }
 }

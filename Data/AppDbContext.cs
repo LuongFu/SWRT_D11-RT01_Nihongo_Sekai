@@ -200,7 +200,6 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<PartnerProfile> PartnerProfiles { get; set; }
         public DbSet<PartnerSpecialization> PartnerSpecializations { get; set; }
         public DbSet<PartnerDocument> PartnerDocuments { get; set; }
-
-
+        public DbSet<ClassroomResource> ClassroomResources { get; set; }
     }
 }
