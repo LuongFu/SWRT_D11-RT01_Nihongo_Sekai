@@ -112,8 +112,11 @@ namespace JapaneseLearningPlatform.Controllers
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var userId = _userManager.GetUserId(User); 
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
             if (user == null) return NotFound();
+
             return View("~/Views/Learner/Profile.cshtml", user);
         }
 
@@ -121,21 +124,75 @@ namespace JapaneseLearningPlatform.Controllers
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var userId = _userManager.GetUserId(User); // ✅ Lấy userId từ Identity
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId); // ✅ Lấy fresh từ DB
+
             if (user == null) return NotFound();
-            return View("~/Views/Learner/EditProfile.cshtml", user);
+
+            var vm = new EditProfileVM
+            {
+                FullName = user.FullName,
+                Address = user.Address,
+                PhoneNumber = user.PhoneNumber,
+                BirthDate = user.BirthDate,
+                Gender = user.Gender,
+                Description = user.Description,
+                JobName = user.JobName,
+                Facebook = user.Facebook,
+                YouTube = user.YouTube,
+                ProfilePicturePath = user.ProfilePicturePath,
+                ShowDeleteButton = !string.IsNullOrEmpty(user.ProfilePicturePath)
+                    && !user.ProfilePicturePath.Contains("default-img.jpg")
+            };
+
+            return View("~/Views/Learner/EditProfile.cshtml", vm);
         }
-        //Đổi mật khẩu
+
         [Authorize(Roles = "Learner")]
         [HttpPost]
-        public async Task<IActionResult> EditProfile(ApplicationUser updatedUser)
+        public async Task<IActionResult> EditProfile(EditProfileVM model)
         {
+            if (!ModelState.IsValid)
+            {
+                model.ProfilePicturePath = (await _userManager.GetUserAsync(User))?.ProfilePicturePath;
+                return View(model);
+            }
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
 
-            user.FullName = updatedUser.FullName;
-            await _userManager.UpdateAsync(user);
+            user.FullName = model.FullName;
+            user.Address = model.Address;
+            user.BirthDate = model.BirthDate;
+            user.Gender = model.Gender;
+            user.Description = model.Description;
+            user.JobName = model.JobName;
+            user.Facebook = model.Facebook;
+            user.YouTube = model.YouTube;
 
+            if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
+            {
+                var phoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
+                if (!phoneResult.Succeeded)
+                {
+                    ModelState.AddModelError("PhoneNumber", "Số điện thoại không hợp lệ.");
+                    model.ProfilePicturePath = user.ProfilePicturePath;
+                    return View(model);
+                }
+            }
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                foreach (var error in updateResult.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                model.ProfilePicturePath = user.ProfilePicturePath;
+                return View(model);
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
             return RedirectToAction("Profile");
         }
 
@@ -199,8 +256,7 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> UploadProfilePicture(IFormFile profilePicture)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return NotFound();
+            if (user == null) return NotFound();
 
             if (profilePicture == null || profilePicture.Length == 0)
             {
@@ -209,35 +265,24 @@ namespace JapaneseLearningPlatform.Controllers
             }
 
             var extension = Path.GetExtension(profilePicture.FileName)?.ToLower();
-            if (string.IsNullOrWhiteSpace(extension))
-            {
-                TempData["UploadError"] = "Invalid file. No file extension found.";
-                return RedirectToAction("Profile");
-            }
-
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
             if (!allowedExtensions.Contains(extension))
             {
-                TempData["UploadError"] = "Invalid file type. Please select an image with one of the following formats: .jpg, .jpeg, .png, .gif, .webp.";
+                TempData["UploadError"] = "Invalid file type.";
                 return RedirectToAction("Profile");
             }
 
-            // 📁 Tạo thư mục nếu chưa có
             var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "profile");
             if (!Directory.Exists(uploadsFolder))
                 Directory.CreateDirectory(uploadsFolder);
 
-            // 🧹 Xoá ảnh cũ nếu có (trừ khi đang dùng default)
             if (!string.IsNullOrEmpty(user.ProfilePicturePath) && !user.ProfilePicturePath.Contains("default-img.jpg"))
             {
                 var oldPath = Path.Combine(_env.WebRootPath, user.ProfilePicturePath.TrimStart('/'));
                 if (System.IO.File.Exists(oldPath))
-                {
                     System.IO.File.Delete(oldPath);
-                }
             }
 
-            // 📥 Lưu ảnh mới
             var fileName = $"{Guid.NewGuid()}{extension}";
             var filePath = Path.Combine(uploadsFolder, fileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -246,12 +291,17 @@ namespace JapaneseLearningPlatform.Controllers
             }
 
             user.ProfilePicturePath = $"/uploads/profile/{fileName}";
-            await _userManager.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                TempData["UploadError"] = string.Join(", ", result.Errors.Select(e => e.Description));
+                return RedirectToAction("Profile");
+            }
 
+            await _signInManager.RefreshSignInAsync(user);
+            TempData["SuccessMessage"] = "Ảnh đại diện đã được cập nhật!";
             return RedirectToAction("Profile");
         }
-
-
 
         // 📚 Lớp học của tôi (hiển thị thời khóa biểu và partner)
         [HttpGet]

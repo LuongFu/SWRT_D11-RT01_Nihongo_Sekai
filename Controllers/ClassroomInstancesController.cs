@@ -1,18 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Helpers;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -21,12 +22,14 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ClassroomInstancesController> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ClassroomInstancesController(AppDbContext context, UserManager<ApplicationUser> userManager, ILogger<ClassroomInstancesController> logger)
+        public ClassroomInstancesController(AppDbContext context, UserManager<ApplicationUser> userManager, ILogger<ClassroomInstancesController> logger, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [AllowAnonymous]
@@ -384,7 +387,6 @@ namespace JapaneseLearningPlatform.Controllers
                     .ThenInclude(e => e.Learner)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-
             if (instance == null) return NotFound();
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -423,6 +425,11 @@ namespace JapaneseLearningPlatform.Controllers
             var reviewed = await _context.ClassroomEvaluations
                 .AnyAsync(e => e.InstanceId == id && e.LearnerId == userId);
 
+            // Nạp tài liệu học tập
+            var resources = await _context.ClassroomResources
+                .Where(r => r.ClassroomInstanceId == id)
+                .ToListAsync();
+
             var vm = new ClassroomContentVM
             {
                 Instance = instance,
@@ -432,11 +439,13 @@ namespace JapaneseLearningPlatform.Controllers
                 Submission = submission,
                 HasSubmitted = submission != null,
                 HasReviewed = reviewed,
-                AllSubmissions = allSubmissions
+                AllSubmissions = allSubmissions,
+                Resources = resources  // Gán danh sách tài liệu vào VM
             };
 
             return View(vm);
         }
+
 
 
         [Authorize(Roles = UserRoles.Learner)]
@@ -491,6 +500,70 @@ namespace JapaneseLearningPlatform.Controllers
             }
 
             return RedirectToAction("Details", new { id });
+        }
+
+        [Authorize(Roles = "Partner")]
+        [HttpPost]
+        public async Task<IActionResult> UploadResource(int classroomId, IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads/resources");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var resource = new ClassroomResource
+                {
+                    ClassroomInstanceId = classroomId,
+                    FileName = file.FileName,
+                    FilePath = "/uploads/resources/" + fileName,
+                    UploadedAt = DateTime.UtcNow
+                };
+
+                _context.ClassroomResources.Add(resource);
+                await _context.SaveChangesAsync();
+            }
+            return Redirect($"/ClassroomInstances/Content/{classroomId}#resources");
+        }
+
+        [Authorize(Roles = "Partner")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteResource(int id)
+        {
+            var resource = await _context.ClassroomResources.FindAsync(id);
+            if (resource == null) return NotFound();
+
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, resource.FilePath.TrimStart('/'));
+            if (System.IO.File.Exists(filePath))
+                System.IO.File.Delete(filePath);
+
+            _context.ClassroomResources.Remove(resource);
+            await _context.SaveChangesAsync();
+
+            return Redirect($"/ClassroomInstances/Content/{resource.ClassroomInstanceId}#resources");
+        }
+
+        [Authorize(Roles = "Learner,Partner,Admin")]
+        public async Task<IActionResult> DownloadResource(int id)
+        {
+            var resource = await _context.ClassroomResources.FindAsync(id);
+            if (resource == null) return NotFound();
+
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, resource.FilePath.TrimStart('/'));
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound();
+
+            var mimeType = "application/octet-stream";
+            return PhysicalFile(filePath, mimeType, resource.FileName);
         }
     }
 }
