@@ -380,8 +380,8 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> Content(int id)
         {
             var instance = await _context.ClassroomInstances
-                .AsSplitQuery()              // ⚡ Chia query để tránh JOIN khổng lồ
-                .AsNoTracking()              // ⚡ Không cần tracking vì chỉ đọc dữ liệu
+                .AsSplitQuery()
+                .AsNoTracking()
                 .Include(c => c.Template)
                     .ThenInclude(t => t.Partner)
                 .Include(c => c.Assignments!)
@@ -396,19 +396,15 @@ namespace JapaneseLearningPlatform.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var isLearner = User.IsInRole(UserRoles.Learner);
             var isPartner = User.IsInRole(UserRoles.Partner);
-            var isAdmin = User.IsInRole(UserRoles.Admin);
 
-            var isEnrolled = instance.Enrollments.Any(e => e.LearnerId == userId && !e.HasLeft);
-            var isOwnerPartner = isPartner && instance.Template.PartnerId == userId;
-
-            if (isLearner && !isEnrolled)
+            // Kiểm tra quyền truy cập
+            if (isLearner && !instance.Enrollments.Any(e => e.LearnerId == userId && !e.HasLeft))
                 return Forbid();
 
-            if (isPartner && !isOwnerPartner)
+            if (isPartner && instance.Template.PartnerId != userId)
                 return Forbid();
 
             var finalAssignment = instance.Assignments?.FirstOrDefault();
-
             AssignmentSubmission? submission = null;
             List<AssignmentSubmission>? allSubmissions = null;
 
@@ -421,17 +417,25 @@ namespace JapaneseLearningPlatform.Controllers
                         .FirstOrDefaultAsync(s => s.FinalAssignmentId == finalAssignment.Id && s.LearnerId == userId);
                 }
 
-                if (isPartner && instance.Assignments.First().Submissions != null)
+                if (isPartner && finalAssignment.Submissions != null)
                 {
-                    allSubmissions = instance.Assignments.First().Submissions.ToList();
+                    allSubmissions = finalAssignment.Submissions.ToList();
                 }
             }
 
-            var reviewed = await _context.ClassroomEvaluations
-                .AsNoTracking()
-                .AnyAsync(e => e.InstanceId == id && e.LearnerId == userId);
+            // Feedback logic
+            var userFeedback = isLearner
+                ? await _context.ClassroomFeedbacks
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(f => f.ClassroomInstanceId == id && f.LearnerId == userId)
+                : null;
 
-            // Nạp tài liệu học tập
+            var feedbacks = await _context.ClassroomFeedbacks
+                .Include(f => f.Learner)
+                .Where(f => f.ClassroomInstanceId == id)
+                .OrderByDescending(f => f.CreatedAt)
+                .ToListAsync();
+
             var resources = await _context.ClassroomResources
                 .Where(r => r.ClassroomInstanceId == id)
                 .ToListAsync();
@@ -444,13 +448,16 @@ namespace JapaneseLearningPlatform.Controllers
                 FinalAssignment = finalAssignment,
                 Submission = submission,
                 HasSubmitted = submission != null,
-                HasReviewed = reviewed,
+                HasReviewed = userFeedback != null,
+                UserFeedback = userFeedback,   // NEW
                 AllSubmissions = allSubmissions,
-                Resources = resources  // Gán danh sách tài liệu vào VM
+                Resources = resources,
+                Feedbacks = feedbacks
             };
 
             return View(vm);
         }
+
 
 
 
@@ -680,6 +687,59 @@ namespace JapaneseLearningPlatform.Controllers
             var field = value.GetType().GetField(value.ToString());
             var attribute = (DisplayAttribute)field.GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault();
             return attribute?.Name ?? value.ToString();
+        }
+        [Authorize(Roles = UserRoles.Learner)]
+        [HttpPost]
+        public async Task<IActionResult> SubmitReview(int instanceId, int rating, string comment)
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+                return Unauthorized();
+
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Feedbacks)
+                .FirstOrDefaultAsync(i => i.Id == instanceId);
+
+            if (instance == null)
+                return NotFound();
+
+            // Kiểm tra Learner có trong Enrollments
+            var enrolled = await _context.ClassroomEnrollments
+                .AnyAsync(e => e.InstanceId == instanceId && e.LearnerId == userId && !e.HasLeft);
+
+            if (!enrolled)
+                return Forbid();
+
+            // Kiểm tra feedback đã tồn tại
+            var existingFeedback = await _context.ClassroomFeedbacks
+                .FirstOrDefaultAsync(f => f.ClassroomInstanceId == instanceId && f.LearnerId == userId);
+
+            if (existingFeedback != null)
+            {
+                // Cập nhật feedback
+                existingFeedback.Rating = rating;
+                existingFeedback.Comment = comment;
+                existingFeedback.UpdatedAt = DateTime.UtcNow;
+                _context.Update(existingFeedback);
+            }
+            else
+            {
+                // Thêm feedback mới
+                var feedback = new ClassroomFeedback
+                {
+                    ClassroomInstanceId = instanceId,
+                    LearnerId = userId,
+                    Rating = rating,
+                    Comment = comment,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.ClassroomFeedbacks.Add(feedback);
+            }
+
+            await _context.SaveChangesAsync();
+            TempData["FeedbackMessage"] = "Đã gửi feedback thành công!";
+
+            return RedirectToAction("Content", new { id = instanceId });
         }
     }
 }
