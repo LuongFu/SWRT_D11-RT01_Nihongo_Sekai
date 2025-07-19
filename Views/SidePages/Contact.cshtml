@@ -1,4 +1,8 @@
-﻿@{
+﻿@using JapaneseLearningPlatform.Data.Enums
+@using JapaneseLearningPlatform.Data.ViewModels  @* only if your VM really lives here *@
+@model JapaneseLearningPlatform.Data.ViewModels.ReportViewModel
+
+@{
     Layout = "_Layout";
     ViewData["Title"] = "Liên Hệ";
     ViewData["Description"] = "Liên hệ với Nihongo Sekai. Liên hệ đội ngũ hỗ trợ, ghé thăm văn phòng hoặc kết nối qua nhiều kênh khác nhau.";
@@ -215,80 +219,70 @@
             <div class="form-content">
                 <div class="form-header">
                     <h2 class="section-title">Gửi Tin Nhắn Cho Chúng Tôi</h2>
-                    <p class="section-subtitle">
-                        Điền vào biểu mẫu bên dưới và chúng tôi sẽ liên hệ lại với bạn sớm nhất.
-                    </p>
+                    <p class="section-subtitle">Điền vào biểu mẫu bên dưới và chúng tôi sẽ liên hệ lại với bạn sớm nhất.</p>
                 </div>
 
-                <form id="contactForm" class="contact-form">
+                <form id="contactForm"
+                      asp-controller="Reports"
+                      asp-action="Submit"
+                      method="post"
+                      class="contact-form">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
                     <!-- Họ & Tên -->
                     <div class="form-group">
-                        <label for="fullName">Họ &amp; Tên *</label>
-                        <input type="text"
-                               id="fullName"
-                               name="fullName"
-                               class="form-input"
-                               placeholder="Nhập họ và tên đầy đủ"
-                               required />
+                        <label asp-for="FullName">Họ &amp; Tên *</label>
+                        <input asp-for="FullName" class="form-input" placeholder="Nhập họ và tên đầy đủ" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
                     </div>
 
                     <!-- Email -->
                     <div class="form-group">
-                        <label for="email">Địa Chỉ Email *</label>
-                        <input type="email"
-                               id="email"
-                               name="email"
-                               class="form-input"
-                               placeholder="name@example.com"
-                               required />
+                        <label asp-for="Email">Địa Chỉ Email *</label>
+                        <input asp-for="Email" class="form-input" placeholder="name@example.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
                     <!-- Chủ Đề -->
                     <div class="form-group">
-                        <label for="subject">Chủ Đề *</label>
-                        <select id="subject"
-                                name="subject"
+                        <label asp-for="Subject">Chủ Đề *</label>
+                        <select asp-for="Subject"
+                                id="subject"
                                 class="form-select"
                                 required>
                             <option value="">Vui lòng chọn chủ đề</option>
-                            <option value="technical">Hỗ Trợ Kỹ Thuật</option>
-                            <option value="billing">Thanh Toán &amp; Hóa Đơn</option>
-                            <option value="courses">Câu Hỏi Về Khóa Học</option>
-                            <option value="partnerships">Đối Tác Doanh Nghiệp</option>
-                            <option value="feedback">Phản Hồi &amp; Góp Ý</option>
-                            <option value="other">Khác</option>
+                            @foreach (ReportSubject subj in Enum.GetValues<ReportSubject>())
+                            {
+                                <option value="@subj">
+                                    @(subj == ReportSubject.Technical ? "Hỗ Trợ Kỹ Thuật" :
+                                                                    subj == ReportSubject.Billing ? "Thanh Toán & Hóa Đơn" :
+                                                                    subj == ReportSubject.Courses ? "Câu Hỏi Về Khóa Học" :
+                                                                    subj == ReportSubject.Partnerships ? "Đối Tác Doanh Nghiệp" :
+                                                                    subj == ReportSubject.Feedback ? "Phản Hồi & Góp Ý" :
+                                                                    "Khác")
+                            </option>
+                                                        }
                         </select>
+                        <span asp-validation-for="Subject" class="text-danger"></span>
                     </div>
 
-                    <!-- Mã Đơn Hàng (chỉ hiện khi billing) -->
-                    <div class="form-group" id="orderNumberGroup">
-                        <label for="orderNumber">Mã Đơn Hàng *</label>
-                        <input type="text"
-                               id="orderNumber"
-                               name="orderNumber"
-                               class="form-input"
-                               placeholder="Nhập mã đơn hàng" />
+                    <!-- Mã Đơn Hàng (chỉ hiện khi chọn Billing) -->
+                    <div class="form-group" id="orderNumberGroup" style="display:none">
+                        <label asp-for="OrderNumber">Mã Đơn Hàng *</label>
+                        <input asp-for="OrderNumber" class="form-input" placeholder="Nhập mã đơn hàng" />
+                        <span asp-validation-for="OrderNumber" class="text-danger"></span>
                     </div>
 
                     <!-- Nội Dung -->
                     <div class="form-group">
-                        <label for="message">Nội Dung Tin Nhắn *</label>
-                        <textarea id="message"
-                                  name="message"
-                                  rows="5"
+                        <label asp-for="Message">Nội Dung Tin Nhắn *</label>
+                        <textarea asp-for="Message"
                                   class="form-textarea"
-                                  placeholder="Mô tả chi tiết vấn đề của bạn..."
-                                  required></textarea>
-                    </div>
-
-                    <!-- Nhận bản tin -->
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox"
-                                   id="newsletter"
-                                   name="newsletter" />
-                            Tôi muốn nhận cập nhật về khóa học và tính năng mới
-                        </label>
+                                  rows="5"
+                                  placeholder="Mô tả chi tiết vấn đề của bạn..."></textarea>
+                        <span asp-validation-for="Message" class="text-danger"></span>
                     </div>
 
                     <!-- Gửi -->
@@ -378,24 +372,53 @@
 </main>
 
 @section Scripts {
+    @* Đẩy TempData vào JS nếu có *@
+    @if (TempData["ToastMessage"] != null)
+    {
+        <script>
+            window.__toastData = {
+                message: '@TempData["ToastMessage"]',
+                type:    '@TempData["ToastType"]'
+            };
+        </script>
+    }
+
     <script src="~/js/script.js"></script>
     <script>
-            document.addEventListener("DOMContentLoaded", () => {
-            const subjectEl     = document.getElementById("subject");
-            const orderGroup    = document.getElementById("orderNumberGroup");
-            const orderInput    = orderGroup.querySelector("input");
-            const form          = document.getElementById("contactForm");
-            const submitButton  = form.querySelector("button[type=submit]");
+        // Hiển thị toast
+        function showToast(message, type) {
+            const container = document.getElementById("toastContainer");
+            const toast = document.createElement("div");
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-body">${message}</div>
+                <div class="toast-progress"></div>
+            `;
+            container.appendChild(toast);
+            // Start progress shrink
+            requestAnimationFrame(() => {
+                toast.querySelector(".toast-progress").style.width = "0%";
+            });
+            // Tự remove sau 5s
+            setTimeout(() => toast.remove(), 5000);
+        }
 
-            // Khi chọn chủ đề → show mã đơn nếu billing
+        document.addEventListener("DOMContentLoaded", () => {
+            const subjectEl   = document.getElementById("subject");
+            const orderGroup  = document.getElementById("orderNumberGroup");
+            const orderInput  = orderGroup.querySelector("input");
+            const form        = document.getElementById("contactForm");
+
+            // Ẩn/hiện OrderNumber
+            subjectEl.dispatchEvent(new Event("change"));
             subjectEl.addEventListener("change", () => {
-                const isBilling = subjectEl.value === "billing";
+                const isBilling = subjectEl.value === "Billing";
                 orderGroup.style.display = isBilling ? "block" : "none";
                 orderInput.required      = isBilling;
                 if (!isBilling) orderInput.value = "";
             });
 
-            // Validation helper
+            // Validation realtime
             function validateField(el) {
                 if (!el.checkValidity()) {
                     el.classList.add("is-invalid");
@@ -404,85 +427,24 @@
                 el.classList.remove("is-invalid");
                 return true;
             }
+            form.querySelectorAll("input, select, textarea")
+                .forEach(el => el.addEventListener("blur", () => validateField(el)));
 
-            // Lắng nghe blur để validate real‑time
-            form.querySelectorAll("input, select, textarea").forEach(el => {
-                el.addEventListener("blur", () => validateField(el));
-            });
-
-            // Xử lý submit
-            form.addEventListener("submit", async e => {
-                e.preventDefault();
-
-                // 1) Validate tất cả
-                const fields = Array.from(
-                    form.querySelectorAll("input, select, textarea")
-                ).filter(el => el.willValidate);
-
-                const allValid = fields
-                    .map(validateField)
-                    .every(v => v === true);
-
+            // Submit chỉ khi valid
+            form.addEventListener("submit", e => {
+                const allValid = Array.from(form.querySelectorAll("input, select, textarea"))
+                    .filter(el => el.willValidate)
+                    .map(validateField).every(v=>v);
                 if (!allValid) {
-                    window.NihongoSekai.showToast(
-                      "Vui lòng điền đầy đủ và hợp lệ các trường được đánh dấu.",
-                      "error"
-                    );
-                    return;
-                }
-
-                // 2) Mock gửi
-                submitButton.disabled = true;
-                submitButton.textContent = "Đang gửi...";
-                try {
-                    await new Promise(r => setTimeout(r, 1500));
-                    window.NihongoSekai.showToast(
-                      "Tin nhắn đã được gửi! Chúng tôi sẽ phản hồi trong vòng 24 giờ.",
-                      "success"
-                    );
-                    form.reset();
-                    // Ẩn lại mã đơn billing nếu cần
-                    subjectEl.dispatchEvent(new Event("change"));
-                } catch {
-                    window.NihongoSekai.showToast(
-                      "Gửi thất bại, vui lòng thử lại.",
-                      "error"
-                    );
-                } finally {
-                    submitButton.disabled = false;
-                    submitButton.textContent = "Gửi Tin Nhắn";
+                    e.preventDefault();
+                    alert("Vui lòng điền đầy đủ và hợp lệ các trường được đánh dấu.");
                 }
             });
-        });
 
-        async function handleContactFormSubmission(form) {
-            try {
-                window.NihongoSekai.showToast("Đang gửi...", "info");
-                // Mô phỏng gọi API
-                await new Promise(r => setTimeout(r, 1500));
-                window.NihongoSekai.showToast(
-                  "Tin nhắn đã được gửi! Chúng tôi sẽ phản hồi trong vòng 24 giờ.",
-                  "success"
-                );
-                form.reset();
-            } catch {
-                window.NihongoSekai.showToast(
-                  "Gửi tin nhắn thất bại. Vui lòng thử lại.",
-                  "error"
-                );
+            // Nếu có toastData từ server, show ngay
+            if (window.__toastData) {
+                showToast(window.__toastData.message, window.__toastData.type);
             }
-        }
-
-        function openLiveChat() {
-            window.NihongoSekai.showToast(
-              "Chat trực tiếp sắp ra mắt! Vui lòng sử dụng email hoặc điện thoại trước nhé.",
-              "info"
-            );
-        }
-
-        function showOfficeLocations() {
-            document.getElementById("officeLocations")
-                    .scrollIntoView({ behavior: "smooth" });
-        }
+        });
     </script>
 }

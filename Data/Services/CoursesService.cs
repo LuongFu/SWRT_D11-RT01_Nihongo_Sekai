@@ -71,25 +71,12 @@ namespace JapaneseLearningPlatform.Data.Services
             };
             await _context.Courses.AddAsync(newCourse);
             await _context.SaveChangesAsync();
-
-            // Gắn video vào khóa học (many-to-many)
-            foreach (var videoId in data.VideoIds)
-            {
-                var newVideoCourse = new Video_Course()
-                {
-                    CourseId = newCourse.Id,
-                    VideoId = videoId
-                };
-                await _context.Videos_Courses.AddAsync(newVideoCourse);
-            }
-            await _context.SaveChangesAsync();
         }
 
         // Lấy chi tiết 1 khóa học bao gồm video
         public async Task<Course> GetCourseByIdAsync(int id)
         {
             var courseDetails = await _context.Courses
-                .Include(vc => vc.Videos_Courses).ThenInclude(a => a.Video)
                 .FirstOrDefaultAsync(n => n.Id == id);
 
             return courseDetails;
@@ -128,24 +115,6 @@ namespace JapaneseLearningPlatform.Data.Services
                 dbCourse.CourseCategory = data.CourseCategory;
                 await _context.SaveChangesAsync();
             }
-
-            // Xóa các video cũ
-            var existingVideosDb = _context.Videos_Courses
-                .Where(n => n.CourseId == data.Id).ToList();
-            _context.Videos_Courses.RemoveRange(existingVideosDb);
-            await _context.SaveChangesAsync();
-
-            // Gắn video mới
-            foreach (var videoId in data.VideoIds)
-            {
-                var newVideoCourse = new Video_Course()
-                {
-                    CourseId = data.Id,
-                    VideoId = videoId
-                };
-                await _context.Videos_Courses.AddAsync(newVideoCourse);
-            }
-            await _context.SaveChangesAsync();
         }
 
         // Lấy toàn bộ thông tin khóa học (dùng cho trang chi tiết)

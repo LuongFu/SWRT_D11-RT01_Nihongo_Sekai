@@ -17,7 +17,7 @@ namespace JapaneseLearningPlatform.Models
 
         [Display(Name = "Giá tính theo VND")]
         [Required(ErrorMessage = "Bắt buộc điền")]
-        public double Price { get; set; }
+        public int Price { get; set; }
 
         [Display(Name = "URL Ảnh bìa khóa học")]
         [Required(ErrorMessage = "Bắt buộc điền")]

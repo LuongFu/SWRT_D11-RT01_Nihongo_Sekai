@@ -16,7 +16,5 @@ namespace JapaneseLearningPlatform.Models
         [Required(ErrorMessage = "Video mô tả là bắt buộc")]
         public string? VideoDescription { get; set; }
 
-        //Relationships
-        public List<Video_Course> Videos_Courses { get; set; }
     }
 }

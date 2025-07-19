@@ -44,8 +44,6 @@ namespace JapaneseLearningPlatform.Controllers
                 .ToHashSet();
 
             var courses = await _context.Courses
-                .Include(c => c.Videos_Courses)
-                .ThenInclude(a => a.Video)
                 .ToListAsync();
 
             var totalItems = courses.Count;
@@ -202,8 +200,6 @@ namespace JapaneseLearningPlatform.Controllers
         {
             //var courseDetails = await _service.GetCourseByIdAsync(id);
             var courseDetails = await _context.Courses
-        .Include(c => c.Videos_Courses)
-        .Include(c => c.Videos_Courses)
         .FirstOrDefaultAsync(c => c.Id == id);
             if (courseDetails == null) return View("NotFound");
 
@@ -217,13 +213,12 @@ namespace JapaneseLearningPlatform.Controllers
                 StartDate = (DateTime)courseDetails?.StartDate,
                 EndDate = (DateTime)courseDetails?.EndDate,
                 ImageURL = courseDetails.ImageURL,
-                CourseCategory = courseDetails.CourseCategory,
-                VideoIds = courseDetails.Videos_Courses.Select(vc => vc.VideoId).ToList()
+                CourseCategory = courseDetails.CourseCategory
             };
 
             var courseDropdownsData = await _service.GetNewCourseDropdownsValues();
             ViewBag.Videos = new SelectList(courseDropdownsData.Videos, "Id", "VideoDescription");
-            
+
 
             return View(response);
         }

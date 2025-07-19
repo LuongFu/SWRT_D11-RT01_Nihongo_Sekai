@@ -5,27 +5,24 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JapaneseLearningPlatform.Models
 {
-    public class Course:IEntityBase
+    public class Course : IEntityBase
     {
         [Key]
         public int Id { get; set; }
 
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public double Price { get; set; }
+        public int Price { get; set; }
         public string? ImageURL { get; set; }
         public int? DiscountPercent { get; set; } // null = no discount
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public CourseCategory CourseCategory { get; set; }
 
-        //Relationships
-        public List<Video_Course>? Videos_Courses { get; set; }
-        // Relationship: Course → CourseSection
         public List<CourseSection>? Sections { get; set; }
         // Computed Price
         [NotMapped]
-        public double FinalPrice
+        public int FinalPrice
         {
             get
             {

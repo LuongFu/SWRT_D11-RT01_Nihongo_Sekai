@@ -757,7 +757,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
 {
     Name        = "Honorific Japanese Mastery",
     Description = "Master Japanese honorifics and advanced expressions used in formal settings.",
-    Price       = 25.00,
+    Price       = 25,
     ImageURL    = "https://i.pinimg.com/736x/98/3b/95/983b952e223ea927d0372dbb5144b8ea.jpg",
     Discount    = 40,
     Category    = CourseCategory.Advanced,
