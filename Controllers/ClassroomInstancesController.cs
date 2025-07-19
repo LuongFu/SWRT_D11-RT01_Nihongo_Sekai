@@ -375,16 +375,16 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> Content(int id)
         {
             var instance = await _context.ClassroomInstances
-                .AsQueryable()
+                .AsSplitQuery()              // ⚡ Chia query để tránh JOIN khổng lồ
+                .AsNoTracking()              // ⚡ Không cần tracking vì chỉ đọc dữ liệu
                 .Include(c => c.Template)
-                    .ThenInclude(t => t.Partner) // 👈 Bổ sung để load Partner
+                    .ThenInclude(t => t.Partner)
                 .Include(c => c.Assignments!)
                     .ThenInclude(a => a.Submissions!)
                         .ThenInclude(s => s.Learner)
                 .Include(c => c.Enrollments!)
                     .ThenInclude(e => e.Learner)
                 .FirstOrDefaultAsync(c => c.Id == id);
-
 
             if (instance == null) return NotFound();
 
@@ -412,6 +412,7 @@ namespace JapaneseLearningPlatform.Controllers
                 if (isLearner)
                 {
                     submission = await _context.AssignmentSubmissions
+                        .AsNoTracking()
                         .FirstOrDefaultAsync(s => s.FinalAssignmentId == finalAssignment.Id && s.LearnerId == userId);
                 }
 
@@ -422,6 +423,7 @@ namespace JapaneseLearningPlatform.Controllers
             }
 
             var reviewed = await _context.ClassroomEvaluations
+                .AsNoTracking()
                 .AnyAsync(e => e.InstanceId == id && e.LearnerId == userId);
 
             var vm = new ClassroomContentVM
@@ -438,6 +440,7 @@ namespace JapaneseLearningPlatform.Controllers
 
             return View(vm);
         }
+
 
 
         [Authorize(Roles = UserRoles.Learner)]

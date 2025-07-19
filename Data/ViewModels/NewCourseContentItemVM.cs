@@ -9,9 +9,10 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public int Id { get; set; }
 
         [Required]
+        [Display(Name = "Tiêu đề")]
         public string Title { get; set; }
 
-        [Display(Name = "Content Type")]
+        [Display(Name = "Loại nội dung")]
         [Required]
         public ContentType ContentType { get; set; }
 
@@ -19,17 +20,17 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         [Display(Name = "Video URL")]
         public string? VideoURL { get; set; }
 
-        [Display(Name = "Video Description")]
+        [Display(Name = "Mô tả Video")]
         public string? VideoDescription { get; set; }
 
         // Quiz association (if selected)
         [Display(Name = "Quiz")]
         public int? QuizId { get; set; }
 
-        [Display(Name = "New Quiz Title")]
+        [Display(Name = "Tiêu đề Quiz mới")]
         public string? NewQuizTitle { get; set; }
 
-        [Display(Name = "New Quiz Description")]
+        [Display(Name = "Mô tả Quiz mới")]
         public string? NewQuizDescription { get; set; }
 
         // Mapping identifiers
@@ -40,6 +41,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public string SectionTitle { get; set; } = string.Empty;
 
         // Optional display order (for future sorting)
+        [Display(Name = "Thứ tự hiển thị")]
         public int? DisplayOrder { get; set; }
 
         // Dropdowns (only for view)
@@ -51,16 +53,16 @@ namespace JapaneseLearningPlatform.Data.ViewModels
             if (ContentType == ContentType.Video)
             {
                 if (string.IsNullOrWhiteSpace(VideoURL))
-                    yield return new ValidationResult("Video URL is required", new[] { nameof(VideoURL) });
+                    yield return new ValidationResult("Video URL là bắt buộc", new[] { nameof(VideoURL) });
 
                 if (string.IsNullOrWhiteSpace(VideoDescription))
-                    yield return new ValidationResult("Video description is required", new[] { nameof(VideoDescription) });
+                    yield return new ValidationResult("Mô tả Video là bắt buộc", new[] { nameof(VideoDescription) });
             }
 
             if (ContentType == ContentType.Quiz)
             {
                 if (string.IsNullOrWhiteSpace(NewQuizTitle))
-                    yield return new ValidationResult("Quiz title is required", new[] { nameof(NewQuizTitle) });
+                    yield return new ValidationResult("Tiêu đề Quiz là bắt buộc", new[] { nameof(NewQuizTitle) });
             }
         }
     }

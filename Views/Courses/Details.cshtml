@@ -187,7 +187,7 @@
                    class="btn btn-sm btn-nihongo-outline mb-3">
                     <i class="bi bi-plus-circle"></i> Thêm mục
                 </a>
-                <h5 class="fw-semibold mb-3">Course Content</h5>
+                <h5 class="fw-semibold mb-3">Nội dung khóa học</h5>
                 <div class="accordion" id="courseSectionsAccordion">
                     @for (int i = 0; i < Model.Sections.Count; i++)
                     {
@@ -244,17 +244,16 @@
                                                         }
                                                         else if (item.ContentType == ContentType.Quiz && item.Quiz != null)
                                                         {
-                                                                <div>
-                                                                    <a asp-controller="Quizzes" asp-action="Manage" asp-route-id="@item.Quiz.Id" class="btn btn-sm btn-nihongo-outline">
-                                                                        Quản lý Q&A
-                                                                    </a>
-                                                                </div>
-                                                                <div>
-                                                                    <a asp-action="Preview" asp-controller="Quizzes" asp-route-id="@item.Quiz.Id" class="btn btn-nihongo-outline">
-                                                                        Xem trước Quiz
-                                                                    </a>
-                                                                </div>
-                                                            }
+                                                            <div>
+                                                                <a asp-controller="Quizzes" asp-action="Manage" asp-route-id="@item.Quiz.Id" class="btn btn-sm btn-nihongo-outline">
+                                                                    Quản lý Q&A
+                                                                </a>
+                                                            </div>
+                                                            <div>
+                                                                <a asp-action="Preview" asp-controller="Quizzes" asp-route-id="@item.Quiz.Id" class="btn btn-nihongo-outline">
+                                                                    Xem trước Quiz
+                                                                </a>
+                                                            </div>
                                                             <div class="d-flex flex-wrap gap-2 align-items-center">
                                                                 <a asp-controller="Quizzes" asp-action="Start" asp-route-id="@item.Quiz.Id"
                                                                    class="btn btn-sm btn-outline-primary">
@@ -265,22 +264,23 @@
                                                                     <span class="badge bg-success">🏆 @score</span>
                                                                 }
                                                             </div>
+                                                        }
                                                     </div>
-                                                        <div class="mt-2 text-end">
-                                                            <div>
-                                                                <a asp-controller="CourseContentItems" asp-action="Edit" asp-route-id="@item.Id"
-                                                                   class="btn btn-sm btn-nihongo-outline me-1">
-                                                                    <i class="bi bi-pencil"></i>
-                                                                </a>
-                                                            </div>
-                                                            <div>
-                                                                <a asp-controller="CourseContentItems" asp-action="Delete" asp-route-id="@item.Id"
-                                                                   class="btn btn-sm btn-nihongo-outline"
-                                                                   onclick="return confirm('Are you sure you want to delete this content item?');">
-                                                                    <i class="bi bi-trash"></i>
-                                                                </a>
-                                                            </div>
+                                                    <div class="mt-2 text-end">
+                                                        <div>
+                                                            <a asp-controller="CourseContentItems" asp-action="Edit" asp-route-id="@item.Id"
+                                                               class="btn btn-sm btn-nihongo-outline me-1">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </a>
                                                         </div>
+                                                        <div>
+                                                            <a asp-controller="CourseContentItems" asp-action="Delete" asp-route-id="@item.Id"
+                                                               class="btn btn-sm btn-nihongo-outline"
+                                                               onclick="return confirm('Are you sure you want to delete this content item?');">
+                                                                <i class="bi bi-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </li>
                                         }

@@ -47,7 +47,7 @@ else
                         }
                     </td>
                     <td>@item.Title</td>
-                    <td>@item.LanguageLevel</td>
+                    <td>@item.LanguageLevel.GetDisplayName()</td>
                     <td class="text-center">
                         <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-info me-1" title="Xem chi tiết">
                             <i class="bi bi-eye"></i>
