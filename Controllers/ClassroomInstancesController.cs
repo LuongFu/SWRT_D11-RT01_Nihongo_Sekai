@@ -259,7 +259,8 @@ namespace JapaneseLearningPlatform.Controllers
                 EnrollmentCount = instance.Enrollments.Count,
                 PartnerName = instance.Template.Partner.FullName,
                 IsEnrolled = enrollment != null,
-                HasPaid = enrollment?.IsPaid == true // ✅ thêm dòng này
+                HasPaid = enrollment?.IsPaid == true, // ✅ thêm dòng này
+                    IsPaid = instance.IsPaid // ✅ Gán IsPaid từ instance
             };
             return View(vm);
         }

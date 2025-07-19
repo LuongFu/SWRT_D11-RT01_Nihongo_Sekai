@@ -39,10 +39,10 @@
                 <dd class="col-sm-7">@($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</dd>
 
                 <dt class="col-sm-5">Ngày bắt đầu:</dt>
-                <dd class="col-sm-7">@Model.Instance.StartDate.ToShortDateString()</dd>
+                <dd class="col-sm-7">@Model.Instance.StartDate.ToString("dd/MM/yyyy")</dd>
 
                 <dt class="col-sm-5">Ngày kết thúc:</dt>
-                <dd class="col-sm-7">@Model.Instance.EndDate.ToShortDateString()</dd>
+                <dd class="col-sm-7">@Model.Instance.EndDate.ToString("dd/MM/yyyy")</dd>
 
                 <dt class="col-sm-5">Người hướng dẫn:</dt>
                 <dd class="col-sm-7">@Model.PartnerName</dd>
@@ -52,7 +52,7 @@
 
                 <dt class="col-sm-5">Giá:</dt>
                 <dd class="col-sm-7">
-                    @(Model.IsPaid? Model.Instance.Price.ToString("N0") : "Miễn phí")
+                    @(Model.Instance.Price > 0 ? Model.Instance.Price.ToString("N0") + " đ" : "Miễn phí")
                 </dd>
 
                 <dt class="col-sm-5">Số lượng học viên:</dt>
