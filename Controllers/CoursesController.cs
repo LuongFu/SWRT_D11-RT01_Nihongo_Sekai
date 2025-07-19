@@ -15,7 +15,6 @@ using System.Security.Claims;
 
 namespace JapaneseLearningPlatform.Controllers
 {
-    [Authorize(Roles = UserRoles.Admin)]
     public class CoursesController : Controller
     {
         private readonly ICoursesService _service;
@@ -39,12 +38,15 @@ namespace JapaneseLearningPlatform.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cartItems = _shoppingCart.GetShoppingCartItems().Select(c => c.Course.Id).ToList();
+
             var purchasedCourseIds = _context.Orders
                 .Where(o => o.UserId == userId)
                 .SelectMany(o => o.OrderItems.Select(oi => oi.CourseId))
                 .ToHashSet();
 
             var courses = await _context.Courses
+                .Include(c => c.Sections)
+                    .ThenInclude(s => s.ContentItems)
                 .ToListAsync();
 
             var totalItems = courses.Count;
@@ -53,18 +55,36 @@ namespace JapaneseLearningPlatform.Controllers
                 .Take(pageSize)
                 .ToList();
 
-            var viewModel = itemsToDisplay.Select(course => new CourseWithPurchaseVM
+            // Lấy progress cho tất cả course của user
+            var completedContent = await _context.CourseContentProgresses
+                .Where(p => p.UserId == userId && p.IsCompleted)
+                .ToListAsync();
+
+            var viewModel = itemsToDisplay.Select(course =>
             {
-                Course = course,
-                IsInCart = cartItems.Contains(course.Id),
-                IsPurchased = purchasedCourseIds.Contains(course.Id)
-            });
+                double progress = 0;
+                if (purchasedCourseIds.Contains(course.Id))
+                {
+                    int totalContentItems = course.Sections.Sum(s => s.ContentItems.Count);
+                    int completedItems = completedContent.Count(c => c.CourseId == course.Id);
+                    progress = totalContentItems > 0 ? (completedItems / (double)totalContentItems) * 100 : 0;
+                }
+
+                return new CourseWithPurchaseVM
+                {
+                    Course = course,
+                    IsInCart = cartItems.Contains(course.Id),
+                    IsPurchased = purchasedCourseIds.Contains(course.Id),
+                    ProgressPercent = progress
+                };
+            }).ToList();
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
             return View(viewModel);
         }
+
 
 
 
@@ -262,5 +282,71 @@ namespace JapaneseLearningPlatform.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleContentCompletion([FromBody] ToggleCompletionVM model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized(new { success = false });
+
+            // Tìm content progress hiện có
+            var existing = await _context.CourseContentProgresses
+                .FirstOrDefaultAsync(p => p.UserId == userId &&
+                                          p.CourseId == model.CourseId &&
+                                          p.ContentItemId == model.ContentItemId);
+
+            if (existing == null)
+            {
+                existing = new CourseContentProgress
+                {
+                    UserId = userId,
+                    CourseId = model.CourseId,
+                    ContentItemId = model.ContentItemId,
+                    IsCompleted = model.IsCompleted,
+                    CompletedAt = DateTime.UtcNow
+                };
+                _context.CourseContentProgresses.Add(existing);
+            }
+            else
+            {
+                existing.IsCompleted = model.IsCompleted;
+                existing.CompletedAt = DateTime.UtcNow;
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Tính progress % mới
+            var totalItems = await _context.CourseContentItems
+                .CountAsync(ci => ci.Section.CourseId == model.CourseId);
+
+            var completedCount = await _context.CourseContentProgresses
+                .CountAsync(p => p.UserId == userId && p.CourseId == model.CourseId && p.IsCompleted);
+
+            double progress = totalItems > 0 ? (completedCount / (double)totalItems) * 100 : 0;
+
+            return Json(new { success = true, progress = progress });
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetProgress(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            int totalItems = await _context.CourseContentItems
+                .Where(ci => ci.Section.CourseId == id)
+                .CountAsync();
+
+            int completedItems = await _context.CourseContentProgresses
+                .Where(p => p.CourseId == id && p.UserId == userId && p.IsCompleted)
+                .CountAsync();
+
+            double progress = totalItems > 0 ? (completedItems / (double)totalItems) * 100 : 0;
+            return Json(new { progress = progress.ToString("0") });
+        }
+
+
     }
 }

@@ -181,6 +181,7 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<QuizOption> QuizOptions { get; set; }
         public DbSet<QuizResult> QuizResults { get; set; }
         public DbSet<QuizResultDetail> QuizResultDetails { get; set; }
+        public DbSet<CourseContentProgress> CourseContentProgresses { get; set; }
         //Orders related tables
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }

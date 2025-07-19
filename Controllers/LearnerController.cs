@@ -102,11 +102,35 @@ namespace JapaneseLearningPlatform.Controllers
                 .Take(pageSize)
                 .ToList();
 
+            // Build list of CourseWithPurchaseVM including progress
+            var vmList = new List<CourseWithPurchaseVM>();
+            foreach (var course in pagedCourses)
+            {
+                int totalItemsInCourse = await _context.CourseContentItems
+                    .CountAsync(ci => ci.Section.CourseId == course.Id);
+
+                int completedItems = await _context.CourseContentProgresses
+                    .CountAsync(p => p.UserId == userId && p.CourseId == course.Id && p.IsCompleted);
+
+                double progress = totalItemsInCourse > 0
+                    ? (completedItems / (double)totalItemsInCourse) * 100
+                    : 0;
+
+                vmList.Add(new CourseWithPurchaseVM
+                {
+                    Course = course,
+                    IsPurchased = true,
+                    IsInCart = false,
+                    ProgressPercent = progress
+                });
+            }
+
             ViewBag.TotalPages = totalPages;
             ViewBag.CurrentPage = page;
 
-            return View("MyPurchasedCourses", pagedCourses);
+            return View("MyPurchasedCourses", vmList);
         }
+
 
         // 👤 Trang hồ sơ người học
         [HttpGet]

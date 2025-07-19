@@ -150,8 +150,36 @@ namespace JapaneseLearningPlatform.Controllers
             ViewBag.TotalQuestions = totalQuestions;
             ViewBag.CorrectAnswers = correctAnswers;
             ViewBag.ScorePercent = (int)((double)correctAnswers / totalQuestions * 100);
-
+            if (ViewBag.ScorePercent >= 80)
+            {
+                await MarkContentAsCompleted(quiz.CourseId, quiz.Id, userId);
+            }
             return View("Result", model);
+        }
+        private async Task MarkContentAsCompleted(int courseId, int contentItemId, string userId)
+        {
+            var existing = await _context.CourseContentProgresses
+                .FirstOrDefaultAsync(p => p.UserId == userId &&
+                                          p.CourseId == courseId &&
+                                          p.ContentItemId == contentItemId);
+
+            if (existing == null)
+            {
+                _context.CourseContentProgresses.Add(new CourseContentProgress
+                {
+                    UserId = userId,
+                    CourseId = courseId,
+                    ContentItemId = contentItemId,
+                    IsCompleted = true,
+                    CompletedAt = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                existing.IsCompleted = true;
+                existing.CompletedAt = DateTime.UtcNow;
+            }
+            await _context.SaveChangesAsync();
         }
         public async Task<IActionResult> Manage(int id)
         {
