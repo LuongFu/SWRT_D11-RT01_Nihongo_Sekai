@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JapaneseLearningPlatform.Models
 {
-    public class Course:IEntityBase
+    public class Course : IEntityBase
     {
         [Key]
         public int Id { get; set; }

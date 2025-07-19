@@ -838,7 +838,8 @@
             flex-wrap: wrap;
             margin-bottom: var(--spacing-2xl);
           ">
-                    <a href="register.html"
+                    <a asp-controller="Account"
+                       asp-action="Register"
                        class="btn"
                        style="
               background: var(--color-white);
@@ -847,7 +848,8 @@
               font-weight: 600;
               font-size: 1.125rem;
             ">Dùng Thử Miễn Phí</a>
-                    <a href="contact.html"
+                    <a asp-controller="SidePages"
+                       asp-action="Contact"
                        class="btn btn-outline"
                        style="
               border-color: var(--color-white);

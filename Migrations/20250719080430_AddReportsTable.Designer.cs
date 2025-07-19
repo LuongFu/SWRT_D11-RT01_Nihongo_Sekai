@@ -4,6 +4,7 @@ using JapaneseLearningPlatform.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250719080430_AddReportsTable")]
+    partial class AddReportsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,17 +93,8 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("BirthDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -110,13 +104,7 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Facebook")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsApproved")
@@ -124,9 +112,6 @@ namespace JapaneseLearningPlatform.Migrations
 
                     b.Property<bool>("IsBanned")
                         .HasColumnType("bit");
-
-                    b.Property<string>("JobName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -167,9 +152,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("YouTube")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -331,36 +313,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasIndex("TemplateId");
 
                     b.ToTable("ClassroomInstances");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomResource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClassroomInstanceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClassroomInstanceId");
-
-                    b.ToTable("ClassroomResources");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomTemplate", b =>
@@ -1095,17 +1047,6 @@ namespace JapaneseLearningPlatform.Migrations
                         .IsRequired();
 
                     b.Navigation("Template");
-                });
-
-            modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomResource", b =>
-                {
-                    b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", "ClassroomInstance")
-                        .WithMany()
-                        .HasForeignKey("ClassroomInstanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ClassroomInstance");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomTemplate", b =>
