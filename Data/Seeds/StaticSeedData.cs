@@ -1903,7 +1903,8 @@ namespace JapaneseLearningPlatform.Data.Seeds
     new() { Email="noobhoang@gmail.com", FullName="Hoang Nguyen", Password="Hoang2005.", Role="Learner" },
     new() { Email="hoang120305@gmail.com", FullName="Hoang Nguyen 2", Password="Hoang2005.", Role="Learner" },
     new() { Email="banneduser@gmail.com", FullName="Banned User", Password="Test123!@#", Role="Learner", IsBanned = true },
-    new() { Email="khoivippro.com", FullName="giakhoiquang", Password="Khoi2005.", Role="Learner" }
+    new() { Email="khoivippro@gmail.com", FullName="giakhoiquang", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro2@gmail.com", FullName="giakhoiquang2", Password="Khoi2005.", Role="Learner" }
 };
 
 
