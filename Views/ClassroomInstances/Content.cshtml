@@ -6,7 +6,12 @@
 }
 
 <div class="container mt-4">
-
+    <a asp-action="Details"
+       asp-controller="ClassroomInstances"
+       asp-route-id="@Model.Instance.Id"
+       class="btn-back-simple">
+        <i class="bi bi-arrow-left"></i> Trở về
+    </a>
     <!-- 🔹 Header -->
     <div class="bg-light p-4 rounded shadow-sm mb-4">
         <h2 class="fw-bold">@Model.Template.Title</h2>

@@ -486,7 +486,6 @@ namespace JapaneseLearningPlatform.Controllers
             return View(vm);
         }
 
-
         [Authorize(Roles = UserRoles.Learner)]
         public async Task<IActionResult> CompletePayment(int id)
         {
@@ -499,14 +498,14 @@ namespace JapaneseLearningPlatform.Controllers
             if (instance == null) return NotFound();
 
             // Kiểm tra đã đăng ký chưa
-            bool isEnrolled = instance.Enrollments.Any(e => e.LearnerId == userId);
-            if (!isEnrolled)
+            var enrollment = instance.Enrollments.FirstOrDefault(e => e.LearnerId == userId);
+            if (enrollment == null)
             {
                 _context.ClassroomEnrollments.Add(new ClassroomEnrollment
                 {
                     LearnerId = userId,
                     InstanceId = id,
-                    IsPaid = true,
+                    IsPaid = instance.Price > 0, // Trả phí = true, miễn phí = false
                     EnrolledAt = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
@@ -688,6 +687,7 @@ namespace JapaneseLearningPlatform.Controllers
             var attribute = (DisplayAttribute)field.GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault();
             return attribute?.Name ?? value.ToString();
         }
+
         [Authorize(Roles = UserRoles.Learner)]
         [HttpPost]
         public async Task<IActionResult> SubmitReview(int instanceId, int rating, string comment)
@@ -740,6 +740,35 @@ namespace JapaneseLearningPlatform.Controllers
             TempData["FeedbackMessage"] = "Đã gửi feedback thành công!";
 
             return RedirectToAction("Content", new { id = instanceId });
+        }
+
+
+        [Authorize(Roles = UserRoles.Learner)]
+        public async Task<IActionResult> JoinFreeClass(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Enrollments)
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (instance == null) return NotFound();
+
+            // Nếu đã tham gia rồi thì vào thẳng Content
+            if (instance.Enrollments.Any(e => e.LearnerId == userId))
+                return RedirectToAction("Content", new { id });
+
+            // Thêm learner vào lớp (dù miễn phí => IsPaid = true)
+            _context.ClassroomEnrollments.Add(new ClassroomEnrollment
+            {
+                LearnerId = userId,
+                InstanceId = id,
+                IsPaid = true,
+                EnrolledAt = DateTime.UtcNow
+            });
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Content", new { id });
         }
     }
 }

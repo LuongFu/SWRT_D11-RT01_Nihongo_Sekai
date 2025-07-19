@@ -1008,3 +1008,32 @@ form .form-control {
     .profile-container .btn {
         text-align: center;
     }
+
+.btn-change-pass {
+    background-color: #f7f7f7;
+    border: 1px solid #f0f0f0;
+    color: #b30000;
+}
+
+    .btn-change-pass:hover {
+        background-color: #e6e6e6;
+        color: #b30000;
+    }
+
+.btn-back-simple {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #dc3545; /* Màu đỏ */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-back-simple:hover {
+        background-color: #bb2d3b; /* Màu đỏ đậm khi hover */
+        color: white;
+    }
