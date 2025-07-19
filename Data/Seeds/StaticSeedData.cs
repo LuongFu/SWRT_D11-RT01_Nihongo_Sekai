@@ -2,6 +2,8 @@
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Mvc;
+using JapaneseLearningPlatform.Data.ViewModels;
+using System.Collections.Generic;
 
 namespace JapaneseLearningPlatform.Data.Seeds
 {
@@ -1951,5 +1953,176 @@ namespace JapaneseLearningPlatform.Data.Seeds
                 Status=ClassroomStatus.InProgress
             }
         };
-        }
+
+        // 7. Reports
+        public static List<ReportViewModel> Reports { get; } = new()
+        {
+            new ReportViewModel {
+                FullName    = "Nguyễn Văn A",
+                Email       = "a.nguyen@example.com",
+                Subject     = ReportSubject.Technical,
+                OrderNumber = null,
+                Message     = "Hệ thống báo lỗi 500 khi đăng nhập."
+            },
+            new ReportViewModel {
+                FullName    = "Trần Thị B",
+                Email       = "b.tran@example.com",
+                Subject     = ReportSubject.Technical,
+                OrderNumber = null,
+                Message     = "Không thể reset mật khẩu."
+            },
+
+            new ReportViewModel {
+                FullName    = "Lê Văn C",
+                Email       = "c.le@example.com",
+                Subject     = ReportSubject.Billing,
+                OrderNumber = "ORD0001",
+                Message     = "Hóa đơn không khớp số tiền."
+            },
+            new ReportViewModel {
+                FullName    = "Phạm Thị D",
+                Email       = "d.pham@example.com",
+                Subject     = ReportSubject.Billing,
+                OrderNumber = "ORD0002",
+                Message     = "Thanh toán PayPal thất bại."
+            },
+
+            new ReportViewModel {
+                FullName    = "Hoàng Văn E",
+                Email       = "e.hoang@example.com",
+                Subject     = ReportSubject.Courses,
+                OrderNumber = null,
+                Message     = "Muốn hỏi về lịch học tiếng Nhật cơ bản."
+            },
+            new ReportViewModel {
+                FullName    = "Võ Thị F",
+                Email       = "f.vo@example.com",
+                Subject     = ReportSubject.Courses,
+                OrderNumber = null,
+                Message     = "Khóa N5 còn chỗ không?"
+            },
+
+            new ReportViewModel {
+                FullName    = "Đặng Văn G",
+                Email       = "g.dang@example.com",
+                Subject     = ReportSubject.Partnerships,
+                OrderNumber = null,
+                Message     = "Muốn hợp tác tổ chức workshop."
+            },
+            new ReportViewModel {
+                FullName    = "Ngô Thị H",
+                Email       = "h.ngo@example.com",
+                Subject     = ReportSubject.Partnerships,
+                OrderNumber = null,
+                Message     = "Yêu cầu báo giá khoá học doanh nghiệp."
+            },
+
+            new ReportViewModel {
+                FullName    = "Trương Văn I",
+                Email       = "i.truong@example.com",
+                Subject     = ReportSubject.Feedback,
+                OrderNumber = null,
+                Message     = "Giao diện trang báo cáo chưa thân thiện."
+            },
+            new ReportViewModel {
+                FullName    = "Bùi Thị K",
+                Email       = "k.bui@example.com",
+                Subject     = ReportSubject.Feedback,
+                OrderNumber = null,
+                Message     = "Có thể thêm tính năng chat bot hỗ trợ?"
+            },
+
+            new ReportViewModel {
+                FullName    = "Mai Văn L",
+                Email       = "l.mai@example.com",
+                Subject     = ReportSubject.Other,
+                OrderNumber = null,
+                Message     = "Một số ý tưởng cải tiến khác…"
+            },
+            new ReportViewModel {
+                FullName    = "Trần Thị M",
+                Email       = "m.tran@example.com",
+                Subject     = ReportSubject.Other,
+                OrderNumber = null,
+                Message     = "Cần hỗ trợ thêm về tài khoản giáo viên."
+            },
+            new ReportViewModel {
+                FullName    = "Phan Minh Khôi",
+                Email       = "minhkhoi@example.com",
+                Subject     = ReportSubject.Technical,
+                OrderNumber = null,
+                Message     = "Mình gặp lỗi khi upload file profile."
+            },
+            new ReportViewModel {
+                FullName    = "Trương Hữu Nam",
+                Email       = "hunami@example.com",
+                Subject     = ReportSubject.Technical,
+                OrderNumber = null,
+                Message     = "Không load được video bài giảng."
+            },
+            new ReportViewModel {
+                FullName    = "Nguyễn Thị Lan",
+                Email       = "lannguyen@example.com",
+                Subject     = ReportSubject.Billing,
+                OrderNumber = "BILL20250720",
+                Message     = "Hóa đơn tự động gửi trễ."
+            },
+            new ReportViewModel {
+                FullName    = "Lê Quang Đức",
+                Email       = "quangduc@example.com",
+                Subject     = ReportSubject.Billing,
+                OrderNumber = "INV-4521",
+                Message     = "Sai số tiền sau khi apply coupon."
+            },
+            new ReportViewModel {
+                FullName    = "Võ Minh Anh",
+                Email       = "minhanh@example.com",
+                Subject     = ReportSubject.Courses,
+                OrderNumber = null,
+                Message     = "Muốn đăng ký thêm khóa trung cấp."
+            },
+            new ReportViewModel {
+                FullName    = "Phạm Quốc Bảo",
+                Email       = "quocbao@example.com",
+                Subject     = ReportSubject.Courses,
+                OrderNumber = null,
+                Message     = "Khóa N4 có giảm giá không?"
+            },
+            new ReportViewModel {
+                FullName    = "Đỗ Thị Hạnh",
+                Email       = "hanhdo@example.com",
+                Subject     = ReportSubject.Partnerships,
+                OrderNumber = null,
+                Message     = "Doanh nghiệp chúng tôi muốn hợp tác."
+            },
+            new ReportViewModel {
+                FullName    = "Ngô Văn Tùng",
+                Email       = "tungngo@example.com",
+                Subject     = ReportSubject.Partnerships,
+                OrderNumber = null,
+                Message     = "Yêu cầu tư vấn gói đào tạo nội bộ."
+            },
+            new ReportViewModel {
+                FullName    = "Bùi Thị Kim",
+                Email       = "kim.bui@example.com",
+                Subject     = ReportSubject.Feedback,
+                OrderNumber = null,
+                Message     = "Giao diện mobile chưa tối ưu."
+            },
+            new ReportViewModel {
+                FullName    = "Lý Văn Sơn",
+                Email       = "sonly@example.com",
+                Subject     = ReportSubject.Feedback,
+                OrderNumber = null,
+                Message     = "Cần tùy chọn dark mode cho UI."
+            },
+            new ReportViewModel {
+                FullName    = "Trần Thị Mai",
+                Email       = "maitran@example.com",
+                Subject     = ReportSubject.Other,
+                OrderNumber = null,
+                Message     = "Thông tin khác…"
+            },
+        };
+    }
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace JapaneseLearningPlatform.Data.Seeds
 {
@@ -22,7 +23,8 @@ namespace JapaneseLearningPlatform.Data.Seeds
             new ClassroomInstanceSeeder(),
             new ClassroomTestEnrollmentSeeder(),
             new ClassroomAssignmentSeeder(),
-            new DailyWordSeeder()
+            new DailyWordSeeder(),
+            new ReportSeeder(),
             };
 
             foreach (var seeder in seeders)
