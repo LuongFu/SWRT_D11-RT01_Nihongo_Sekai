@@ -30,34 +30,69 @@ namespace JapaneseLearningPlatform.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Contact()
+        {
+            // Trả về View với VM rỗng, để form bind đúng ReportViewModel
+            return View("~/Views/SidePages/Contact.cshtml", new ReportViewModel());
+        }
+
+
         // POST: Reports/Submit
         [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<IActionResult> Submit(ReportViewModel vm)
         {
-            if (!ModelState.IsValid)
+            // 1. Lấy token reCAPTCHA do client gửi lên
+            var gRecaptchaResponse = Request.Form["g-recaptcha-response"].FirstOrDefault() ?? "";
+
+            // 2. Hard‑code secret key của bạn
+            const string secretKey = "6LeiyogrAAAAAH5aQagrRsWJdUjKJ-DEoK7AFv2T";
+
+            // 3. Gửi request verify lên Google
+            using var client = new HttpClient();
+            var payload = new FormUrlEncodedContent(new[]
             {
-                // Log chi tiết các lỗi validation
-                foreach (var kv in ModelState)
-                {
-                    foreach (var err in kv.Value.Errors)
-                    {
-                        _logger.LogWarning("Field \"{Field}\" invalid: {Error}", kv.Key, err.ErrorMessage);
-                    }
-                }
+        new KeyValuePair<string,string>("secret",   secretKey),
+        new KeyValuePair<string,string>("response", gRecaptchaResponse)
+    });
+            var response = await client.PostAsync(
+                "https://www.google.com/recaptcha/api/siteverify",
+                payload
+            );
+            var recaptcha = await response.Content
+                .ReadFromJsonAsync<RecaptchaResponse>();
 
-                // Lưu thông báo thất bại
-                TempData["ToastMessage"] = "Gửi tin nhắn thất bại. Vui lòng kiểm tra lại.";
-                TempData["ToastType"] = "error";
-
-                // Trả về view ban đầu (hoặc redirect) để hiển thị validation messages
-                return Redirect("/Contact");
+            // 4. Nếu verify thất bại, thêm lỗi chung
+            if (recaptcha == null || !recaptcha.success)
+            {
+                ModelState.AddModelError(
+                    key: string.Empty,
+                    errorMessage: "Vui lòng xác minh rằng bạn không phải robot."
+                );
             }
 
-            // Xác định vai trò
+            // 5. Nếu có bất kỳ lỗi nào (bao gồm reCAPTCHA), trả về lại view để show lỗi
+            if (!ModelState.IsValid)
+            {
+                // Log warnings
+                foreach (var kv in ModelState)
+                    foreach (var err in kv.Value.Errors)
+                        _logger.LogWarning(
+                            "Field \"{Field}\" invalid: {Error}",
+                            kv.Key, err.ErrorMessage
+                        );
+
+                TempData["ToastMessage"] = "Gửi tin nhắn thất bại. Vui lòng kiểm tra lại.";
+                TempData["ToastType"] = "error";
+                return RedirectToAction("Contact");
+            }
+
+            // 6. Không có lỗi — lưu vào database
             var role = User?.Identity?.IsAuthenticated == true
                 ? (User.IsInRole("Learner") ? "Learner"
-                   : User.IsInRole("Partner") ? "Partner"
-                   : "Guest")
+                 : User.IsInRole("Partner") ? "Partner"
+                 : "Guest")
                 : "Guest";
 
             var report = new Report
@@ -65,22 +100,29 @@ namespace JapaneseLearningPlatform.Controllers
                 FullName = vm.FullName,
                 Email = vm.Email,
                 Subject = vm.Subject,
-                OrderNumber = vm.OrderNumber,    // có thể null
+                OrderNumber = vm.OrderNumber,
                 Message = vm.Message,
                 Role = role,
                 SubmittedAt = DateTime.UtcNow,
                 IsResolved = false
             };
-
             _context.Reports.Add(report);
             await _context.SaveChangesAsync();
 
-            // Lưu thông báo thành công
             TempData["ToastMessage"] = "Gửi tin nhắn thành công! Chúng tôi sẽ phản hồi sớm.";
             TempData["ToastType"] = "success";
-
-            return Redirect("/Contact");
+            return RedirectToAction("Contact");
         }
+
+        // POCO để nhận JSON từ Google
+        public class RecaptchaResponse
+        {
+            public bool success { get; set; }
+            public string challenge_ts { get; set; }  // timestamp (có thể omit nếu không dùng)
+            public string hostname { get; set; }
+            public string[]? error_codes { get; set; }
+        }
+
 
         // GET: Reports (Learner/Partner)
         [Authorize(Roles = "Learner,Partner")]
@@ -210,3 +252,4 @@ namespace JapaneseLearningPlatform.Controllers
 
     }
 }
+

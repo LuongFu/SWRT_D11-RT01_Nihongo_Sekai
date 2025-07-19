@@ -34,9 +34,9 @@
         .contact-form-card {
             max-width: 700px;
             margin: 0 auto;
-            background: #ffffff;
+            /* background: #ffffff; */
             border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            /* box-shadow: 0 8px 24px rgba(0,0,0,0.1); */
             padding: 2rem;
             position: relative;
             overflow: hidden;
@@ -216,8 +216,8 @@
     <!-- Form liên hệ -->
     <section class="contact-form-section">
         <div class="container">
-            <div class="form-content">
-                <div class="form-header">
+            <div class="contact-form-card">
+                <div class="text-center mb-4">
                     <h2 class="section-title">Gửi Tin Nhắn Cho Chúng Tôi</h2>
                     <p class="section-subtitle">Điền vào biểu mẫu bên dưới và chúng tôi sẽ liên hệ lại với bạn sớm nhất.</p>
                 </div>
@@ -229,19 +229,22 @@
                       class="contact-form">
                     @Html.AntiForgeryToken()
 
-                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
                     <!-- Họ & Tên -->
                     <div class="form-group">
                         <label asp-for="FullName">Họ &amp; Tên *</label>
-                        <input asp-for="FullName" class="form-input" placeholder="Nhập họ và tên đầy đủ" />
+                        <input asp-for="FullName"
+                               class="form-input"
+                               placeholder="Nhập họ và tên đầy đủ" 
+                               autofocus />
                         <span asp-validation-for="FullName" class="text-danger"></span>
                     </div>
 
                     <!-- Email -->
                     <div class="form-group">
                         <label asp-for="Email">Địa Chỉ Email *</label>
-                        <input asp-for="Email" class="form-input" placeholder="name@example.com" />
+                        <input asp-for="Email"
+                               class="form-input"
+                               placeholder="name@example.com" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
@@ -249,9 +252,7 @@
                     <div class="form-group">
                         <label asp-for="Subject">Chủ Đề *</label>
                         <select asp-for="Subject"
-                                id="subject"
-                                class="form-select"
-                                required>
+                                class="form-select" required>
                             <option value="">Vui lòng chọn chủ đề</option>
                             @foreach (ReportSubject subj in Enum.GetValues<ReportSubject>())
                             {
@@ -271,7 +272,9 @@
                     <!-- Mã Đơn Hàng (chỉ hiện khi chọn Billing) -->
                     <div class="form-group" id="orderNumberGroup" style="display:none">
                         <label asp-for="OrderNumber">Mã Đơn Hàng *</label>
-                        <input asp-for="OrderNumber" class="form-input" placeholder="Nhập mã đơn hàng" />
+                        <input asp-for="OrderNumber"
+                               class="form-input"
+                               placeholder="Nhập mã đơn hàng" />
                         <span asp-validation-for="OrderNumber" class="text-danger"></span>
                     </div>
 
@@ -285,7 +288,13 @@
                         <span asp-validation-for="Message" class="text-danger"></span>
                     </div>
 
-                    <!-- Gửi -->
+                    <!-- Mã CapCha -->
+                    <div class="g-recaptcha"
+                         data-sitekey="6LeiyogrAAAAAHjo-FHuRqMRrGnBo0s9wLdC4jBA">
+                    </div>
+
+
+                    <!-- Nút gửi -->
                     <div class="text-center mt-4">
                         <button type="submit" class="btn btn-primary btn-large">
                             Gửi Tin Nhắn
@@ -372,79 +381,88 @@
 </main>
 
 @section Scripts {
-    @* Đẩy TempData vào JS nếu có *@
-    @if (TempData["ToastMessage"] != null)
+    <!-- SweetAlert2 & reCAPTCHA -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <partial name="_ValidationScriptsPartial" />
+
+    @* 1. Chuẩn bị JSON cho toast nếu có TempData *@
+    @{
+        string toastJson = null;
+        if (TempData["ToastMessage"] != null)
+        {
+            var toastObj = new
+            {
+                message = TempData["ToastMessage"]?.ToString(),
+                type = TempData["ToastType"]?.ToString()
+            };
+            toastJson = System.Text.Json.JsonSerializer.Serialize(
+                toastObj,
+                new System.Text.Json.JsonSerializerOptions
+                {
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                }
+            );
+        }
+    }
+
+    @* 2. Nếu có toastJson, in ra <script> gọi Swal *@
+    @if (toastJson != null)
     {
         <script>
-            window.__toastData = {
-                message: '@TempData["ToastMessage"]',
-                type:    '@TempData["ToastType"]'
-            };
+            const toastData = @Html.Raw(toastJson);
+            Swal.fire({
+              title: toastData.type === 'success' ? 'Thành công' : 'Lỗi',
+              html:  toastData.message,
+              icon:  toastData.type,
+              confirmButtonText: 'OK'
+            });
         </script>
     }
 
-    <script src="~/js/script.js"></script>
+    @* 3. Phần JS chính của form *@
     <script>
-        // Hiển thị toast
-        function showToast(message, type) {
-            const container = document.getElementById("toastContainer");
-            const toast = document.createElement("div");
-            toast.className = `toast toast-${type}`;
-            toast.innerHTML = `
-                <div class="toast-body">${message}</div>
-                <div class="toast-progress"></div>
-            `;
-            container.appendChild(toast);
-            // Start progress shrink
-            requestAnimationFrame(() => {
-                toast.querySelector(".toast-progress").style.width = "0%";
-            });
-            // Tự remove sau 5s
-            setTimeout(() => toast.remove(), 5000);
-        }
-
         document.addEventListener("DOMContentLoaded", () => {
-            const subjectEl   = document.getElementById("subject");
-            const orderGroup  = document.getElementById("orderNumberGroup");
-            const orderInput  = orderGroup.querySelector("input");
-            const form        = document.getElementById("contactForm");
+          // Autofocus vào ô Họ & Tên
+          document.getElementById("FullName")?.focus();
 
-            // Ẩn/hiện OrderNumber
-            subjectEl.dispatchEvent(new Event("change"));
-            subjectEl.addEventListener("change", () => {
-                const isBilling = subjectEl.value === "Billing";
-                orderGroup.style.display = isBilling ? "block" : "none";
-                orderInput.required      = isBilling;
-                if (!isBilling) orderInput.value = "";
-            });
+          // Toggle OrderNumber
+          const subjectEl  = document.getElementById("Subject");
+          const orderGroup = document.getElementById("orderNumberGroup");
+          const orderInput = orderGroup.querySelector("input");
+          function toggleOrder() {
+            const isBilling = subjectEl.value === "Billing";
+            orderGroup.style.display = isBilling ? "block" : "none";
+            orderInput.required      = isBilling;
+            if (!isBilling) orderInput.value = "";
+          }
+          subjectEl.addEventListener("change", toggleOrder);
+          toggleOrder();
 
-            // Validation realtime
-            function validateField(el) {
-                if (!el.checkValidity()) {
-                    el.classList.add("is-invalid");
-                    return false;
-                }
-                el.classList.remove("is-invalid");
-                return true;
+          // Realtime validation on blur
+          const form = document.getElementById("contactForm");
+          form.querySelectorAll("input, select, textarea")
+              .forEach(el => el.addEventListener("blur", () => {
+                if (!el.checkValidity()) el.classList.add("is-invalid");
+                else el.classList.remove("is-invalid");
+              }));
+
+          // Final check trước submit
+          form.addEventListener("submit", e => {
+            if (!form.checkValidity()) {
+              e.preventDefault();
+              e.stopPropagation();
+              Swal.fire({
+                title: 'Nihongo Sekai Platform',
+                html:  'Vui lòng điền đầy đủ và hợp lệ các trường được đánh dấu.',
+                icon:  'warning',
+                confirmButtonText: 'OK'
+              });
             }
-            form.querySelectorAll("input, select, textarea")
-                .forEach(el => el.addEventListener("blur", () => validateField(el)));
-
-            // Submit chỉ khi valid
-            form.addEventListener("submit", e => {
-                const allValid = Array.from(form.querySelectorAll("input, select, textarea"))
-                    .filter(el => el.willValidate)
-                    .map(validateField).every(v=>v);
-                if (!allValid) {
-                    e.preventDefault();
-                    alert("Vui lòng điền đầy đủ và hợp lệ các trường được đánh dấu.");
-                }
-            });
-
-            // Nếu có toastData từ server, show ngay
-            if (window.__toastData) {
-                showToast(window.__toastData.message, window.__toastData.type);
-            }
+          });
         });
     </script>
 }
+
+
+
