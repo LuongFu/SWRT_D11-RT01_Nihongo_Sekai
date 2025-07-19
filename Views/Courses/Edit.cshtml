@@ -36,12 +36,12 @@
                         </div>
                         <div class="col-md-4">
                             <label asp-for="StartDate"></label>
-                            <input asp-for="StartDate" type="date" class="form-control" />
+                            <input asp-for="StartDate" type="date" class="form-control" min="@DateTime.Now.ToString("dd-MM-yyyy")" />
                             <span asp-validation-for="StartDate" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
                             <label asp-for="EndDate"></label>
-                            <input asp-for="EndDate" type="date" class="form-control" />
+                            <input asp-for="EndDate" type="date" class="form-control" min="@DateTime.Now.ToString("dd-MM-yyyy")" />
                             <span asp-validation-for="EndDate" class="text-danger"></span>
                         </div>
                     </div>

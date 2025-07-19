@@ -21,7 +21,7 @@ namespace JapaneseLearningPlatform.Models
 
         [Display(Name = "URL Ảnh bìa khóa học")]
         [Required(ErrorMessage = "Bắt buộc điền")]
-        public IFormFile? ImageFile { get; set; }  // THAY CHO ImageURL string
+        public IFormFile? ImageFile { get; set; }
 
         public string? ImageURL { get; set; } // Đường dẫn được lưu sau khi upload
         [Display(Name = "Phần trăm giảm giá")]
@@ -33,6 +33,32 @@ namespace JapaneseLearningPlatform.Models
             if (DiscountPercent < 0 || DiscountPercent > 99)
             {
                 yield return new ValidationResult("Phần trăm giảm giá phải nằm trong khoảng từ 0% đến 99%.", new[] { "DiscountPercent" });
+            }
+            if (Price < 1000 || Price > 4999000)
+            {
+                yield return new ValidationResult(
+                    "Giá phải từ 1,000 VND đến 4,999,000 VND.",
+                    new[] { "Price" });
+            }
+
+            // Kiểm tra Price có kết thúc bằng số 0 (hàng đơn vị bằng 0)
+            if (Price % 10 != 0)
+            {
+                yield return new ValidationResult(
+                    "Giá phải có hàng đơn vị bằng 0 (ví dụ: 1,230 hoặc 4,500).",
+                    new[] { "Price" });
+            }
+            if (StartDate >= EndDate)
+            {
+                yield return new ValidationResult(
+                    "Thời gian bắt đầu giảm giá phải nhỏ hơn thời gian kết thúc giảm giá.",
+                    new[] { "StartDate", "EndDate" });
+            }
+            if (StartDate.Date < DateTime.Now.Date)
+            {
+                yield return new ValidationResult(
+                    "Thời gian bắt đầu không được nhỏ hơn ngày hiện tại.",
+                    new[] { "StartDate" });
             }
         }
 
