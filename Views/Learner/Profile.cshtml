@@ -2,133 +2,88 @@
 
 @{
     ViewData["Title"] = "Hồ sơ của tôi";
-    ViewData["HideFooter"] = false;
     Layout = "_Layout";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
-}
+<div class="container mt-5 profile-container">
+    <div class="row">
+        <!-- Bên trái -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm p-3 text-center">
+                <!-- Ảnh đại diện -->
+                <div class="d-flex justify-content-center">
+                    <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? "/uploads/profile/default-img.jpg" : Model.ProfilePicturePath)"
+                         class="rounded-circle img-thumbnail mb-3"
+                         style="width: 150px; height: 150px; object-fit: cover;"
+                         alt="Ảnh đại diện" />
+                </div>
 
-<div class="my-profile-container">
-    <div class="row gx-5 justify-content-center">
-        <!-- Cột trái -->
-        <div class="col-md-4 text-center">
-            <!-- Welcome -->
-            <div class="welcome-box text-center mb-4">
-                <h2 class="fw-bold text-danger">Chào mừng, @Model.FullName!</h2>
-            </div>
+                <!-- Tên người dùng -->
+                <h5 class="fw-bold" style="color:#b30000;">@Model.FullName</h5>
 
-            <!-- Avatar -->
-            <div class="avatar-box">
-                <img src="@(string.IsNullOrEmpty(Model.ProfilePicturePath) ? "/uploads/profile/default-img.jpg" : Model.ProfilePicturePath)"
-                     alt="Avatar"
-                     class="rounded-circle img-thumbnail profile-image mb-3" />
+                <!-- Vai trò -->
+                <span class="badge bg-light text-dark border">@Model.Role</span>
 
-                <form asp-action="UploadProfilePicture"
-                      asp-controller="Learner"
-                      method="post"
-                      enctype="multipart/form-data">
-                    <div class="form-group">
-                        <input type="file" name="profilePicture"
-                               class="form-control mb-2"
-                               id="profilePictureInput"
-                               accept="image/*"
-                               onchange="previewProfileImage()" />
-
-                        <!-- Preview -->
-                        <img id="profilePreview" src="#"
-                             alt="Xem trước"
-                             class="rounded-circle img-thumbnail mb-3 d-none"
-                             style="width: 150px; height: 150px; object-fit: cover;" />
-
-                        <!-- Báo lỗi -->
-                        @if (TempData["UploadError"] != null)
-                        {
-                            <small class="text-danger d-block mb-2">@TempData["UploadError"]</small>
-                        }
-
-                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">Tải ảnh mới</button>
-                    </div>
-                </form>
+                <!-- Nút hành động -->
+                <div class="d-grid gap-2 mt-3">
+                    <a class="btn btn-danger" asp-controller="Learner" asp-action="EditProfile">
+                        <i class="bi bi-pencil-square"></i> Chỉnh sửa hồ sơ
+                    </a>
+                    <a class="btn btn-outline-danger" asp-controller="Learner" asp-action="ChangePassword">
+                        <i class="bi bi-lock"></i> Đổi mật khẩu
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- Cột phải -->
-        <div class="col-md-6">
-            <div class="info-wrapper p-4 rounded shadow-sm">
-                <!-- Thông tin người dùng -->
-                <div class="user-info mb-4">
-                    <h4 class="fw-bold mb-3 text-center text-danger">Thông tin của bạn</h4>
-                    <p><strong>Họ và tên:</strong> @Model.FullName</p>
-                    <p><strong>Email:</strong> @Model.Email</p>
-                    <p><strong>Vai trò:</strong> @Model.Role</p>
+        <!-- Bên phải -->
+        <div class="col-md-8">
+            <!-- Thông tin người dùng -->
+            <div class="card shadow-sm p-4 mb-4">
+                <h4 class="fw-bold mb-3" style="color:#b30000;">Thông tin người dùng</h4>
+                <p><strong>Họ và tên:</strong> @Model.FullName</p>
+                <p><strong>Email:</strong> @Model.Email</p>
+                <p><strong>Số điện thoại:</strong> @(Model.PhoneNumber ?? "-")</p>
+                <p><strong>Địa chỉ:</strong> @(Model.Address ?? "-")</p>
+                <p><strong>Ngày sinh:</strong> @(Model.BirthDate?.ToString("dd/MM/yyyy") ?? "-")</p>
+                <p><strong>Giới tính:</strong> @(Model.Gender ?? "-")</p>
+                <p><strong>Mô tả:</strong> @(Model.Description ?? "-")</p>
+
+                <!-- Liên kết mạng xã hội -->
+                <div class="row mb-2 align-items-center">
+                    <div class="col-2 fw-bold">Facebook:</div>
+                    <div class="col">
+                        @if (!string.IsNullOrWhiteSpace(Model.Facebook))
+                        {
+                            <a href="@Model.Facebook" target="_blank" class="btn btn-primary btn-sm social-btn"
+                               style="background-color:#1877F2; border:none; width:150px;">
+                                <i class="bi bi-facebook"></i> Facebook
+                            </a>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </div>
                 </div>
 
-                <!-- Hành động nhanh -->
-                <div class="quick-actions">
-                    <h5 class="text-danger mb-3 fw-bold">Thao tác nhanh</h5>
-                    <div class="action-buttons">
-                        <a class="action-link" asp-controller="Learner" asp-action="MyPurchasedCourses">
-                            <i class="bi bi-book"></i> Khóa học của tôi
-                        </a>
-                        <a class="action-link" asp-controller="Learner" asp-action="MyEnrolledClassrooms">
-                            <i class="bi bi-easel"></i> Lớp học của tôi
-                        </a>
-                        <a class="action-link" asp-controller="Learner" asp-action="EditProfile">
-                            <i class="bi bi-pencil-square"></i> Chỉnh sửa hồ sơ
-                        </a>
-                        <a class="action-link" asp-controller="Learner" asp-action="ChangePassword">
-                            <i class="bi bi-lock"></i> Đổi mật khẩu
-                        </a>
+                <div class="row mb-2 align-items-center">
+                    <div class="col-2 fw-bold">YouTube:</div>
+                    <div class="col">
+                        @if (!string.IsNullOrWhiteSpace(Model.YouTube))
+                        {
+                            <a href="@Model.YouTube" target="_blank" class="btn btn-danger btn-sm social-btn"
+                               style="background-color:#FF0000; border:none; width:150px;">
+                                <i class="bi bi-youtube"></i> YouTube
+                            </a>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        function previewProfileImage() {
-            const input = document.getElementById('profilePictureInput');
-            const preview = document.getElementById('profilePreview');
-
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.classList.remove('d-none');
-                }
-
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                preview.src = "#";
-                preview.classList.add('d-none');
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const totalPetals = 20;
-            const half = totalPetals / 2;
-
-            for (let i = 0; i < totalPetals; i++) {
-                const petal = document.createElement("div");
-                petal.classList.add("sakura-petal");
-                if (i < half) {
-                    petal.style.left = (Math.random() * 50) + "vw";
-                } else {
-                    petal.style.left = (50 + Math.random() * 50) + "vw";
-                }
-                const rotate = Math.random() * 360;
-                petal.style.transform = `rotate(${rotate}deg)`;
-                petal.style.animationDelay = (Math.random() * 5) + "s";
-                petal.style.animationDuration = (5 + Math.random() * 5) + "s";
-
-                document.body.appendChild(petal);
-            }
-        });
-    </script>
-}

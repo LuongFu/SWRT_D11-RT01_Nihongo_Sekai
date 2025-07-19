@@ -82,6 +82,7 @@
                                     <th>Tên</th>
                                     <th>Email</th>
                                     <th>Thời điểm tham gia</th>
+                                    <th style="width: 15%">Hành động</th> <!-- Thêm cột Action -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -94,6 +95,13 @@
                                             <td>@enrollment.Learner?.FullName</td>
                                             <td>@enrollment.Learner?.Email</td>
                                             <td>@enrollment.EnrolledAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>
+                                                <a asp-controller="Account"
+                                                   asp-action="ViewProfile"
+                                                   asp-route-learnerId="@enrollment.Learner?.Id"
+                                                   asp-route-classroomId="@Model.Instance.Id"
+                                                   class="btn btn-info btn-sm">View Profile</a>
+                                            </td>
                                         </tr>
                                         index++;
                                     }
@@ -106,24 +114,56 @@
             </div>
         }
 
-
         <!-- 🔹 Resources -->
         <div class="tab-pane fade" id="resources" role="tabpanel">
             <div class="p-3">
-                <h5 class="fw-bold">Tài nguyên học tập</h5>
-                <p class="text-muted">Chưa có tài nguyên học tập nào.</p>
 
-                <!-- TODO: Uncomment and use later when ResourceUrl is added -->
-                @*
-                @if (!string.IsNullOrEmpty(Model.Template.ResourceUrl))
+                <!-- Upload Form (Partner only) -->
+                @if (User.IsInRole("Partner"))
                 {
-                    <p><a href="@Model.Template.ResourceUrl" target="_blank">Download Resource</a></p>
+                    <form asp-action="UploadResource" asp-controller="ClassroomInstances"
+                          asp-route-classroomId="@Model.Instance.Id" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input type="file" name="file" class="form-control" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload File</button>
+                    </form>
+                }
+
+                <h5 class="fw-bold">Tài nguyên học tập</h5>
+
+                @if (Model.Resources == null || !Model.Resources.Any())
+                {
+                    <p class="text-muted">Chưa có tài liệu nào được thêm.</p>
                 }
                 else
                 {
-                    <p class="text-muted">No materials provided yet.</p>
+                    <ul class="list-group mt-2">
+                        @foreach (var resource in Model.Resources)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @resource.FileName
+
+                                @if (User.IsInRole("Partner"))
+                                {
+                                    <form asp-action="DeleteResource" asp-controller="ClassroomInstances"
+                                          asp-route-id="@resource.Id" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <a asp-action="DownloadResource" asp-controller="ClassroomInstances"
+                                       asp-route-id="@resource.Id" class="btn btn-sm btn-success">
+                                        Download
+                                    </a>
+                                }
+                            </li>
+                        }
+                    </ul>
                 }
-                *@
             </div>
         </div>
 
@@ -197,6 +237,16 @@
                             <button type="submit" class="btn btn-outline-primary btn-sm">Cập nhật hạn nộp</button>
                         </form>
 
+                        <!-- Nút xóa bài tập, chỉ để DEBUG -->
+                        <form id="deleteForm" asp-action="Delete" asp-controller="Assignments"
+                              asp-route-assignmentId="@Model.FinalAssignment.Id"
+                              method="post">
+                            <button type="button" class="btn btn-outline-danger btn-sm" id="btnDelete">
+                                <i class="bi bi-trash"></i> Xóa
+                            </button>
+                        </form>
+
+
                         @if (TempData["DeadlineMessage"] != null)
                         {
                             <div class="alert alert-info mt-2">@TempData["DeadlineMessage"]</div>
@@ -253,6 +303,9 @@
                 else
                 {
                     <p class="text-muted">Lớp học chưa có bài đánh giá cuối khóa nào.</p>
+                    <a asp-action="Create" asp-controller="Assignments" asp-route-instanceId="@Model.Instance.Id" class="btn btn-primary mb-3">
+                        <i class="bi bi-plus-circle"></i> Tạo bài tập cuối khóa
+                    </a>
                 }
             </div>
         </div>
@@ -299,7 +352,93 @@
         }
 
     </div>
+    <!-- Custom Popup -->
+    <div id="deletePopup" class="custom-popup">
+        <div class="popup-content">
+            <span class="popup-close" id="deletePopupClose">&times;</span>
+            <h4>Xác nhận xóa</h4>
+            <p>Bạn có chắc chắn muốn xóa bài tập cuối khóa này?</p>
+            <button class="btn btn-danger" id="confirmDelete">Xóa</button>
+            <button class="btn btn-secondary" id="cancelDelete">Hủy</button>
+        </div>
+    </div>
+
+    <!-- Modal thông báo -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Thông báo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @TempData["Message"]
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<style>
+    main.flex-grow-1{
+        background-color: white;
+    }
+
+    .custom-popup {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        position: relative;
+    }
+
+    .popup-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    }
+
+    .nav-tabs .nav-link::after {
+        content: none !important;
+    }
+</style>
 
 <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -341,6 +480,48 @@
                     alert("⛔ Vui lòng gửi bài làm hoặc file bài làm trước khi nộp.");
                 }
             });
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deletePopup = document.getElementById("deletePopup");
+        const btnDelete = document.getElementById("btnDelete");
+        const confirmDelete = document.getElementById("confirmDelete");
+        const cancelDelete = document.getElementById("cancelDelete");
+        const closeIcon = document.getElementById("deletePopupClose");
+        const deleteForm = document.getElementById("deleteForm");
+
+        btnDelete?.addEventListener("click", function () {
+            deletePopup.style.display = "flex";
+        });
+
+        confirmDelete?.addEventListener("click", function () {
+            deleteForm.submit(); // Gửi form xóa
+        });
+
+        cancelDelete?.addEventListener("click", function () {
+            deletePopup.style.display = "none";
+        });
+
+        closeIcon?.addEventListener("click", function () {
+            deletePopup.style.display = "none";
+        });
+
+        window.addEventListener("click", function (event) {
+            if (event.target === deletePopup) {
+                deletePopup.style.display = "none";
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var message = '@(TempData["Message"] ?? "")';
+        if (message && message.trim() !== "") {
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
         }
     });
 </script>

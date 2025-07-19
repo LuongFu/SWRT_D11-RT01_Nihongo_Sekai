@@ -20,7 +20,7 @@
                         <div class="alert alert-light border mb-4">
                             <h5 class="mb-2 text-dark fw-bold">@Model.TemplateTitle</h5>
                             <p class="mb-1">@Model.TemplateDescription</p>
-                            <p><strong>Level:</strong> @Model.LanguageLevel</p>
+                            <p><strong>Trình độ:</strong> @Model.LanguageLevel.GetDisplayName()</p>
 
                             @if (!string.IsNullOrEmpty(Model.DocumentURL))
                             {

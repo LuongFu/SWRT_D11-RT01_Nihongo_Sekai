@@ -12,6 +12,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public List<AssignmentSubmission>? AllSubmissions { get; set; }
         public bool HasSubmitted { get; set; }
         public bool HasReviewed { get; set; }
+        public List<ClassroomResource>? Resources { get; set; }
     }
 
 }

@@ -45,9 +45,5 @@ namespace JapaneseLearningPlatform.Models
         [Display(Name = "Chọn phân loại")]
         [Required(ErrorMessage = "Bắt buộc chọn")]
         public CourseCategory CourseCategory { get; set; }
-
-        [Display(Name = "Chọn video")]
-        [Required(ErrorMessage = "Bắt buộc chọn")]
-        public List<int> VideoIds { get; set; }
     }
 }
