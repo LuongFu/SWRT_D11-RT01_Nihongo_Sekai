@@ -282,11 +282,19 @@
                     <div class="form-group">
                         <label asp-for="Message">Nội Dung Tin Nhắn *</label>
                         <textarea asp-for="Message"
+                                  id="Message"
                                   class="form-textarea"
                                   rows="5"
-                                  placeholder="Mô tả chi tiết vấn đề của bạn..."></textarea>
+                                  maxlength="2000"
+                                  aria-describedby="msg-count"
+                                  placeholder="Mô tả chi tiết vấn đề của bạn...">
+                        </textarea>
+                        <div id="msg-count" class="form-text-muted" aria-live="polite">
+                            0 / 2000 ký tự
+                        </div>
                         <span asp-validation-for="Message" class="text-danger"></span>
                     </div>
+
 
                     <!-- Mã CapCha -->
                     <div class="g-recaptcha"
@@ -423,8 +431,19 @@
     @* 3. Phần JS chính của form *@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+
           // Autofocus vào ô Họ & Tên
           document.getElementById("FullName")?.focus();
+
+        const txt = document.getElementById("Message");
+        const counter = document.getElementById("msg-count");
+        function updateCount() {
+          const len = txt.value.length;
+          const max = txt.getAttribute("maxlength");
+          counter.textContent = `${len} / ${max} ký tự`;
+        }
+        txt.addEventListener("input", updateCount);
+        updateCount();
 
           // Toggle OrderNumber
           const subjectEl  = document.getElementById("Subject");
