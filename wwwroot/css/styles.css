@@ -5261,7 +5261,7 @@ img {
 }
 
 .progress-bar {
-  height: 8px;
+  height: 20px;
   background: var(--color-gray-200);
   border-radius: 4px;
   overflow: hidden;

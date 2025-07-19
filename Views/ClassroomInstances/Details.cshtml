@@ -82,7 +82,14 @@
         {
             if (!Model.IsEnrolled)
             {
-                if (Model.Instance.Price > 0)
+                if (Model.Instance.Price == 0)
+                {
+                    <button class="btn btn-success"
+                            onclick="joinFreeClass(@Model.Instance.Id)">
+                        <i class="bi bi-person-plus"></i> Tham Gia Khóa Học
+                    </button>
+                }
+                else
                 {
                     <a class="btn btn-success"
                        asp-controller="ClassroomInstances"
@@ -91,25 +98,28 @@
                         <i class="bi bi-credit-card"></i> Tham gia & Thanh toán PayPal
                     </a>
                 }
-                else
-                {
-                    <a class="btn btn-danger"
-                       asp-controller="ClassroomInstances"
-                       asp-action="CompletePayment"
-                       asp-route-id="@Model.Instance.Id">
-                        <i class="bi bi-door-open"></i> Vào lớp học
-                    </a>
-                }
             }
             else
             {
                 <a asp-controller="ClassroomInstances"
                    asp-action="Content"
                    asp-route-id="@Model.Instance.Id"
-                   class="btn btn-danger">
-                    <i class="bi bi-journal-bookmark-fill"></i> Vào lớp học
+                   class="btn btn-primary">
+                    <i class="bi bi-journal-bookmark-fill"></i> Vào khóa học
                 </a>
             }
         }
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function joinFreeClass(classId) {
+            if (confirm("Xác nhận tham gia khóa học?")) {
+                window.location.href = '/ClassroomInstances/JoinFreeClass/' + classId;
+            } else {
+                window.location.href = '/ClassroomInstances/Index';
+            }
+        }
+    </script>
+}

@@ -11,72 +11,77 @@
 }
 
 <div class="row">
-    <div class="col-md-8 offset-2">
-        <h4 class="mb-3">Sửa khóa học</h4>
+    <div class="col-md-10 offset-1">
+        <h4 class="mb-3 text-center">Tạo khóa học mới</h4>
 
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <input type="hidden" asp-for="Id" />
-
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
+            <div class="row mb-3">
+                <!-- Cột bên trái (Thông tin khóa học) -->
+                <div class="col-md-7">
+                    <div class="form-group mb-3">
                         <label asp-for="Name"></label>
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="StartDate"></label>
-                        <input asp-for="StartDate" type="date" class="form-control" />
-                        <span asp-validation-for="StartDate" class="text-danger"></span>
+
+                    <!-- Gộp 3 field thành 1 row -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="DiscountPercent" class="control-label"></label>
+                            <input asp-for="DiscountPercent" class="form-control" />
+                            <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="StartDate"></label>
+                            <input asp-for="StartDate" type="date" class="form-control" min="@DateTime.Now.ToString("dd-MM-yyyy")" />
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="EndDate"></label>
+                            <input asp-for="EndDate" type="date" class="form-control" min="@DateTime.Now.ToString("dd-MM-yyyy")" />
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="DiscountPercent" class="control-label"></label>
-                        <input asp-for="DiscountPercent" class="form-control" />
-                        <span asp-validation-for="DiscountPercent" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="EndDate"></label>
-                        <input asp-for="EndDate" type="date" class="form-control" />
-                        <span asp-validation-for="EndDate" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
+
+                    <div class="form-group mb-3">
                         <label asp-for="Price"></label>
                         <input asp-for="Price" type="number" class="form-control" />
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="ImageURL"></label>
-                        <input asp-for="ImageURL" class="form-control" id="ImageURL" />
-                        <span asp-validation-for="ImageURL" class="text-danger"></span>
-                    </div>
-                </div>
 
-                <div class="col-md-6">
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label asp-for="CourseCategory"></label>
                         <select asp-for="CourseCategory" class="form-control" asp-items="Html.GetEnumSelectList<CourseCategory>()"></select>
                         <span asp-validation-for="CourseCategory" class="text-danger"></span>
                     </div>
-                </div>
 
-                <div class="col-md-12">
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label asp-for="Description"></label>
                         <textarea asp-for="Description" class="form-control"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-4 offset-4 text-center mb-3">
-                <img id="ImageUrlPreview" style="width: 100%;" src="@Model.ImageURL" />
+                <!-- Cột bên phải (Upload & Preview ảnh) -->
+                <div class="col-md-5 text-center">
+                    <div class="form-group mb-3">
+                        <label asp-for="ImageFile"></label>
+                        <input asp-for="ImageFile" type="file" class="form-control" id="ImageFile" accept="image/png, image/jpeg" />
+                        <span asp-validation-for="ImageFile" class="text-danger"></span>
+                    </div>
+                    <div class="border rounded p-2">
+                        <img id="ImagePreview" src="#" alt="Preview image"
+                             style="max-width: 100%; object-fit: cover; height: 310px; display:none; border:1px solid #DF2A35; padding:5px; border-radius:5px;" />
+                    </div>
+                </div>
             </div>
 
             <div class="form-group d-flex justify-content-between">
-                <a class="btn btn-outline-secondary" asp-action="Index">Về danh sách</a>
-                <input type="submit" value="Update" class="btn btn-outline-primary" />
+                <a class="btn btn-outline-secondary" asp-action="Index">Xem tất cả</a>
+                <input type="submit" value="Tạo" class="btn btn-outline-danger" />
             </div>
         </form>
     </div>
@@ -84,6 +89,18 @@
 
 @section Scripts {
     <script>
+        document.getElementById("ImageFile").addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById("ImagePreview");
+                    img.src = e.target.result;
+                    img.style.display = "block"; // Hiện ảnh
+                };
+                reader.readAsDataURL(file);
+            }
+        });
         $("#ImageURL").on("change", function () {
             var output = document.getElementById("ImageUrlPreview");
             output.src = $(this).val();

@@ -2,7 +2,7 @@
 @using JapaneseLearningPlatform.Data.Enums
 @using JapaneseLearningPlatform.Data
 @model CourseHierarchyVM
-
+@Html.AntiForgeryToken()
 @functions {
     public string ToEmbedUrl(string url)
     {
@@ -45,7 +45,7 @@
 /* ========== SIDEBAR SECTION ========== */
 .sidebar-section {
     width: 100%;
-    max-width: 300px;
+    max-width: 500px;
     position: sticky;
     top: 100px;
     padding: 16px;
@@ -165,7 +165,7 @@
             <p class="text-muted mb-2">@Model.Course.Description</p>
             <h3 class="fw-bold">Mô tả</h3>
             <p id="videoDescription" class="text-muted mb-2">@Model.Video?.VideoDescription</p>
-            <p class="mb-1"><strong>Loại:</strong> @Model.Course.CourseCategory</p>
+            <p class="mb-1"><strong>Loại:</strong> @Model.Course.CourseCategory.GetDisplayName()</p>
             <p class="mb-1"><strong>Hạn áp dụng giảm giá:</strong> @Model.Course.StartDate?.ToString("dd MMM yyyy")</p>
             <p class="mb-3"><strong>Hạn kết thúc giảm giá:</strong> @Model.Course.EndDate?.ToString("dd MMM yyyy")</p>
             @if (!Model.IsPurchased && Model.Course.DiscountPercent != null && Model.Course.StartDate <= DateTime.Now && Model.Course.EndDate >= DateTime.Now)
@@ -231,18 +231,18 @@
                                                asp-route-courseId="@Model.Course.Id"
                                                asp-route-sectionId="@sections.Id"
                                                class="btn btn-sm btn-nihongo-outline">
-                                                <i class="bi bi-plus-circle"></i>Nội dung
+                                                <i class="bi bi-plus-circle"></i>Sửa nội dung
                                             </a>
                                             <a asp-controller="CourseSections" asp-action="Edit"
                                                asp-route-id="@sections.Id"
                                                class="btn btn-sm btn-nihongo-outline">
-                                                <i class="bi bi-pencil"></i>Tên mục
+                                                <i class="bi bi-pencil"></i>Sửa tên mục
                                             </a>
                                             <a asp-controller="CourseSections" asp-action="Delete"
                                                asp-route-id="@sections.Id"
                                                class="btn btn-sm btn-nihongo-outline"
-                                               onclick="return confirm('Are you sure you want to delete this section?');">
-                                                <i class="bi bi-trash"></i> Mục
+                                               onclick="return confirm('Bạn có chắc xóa mục này chứ (Trong mục bao gồm nội dung sẽ mất)?');">
+                                                <i class="bi bi-trash"></i> Xóa mục
                                             </a>
                                            
                                             
@@ -290,14 +290,14 @@
                                                         <div>
                                                             <a asp-controller="CourseContentItems" asp-action="Edit" asp-route-id="@item.Id"
                                                                class="btn btn-sm btn-nihongo-outline me-1">
-                                                                <i class="bi bi-pencil"></i>Nội dung
+                                                                <i class="bi bi-pencil"></i>Sửa nội dung
                                                             </a>
                                                         </div>
                                                         <div>
                                                             <a asp-controller="CourseContentItems" asp-action="Delete" asp-route-id="@item.Id"
                                                                class="btn btn-sm btn-nihongo-outline"
-                                                               onclick="return confirm('Are you sure you want to delete this content item?');">
-                                                                <i class="bi bi-trash"></i>Nội dung
+                                                               onclick="return confirm('Bạn có chắc muốn xóa nội dung này chứ?');">
+                                                                <i class="bi bi-trash"></i>Xóa nội dung
                                                             </a>
                                                         </div>
                                                     </div>
@@ -315,6 +315,14 @@
         @if ((Model.IsPurchased && User.IsInRole("Learner")) && Model.Sections != null && Model.Sections.Any())
         {
             <div class="sidebar-section">
+                <div class="progress mt-3" style="height: 20px;">
+                    <div id="mainProgressBar" class="progress-bar bg-danger" role="progressbar"
+                         style="width:@Model.ProgressPercent%"
+                         aria-valuenow="@Model.ProgressPercent"
+                         aria-valuemin="0" aria-valuemax="100">
+                        @Model.ProgressPercent.ToString("0")%
+                    </div>
+                </div>
                 <h5 class="fw-semibold mb-3">Nội dung khóa học</h5>
                 <div class="accordion" id="courseSectionsAccordion">
                     @for (int i = 0; i < Model.Sections.Count; i++)
@@ -344,6 +352,10 @@
                                                     <div>
                                                         @if (item.ContentType == ContentType.Video && item.Video != null)
                                                         {
+                                                            <input type="checkbox"
+                                                                   class="me-2 content-checkbox"
+                                                                   data-content-id="@item.Id"
+                                                                   @(Model.CompletedContentIds.Contains(item.Id) ? "checked" : "") />
                                                             <a href="javascript:void(0);"
                                                                class="play-video-link text-decoration-none text-dark fw-semibold"
                                                                data-video-url="@ToEmbedUrl(item.Video.VideoURL)"
@@ -388,10 +400,48 @@
 
 @section Scripts {
     <script>
+                    document.querySelectorAll('.content-checkbox').forEach(cb => {
+            cb.addEventListener('change', function() {
+                const payload = {
+                    courseId: @Model.Course.Id,
+                    contentItemId: this.dataset.contentId,
+                    isCompleted: this.checked
+                };
+
+                fetch('/Courses/ToggleContentCompletion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(res => res.json())
+                  .then(data => {
+                      console.log("Server response:", data);
+                      if (data.success) {
+                          updateProgressBar(data.progress);
+                      }
+                  })
+                  .catch(err => console.error("Fetch error:", err));
+            });
+        });
+
+                    function updateProgressBar(progress) {
+            const bar = document.querySelector('.progress-bar');
+            const percent = parseFloat(progress) || 0;
+            bar.style.width = percent + '%';
+            bar.setAttribute('aria-valuenow', percent);
+            bar.textContent = percent.toFixed(0) + '%';
+
+            if (percent >= 100) {
+                document.querySelectorAll('.content-checkbox').forEach(cb => cb.disabled = true);
+            }
+        }
+
+
+
             document.addEventListener('DOMContentLoaded', function () {
             const links = document.querySelectorAll('.play-video-link');
             const player = document.getElementById('mainVideoPlayer');
             const description = document.getElementById('videoDescription');
+            updateProgressBar(@Model.ProgressPercent);
 
             links.forEach(link => {
                 link.addEventListener('click', function () {

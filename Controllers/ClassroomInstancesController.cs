@@ -680,5 +680,34 @@ namespace JapaneseLearningPlatform.Controllers
             var attribute = (DisplayAttribute)field.GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault();
             return attribute?.Name ?? value.ToString();
         }
+
+        [Authorize(Roles = UserRoles.Learner)]
+        public async Task<IActionResult> JoinFreeClass(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var instance = await _context.ClassroomInstances
+                .Include(i => i.Enrollments)
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (instance == null) return NotFound();
+
+            // Nếu đã tham gia rồi thì vào thẳng Content
+            if (instance.Enrollments.Any(e => e.LearnerId == userId))
+                return RedirectToAction("Content", new { id });
+
+            // Thêm learner vào lớp (dù miễn phí => IsPaid = true)
+            _context.ClassroomEnrollments.Add(new ClassroomEnrollment
+            {
+                LearnerId = userId,
+                InstanceId = id,
+                IsPaid = true,
+                EnrolledAt = DateTime.UtcNow
+            });
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Content", new { id });
+        }
+
     }
 }
