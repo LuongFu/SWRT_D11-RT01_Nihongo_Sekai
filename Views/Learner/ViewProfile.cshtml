@@ -18,10 +18,22 @@
                 </div>
 
                 <!-- Tên người dùng -->
-                <h5 class="fw-bold" style="color:#b30000;">@Model.FullName</h5>
+                <h5 class="fw-bold text-danger">@Model.FullName</h5>
 
                 <!-- Vai trò -->
-                <span class="badge bg-light text-dark border">@Model.Role</span>
+                <div class="mt-2">
+                    <span class="badge bg-light text-dark border px-3 py-2">@Model.Role</span>
+                </div>
+
+                <!-- Nút quay lại lớp học -->
+                <div class="mt-3 d-flex justify-content-center">
+                    <a asp-action="Content"
+                       asp-controller="ClassroomInstances"
+                       asp-route-id="@ViewBag.ClassroomId"
+                       class="btn btn-secondary btn-sm">
+                        <i class="bi bi-arrow-left-circle"></i> Quay lại lớp học
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -29,7 +41,7 @@
         <div class="col-md-8">
             <!-- Thông tin người dùng -->
             <div class="card shadow-sm p-4 mb-4">
-                <h4 class="fw-bold mb-3" style="color:#b30000;">Thông tin người dùng</h4>
+                <h4 class="fw-bold mb-3 text-danger">Thông tin người dùng</h4>
                 <p><strong>Họ và tên:</strong> @Model.FullName</p>
                 <p><strong>Email:</strong> @Model.Email</p>
                 <p><strong>Số điện thoại:</strong> @(Model.PhoneNumber ?? "-")</p>
@@ -40,12 +52,12 @@
 
                 <!-- Liên kết mạng xã hội -->
                 <div class="row mb-2 align-items-center">
-                    <div class="col-2 fw-bold">Facebook:</div>
-                    <div class="col">
+                    <div class="col-3 fw-bold">Facebook:</div>
+                    <div class="col text-start">
                         @if (!string.IsNullOrWhiteSpace(Model.Facebook))
                         {
                             <a href="@Model.Facebook" target="_blank" class="btn btn-primary btn-sm social-btn"
-                               style="background-color:#1877F2; border:none; width:150px;">
+                               style="background-color:#1877F2; border:none; width:130px;">
                                 <i class="bi bi-facebook"></i> Facebook
                             </a>
                         }
@@ -57,12 +69,12 @@
                 </div>
 
                 <div class="row mb-2 align-items-center">
-                    <div class="col-2 fw-bold">YouTube:</div>
-                    <div class="col">
+                    <div class="col-3 fw-bold">YouTube:</div>
+                    <div class="col text-start">
                         @if (!string.IsNullOrWhiteSpace(Model.YouTube))
                         {
                             <a href="@Model.YouTube" target="_blank" class="btn btn-danger btn-sm social-btn"
-                               style="background-color:#FF0000; border:none; width:150px;">
+                               style="background-color:#FF0000; border:none; width:130px;">
                                 <i class="bi bi-youtube"></i> YouTube
                             </a>
                         }
@@ -72,15 +84,6 @@
                         }
                     </div>
                 </div>
-
-                <!-- Nút quay lại lớp học -->
-                <div class="mt-3">
-                    <a asp-action="Content"
-                       asp-controller="ClassroomInstances"
-                       asp-route-id="@ViewBag.ClassroomId"
-                       class="btn btn-secondary btn-sm">Quay lại lớp học</a>
-                </div>
-
             </div>
         </div>
     </div>
