@@ -169,11 +169,39 @@ namespace JapaneseLearningPlatform.Data
             .Property(p => p.DecisionAt)
             .IsRequired(false);
 
+            // ClassroomFeedback → ClassroomInstance
+            modelBuilder.Entity<ClassroomFeedback>()
+                .HasOne(f => f.ClassroomInstance)
+                .WithMany(ci => ci.Feedbacks)
+                .HasForeignKey(f => f.ClassroomInstanceId)
+                .OnDelete(DeleteBehavior.NoAction); // Tránh cascade vòng
+
+            // ClassroomFeedback → ApplicationUser (Learner)
+            modelBuilder.Entity<ClassroomFeedback>()
+                .HasOne(f => f.Learner)
+                .WithMany()
+                .HasForeignKey(f => f.LearnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // --- BEGIN: cấu hình cho Report.Subject enum → int ---
             modelBuilder.Entity<Report>()
                 .Property(r => r.Subject)
                 .HasConversion<int>();
             // --- END ---
+
+            // ClassroomChatMessage → ClassroomInstance
+            modelBuilder.Entity<ClassroomChatMessage>(entity =>
+            {
+                entity.HasOne(m => m.User)
+                    .WithMany()
+                    .HasForeignKey(m => m.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(m => m.ClassroomInstance)
+                    .WithMany(ci => ci.ChatMessages)
+                    .HasForeignKey(m => m.ClassroomInstanceId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             base.OnModelCreating(modelBuilder);
         }
@@ -208,5 +236,7 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<PartnerDocument> PartnerDocuments { get; set; }
         public DbSet<ClassroomResource> ClassroomResources { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<ClassroomFeedback> ClassroomFeedbacks { get; set; }
+        public DbSet<ClassroomChatMessage> ClassroomChatMessages { get; set; }
     }
 }

@@ -223,6 +223,43 @@ namespace JapaneseLearningPlatform.Migrations
                     b.ToTable("AssignmentSubmissions");
                 });
 
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassroomInstanceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ClassroomInstanceId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassroomInstanceId");
+
+                    b.HasIndex("ClassroomInstanceId1");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ClassroomChatMessages");
+                });
+
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomEnrollment", b =>
                 {
                     b.Property<int>("Id")
@@ -288,6 +325,44 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasIndex("LearnerId");
 
                     b.ToTable("ClassroomEvaluations");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomFeedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassroomInstanceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LearnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassroomInstanceId");
+
+                    b.HasIndex("LearnerId");
+
+                    b.ToTable("ClassroomFeedbacks");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomInstance", b =>
@@ -1077,6 +1152,29 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Navigation("Learner");
                 });
 
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomChatMessage", b =>
+                {
+                    b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", "ClassroomInstance")
+                        .WithMany()
+                        .HasForeignKey("ClassroomInstanceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", null)
+                        .WithMany("ChatMessages")
+                        .HasForeignKey("ClassroomInstanceId1");
+
+                    b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClassroomInstance");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomEnrollment", b =>
                 {
                     b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", "Instance")
@@ -1111,6 +1209,25 @@ namespace JapaneseLearningPlatform.Migrations
                         .IsRequired();
 
                     b.Navigation("Instance");
+
+                    b.Navigation("Learner");
+                });
+
+            modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomFeedback", b =>
+                {
+                    b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", "ClassroomInstance")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("ClassroomInstanceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "Learner")
+                        .WithMany()
+                        .HasForeignKey("LearnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ClassroomInstance");
 
                     b.Navigation("Learner");
                 });
@@ -1384,7 +1501,11 @@ namespace JapaneseLearningPlatform.Migrations
                 {
                     b.Navigation("Assignments");
 
+                    b.Navigation("ChatMessages");
+
                     b.Navigation("Enrollments");
+
+                    b.Navigation("Feedbacks");
                 });
 
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomTemplate", b =>

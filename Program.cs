@@ -3,6 +3,7 @@ using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Cart;
 using JapaneseLearningPlatform.Data.Seeds;
 using JapaneseLearningPlatform.Data.Services;
+using JapaneseLearningPlatform.Hubs;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -121,6 +122,10 @@ namespace JapaneseLearningPlatform
                         });
             }
 
+            ///////////////////////////////////////////
+            builder.Services.AddSignalR();
+            ///////////////////////////////////////////
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline
@@ -144,6 +149,11 @@ namespace JapaneseLearningPlatform
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            ///////////////////////////////////////////
+            //Chat mesage hub
+            app.MapHub<ClassroomChatHub>("/classroomChatHub");
+            ///////////////////////////////////////////
 
             // Seed database
             await SeedManager.SeedAllAsync(app); // Seed all data using the SeedManager

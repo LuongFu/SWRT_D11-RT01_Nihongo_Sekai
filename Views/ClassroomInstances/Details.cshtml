@@ -5,107 +5,159 @@
 
 @{
     ViewData["Title"] = Model.Template.Title;
-    ViewData["HideNavbar"] = false;
-    ViewData["HideFooter"] = false;
 }
 
-<div class="container mt-4">
-    <h2 class="fw-bold text-center mb-4">@Model.Template.Title</h2>
+<div class="container mt-5 mb-5">
+    <!-- HEADER TITLE -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold" style="color:#b30000;">@Model.Template.Title</h2>
+        <p class="text-muted">@Model.Template.Description</p>
+    </div>
 
-    <div class="row">
-        <!-- LEFT: Image -->
-        <div class="col-md-6">
-            <img src="@Model.Template.ImageURL" alt="Thumbnail" class="img-fluid rounded shadow" />
-            @if (!string.IsNullOrEmpty(Model.Template.DocumentURL))
-            {
-                <div class="mt-3">
-                    <a href="@Model.Template.DocumentURL" target="_blank" class="btn btn-outline-info w-100">
-                        <i class="bi bi-file-earmark-text me-2"></i> Tài liệu đính kèm
-                    </a>
-                </div>
-            }
+    <div class="row g-4">
+        <!-- LEFT: Thumbnail -->
+        <div class="col-lg-5 col-md-6">
+            <div class="card shadow-sm border-0">
+                <img src="@Model.Template.ImageURL" alt="Thumbnail" class="img-fluid rounded-top">
+                @if (!string.IsNullOrEmpty(Model.Template.DocumentURL))
+                {
+                    <div class="card-body text-center">
+                        <a href="@Model.Template.DocumentURL" target="_blank" class="btn btn-outline-info w-100">
+                            <i class="bi bi-file-earmark-text me-2"></i> Tài liệu đính kèm
+                        </a>
+                    </div>
+                }
+            </div>
         </div>
 
         <!-- RIGHT: Info -->
-        <div class="col-md-6">
-            <dl class="row">
-                <dt class="col-sm-5">Mô tả:</dt>
-                <dd class="col-sm-7">@Model.Template.Description</dd>
-
-                <dt class="col-sm-5">Trình độ ngôn ngữ:</dt>
-                <dd class="col-sm-7">@Model.Template.LanguageLevel.GetDisplayName()</dd>
-
-                <dt class="col-sm-5">Thời gian mỗi buổi:</dt>
-                <dd class="col-sm-7">@($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</dd>
-
-                <dt class="col-sm-5">Ngày bắt đầu:</dt>
-                <dd class="col-sm-7">@Model.Instance.StartDate.ToString("dd/MM/yyyy")</dd>
-
-                <dt class="col-sm-5">Ngày kết thúc:</dt>
-                <dd class="col-sm-7">@Model.Instance.EndDate.ToString("dd/MM/yyyy")</dd>
-
-                <dt class="col-sm-5">Người hướng dẫn:</dt>
-                <dd class="col-sm-7">@Model.PartnerName</dd>
-
-                <dt class="col-sm-5">Trạng thái lớp học:</dt>
-                <dd class="col-sm-7">@Model.Instance.Status.GetDisplayName()</dd>
-
-                <dt class="col-sm-5">Giá:</dt>
-                <dd class="col-sm-7">
-                    @(Model.Instance.Price > 0 ? Model.Instance.Price.ToString("N0") + " đ" : "Miễn phí")
-                </dd>
-
-                <dt class="col-sm-5">Số lượng học viên:</dt>
-                <dd class="col-sm-7">@Model.EnrollmentCount / @Model.Instance.MaxCapacity</dd>
-            </dl>
+        <div class="col-lg-7 col-md-6">
+            <div class="card shadow-sm border-0 p-4">
+                <h4 class="fw-bold mb-3" style="color:#b30000;">Thông tin lớp học</h4>
+                <div class="row mb-2">
+                    <div class="col-sm-5 fw-bold">Trình độ ngôn ngữ:</div>
+                    <div class="col-sm-7">@Model.Template.LanguageLevel.GetDisplayName()</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 fw-bold">Thời gian mỗi buổi:</div>
+                    <div class="col-sm-7">@($"{Model.Instance.ClassTime.Hours:D2}:{Model.Instance.ClassTime.Minutes:D2}")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 fw-bold">Ngày bắt đầu:</div>
+                    <div class="col-sm-7">@Model.Instance.StartDate.ToString("dd/MM/yyyy")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 fw-bold">Ngày kết thúc:</div>
+                    <div class="col-sm-7">@Model.Instance.EndDate.ToString("dd/MM/yyyy")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 fw-bold">Người hướng dẫn:</div>
+                    <div class="col-sm-7">@Model.PartnerName</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 fw-bold">Trạng thái:</div>
+                    <div class="col-sm-7">@Model.Instance.Status.GetDisplayName()</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 fw-bold">Giá:</div>
+                    <div class="col-sm-7 text-danger fw-bold">
+                        @(Model.Instance.Price > 0 ? Model.Instance.Price.ToString("N0") + " đ" : "Miễn phí")
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 fw-bold">Số lượng học viên:</div>
+                    <div class="col-sm-7">@Model.EnrollmentCount / @Model.Instance.MaxCapacity</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="mt-5 d-flex justify-content-center gap-3 border-top pt-4">
-        @if (User.IsInRole("Partner"))
+    <!-- ACTION BUTTONS -->
+    <div class="mt-5 d-flex justify-content-center gap-3 pt-4">
+    @if (User.IsInRole(UserRoles.Partner))
+    {
+        <a asp-action="MySession"
+           asp-controller="ClassroomInstances"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Về danh sách lớp
+        </a>
+    }
+    else
+    {
+        <a asp-action="Index"
+           asp-controller="ClassroomInstances"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Về danh sách lớp
+        </a>
+    }
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole(UserRoles.Partner))
         {
-            <a asp-action="MySession" asp-controller="ClassroomInstances" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Về trang chủ
+            <!-- Partner luôn có nút vào -->
+            <a asp-controller="ClassroomInstances"
+               asp-action="Content"
+               asp-route-id="@Model.Instance.Id"
+               class="btn btn-primary">
+                <i class="bi bi-journal-bookmark"></i> Vào khóa học
             </a>
         }
-        else
+        else if (User.IsInRole(UserRoles.Learner))
         {
-            <a asp-action="Index" asp-controller="ClassroomInstances" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Về trang chủ
-            </a>
-        }
-
-
-        @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Learner))
-        {
-            @if (!Model.IsEnrolled)
+            if (!Model.IsEnrolled)
             {
-                <a class="btn btn-success" asp-controller="ClassroomInstances" asp-action="PayWithPaypal" asp-route-id="@Model.Instance.Id">
-                    <i class="bi bi-credit-card"></i> Tham gia & Thanh toán PayPal
-                </a>
-            }
-            else if (Model.IsEnrolled && !Model.HasPaid)
-            {
-                <div class="alert alert-warning">
-                    🟡 Bạn đã đăng ký lớp học này nhưng chưa thanh toán.
-                </div>
-                <a class="btn btn-success" asp-controller="ClassroomInstances" asp-action="PayWithPaypal" asp-route-id="@Model.Instance.Id">
-                    <i class="bi bi-credit-card"></i> Thanh toán PayPal
-                </a>
+                if (Model.Instance.Price == 0)
+                {
+                    if (Model.EnrollmentCount >= Model.Instance.MaxCapacity)
+                    {
+                        <!-- Lớp đã đủ học viên -->
+                        <button class="btn btn-secondary" disabled>
+                            <i class="bi bi-lock"></i> Số lượng học viên tham gia đã đủ
+                        </button>
+                    }
+                    else
+                    {
+                        <!-- Miễn phí -->
+                        <button class="btn btn-success"
+                                onclick="joinFreeClass(@Model.Instance.Id)">
+                            <i class="bi bi-person-plus"></i> Tham Gia Khóa Học
+                        </button>
+                    }
+                }
+                else
+                {
+                    <!-- Có phí: PayPal -->
+                    <a class="btn btn-success"
+                       asp-controller="ClassroomInstances"
+                       asp-action="PayWithPaypal"
+                       asp-route-id="@Model.Instance.Id">
+                        <i class="bi bi-credit-card"></i> Tham gia & Thanh toán PayPal
+                    </a>
+                }
             }
             else
             {
-                <a asp-controller="ClassroomInstances" asp-action="Content" asp-route-id="@Model.Instance.Id" class="btn btn-primary">
-                    <i class="bi bi-journal-bookmark-fill"></i> Vào lớp học
+                <!-- Đã tham gia -->
+                <a asp-controller="ClassroomInstances"
+                   asp-action="Content"
+                   asp-route-id="@Model.Instance.Id"
+                   class="btn btn-primary">
+                    <i class="bi bi-journal-bookmark-fill"></i> Vào khóa học
                 </a>
             }
         }
-
-        @if (User.IsInRole(UserRoles.Partner))
-        {
-            <a asp-controller="ClassroomInstances" asp-action="Content" asp-route-id="@Model.Instance.Id" class="btn btn-primary">
-                <i class="bi bi-journal-bookmark"></i> Xem nội dung
-            </a>
-        }
+    }
     </div>
-</div>
+
+@section Scripts {
+    <script>
+        function joinFreeClass(classId) {
+            if (confirm("Xác nhận tham gia khóa học?")) {
+                window.location.href = '/ClassroomInstances/JoinFreeClass/' + classId;
+            } else {
+                window.location.href = '/ClassroomInstances/Index';
+            }
+        }
+    </script>
+}

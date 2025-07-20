@@ -35,6 +35,12 @@
         </div>
 
         <div class="mb-3">
+            <label asp-for="MaxCapacity" class="form-label"></label>
+            <input asp-for="MaxCapacity" class="form-control" type="number" min="1" />
+            <span asp-validation-for="MaxCapacity" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
             <label asp-for="GoogleMeetLink" class="form-label"></label>
             <input asp-for="GoogleMeetLink" class="form-control" />
             <span asp-validation-for="GoogleMeetLink" class="text-danger"></span>

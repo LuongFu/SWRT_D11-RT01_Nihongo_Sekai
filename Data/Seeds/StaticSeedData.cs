@@ -177,7 +177,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
 {
     Name        = "Ultimate Japanese Bootcamp: Speak Like a Native + JLPT N5-N1",
     Description = "Master Japanese from JLPT N5 to N1, covering grammar, vocabulary, and conversation with native speakers.",
-    Price       = 39,
+    Price       = 390000,
     ImageURL    = "https://img-c.udemycdn.com/course/240x135/3821776_0ffd_3.jpg",
     Discount    = 79,
     Category    = CourseCategory.Advanced,
@@ -710,7 +710,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
             {
                 Name        = "Complete Japanese Course: Learn Japanese for Beginners",
                 Description = "Learn Japanese FAST…",
-                Price       = 23,
+                Price       = 230000,
                 ImageURL    = "https://img-c.udemycdn.com/course/240x135/3821776_0ffd_3.jpg",
                 Discount    = 80,
                 Category    = CourseCategory.Basic,
@@ -757,7 +757,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
 {
     Name        = "Honorific Japanese Mastery",
     Description = "Master Japanese honorifics and advanced expressions used in formal settings.",
-    Price       = 25,
+    Price       = 250000,
     ImageURL    = "https://i.pinimg.com/736x/98/3b/95/983b952e223ea927d0372dbb5144b8ea.jpg",
     Discount    = 40,
     Category    = CourseCategory.Advanced,
@@ -835,7 +835,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
 {
     Name        = "Basic Japanese Lesson Bootcamp For Beginner",
     Description = "Master Basic Japanese, covering grammar, vocabulary, and conversation with native speakers!",
-    Price       = 40,
+    Price       = 400000,
     ImageURL    = "https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/494596807_1066825622149060_515537649384938644_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGqAYUUnUEKMkS46tcVl-iXLTq7tP5iLF8tOru0_mIsX-9Gwv09u2cJRgu0niPnL2k9nCNVNCjw7HFI4IZG08fW&_nc_ohc=lYX-EhRXiSEQ7kNvwGZ8vNp&_nc_oc=AdnfBCMb4k_Iog8Xe9Cj7klzEZ7b6bitAcANeBCqVnXSRjnnmrPKpM6M2RVMZefTIKidvHCT1RuFHEdmRfKzHP4F&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=jCJkq0adI0DML6i48iCrsg&oh=00_AfRUyvB_xQhxCHEFvXG3JI2132vZLem1A4nRy_yZlNuVXA&oe=6874F21A",
     Discount    = 30,
     Category    = CourseCategory.Advanced,
@@ -1172,7 +1172,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
 {
     Name        = "Blue Japanese Lesson Series",
     Description = "Ez Basic Japanese from covering grammar, vocabulary, and conversation with native speakers!",
-    Price       = 28,
+    Price       = 280000,
     ImageURL    = "https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-6/494605120_1066826015482354_111264291537643622_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHj-AnSICXCxzsdrm7eu20bhAzc12pT_haEDNzXalP-Fr0G7o9h6rPJUf5WO2OfPEgnKFrFiw8a8acsZ4viTdhj&_nc_ohc=Bm-T3dM_fNkQ7kNvwEhv5BQ&_nc_oc=AdlBCU_io1iU7FJaScmbRCHXTwv28ilQW83qxBfFyLQjoNjEwdQvPKGlcAgwVykJN49vLs_pr64nIRwC-k2DHNnH&_nc_zt=23&_nc_ht=scontent.fsgn2-9.fna&_nc_gid=QWSljFk_-elxjIOEg8Dn2A&oh=00_AfSislzsWsIm6hlU1Hab5QudxFTsKIt4w-KvAn0LmgLc2Q&oe=68750D27",
     Discount    = 76,
     Category    = CourseCategory.Advanced,
@@ -1902,7 +1902,15 @@ namespace JapaneseLearningPlatform.Data.Seeds
     new() { Email="partner2@nihongo.com", FullName="Partner Two", Password="Test123@", Role="Partner", IsApproved = true },
     new() { Email="noobhoang@gmail.com", FullName="Hoang Nguyen", Password="Hoang2005.", Role="Learner" },
     new() { Email="hoang120305@gmail.com", FullName="Hoang Nguyen 2", Password="Hoang2005.", Role="Learner" },
-    new() { Email="banneduser@gmail.com", FullName="Banned User", Password="Test123!@#", Role="Learner", IsBanned = true }
+    new() { Email="banneduser@gmail.com", FullName="Banned User", Password="Test123!@#", Role="Learner", IsBanned = true },
+    new() { Email="khoivippro@gmail.com", FullName="giakhoiquang", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro2@gmail.com", FullName="giakhoiquang2", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro3@gmail.com", FullName="giakhoiquang3", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro4@gmail.com", FullName="giakhoiquang4", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro5@gmail.com", FullName="giakhoiquang5", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro6@gmail.com", FullName="giakhoiquang6", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro7@gmail.com", FullName="giakhoiquang7", Password="Khoi2005.", Role="Learner" }
+
 };
 
 

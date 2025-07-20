@@ -27,12 +27,16 @@ namespace JapaneseLearningPlatform.Data.ViewModels
 
         [Required(ErrorMessage = "Giá là bắt buộc")]
         [Display(Name = "Giá (VNĐ)")]
-        [Range(1, 99999999, ErrorMessage = "Giá quá cao, vui lòng nhập giá thấp hơn 99tr")]
+        [Range(0, 99999999, ErrorMessage = "Giá quá cao, vui lòng nhập giá thấp hơn 99tr")]
         public decimal Price { get; set; }
 
         [Display(Name = "Link Google Meet")]
         public string? GoogleMeetLink { get; set; }
 
+        [Required(ErrorMessage = "Số lượng học viên tối đa là bắt buộc")]
+        [Range(1, 100, ErrorMessage = "Số lượng học viên phải từ 1 đến 100.")]
+        [Display(Name = "Số lượng học viên tối đa")]
+        public int MaxCapacity { get; set; }
         [Required(ErrorMessage = "Trạng thái lớp học là bắt buộc")]
         [Display(Name = "Trạng thái")]
         public ClassroomStatus Status { get; set; }
