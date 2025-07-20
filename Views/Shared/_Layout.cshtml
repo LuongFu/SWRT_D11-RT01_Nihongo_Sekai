@@ -262,10 +262,10 @@
                         </div>
                     </div>
                 </div>
-            </footer>
-            <script src="~/js/script.js"></script>
+            </footer>            
         }
     </div>
+    <script src="~/js/script.js"></script>
     <script>
         window.addEventListener("message", function (event) {
             if (!event.data || typeof event.data !== "object") return;
@@ -297,8 +297,8 @@
               navBadge.innerText     = total < 100 ? total : '99+';
             } else {
               navBadge.style.display = 'none';
-            }
-
+            }    
+            
             // Badge chủ đề
             document.querySelectorAll('.subject-badge').forEach(el => {
               const subj = el.dataset.subject;
@@ -313,8 +313,8 @@
             });
           } catch (e) {
             console.error(e);
-          }
-        }
+        }        
+    }   
 
         document.addEventListener('DOMContentLoaded', () => {
           refreshReportBadges();
