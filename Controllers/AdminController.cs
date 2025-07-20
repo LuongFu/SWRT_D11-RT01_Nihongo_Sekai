@@ -6,7 +6,6 @@ using JapaneseLearningPlatform.Data.Enums;              // PartnerStatus
 using JapaneseLearningPlatform.Data.Static;             // UserRoles
 using JapaneseLearningPlatform.Data.ViewModels;         // ReviewPartnerVM
 using JapaneseLearningPlatform.Models;
-using JapaneseLearningPlatform.Models.Partner;           // PartnerProfile, PartnerDocument...
 using Microsoft.AspNetCore.Authorization;               // [Authorize]
 using Microsoft.AspNetCore.Identity;                    // UserManager<>, SignInManager<>
 using Microsoft.AspNetCore.Identity.UI.Services;        // IEmailSender
