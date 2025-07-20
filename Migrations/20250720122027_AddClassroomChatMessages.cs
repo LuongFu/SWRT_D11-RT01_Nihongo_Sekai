@@ -10,13 +10,13 @@ namespace JapaneseLearningPlatform.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "c",
+                name: "ClassroomChatMessages",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ClassroomInstanceId = table.Column<int>(nullable: false),
-                    UserId = table.Column<string>(nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Message = table.Column<string>(maxLength: 1000, nullable: false),
                     SentAt = table.Column<DateTime>(nullable: false)
                 },
