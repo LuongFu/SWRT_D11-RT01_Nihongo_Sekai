@@ -1036,4 +1036,51 @@ form .form-control {
     .btn-back-simple:hover {
         background-color: #bb2d3b; /* Màu đỏ đậm khi hover */
         color: white;
+.result-container {
+    max-width: 900px;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, #f5365c, #ff7e5f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.result-card {
+    background: #fffdfc;
+}
+
+.score-section .score-circle {
+    background: linear-gradient(to bottom right, #f5365c, #ff7e5f);
+    color: #fff;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto;
+}
+
+.option-item {
+    transition: transform 0.2s ease;
+}
+
+    .option-item:hover {
+        transform: scale(1.02);
+    }
+
+.btn-gradient {
+    background: linear-gradient(to right, #f5365c, #ff7e5f);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    transition: 0.3s ease;
+}
+
+    .btn-gradient:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
     }

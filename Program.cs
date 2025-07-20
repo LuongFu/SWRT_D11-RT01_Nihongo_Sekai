@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Polly;
+using Polly.Extensions.Http;
+using System.Net;
 
 namespace JapaneseLearningPlatform
 {
@@ -34,9 +37,6 @@ namespace JapaneseLearningPlatform
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-            //builder.Services.AddDbContext<AppDbContext>(options =>
-            //    options.UseSqlServer(configuration.GetConnectionString("DefaultConnectionString")));
 
             // Services configuration
             builder.Services.AddScoped<ICoursesService, CoursesService>();
@@ -103,6 +103,24 @@ namespace JapaneseLearningPlatform
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddHostedService<RejectedCleanupService>();
+            // Bind AIOptions
+            builder.Services.Configure<AIOptions>(builder.Configuration.GetSection("AI"));
+            builder.Services
+            .AddHttpClient<IAIExplanationService, AIExplanationService>()
+            .AddPolicyHandler(GetRetryPolicy());
+
+            static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+            {
+                return HttpPolicyExtensions
+                    .HandleTransientHttpError() // 5xx, 408, network failures
+                    .WaitAndRetryAsync(
+                        retryCount: 3,
+                        sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)),
+                        onRetry: (outcome, timespan, attempt, context) =>
+                        {
+                            Console.WriteLine($"Retry {attempt} after {timespan.TotalSeconds}s due to {outcome.Result?.StatusCode}");
+                        });
+            }
 
             ///////////////////////////////////////////
             builder.Services.AddSignalR();

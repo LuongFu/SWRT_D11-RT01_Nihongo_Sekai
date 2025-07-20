@@ -15,11 +15,12 @@ namespace JapaneseLearningPlatform.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IQuizQuestionsService _questionsService;
-
-        public QuizzesController(AppDbContext context, IQuizQuestionsService questionsService)
+        private readonly IAIExplanationService _aiService;
+        public QuizzesController(AppDbContext context, IQuizQuestionsService questionsService, IAIExplanationService aiService)
         {
             _context = context;
             _questionsService = questionsService;
+            _aiService = aiService;
         }
 
          public async Task<IActionResult> Details(int id)
@@ -76,7 +77,11 @@ namespace JapaneseLearningPlatform.Controllers
 
             int totalQuestions = model.Questions.Count;
             int correctAnswers = 0;
-            var quiz = await _context.Quizzes.FirstOrDefaultAsync(q => q.Id == model.QuizId); // take quiz
+
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Options)
+                .FirstOrDefaultAsync(q => q.Id == model.QuizId);
 
             if (quiz == null) return NotFound();
 
@@ -93,12 +98,19 @@ namespace JapaneseLearningPlatform.Controllers
             {
                 bool isCorrect = false;
 
+                // Lấy câu hỏi từ DB để có danh sách option chính xác
+                var dbQuestion = quiz.Questions.FirstOrDefault(q => q.Id == question.QuestionId);
+                if (dbQuestion == null) continue;
+
+                // Lấy danh sách đáp án đúng
+                var correctOptions = dbQuestion.Options.Where(o => o.IsCorrect).ToList();
+                string correctAnswerText = string.Join(", ", correctOptions.Select(o => o.OptionText));
+
                 if (question.QuestionType == QuestionType.SingleChoice)
                 {
                     if (question.SelectedOptionId != null)
                     {
-                        var selectedOption = await _context.QuizOptions
-                            .FirstOrDefaultAsync(o => o.Id == question.SelectedOptionId);
+                        var selectedOption = dbQuestion.Options.FirstOrDefault(o => o.Id == question.SelectedOptionId);
                         isCorrect = selectedOption?.IsCorrect ?? false;
                         if (isCorrect) correctAnswers++;
 
@@ -113,10 +125,7 @@ namespace JapaneseLearningPlatform.Controllers
                 else if (question.QuestionType == QuestionType.MultipleChoice)
                 {
                     var selectedIds = question.SelectedOptionIds ?? new List<int>();
-                    var correctOptionIds = await _context.QuizOptions
-                        .Where(o => o.QuestionId == question.QuestionId && o.IsCorrect)
-                        .Select(o => o.Id)
-                        .ToListAsync();
+                    var correctOptionIds = correctOptions.Select(o => o.Id).ToList();
 
                     isCorrect = selectedIds.Count == correctOptionIds.Count &&
                                 !selectedIds.Except(correctOptionIds).Any();
@@ -126,20 +135,38 @@ namespace JapaneseLearningPlatform.Controllers
                     result.Details.Add(new QuizResultDetail
                     {
                         QuestionId = question.QuestionId,
-                        // Lưu null nếu nhiều lựa chọn (nhiều sẽ lưu riêng bảng detail sau này nếu muốn)
                         SelectedOptionId = null,
                         IsCorrect = isCorrect
                     });
                 }
 
-                // Gán lại IsCorrect để hiển thị UI
+                // Gọi AI để giải thích nếu trả lời sai
+                if (!isCorrect)
+                {
+                    var userAnswerText = string.Join(", ", question.Options
+                        .Where(o => question.SelectedOptionIds?.Contains(o.OptionId) == true || o.OptionId == question.SelectedOptionId)
+                        .Select(o => o.OptionText));
+
+                    try
+                    {
+                        question.AIExplanation = await _aiService.GetExplanationAsync(
+                            question.QuestionText,
+                            userAnswerText,
+                            correctAnswerText
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        question.AIExplanation = $"[AI Error]: {ex.Message}";
+                    }
+                }
+
+                // Gán lại IsCorrect cho UI
                 foreach (var opt in question.Options)
                 {
-                    var correct = await _context.QuizOptions.FindAsync(opt.OptionId);
-                    opt.IsCorrect = correct?.IsCorrect ?? false;
+                    opt.IsCorrect = correctOptions.Any(co => co.Id == opt.OptionId);
                 }
             }
-
 
             result.Score = correctAnswers;
             _context.QuizResults.Add(result);
@@ -150,12 +177,15 @@ namespace JapaneseLearningPlatform.Controllers
             ViewBag.TotalQuestions = totalQuestions;
             ViewBag.CorrectAnswers = correctAnswers;
             ViewBag.ScorePercent = (int)((double)correctAnswers / totalQuestions * 100);
+
             if (ViewBag.ScorePercent >= 80)
             {
                 await MarkContentAsCompleted(quiz.CourseId, quiz.Id, userId);
             }
+
             return View("Result", model);
         }
+
         private async Task MarkContentAsCompleted(int courseId, int contentItemId, string userId)
         {
             var existing = await _context.CourseContentProgresses
