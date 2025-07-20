@@ -1,6 +1,8 @@
 ﻿@{
     var hideNavbar = ViewData["HideNavbar"] as bool? ?? false;
     var hideFooter = ViewData["HideFooter"] as bool? ?? false;
+    var hideChatbot = ViewData["HideChatbot"] as bool? ?? false;
+
 }
 
 @section Styles {
@@ -110,6 +112,11 @@
                                         Từ điển
                                     </a>
                                 </li>
+                                <li>
+                                    <a asp-controller="VideoCall" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "VideoCall" ? "active-tab" : "")">
+                                        Gọi Video
+                                    </a>
+                                </li>
                             }
                             @* Learner or guest *@
                             else
@@ -135,6 +142,11 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a asp-controller="VideoCall" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "VideoCall" ? "active-tab" : "")">
+                                        Gọi Video
+                                    </a>
+                                </li>
+                                <li>
                                     <a asp-controller="SidePages" asp-action="About" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SidePages" ? "active-tab" : "")">
                                         Giới thiệu
                                     </a>
@@ -154,18 +166,25 @@
             @await Component.InvokeAsync("DailyWordPopup")
             @RenderBody()
             <!-- Chat bot -->
-            <iframe id="chatbot-iframe"
-                    src="https://chat-bot-with-gemini-fe.onrender.com"
-                    style="position: fixed;
-                           bottom: 0;
-                           right: 0;
-                           width: 60px;
-                           height: 60px;
-                           border: none;
-                           z-index: 9999;
-                           border-radius: 50%;
-                           overflow: hidden;">
-            </iframe>
+            @if (ViewData["HideChatbot"] == null || !(bool)ViewData["HideChatbot"])
+            {
+                <div id="chatbot-container">
+                    <iframe id="chatbot-iframe"
+                            src="https://chat-bot-with-gemini-fe.onrender.com"
+                            style="position: fixed;
+                               bottom: 0;
+                               right: 0;
+                               width: 60px;
+                               height: 60px;
+                               border: none;
+                               z-index: 9999;
+                               border-radius: 50%;
+                               overflow: hidden;">
+                    </iframe>
+                </div>
+            }
+
+           
         </main>
 
         @if (!hideFooter)

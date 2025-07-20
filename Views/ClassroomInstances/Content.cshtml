@@ -56,6 +56,12 @@
                 Feedback
             </a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="chat-tab" data-bs-toggle="tab" href="#chat" role="tab"
+               style="padding: 4px 10px; font-size: 14px; border: none; background: none;">
+                Chat
+            </a>
+        </li>
     </ul>
 
     <!-- 🔸 Tab Contents -->
@@ -65,6 +71,13 @@
             <div class="p-3">
                 <h5 class="fw-bold">Mô tả lớp học</h5>
                 <p class="text-muted">Hiện không có sẵn.</p>
+            </div>
+        </div>
+        <!-- 🔹 Chat -->
+        <div class="tab-pane fade" id="chat" role="tabpanel">
+            <div class="p-3">
+                <div id="chatMessages" class="border p-3" style="height: 300px; overflow-y: auto;"></div>
+                <input id="chatInput" class="form-control mt-2" placeholder="Nhập tin nhắn..." />
             </div>
         </div>
 
@@ -470,6 +483,31 @@
     .nav-tabs .nav-link::after {
         content: none !important;
     }
+
+    #chatMessages {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .chat-bubble {
+        background: #f1f0f0;
+        padding: 8px 12px;
+        border-radius: 12px;
+        max-width: 70%;
+        align-self: flex-start; /* mặc định trái */
+        word-break: break-word;
+    }
+
+        .chat-bubble.own {
+            background: #5AAEFF;
+            color: #fff;
+            align-self: flex-end; /* canh phải */
+        }
+
+        .chat-bubble .sender {
+            font-weight: bold;
+        }
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
@@ -614,3 +652,80 @@
         }
     }
 </script>
+
+@section Scripts {
+    <!-- Load SignalR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+    <script>
+                document.addEventListener("DOMContentLoaded", () => {
+            const classroomId = @Model.Instance.Id;
+            const userName = '@(ViewBag.CurrentUserName ?? User.Identity.Name)';
+            const currentUserId = '@ViewBag.CurrentUserId';
+
+            const chatBox = document.getElementById("chatMessages");
+            const chatInput = document.getElementById("chatInput");
+            // const sendBtn = document.getElementById("sendChatBtn");
+
+            function appendMessage(user, message, sentAt = null, isOwn = false) {
+                const timeHtml = sentAt ? `<small class="text-muted ms-2">(${sentAt})</small>` : '';
+                const sideClass = isOwn ? 'chat-bubble own' : 'chat-bubble';
+                chatBox.innerHTML += `
+                    <div class="${sideClass}">
+                        <span class="sender">${user}:</span> ${message} ${timeHtml}
+                    </div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            async function loadMessages() {
+                try {
+                    const res = await fetch(`/ClassroomInstances/GetChatMessages?classroomId=${classroomId}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        chatBox.innerHTML = data.map(m =>
+                            `<div class="${m.isOwn ? 'chat-bubble own' : 'chat-bubble'}">
+                                <span class="sender">${m.userName}:</span> ${m.message}
+                                <small class="text-muted ms-2">(${m.sentAt})</small>
+                            </div>`
+                        ).join('');
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                } catch (err) {
+                    console.error("LoadMessages error:", err);
+                }
+            }
+
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl(`/classroomChatHub?classroomId=${classroomId}`)
+                .build();
+
+            connection.on("ReceiveMessage", (user, message, sentAt, senderId) => {
+                const isOwn = senderId === currentUserId;
+                appendMessage(user, message, sentAt, isOwn);
+            });
+
+            connection.start()
+                .then(() => console.log("✅ SignalR connected"))
+                .catch(err => console.error("❌ SignalR connect error:", err));
+
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+                connection.invoke("SendMessage", classroomId, userName, message)
+                    .then(() => chatInput.value = '')
+                    .catch(err => console.error("❌ SendMessage error:", err));
+            }
+
+            // sendBtn.addEventListener("click", sendMessage);
+            chatInput.addEventListener("keydown", e => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Load ngay khi mở tab Chat
+            document.querySelector('#chat-tab')?.addEventListener('click', loadMessages);
+        });
+    </script>
+}
+

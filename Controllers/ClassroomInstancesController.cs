@@ -217,9 +217,10 @@ namespace JapaneseLearningPlatform.Controllers
             instance.StartDate = vm.StartDate;
             instance.EndDate = vm.EndDate;
             instance.Price = vm.Price;
+            instance.MaxCapacity = vm.MaxCapacity;
             instance.GoogleMeetLink = vm.GoogleMeetLink;
             instance.ClassTime = TimeSpan.FromHours(vm.SessionDurationHours);
-            instance.Status = vm.Status; // ✅ Update status từ form
+            instance.Status = vm.Status; 
 
             _context.Update(instance);
             await _context.SaveChangesAsync();
@@ -455,11 +456,9 @@ namespace JapaneseLearningPlatform.Controllers
                 Feedbacks = feedbacks
             };
 
+            ViewBag.CurrentUserId = _userManager.GetUserId(User);
             return View(vm);
         }
-
-
-
 
         [Authorize(Roles = UserRoles.Learner)]
         public async Task<IActionResult> PayWithPaypal(int id)
@@ -742,7 +741,7 @@ namespace JapaneseLearningPlatform.Controllers
             return RedirectToAction("Content", new { id = instanceId });
         }
 
-
+        // Learner: Join free class
         [Authorize(Roles = UserRoles.Learner)]
         public async Task<IActionResult> JoinFreeClass(int id)
         {
@@ -754,11 +753,18 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (instance == null) return NotFound();
 
+            // Nếu lớp đã đầy
+            if (instance.Enrollments.Count >= instance.MaxCapacity)
+            {
+                TempData["ErrorMessage"] = "Số lượng học viên tham gia đã đủ.";
+                return RedirectToAction("Details", new { id });
+            }
+
             // Nếu đã tham gia rồi thì vào thẳng Content
             if (instance.Enrollments.Any(e => e.LearnerId == userId))
                 return RedirectToAction("Content", new { id });
 
-            // Thêm learner vào lớp (dù miễn phí => IsPaid = true)
+            // Thêm learner vào lớp (miễn phí => IsPaid = true)
             _context.ClassroomEnrollments.Add(new ClassroomEnrollment
             {
                 LearnerId = userId,
@@ -769,6 +775,100 @@ namespace JapaneseLearningPlatform.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction("Content", new { id });
+        }
+
+        // Gửi tin nhắn chat (Learner/Partner)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SendChatMessage(int classroomId, string message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+                return BadRequest(new { error = "Tin nhắn không được để trống." });
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            // Kiểm tra quyền (Learner hoặc Partner của lớp này)
+            bool isMember = await _context.ClassroomEnrollments
+                .AnyAsync(e => e.InstanceId == classroomId && e.LearnerId == user.Id);
+
+            bool isPartner = await _context.ClassroomInstances
+                .AnyAsync(ci => ci.Id == classroomId && ci.Template.PartnerId == user.Id);
+
+            if (!isMember && !isPartner)
+                return Forbid();
+
+            try
+            {
+                var chatMessage = new ClassroomChatMessage
+                {
+                    ClassroomInstanceId = classroomId,
+                    UserId = user.Id,
+                    Message = message.Trim(),
+                    SentAt = DateTime.UtcNow
+                };
+
+                _context.ClassroomChatMessages.Add(chatMessage);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    userName = user.FullName ?? user.Email,
+                    message = chatMessage.Message,
+                    sentAt = chatMessage.SentAt.ToLocalTime().ToString("HH:mm dd/MM")
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"[SendChatMessage] Error khi gửi tin nhắn cho Classroom {classroomId}");
+                return StatusCode(500, new { error = $"Lỗi khi gửi tin nhắn: {ex.Message}" });
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetChatMessages(int classroomId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            bool isMember = await _context.ClassroomEnrollments
+                .AnyAsync(e => e.InstanceId == classroomId && e.LearnerId == user.Id);
+
+            bool isPartner = await _context.ClassroomInstances
+                .Include(ci => ci.Template)
+                .AnyAsync(ci => ci.Id == classroomId && ci.Template.PartnerId == user.Id);
+
+            if (!isMember && !isPartner)
+                return Forbid();
+
+            try
+            {
+                var currentUserId = _userManager.GetUserId(User);
+
+                var messages = await _context.ClassroomChatMessages
+                    .AsNoTracking()
+                    .Include(m => m.User)
+                    .Where(m => m.ClassroomInstanceId == classroomId)
+                    .OrderBy(m => m.SentAt)
+                    .Select(m => new
+                    {
+                        userName = !string.IsNullOrEmpty(m.User.FullName) ? m.User.FullName : m.User.Email,
+                        message = m.Message,
+                        sentAt = m.SentAt.ToLocalTime().ToString("HH:mm dd/MM"),
+                        isOwn = m.UserId == currentUserId  // Thêm cờ isOwn
+                    })
+                    .ToListAsync();
+
+                return Ok(messages);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"[GetChatMessages] Error khi tải tin nhắn của Classroom {classroomId}");
+                return StatusCode(500, new { error = $"Lỗi khi tải tin nhắn: {ex.Message}" });
+            }
         }
     }
 }

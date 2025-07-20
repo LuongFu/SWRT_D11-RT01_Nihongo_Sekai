@@ -1904,7 +1904,15 @@ namespace JapaneseLearningPlatform.Data.Seeds
     new() { Email="partner2@nihongo.com", FullName="Partner Two", Password="Test123@", Role="Partner", IsApproved = true },
     new() { Email="noobhoang@gmail.com", FullName="Hoang Nguyen", Password="Hoang2005.", Role="Learner" },
     new() { Email="hoang120305@gmail.com", FullName="Hoang Nguyen 2", Password="Hoang2005.", Role="Learner" },
-    new() { Email="banneduser@gmail.com", FullName="Banned User", Password="Test123!@#", Role="Learner", IsBanned = true }
+    new() { Email="banneduser@gmail.com", FullName="Banned User", Password="Test123!@#", Role="Learner", IsBanned = true },
+    new() { Email="khoivippro@gmail.com", FullName="giakhoiquang", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro2@gmail.com", FullName="giakhoiquang2", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro3@gmail.com", FullName="giakhoiquang3", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro4@gmail.com", FullName="giakhoiquang4", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro5@gmail.com", FullName="giakhoiquang5", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro6@gmail.com", FullName="giakhoiquang6", Password="Khoi2005.", Role="Learner" },
+    new() { Email="khoivippro7@gmail.com", FullName="giakhoiquang7", Password="Khoi2005.", Role="Learner" }
+
 };
 
 

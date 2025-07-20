@@ -189,6 +189,20 @@ namespace JapaneseLearningPlatform.Data
                 .HasConversion<int>();
             // --- END ---
 
+            // ClassroomChatMessage → ClassroomInstance
+            modelBuilder.Entity<ClassroomChatMessage>(entity =>
+            {
+                entity.HasOne(m => m.User)
+                    .WithMany()
+                    .HasForeignKey(m => m.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(m => m.ClassroomInstance)
+                    .WithMany(ci => ci.ChatMessages)
+                    .HasForeignKey(m => m.ClassroomInstanceId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -223,5 +237,6 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<ClassroomResource> ClassroomResources { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<ClassroomFeedback> ClassroomFeedbacks { get; set; }
+        public DbSet<ClassroomChatMessage> ClassroomChatMessages { get; set; }
     }
 }

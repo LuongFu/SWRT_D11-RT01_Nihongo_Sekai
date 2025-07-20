@@ -20,5 +20,6 @@ namespace JapaneseLearningPlatform.Models
         public ICollection<ClassroomEnrollment> Enrollments { get; set; } = new List<ClassroomEnrollment>();
         public List<FinalAssignment>? Assignments { get; set; }
         public List<ClassroomFeedback>? Feedbacks { get; set; }
+        public ICollection<ClassroomChatMessage> ChatMessages { get; set; } = new List<ClassroomChatMessage>();
     }
 }

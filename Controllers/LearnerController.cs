@@ -293,21 +293,21 @@ namespace JapaneseLearningPlatform.Controllers
             if (profilePicture == null || profilePicture.Length == 0)
             {
                 TempData["UploadError"] = "Vui lòng chọn ảnh trước khi tải lên.";
-                return RedirectToAction("Profile");
+                return RedirectToAction("EditProfile");
             }
 
             var extension = Path.GetExtension(profilePicture.FileName)?.ToLower();
             if (string.IsNullOrWhiteSpace(extension))
             {
                 TempData["UploadError"] = "File không hợp lệ. Không tìm thấy phần mở rộng.";
-                return RedirectToAction("Profile");
+                return RedirectToAction("EditProfile");
             }
 
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
             if (!allowedExtensions.Contains(extension))
             {
                 TempData["UploadError"] = "File không hợp lệ. Vui lòng chọn ảnh thuộc một trong các định dạng: .jpg, .jpeg, .png, .gif, .webp.";
-                return RedirectToAction("Profile");
+                return RedirectToAction("EditProfile");
             }
 
             var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "profile");
@@ -333,13 +333,14 @@ namespace JapaneseLearningPlatform.Controllers
             if (!result.Succeeded)
             {
                 TempData["UploadError"] = string.Join(", ", result.Errors.Select(e => e.Description));
-                return RedirectToAction("Profile");
+                return RedirectToAction("EditProfile");
             }
 
             await _signInManager.RefreshSignInAsync(user);
             TempData["SuccessMessage"] = "Ảnh đại diện đã được cập nhật!";
-            return RedirectToAction("Profile");
+            return RedirectToAction("EditProfile");
         }
+
 
         // 📚 Lớp học của tôi (hiển thị thời khóa biểu và partner)
         [HttpGet]
