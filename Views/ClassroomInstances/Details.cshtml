@@ -74,60 +74,81 @@
 
     <!-- ACTION BUTTONS -->
     <div class="mt-5 d-flex justify-content-center gap-3 pt-4">
+    @if (User.IsInRole(UserRoles.Partner))
+    {
+        <a asp-action="MySession"
+           asp-controller="ClassroomInstances"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Về danh sách lớp
+        </a>
+    }
+    else
+    {
         <a asp-action="Index"
            asp-controller="ClassroomInstances"
            class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Về danh sách lớp
         </a>
+    }
 
-        @if (User.Identity.IsAuthenticated)
+    @if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole(UserRoles.Partner))
         {
-            if (User.IsInRole(UserRoles.Partner))
+            <!-- Partner luôn có nút vào -->
+            <a asp-controller="ClassroomInstances"
+               asp-action="Content"
+               asp-route-id="@Model.Instance.Id"
+               class="btn btn-primary">
+                <i class="bi bi-journal-bookmark"></i> Vào khóa học
+            </a>
+        }
+        else if (User.IsInRole(UserRoles.Learner))
+        {
+            if (!Model.IsEnrolled)
             {
-                <!-- Partner luôn có nút vào -->
-                <a asp-controller="ClassroomInstances"
-                   asp-action="Content"
-                   asp-route-id="@Model.Instance.Id"
-                   class="btn btn-primary">
-                    <i class="bi bi-journal-bookmark"></i> Vào khóa học
-                </a>
-            }
-            else if (User.IsInRole(UserRoles.Learner))
-            {
-                if (!Model.IsEnrolled)
+                if (Model.Instance.Price == 0)
                 {
-                    if (Model.Instance.Price == 0)
+                    if (Model.EnrollmentCount >= Model.Instance.MaxCapacity)
                     {
+                        <!-- Lớp đã đủ học viên -->
+                        <button class="btn btn-secondary" disabled>
+                            <i class="bi bi-lock"></i> Số lượng học viên tham gia đã đủ
+                        </button>
+                    }
+                    else
+                    {
+                        <!-- Miễn phí -->
                         <button class="btn btn-success"
                                 onclick="joinFreeClass(@Model.Instance.Id)">
                             <i class="bi bi-person-plus"></i> Tham Gia Khóa Học
                         </button>
                     }
-                    else
-                    {
-                        <!-- Có phí: PayPal -->
-                        <a class="btn btn-success"
-                           asp-controller="ClassroomInstances"
-                           asp-action="PayWithPaypal"
-                           asp-route-id="@Model.Instance.Id">
-                            <i class="bi bi-credit-card"></i> Tham gia & Thanh toán PayPal
-                        </a>
-                    }
                 }
                 else
                 {
-                    <!-- Đã tham gia -->
-                    <a asp-controller="ClassroomInstances"
-                       asp-action="Content"
-                       asp-route-id="@Model.Instance.Id"
-                       class="btn btn-primary">
-                        <i class="bi bi-journal-bookmark-fill"></i> Vào khóa học
+                    <!-- Có phí: PayPal -->
+                    <a class="btn btn-success"
+                       asp-controller="ClassroomInstances"
+                       asp-action="PayWithPaypal"
+                       asp-route-id="@Model.Instance.Id">
+                        <i class="bi bi-credit-card"></i> Tham gia & Thanh toán PayPal
                     </a>
                 }
             }
+            else
+            {
+                <!-- Đã tham gia -->
+                <a asp-controller="ClassroomInstances"
+                   asp-action="Content"
+                   asp-route-id="@Model.Instance.Id"
+                   class="btn btn-primary">
+                    <i class="bi bi-journal-bookmark-fill"></i> Vào khóa học
+                </a>
+            }
         }
+    }
     </div>
-</div>
 
 @section Scripts {
     <script>

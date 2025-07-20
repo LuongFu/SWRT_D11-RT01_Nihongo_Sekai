@@ -217,9 +217,10 @@ namespace JapaneseLearningPlatform.Controllers
             instance.StartDate = vm.StartDate;
             instance.EndDate = vm.EndDate;
             instance.Price = vm.Price;
+            instance.MaxCapacity = vm.MaxCapacity;
             instance.GoogleMeetLink = vm.GoogleMeetLink;
             instance.ClassTime = TimeSpan.FromHours(vm.SessionDurationHours);
-            instance.Status = vm.Status; // ✅ Update status từ form
+            instance.Status = vm.Status; 
 
             _context.Update(instance);
             await _context.SaveChangesAsync();
@@ -742,7 +743,7 @@ namespace JapaneseLearningPlatform.Controllers
             return RedirectToAction("Content", new { id = instanceId });
         }
 
-
+        // Learner: Join free class
         [Authorize(Roles = UserRoles.Learner)]
         public async Task<IActionResult> JoinFreeClass(int id)
         {
@@ -754,11 +755,18 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (instance == null) return NotFound();
 
+            // Nếu lớp đã đầy
+            if (instance.Enrollments.Count >= instance.MaxCapacity)
+            {
+                TempData["ErrorMessage"] = "Số lượng học viên tham gia đã đủ.";
+                return RedirectToAction("Details", new { id });
+            }
+
             // Nếu đã tham gia rồi thì vào thẳng Content
             if (instance.Enrollments.Any(e => e.LearnerId == userId))
                 return RedirectToAction("Content", new { id });
 
-            // Thêm learner vào lớp (dù miễn phí => IsPaid = true)
+            // Thêm learner vào lớp (miễn phí => IsPaid = true)
             _context.ClassroomEnrollments.Add(new ClassroomEnrollment
             {
                 LearnerId = userId,
