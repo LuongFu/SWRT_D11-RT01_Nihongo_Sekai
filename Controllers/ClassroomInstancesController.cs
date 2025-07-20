@@ -456,11 +456,9 @@ namespace JapaneseLearningPlatform.Controllers
                 Feedbacks = feedbacks
             };
 
+            ViewBag.CurrentUserId = _userManager.GetUserId(User);
             return View(vm);
         }
-
-
-
 
         [Authorize(Roles = UserRoles.Learner)]
         public async Task<IActionResult> PayWithPaypal(int id)
@@ -836,7 +834,6 @@ namespace JapaneseLearningPlatform.Controllers
             if (user == null)
                 return Unauthorized();
 
-            // Kiểm tra user có quyền xem chat
             bool isMember = await _context.ClassroomEnrollments
                 .AnyAsync(e => e.InstanceId == classroomId && e.LearnerId == user.Id);
 
@@ -849,18 +846,19 @@ namespace JapaneseLearningPlatform.Controllers
 
             try
             {
+                var currentUserId = _userManager.GetUserId(User);
+
                 var messages = await _context.ClassroomChatMessages
                     .AsNoTracking()
                     .Include(m => m.User)
                     .Where(m => m.ClassroomInstanceId == classroomId)
-                    .OrderByDescending(m => m.SentAt)
-                    .Take(100) // Lấy 100 tin gần nhất
-                    .OrderBy(m => m.SentAt) // Sau đó sắp xếp lại tăng dần
+                    .OrderBy(m => m.SentAt)
                     .Select(m => new
                     {
                         userName = !string.IsNullOrEmpty(m.User.FullName) ? m.User.FullName : m.User.Email,
                         message = m.Message,
-                        sentAt = m.SentAt.ToLocalTime().ToString("HH:mm dd/MM")
+                        sentAt = m.SentAt.ToLocalTime().ToString("HH:mm dd/MM"),
+                        isOwn = m.UserId == currentUserId  // Thêm cờ isOwn
                     })
                     .ToListAsync();
 

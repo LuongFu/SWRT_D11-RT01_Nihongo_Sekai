@@ -51,7 +51,8 @@ namespace JapaneseLearningPlatform.Hubs
                              .SendAsync("ReceiveMessage",
                                         userName,
                                         message.Trim(),
-                                        chatMessage.SentAt.ToLocalTime().ToString("HH:mm dd/MM"));
+                                        chatMessage.SentAt.ToLocalTime().ToString("HH:mm dd/MM"),
+                                        userId);
             }
             catch (Exception ex)
             {
