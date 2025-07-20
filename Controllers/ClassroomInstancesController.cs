@@ -778,5 +778,99 @@ namespace JapaneseLearningPlatform.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Content", new { id });
         }
+
+        // Gửi tin nhắn chat (Learner/Partner)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SendChatMessage(int classroomId, string message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+                return BadRequest(new { error = "Tin nhắn không được để trống." });
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            // Kiểm tra quyền (Learner hoặc Partner của lớp này)
+            bool isMember = await _context.ClassroomEnrollments
+                .AnyAsync(e => e.InstanceId == classroomId && e.LearnerId == user.Id);
+
+            bool isPartner = await _context.ClassroomInstances
+                .AnyAsync(ci => ci.Id == classroomId && ci.Template.PartnerId == user.Id);
+
+            if (!isMember && !isPartner)
+                return Forbid();
+
+            try
+            {
+                var chatMessage = new ClassroomChatMessage
+                {
+                    ClassroomInstanceId = classroomId,
+                    UserId = user.Id,
+                    Message = message.Trim(),
+                    SentAt = DateTime.UtcNow
+                };
+
+                _context.ClassroomChatMessages.Add(chatMessage);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    userName = user.FullName ?? user.Email,
+                    message = chatMessage.Message,
+                    sentAt = chatMessage.SentAt.ToLocalTime().ToString("HH:mm dd/MM")
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"[SendChatMessage] Error khi gửi tin nhắn cho Classroom {classroomId}");
+                return StatusCode(500, new { error = $"Lỗi khi gửi tin nhắn: {ex.Message}" });
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetChatMessages(int classroomId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            // Kiểm tra user có quyền xem chat
+            bool isMember = await _context.ClassroomEnrollments
+                .AnyAsync(e => e.InstanceId == classroomId && e.LearnerId == user.Id);
+
+            bool isPartner = await _context.ClassroomInstances
+                .Include(ci => ci.Template)
+                .AnyAsync(ci => ci.Id == classroomId && ci.Template.PartnerId == user.Id);
+
+            if (!isMember && !isPartner)
+                return Forbid();
+
+            try
+            {
+                var messages = await _context.ClassroomChatMessages
+                    .AsNoTracking()
+                    .Include(m => m.User)
+                    .Where(m => m.ClassroomInstanceId == classroomId)
+                    .OrderByDescending(m => m.SentAt)
+                    .Take(100) // Lấy 100 tin gần nhất
+                    .OrderBy(m => m.SentAt) // Sau đó sắp xếp lại tăng dần
+                    .Select(m => new
+                    {
+                        userName = !string.IsNullOrEmpty(m.User.FullName) ? m.User.FullName : m.User.Email,
+                        message = m.Message,
+                        sentAt = m.SentAt.ToLocalTime().ToString("HH:mm dd/MM")
+                    })
+                    .ToListAsync();
+
+                return Ok(messages);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"[GetChatMessages] Error khi tải tin nhắn của Classroom {classroomId}");
+                return StatusCode(500, new { error = $"Lỗi khi tải tin nhắn: {ex.Message}" });
+            }
+        }
     }
 }

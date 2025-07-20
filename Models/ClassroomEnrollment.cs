@@ -13,6 +13,7 @@
         public DateTime EnrolledAt { get; set; }
         public bool HasLeft { get; set; }                   // Học viên đã rút khỏi lớp chưa
         public bool IsPaid { get; set; }                    // Đã thanh toán hay chưa (nếu lớp tính phí)
-    }
 
+
+    }
 }

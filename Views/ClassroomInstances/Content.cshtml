@@ -56,6 +56,12 @@
                 Feedback
             </a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="chat-tab" data-bs-toggle="tab" href="#chat" role="tab"
+               style="padding: 4px 10px; font-size: 14px; border: none; background: none;">
+                Chat
+            </a>
+        </li>
     </ul>
 
     <!-- 🔸 Tab Contents -->
@@ -65,6 +71,14 @@
             <div class="p-3">
                 <h5 class="fw-bold">Mô tả lớp học</h5>
                 <p class="text-muted">Hiện không có sẵn.</p>
+            </div>
+        </div>
+        <!-- 🔹 Chat -->
+        <div class="tab-pane fade" id="chat" role="tabpanel">
+            <div class="p-3">
+                <div id="chatMessages" class="border p-3" style="height: 300px; overflow-y: auto;"></div>
+                <input id="chatInput" class="form-control mt-2" placeholder="Nhập tin nhắn..." />
+                <button id="sendChatBtn" class="btn btn-primary mt-2">Gửi</button>
             </div>
         </div>
 
@@ -614,3 +628,100 @@
         }
     }
 </script>
+
+@section Scripts {
+    <!-- Load SignalR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const classroomId = @Model.Instance.Id;
+            const userName = '@(ViewBag.CurrentUserName ?? User.Identity.Name)';
+
+            const chatBox = document.getElementById("chatMessages");
+            const chatInput = document.getElementById("chatInput");
+            const sendBtn = document.getElementById("sendChatBtn");
+            let messagesLoaded = false;
+
+            if (!chatBox || !chatInput || !sendBtn) {
+                console.error("❌ Không tìm thấy phần tử chat trong DOM!");
+                return;
+            }
+
+            // Escape HTML để chống XSS
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            // Hàm thêm tin nhắn vào chat box
+            function appendMessage(user, message, sentAt = null) {
+                const safeUser = escapeHtml(user);
+                const safeMessage = escapeHtml(message);
+                const timeHtml = sentAt ? ` <small class="text-muted">(${sentAt})</small>` : '';
+                const div = document.createElement('div');
+                div.innerHTML = `<b>${safeUser}</b>: ${safeMessage}${timeHtml}`;
+                chatBox.appendChild(div);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            // Load lịch sử tin nhắn
+            async function loadMessages() {
+                if (messagesLoaded) return; // Load 1 lần duy nhất
+                try {
+                    const res = await fetch(`/ClassroomInstances/GetChatMessages?classroomId=${classroomId}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        chatBox.innerHTML = "";
+                        data.forEach(m => appendMessage(m.userName, m.message, m.sentAt));
+                        messagesLoaded = true;
+                    }
+                } catch (err) {
+                    console.error("LoadMessages error:", err);
+                }
+            }
+
+            // Kết nối SignalR
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl(`/classroomChatHub?classroomId=${classroomId}`)
+                .build();
+
+            connection.on("ReceiveMessage", (user, message, sentAt) => {
+                appendMessage(user, message, sentAt);
+            });
+
+            connection.start()
+                .then(() => console.log("✅ SignalR connected"))
+                .catch(err => console.error("❌ SignalR connect error:", err));
+
+            // Gửi tin nhắn
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                if (connection.state !== signalR.HubConnectionState.Connected) {
+                    alert("Kết nối chưa sẵn sàng. Vui lòng thử lại.");
+                    return;
+                }
+
+                connection.invoke("SendMessage", classroomId, userName, message)
+                    .then(() => chatInput.value = '')
+                    .catch(err => console.error("❌ SendMessage error:", err));
+            }
+
+            sendBtn.addEventListener("click", sendMessage);
+            chatInput.addEventListener("keydown", e => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Load tin nhắn khi mở tab Chat
+            document.querySelector('#chat-tab')?.addEventListener('click', loadMessages);
+        });
+    </script>
+}

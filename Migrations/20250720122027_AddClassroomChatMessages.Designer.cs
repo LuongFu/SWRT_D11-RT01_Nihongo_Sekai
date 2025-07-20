@@ -4,6 +4,7 @@ using JapaneseLearningPlatform.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JapaneseLearningPlatform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250720122027_AddClassroomChatMessages")]
+    partial class AddClassroomChatMessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,9 +237,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.Property<int>("ClassroomInstanceId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClassroomInstanceId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -252,8 +252,6 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClassroomInstanceId");
-
-                    b.HasIndex("ClassroomInstanceId1");
 
                     b.HasIndex("UserId");
 
@@ -1155,19 +1153,15 @@ namespace JapaneseLearningPlatform.Migrations
             modelBuilder.Entity("JapaneseLearningPlatform.Models.ClassroomChatMessage", b =>
                 {
                     b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", "ClassroomInstance")
-                        .WithMany()
-                        .HasForeignKey("ClassroomInstanceId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("JapaneseLearningPlatform.Models.ClassroomInstance", null)
                         .WithMany("ChatMessages")
-                        .HasForeignKey("ClassroomInstanceId1");
+                        .HasForeignKey("ClassroomInstanceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("ClassroomInstance");
