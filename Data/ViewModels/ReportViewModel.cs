@@ -1,4 +1,5 @@
 ﻿using JapaneseLearningPlatform.Data.Enums;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,8 +24,14 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         [MaxLength(2000, ErrorMessage = "Tối đa 2000 ký tự.")]
         public string Message { get; set; } = null!;
 
+        // Bind recaptcha token from form
+        [BindProperty]
+        [Required(ErrorMessage = "Vui lòng xác minh rằng bạn không phải robot.")]
+        public string RecaptchaToken { get; set; } = null!;
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
+            // 1) If billing, order number is required
             if (Subject == ReportSubject.Billing)
             {
                 if (string.IsNullOrWhiteSpace(OrderNumber))
@@ -34,7 +41,7 @@ namespace JapaneseLearningPlatform.Data.ViewModels
                         new[] { nameof(OrderNumber) }
                     );
                 }
-            }
+            }            
         }
     }
 }

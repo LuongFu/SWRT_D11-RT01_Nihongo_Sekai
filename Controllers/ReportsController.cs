@@ -20,6 +20,10 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ReportsController> _logger;
 
+        // Hard‑code ở đây
+        private const string RecaptchaSiteKey = "6LeiyogrAAAAAHjo-FHuRqMRrGnBo0s9wLdC4jBA";
+        private const string RecaptchaSecretKey = "6LeiyogrAAAAAH5aQagrRsWJdUjKJ-DEoK7AFv2T";
+
         public ReportsController(
             AppDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -32,67 +36,129 @@ namespace JapaneseLearningPlatform.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Contact()
+        public async Task<IActionResult> Contact()
         {
-            // Trả về View với VM rỗng, để form bind đúng ReportViewModel
-            return View("~/Views/SidePages/Contact.cshtml", new ReportViewModel());
-        }
+            var vm = new ReportViewModel();
 
+            var isAuthenticated = User.Identity?.IsAuthenticated == true;
+            var isAdmin = isAuthenticated && User.IsInRole("Admin");
+            var isLearner = isAuthenticated && User.IsInRole("Learner");
+            var isPartner = isAuthenticated && User.IsInRole("Partner");
+            var isGuest = !isAuthenticated;
+
+            ViewBag.IsAdminViewing = isAdmin;
+            ViewBag.IsReadonlyUser = isLearner || isPartner;
+            ViewBag.IsGuest = isGuest;
+            // truyền SiteKey xuống View
+            ViewBag.RecaptchaSiteKey = RecaptchaSiteKey;
+
+            if (isLearner || isPartner)
+            {
+                var appUser = await _userManager.GetUserAsync(User)!;
+                //ViewBag.PrefillName = appUser.FullName;
+                //ViewBag.PrefillEmail = appUser.Email;
+                vm.FullName = appUser.FullName;
+                vm.Email = appUser.Email;
+            }
+            else if (isGuest)
+            {
+                ViewBag.PrefillName = "";
+                ViewBag.PrefillEmail = $"guest_{Guid.NewGuid():N}@example.com";
+            }
+            else // admin
+            {
+                ViewBag.PrefillName = "";
+                ViewBag.PrefillEmail = "";
+            }
+
+            //ModelState.Remove(nameof(vm.FullName));
+            //ModelState.Remove(nameof(vm.Email));
+
+            return View("~/Views/SidePages/Contact.cshtml", vm);
+        }
 
         // POST: Reports/Submit
         [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<IActionResult> Submit(ReportViewModel vm)
         {
-            // 1. Lấy token reCAPTCHA do client gửi lên
-            var gRecaptchaResponse = Request.Form["g-recaptcha-response"].FirstOrDefault() ?? "";
-
-            // 2. Hard‑code secret key của bạn
-            const string secretKey = "6LeiyogrAAAAAH5aQagrRsWJdUjKJ-DEoK7AFv2T";
-
-            // 3. Gửi request verify lên Google
-            using var client = new HttpClient();
-            var payload = new FormUrlEncodedContent(new[]
+            // 0) Learner/Partner must match profile
+            if (User.Identity?.IsAuthenticated == true
+                && (User.IsInRole("Learner") || User.IsInRole("Partner")))
             {
-        new KeyValuePair<string,string>("secret",   secretKey),
-        new KeyValuePair<string,string>("response", gRecaptchaResponse)
-    });
-            var response = await client.PostAsync(
-                "https://www.google.com/recaptcha/api/siteverify",
-                payload
-            );
-            var recaptcha = await response.Content
-                .ReadFromJsonAsync<RecaptchaResponse>();
-
-            // 4. Nếu verify thất bại, thêm lỗi chung
-            if (recaptcha == null || !recaptcha.success)
-            {
-                ModelState.AddModelError(
-                    key: string.Empty,
-                    errorMessage: "Vui lòng xác minh rằng bạn không phải robot."
-                );
+                var appUser = await _userManager.GetUserAsync(User)!;
+                if (vm.FullName != appUser.FullName)
+                    ModelState.AddModelError(nameof(vm.FullName),
+                        $"Họ và tên của bạn là: {appUser.FullName}");
+                if (vm.Email != appUser.Email)
+                    ModelState.AddModelError(nameof(vm.Email),
+                        $"Email của bạn là: {appUser.Email}");
             }
 
-            // 5. Nếu có bất kỳ lỗi nào (bao gồm reCAPTCHA), trả về lại view để show lỗi
+            // 1) Verify reCAPTCHA
+            var token = vm.RecaptchaToken;
+            using var client = new HttpClient();
+            var form = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string,string>("secret",   RecaptchaSecretKey),
+                new KeyValuePair<string,string>("response", token)
+            });
+            var googleRes = await client.PostAsync(
+                "https://www.google.com/recaptcha/api/siteverify", form);
+            var captchaResult = await googleRes.Content
+                .ReadFromJsonAsync<RecaptchaResponse>();
+            if (captchaResult == null || !captchaResult.success)
+            {
+                ModelState.AddModelError(nameof(vm.RecaptchaToken),
+                    "Vui lòng xác minh rằng bạn không phải robot.");
+            }
+
+            // 2) Nếu có lỗi, rebuild ViewBag và trả về lại view
             if (!ModelState.IsValid)
             {
-                // Log warnings
+                var isAuth = User.Identity?.IsAuthenticated == true;
+                var isAdmin = isAuth && User.IsInRole("Admin");
+                var isLear = isAuth && User.IsInRole("Learner");
+                var isPart = isAuth && User.IsInRole("Partner");
+                var isGuest = !isAuth;
+
+                ViewBag.IsAdminViewing = isAdmin;
+                ViewBag.IsReadonlyUser = isLear || isPart;
+                ViewBag.IsGuest = isGuest;
+                ViewBag.RecaptchaSiteKey = RecaptchaSiteKey;
+
+                if (isLear || isPart)
+                {
+                    var u = await _userManager.GetUserAsync(User)!;
+                    ViewBag.PrefillName = u.FullName;
+                    ViewBag.PrefillEmail = u.Email;
+                }
+                else if (isGuest)
+                {
+                    ViewBag.PrefillName = "";
+                    ViewBag.PrefillEmail = $"guest_{Guid.NewGuid():N}@example.com";
+                }
+                else
+                {
+                    ViewBag.PrefillName = "";
+                    ViewBag.PrefillEmail = "";
+                }
+
                 foreach (var kv in ModelState)
                     foreach (var err in kv.Value.Errors)
-                        _logger.LogWarning(
-                            "Field \"{Field}\" invalid: {Error}",
-                            kv.Key, err.ErrorMessage
-                        );
+                        _logger.LogWarning("Field {Field} invalid: {Error}",
+                                           kv.Key, err.ErrorMessage);
 
                 TempData["ToastMessage"] = "Gửi tin nhắn thất bại. Vui lòng kiểm tra lại.";
                 TempData["ToastType"] = "error";
-                return RedirectToAction("Contact");
+
+                return View("~/Views/SidePages/Contact.cshtml", vm);
             }
 
-            // 6. Không có lỗi — lưu vào database
-            var role = User?.Identity?.IsAuthenticated == true
-                ? (User.IsInRole("Learner") ? "Learner"
-                 : User.IsInRole("Partner") ? "Partner"
-                 : "Guest")
+            // 3) Lưu Report
+            var role = User.Identity?.IsAuthenticated == true
+                ? User.IsInRole("Learner") ? "Learner"
+                  : User.IsInRole("Partner") ? "Partner"
+                  : "Guest"
                 : "Guest";
 
             var report = new Report
@@ -114,14 +180,15 @@ namespace JapaneseLearningPlatform.Controllers
             return RedirectToAction("Contact");
         }
 
-        // POCO để nhận JSON từ Google
+        // POCO for Google’s JSON
         public class RecaptchaResponse
         {
             public bool success { get; set; }
-            public string challenge_ts { get; set; }  // timestamp (có thể omit nếu không dùng)
+            public string challenge_ts { get; set; }
             public string hostname { get; set; }
             public string[]? error_codes { get; set; }
         }
+
 
 
         // GET: Reports (Learner/Partner)

@@ -1,4 +1,4 @@
-/* contact.css */
+﻿/* contact.css */
 
 /* Page header */
 .page-header {
@@ -21,88 +21,123 @@
 }
 
 /* Contact options grid */
-.contact-options-section {
-    padding: var(--spacing-3xl) 0;
-    background: var(--color-gray-50);
-}
 
-.contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--spacing-xl);
-    margin-top: var(--spacing-xl);
-}
-
-.contact-card {
-    background: var(--color-white);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-2xl);
-    text-align: center;
-    box-shadow: var(--shadow-md);
-    transition: transform var(--transition-normal);
-}
-
-    .contact-card:hover {
-        transform: translateY(-5px);
-    }
-
-.contact-icon {
-    width: 64px;
-    height: 64px;
-    background: var(--color-primary-100);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto var(--spacing-lg);
-    color: var(--color-primary);
-}
-
-    .contact-icon svg {
-        width: 32px;
-        height: 32px;
-    }
-
-.contact-title {
-    font-size: 1.25rem;
-    margin-bottom: var(--spacing-sm);
-    color: var(--color-gray-900);
-}
-
-.contact-description {
-    color: var(--color-gray-600);
-    margin-bottom: var(--spacing-lg);
-    line-height: 1.6;
-}
-
-/* Contact form */
+/* ================================================
+   CHỈ DÀNH RIÊNG CHO FORM TRONG <section class="contact-form-section">
+   ================================================ */
 .contact-form-section {
-    padding: var(--spacing-3xl) 0;
-    background: var(--color-white);
+    font-family: "Source Sans Pro", sans-serif;
+    background-color: #fff1f1;
+    padding: 2rem 0;
 }
 
-.form-content {
-    max-width: 600px;
-    margin: 0 auto;
-}
+    .contact-form-section .contact-form-card {
+        max-width: 700px;
+        margin: 0 auto;
+        border-radius: 12px;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
 
-.form-header {
-    text-align: center;
-    margin-bottom: var(--spacing-2xl);
-}
+        .contact-form-section .contact-form-card::before {
+            content: "";
+            position: absolute;
+            top: -20%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: url('/images/sakura-petal.svg') no-repeat center;
+            opacity: 0.05;
+            transform: rotate(25deg);
+        }
 
-.contact-form {
-    background: var(--color-white);
-    padding: var(--spacing-2xl);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
-}
+    /* ==== Các nhóm form ==== */
+    .contact-form-section .contact-form .form-group {
+        margin-bottom: 1.2rem;
+        transition: transform 0.2s;
+    }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-lg);
-}
+        .contact-form-section .contact-form .form-group:hover {
+            transform: translateY(-2px);
+        }
+
+    .contact-form-section .contact-form label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+    }
+
+    /* ==== Các input/select/textarea ==== */
+    .contact-form-section .contact-form input.form-input,
+    .contact-form-section .contact-form select.form-select,
+    .contact-form-section .contact-form textarea.form-textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .contact-form-section .contact-form input:focus,
+    .contact-form-section .contact-form select:focus,
+    .contact-form-section .contact-form textarea:focus {
+        border-color: #f5365c;
+        box-shadow: 0 0 8px rgba(245, 54, 92, 0.2);
+        outline: none;
+    }
+
+    /* ==== Nút bấm ==== */
+    .contact-form-section .contact-form .btn-primary {
+        background-color: #f5365c;
+        color: #fff;
+        border: none;
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+    }
+
+        .contact-form-section .contact-form .btn-primary:hover {
+            background-color: #d52d50;
+            transform: translateY(-2px);
+        }
+
+    .contact-form-section .contact-form .btn-outline {
+        background: transparent;
+        color: #f5365c;
+        border: 2px solid #f5365c;
+        padding: 0.7rem 1.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+    }
+
+        .contact-form-section .contact-form .btn-outline:hover {
+            background-color: #f5365c;
+            color: #fff;
+        }
+
+    /* ==== Ẩn field OrderNumber mặc định ==== */
+    .contact-form-section .contact-form #orderNumberGroup {
+        display: none;
+    }
+
+    /* ==== Checkbox custom ==== */
+    .contact-form-section .contact-form .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        user-select: none;
+    }
+
+        .contact-form-section .contact-form .checkbox-label input {
+            width: 1.1rem;
+            height: 1.1rem;
+            accent-color: #f5365c;
+        }
 
 /* Office locations */
 .office-locations-section {

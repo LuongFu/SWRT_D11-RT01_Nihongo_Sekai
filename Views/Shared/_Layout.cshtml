@@ -294,7 +294,7 @@
             const navBadge = document.getElementById('nav-report-badge');
             if (total > 0) {
               navBadge.style.display = 'inline-block';
-              navBadge.innerText     = total < 10 ? total : '9+';
+              navBadge.innerText     = total < 100 ? total : '99+';
             } else {
               navBadge.style.display = 'none';
             }
@@ -306,7 +306,7 @@
               const cnt   = entry ? entry.Count : 0;
               if (cnt > 0) {
                 el.style.display = 'inline-block';
-                // el.innerText     = cnt < 10 ? cnt : '9+';
+                el.innerText     = cnt < 100 ? cnt : '99+';
               } else {
                 el.style.display = 'none';
               }
@@ -318,14 +318,13 @@
 
         document.addEventListener('DOMContentLoaded', () => {
           refreshReportBadges();
-          setInterval(refreshReportBadges, 30000);
+          setInterval(refreshReportBadges, 1000);
         });
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
