@@ -20,6 +20,10 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ReportsController> _logger;
 
+        // Hard‑code ở đây
+        private const string RecaptchaSiteKey = "6LeiyogrAAAAAHjo-FHuRqMRrGnBo0s9wLdC4jBA";
+        private const string RecaptchaSecretKey = "6LeiyogrAAAAAH5aQagrRsWJdUjKJ-DEoK7AFv2T";
+
         public ReportsController(
             AppDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -30,34 +34,131 @@ namespace JapaneseLearningPlatform.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Contact()
+        {
+            var vm = new ReportViewModel();
+
+            var isAuthenticated = User.Identity?.IsAuthenticated == true;
+            var isAdmin = isAuthenticated && User.IsInRole("Admin");
+            var isLearner = isAuthenticated && User.IsInRole("Learner");
+            var isPartner = isAuthenticated && User.IsInRole("Partner");
+            var isGuest = !isAuthenticated;
+
+            ViewBag.IsAdminViewing = isAdmin;
+            ViewBag.IsReadonlyUser = isLearner || isPartner;
+            ViewBag.IsGuest = isGuest;
+            // truyền SiteKey xuống View
+            ViewBag.RecaptchaSiteKey = RecaptchaSiteKey;
+
+            if (isLearner || isPartner)
+            {
+                var appUser = await _userManager.GetUserAsync(User)!;
+                //ViewBag.PrefillName = appUser.FullName;
+                //ViewBag.PrefillEmail = appUser.Email;
+                vm.FullName = appUser.FullName;
+                vm.Email = appUser.Email;
+            }
+            else if (isGuest)
+            {
+                ViewBag.PrefillName = "";
+                ViewBag.PrefillEmail = $"guest_{Guid.NewGuid():N}@example.com";
+            }
+            else // admin
+            {
+                ViewBag.PrefillName = "";
+                ViewBag.PrefillEmail = "";
+            }
+
+            //ModelState.Remove(nameof(vm.FullName));
+            //ModelState.Remove(nameof(vm.Email));
+
+            return View("~/Views/SidePages/Contact.cshtml", vm);
+        }
+
         // POST: Reports/Submit
         [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<IActionResult> Submit(ReportViewModel vm)
         {
+            // 0) Learner/Partner must match profile
+            if (User.Identity?.IsAuthenticated == true
+                && (User.IsInRole("Learner") || User.IsInRole("Partner")))
+            {
+                var appUser = await _userManager.GetUserAsync(User)!;
+                if (vm.FullName != appUser.FullName)
+                    ModelState.AddModelError(nameof(vm.FullName),
+                        $"Họ và tên của bạn là: {appUser.FullName}");
+                if (vm.Email != appUser.Email)
+                    ModelState.AddModelError(nameof(vm.Email),
+                        $"Email của bạn là: {appUser.Email}");
+            }
+
+            // 1) Verify reCAPTCHA
+            var token = vm.RecaptchaToken;
+            using var client = new HttpClient();
+            var form = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string,string>("secret",   RecaptchaSecretKey),
+                new KeyValuePair<string,string>("response", token)
+            });
+            var googleRes = await client.PostAsync(
+                "https://www.google.com/recaptcha/api/siteverify", form);
+            var captchaResult = await googleRes.Content
+                .ReadFromJsonAsync<RecaptchaResponse>();
+            if (captchaResult == null || !captchaResult.success)
+            {
+                ModelState.AddModelError(nameof(vm.RecaptchaToken),
+                    "Vui lòng xác minh rằng bạn không phải robot.");
+            }
+
+            // 2) Nếu có lỗi, rebuild ViewBag và trả về lại view
             if (!ModelState.IsValid)
             {
-                // Log chi tiết các lỗi validation
-                foreach (var kv in ModelState)
+                var isAuth = User.Identity?.IsAuthenticated == true;
+                var isAdmin = isAuth && User.IsInRole("Admin");
+                var isLear = isAuth && User.IsInRole("Learner");
+                var isPart = isAuth && User.IsInRole("Partner");
+                var isGuest = !isAuth;
+
+                ViewBag.IsAdminViewing = isAdmin;
+                ViewBag.IsReadonlyUser = isLear || isPart;
+                ViewBag.IsGuest = isGuest;
+                ViewBag.RecaptchaSiteKey = RecaptchaSiteKey;
+
+                if (isLear || isPart)
                 {
-                    foreach (var err in kv.Value.Errors)
-                    {
-                        _logger.LogWarning("Field \"{Field}\" invalid: {Error}", kv.Key, err.ErrorMessage);
-                    }
+                    var u = await _userManager.GetUserAsync(User)!;
+                    ViewBag.PrefillName = u.FullName;
+                    ViewBag.PrefillEmail = u.Email;
+                }
+                else if (isGuest)
+                {
+                    ViewBag.PrefillName = "";
+                    ViewBag.PrefillEmail = $"guest_{Guid.NewGuid():N}@example.com";
+                }
+                else
+                {
+                    ViewBag.PrefillName = "";
+                    ViewBag.PrefillEmail = "";
                 }
 
-                // Lưu thông báo thất bại
+                foreach (var kv in ModelState)
+                    foreach (var err in kv.Value.Errors)
+                        _logger.LogWarning("Field {Field} invalid: {Error}",
+                                           kv.Key, err.ErrorMessage);
+
                 TempData["ToastMessage"] = "Gửi tin nhắn thất bại. Vui lòng kiểm tra lại.";
                 TempData["ToastType"] = "error";
 
-                // Trả về view ban đầu (hoặc redirect) để hiển thị validation messages
-                return Redirect("/Contact");
+                return View("~/Views/SidePages/Contact.cshtml", vm);
             }
 
-            // Xác định vai trò
-            var role = User?.Identity?.IsAuthenticated == true
-                ? (User.IsInRole("Learner") ? "Learner"
-                   : User.IsInRole("Partner") ? "Partner"
-                   : "Guest")
+            // 3) Lưu Report
+            var role = User.Identity?.IsAuthenticated == true
+                ? User.IsInRole("Learner") ? "Learner"
+                  : User.IsInRole("Partner") ? "Partner"
+                  : "Guest"
                 : "Guest";
 
             var report = new Report
@@ -65,22 +166,30 @@ namespace JapaneseLearningPlatform.Controllers
                 FullName = vm.FullName,
                 Email = vm.Email,
                 Subject = vm.Subject,
-                OrderNumber = vm.OrderNumber,    // có thể null
+                OrderNumber = vm.OrderNumber,
                 Message = vm.Message,
                 Role = role,
                 SubmittedAt = DateTime.UtcNow,
                 IsResolved = false
             };
-
             _context.Reports.Add(report);
             await _context.SaveChangesAsync();
 
-            // Lưu thông báo thành công
             TempData["ToastMessage"] = "Gửi tin nhắn thành công! Chúng tôi sẽ phản hồi sớm.";
             TempData["ToastType"] = "success";
-
-            return Redirect("/Contact");
+            return RedirectToAction("Contact");
         }
+
+        // POCO for Google’s JSON
+        public class RecaptchaResponse
+        {
+            public bool success { get; set; }
+            public string challenge_ts { get; set; }
+            public string hostname { get; set; }
+            public string[]? error_codes { get; set; }
+        }
+
+
 
         // GET: Reports (Learner/Partner)
         [Authorize(Roles = "Learner,Partner")]
@@ -191,5 +300,23 @@ namespace JapaneseLearningPlatform.Controllers
 
             return RedirectToAction(nameof(AdminIndex));
         }
+
+        [HttpGet, Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUnresolvedCounts()
+        {
+            var total = await _context.Reports.CountAsync(r => !r.IsResolved);
+            var bySubj = await _context.Reports
+                .Where(r => !r.IsResolved)
+                .GroupBy(r => r.Subject)
+                .Select(g => new {
+                    Subject = g.Key.ToString(),
+                    Count = g.Count()
+                })
+                .Where(x => x.Count > 0)
+                .ToListAsync();
+            return Json(new { total, bySubj });
+        }
+
     }
 }
+
