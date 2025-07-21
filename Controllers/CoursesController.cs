@@ -24,10 +24,10 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrdersService _orderService;
         private readonly ICoursesService _courseService;
-        private readonly ICertificateService _certService;
-        private readonly IEmailSender _emailSender;
+        //private readonly ICertificateService _certService;
+        //private readonly IEmailSender _emailSender;
         private readonly ICourseRatingService _ratingService;
-        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService, ICoursesService courseService, ICertificateService certService, IEmailSender emailSender, ICourseRatingService ratingService)
+        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService, ICoursesService courseService, ICourseRatingService ratingService)
         {
             _service = service;
             _shoppingCart = shoppingCart;
@@ -35,8 +35,8 @@ namespace JapaneseLearningPlatform.Controllers
             _httpContextAccessor = httpContextAccessor;
             _orderService = orderService;
             _courseService = courseService;
-            _certService = certService;     // gán
-            _emailSender = emailSender;
+            //_certService = certService;     // gán
+            //_emailSender = emailSender;
             _ratingService = ratingService;
         }
 
@@ -316,14 +316,26 @@ namespace JapaneseLearningPlatform.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized(new { success = false });
 
-            // 1) Cập nhật tiến độ content
+            // Tính progress hiện tại
             int totalItems = await _context.CourseContentItems
                 .CountAsync(ci => ci.Section.CourseId == model.CourseId);
 
+            int completedCountBefore = await _context.CourseContentProgresses
+                .CountAsync(p => p.UserId == userId && p.CourseId == model.CourseId && p.IsCompleted);
+
+            double currentProgress = totalItems > 0 ? (completedCountBefore / (double)totalItems) * 100 : 0;
+
+            // Nếu đã đạt 100% thì bỏ qua việc uncheck
+            if (currentProgress >= 100 && !model.IsCompleted)
+            {
+                return Json(new { success = false, progress = 100 });
+            }
+
+            // Tìm content progress hiện có
             var existing = await _context.CourseContentProgresses
-                .FirstOrDefaultAsync(p => p.UserId == userId
-                                       && p.CourseId == model.CourseId
-                                       && p.ContentItemId == model.ContentItemId);
+                .FirstOrDefaultAsync(p => p.UserId == userId &&
+                                          p.CourseId == model.CourseId &&
+                                          p.ContentItemId == model.ContentItemId);
 
             if (existing == null)
             {
@@ -345,66 +357,16 @@ namespace JapaneseLearningPlatform.Controllers
 
             await _context.SaveChangesAsync();
 
-            // 2) Tính progress mới
+            // Tính progress % mới
             int completedCount = await _context.CourseContentProgresses
-                .CountAsync(p => p.UserId == userId
-                              && p.CourseId == model.CourseId
-                              && p.IsCompleted);
-            double progress = totalItems > 0
-                ? (completedCount / (double)totalItems) * 100
-                : 0;
-            if (progress > 100) progress = 100;
+                .CountAsync(p => p.UserId == userId && p.CourseId == model.CourseId && p.IsCompleted);
 
-            // 3) Nếu vừa đạt 100% và chưa có cert, sinh certificate + gửi mail
-            // Kiểm tra xem đã có thành tích chưa
-            bool hasAchievement = await _context.CourseCertificates
-                .AnyAsync(c => c.CourseId == model.CourseId && c.UserId == userId);
-            if (!hasAchievement)
-            {
-                // Lưu thành tích vào bảng CourseCertificates
-                var achievement = new CourseCertificate
-                {
-                    UserId = userId,
-                    CourseId = model.CourseId,
-                    IssuedAt = DateTime.UtcNow
-                };
+            double progress = totalItems > 0 ? (completedCount / (double)totalItems) * 100 : 0;
 
-                _context.CourseCertificates.Add(achievement);
-                await _context.SaveChangesAsync();
-
-                // Gửi thông báo hoặc email
-                var email = User.FindFirstValue(ClaimTypes.Email);
-                var course = await _context.Courses.FindAsync(model.CourseId);
-                var achievementsLink = Url.Action("Index", "Achievements", null, Request.Scheme);
-                var subject = $"🎉 Bạn đã hoàn thành khóa {course?.Name}";
-                var body = $@"
-            Chào bạn,<br/>
-            Bạn đã hoàn tất khóa <strong>{course?.Name}</strong>!<br/>
-            Xem thành tích của bạn tại: <a href=""{achievementsLink}"">{achievementsLink}</a><br/>
-            Chúc bạn học vui vẻ!";
-
-                await _emailSender.SendEmailAsync(email, subject, body);
-            }
-
-            // 4) Xây certificateLink tới action Certificate
-            //var certificateLink = certificateUrl != null
-            //    ? Url.Action(
-            //        action: "Certificate",
-            //        controller: "Achievements",
-            //        values: new { courseId = model.CourseId },
-            //        protocol: Request.Scheme)
-            //    : null;
-
-            // 5) Trả về JSON
-            return Json(new
-            {
-                success = true,
-                progress = Math.Round(progress, 0),
-                //certificateUrl,   // dùng nếu bạn muốn show link download PDF
-                //certificateLink  // dùng để redirect JS
-                message = "🎉 Bạn đã hoàn thành khóa học!"
-            });
+            return Json(new { success = true, progress });
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> GetProgress(int id)
@@ -425,6 +387,6 @@ namespace JapaneseLearningPlatform.Controllers
             if (progress > 100) progress = 100; // chặn vượt quá 100%
 
             return Json(new { progress = progress.ToString("0") });
-        }    
+        }
     }
 }
