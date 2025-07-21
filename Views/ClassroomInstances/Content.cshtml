@@ -62,6 +62,14 @@
                 Chat
             </a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a asp-controller="VideoCall" asp-action="Index"
+               role="tab"
+               style="padding: 4px 10px; font-size: 14px; border: none; background: none;"
+               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "VideoCall" ? "active-tab" : "")">
+                Video call
+            </a>
+        </li>
     </ul>
 
     <!-- 🔸 Tab Contents -->

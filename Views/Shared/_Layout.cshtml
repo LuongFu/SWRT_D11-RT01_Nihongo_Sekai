@@ -112,11 +112,6 @@
                                         Từ điển
                                     </a>
                                 </li>
-                                <li>
-                                    <a asp-controller="VideoCall" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "VideoCall" ? "active-tab" : "")">
-                                        Gọi Video
-                                    </a>
-                                </li>
                             }
                             @* Learner or guest *@
                             else
@@ -139,11 +134,6 @@
                                 <li>
                                     <a asp-controller="Dictionary" asp-action="Search" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dictionary" ? "active-tab" : "")">
                                         Từ điển
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-controller="VideoCall" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "VideoCall" ? "active-tab" : "")">
-                                        Gọi Video
                                     </a>
                                 </li>
                                 <li>
