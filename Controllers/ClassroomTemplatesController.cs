@@ -57,10 +57,35 @@ namespace JapaneseLearningPlatform.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ClassroomTemplateVM vm)
         {
+            // Danh sách định dạng cho phép
+            var allowedExtensions = new[] {".pdf", ".doc", ".docx", ".xls", ".xlsx" };
+
+            // Kiểm tra file ảnh
+            if (vm.ImageFile != null)
+            {
+                var ext = Path.GetExtension(vm.ImageFile.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(ext))
+                {
+                    ModelState.AddModelError("ImageFile", "Chỉ được upload file ảnh hoặc tài liệu Word/Excel/PDF.");
+                }
+            }
+
+            // Kiểm tra file tài liệu
+            if (vm.DocumentFile != null)
+            {
+                var ext = Path.GetExtension(vm.DocumentFile.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(ext))
+                {
+                    ModelState.AddModelError("DocumentFile", "Chỉ được upload file ảnh hoặc tài liệu Word/Excel/PDF.");
+                }
+            }
+
+            // Nếu có lỗi -> trả lại view
             if (!ModelState.IsValid)
                 return View(vm);
 
             var partnerId = _userManager.GetUserId(User);
+
             var imageUrl = vm.ImageFile != null
                 ? await SaveFileAsync(vm.ImageFile, "templates/images")
                 : vm.ImageURL;

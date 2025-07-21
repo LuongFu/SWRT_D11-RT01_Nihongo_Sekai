@@ -64,4 +64,54 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const startDateInput = document.querySelector('[name="StartDate"]');
+            const endDateInput = document.querySelector('[name="EndDate"]');
+            const form = document.querySelector('form');
+
+            function validateDates() {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                // Xóa thông báo cũ
+                startDateInput.setCustomValidity("");
+                endDateInput.setCustomValidity("");
+
+                // Check ngày bắt đầu
+                if (startDate < today) {
+                    startDateInput.setCustomValidity("Ngày bắt đầu không được là ngày quá khứ.");
+                }
+
+                // Check ngày kết thúc
+                if (endDate < today) {
+                    endDateInput.setCustomValidity("Ngày kết thúc không được là ngày quá khứ.");
+                }
+
+                // Check endDate > startDate
+                if (endDate <= startDate) {
+                    endDateInput.setCustomValidity("Ngày kết thúc phải sau ngày bắt đầu.");
+                }
+
+                // Check thời gian không vượt quá 1 năm
+                const diffDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+                if (diffDays > 365) {
+                    endDateInput.setCustomValidity("Khoảng thời gian giữa ngày bắt đầu và kết thúc không được vượt quá 1 năm.");
+                }
+            }
+
+            startDateInput.addEventListener("change", validateDates);
+            endDateInput.addEventListener("change", validateDates);
+            form.addEventListener("submit", function (e) {
+                validateDates();
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    form.reportValidity();
+                }
+            });
+        });
+    </script>
 }

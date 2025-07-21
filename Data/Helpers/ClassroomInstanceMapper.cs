@@ -23,8 +23,8 @@ public static class ClassroomInstanceMapper
             DocumentURL = template?.DocumentURL,
 
             // ✅ Thông tin phiên học
-            StartDate = entity.StartDate,
-            EndDate = entity.EndDate,
+            StartDate = entity.StartDate == DateTime.MinValue ? DateTime.Now : entity.StartDate,
+            EndDate = entity.EndDate == DateTime.MinValue ? DateTime.Now.AddDays(1) : entity.EndDate,
             SessionDurationHours = (int)entity.ClassTime.TotalHours,
             Price = entity.Price,
             GoogleMeetLink = entity.GoogleMeetLink,

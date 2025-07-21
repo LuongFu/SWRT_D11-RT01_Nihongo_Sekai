@@ -19,12 +19,12 @@ namespace JapaneseLearningPlatform.Hubs
         /// <summary>
         /// Gửi tin nhắn đến tất cả thành viên trong group của classroom và lưu vào DB.
         /// </summary>
-        public async Task SendMessage(int classroomId, string userName, string message)
+        public async Task SendMessage(int classroomId, string _, string message)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return;
 
-            // Lấy userId từ Context để tránh giả mạo
+            // Lấy userId từ Context
             var userId = Context.UserIdentifier;
             if (string.IsNullOrEmpty(userId))
             {
@@ -34,7 +34,17 @@ namespace JapaneseLearningPlatform.Hubs
 
             try
             {
-                // 1. Lưu tin nhắn vào database
+                // Lấy thông tin user từ DB
+                var user = await _context.Users.AsNoTracking()
+                                               .FirstOrDefaultAsync(u => u.Id == userId);
+                if (user == null) return;
+
+                var displayName = !string.IsNullOrEmpty(user.FullName) ? user.FullName : user.Email;
+                var avatarUrl = string.IsNullOrEmpty(user.ProfilePicturePath)
+                    ? "/uploads/profile/default-img.jpg"
+                    : user.ProfilePicturePath;
+
+                // 1. Lưu tin nhắn vào DB
                 var chatMessage = new ClassroomChatMessage
                 {
                     ClassroomInstanceId = classroomId,
@@ -46,19 +56,21 @@ namespace JapaneseLearningPlatform.Hubs
                 _context.ClassroomChatMessages.Add(chatMessage);
                 await _context.SaveChangesAsync();
 
-                // 2. Gửi tin nhắn đến tất cả thành viên trong group
+                // 2. Gửi tin nhắn kèm avatar
                 await Clients.Group($"classroom_{classroomId}")
-                             .SendAsync("ReceiveMessage",
-                                        userName,
-                                        message.Trim(),
-                                        chatMessage.SentAt.ToLocalTime().ToString("HH:mm dd/MM"),
-                                        userId);
+                    .SendAsync("ReceiveMessage",
+                                displayName,
+                                message.Trim(),
+                                chatMessage.SentAt.ToLocalTime().ToString("HH:mm dd/MM"),
+                                userId,
+                                avatarUrl);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[ClassroomChatHub.SendMessage] Error: {ex.Message}");
             }
         }
+
 
         /// <summary>
         /// Khi kết nối mới được tạo, tự động thêm vào group classroom tương ứng.

@@ -71,6 +71,7 @@ namespace JapaneseLearningPlatform.Controllers
             var userId = _userManager.GetUserId(User);
             var query = _context.ClassroomInstances
                 .Include(i => i.Template)
+                .Include(i => i.Enrollments) // Thêm include để lấy số lượng học viên
                 .Where(i => i.Template.PartnerId == userId)
                 .OrderByDescending(i => i.StartDate);
 
@@ -80,12 +81,18 @@ namespace JapaneseLearningPlatform.Controllers
                 .Take(6)
                 .ToListAsync();
 
-            var vmList = sessions.Select(ClassroomInstanceMapper.ToVM).ToList();
+            // Map thủ công để đảm bảo EnrollmentCount đúng
+            var vmList = sessions.Select(i =>
+            {
+                var vm = ClassroomInstanceMapper.ToVM(i);
+                vm.EnrollmentCount = i.Enrollments?.Count(e => !e.HasLeft) ?? 0; // chỉ đếm học viên chưa rời lớp
+                return vm;
+            }).ToList();
+
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling(total / 6.0);
-            return View(vmList); // ✅ Dùng IEnumerable<ClassroomInstanceVM>
+            return View(vmList);
         }
-
 
         // PARTNER: GET Create session form
         [HttpGet]
@@ -117,30 +124,35 @@ namespace JapaneseLearningPlatform.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateSession(ClassroomInstanceVM vm)
         {
-            var userId = _userManager.GetUserId(User);
+            var today = DateTime.Today;
 
+            // Validate ngày
+            if (vm.StartDate < today)
+                ModelState.AddModelError(nameof(vm.StartDate), "Ngày bắt đầu không được là ngày quá khứ.");
+
+            if (vm.EndDate <= vm.StartDate)
+                ModelState.AddModelError(nameof(vm.EndDate), "Ngày kết thúc phải sau ngày bắt đầu.");
+
+            if (vm.EndDate < today)
+                ModelState.AddModelError(nameof(vm.EndDate), "Ngày kết thúc không được là ngày quá khứ.");
+
+            if ((vm.EndDate - vm.StartDate).TotalDays > 365)
+                ModelState.AddModelError(nameof(vm.EndDate), "Khoảng thời gian giữa ngày bắt đầu và kết thúc không được vượt quá 1 năm.");
+
+            // Nếu lỗi validation, load lại view
             if (!ModelState.IsValid)
             {
-                // Ghi log lỗi cho từng trường sai
-                foreach (var key in ModelState.Keys)
-                {
-                    var state = ModelState[key];
-                    foreach (var error in state.Errors)
-                    {
-                        _logger.LogWarning("Validation error at {Key}: {Error}", key, error.ErrorMessage);
-                    }
-                }
-
+                var userId = _userManager.GetUserId(User);
                 var templates = await _context.ClassroomTemplates
                     .Where(t => t.PartnerId == userId)
                     .ToListAsync();
 
                 ViewBag.TemplateList = new SelectList(templates, "Id", "Title", vm.TemplateId);
-
                 await PopulateTemplateData(vm);
                 return View(vm);
             }
 
+            // Lưu dữ liệu
             var instance = new ClassroomInstance
             {
                 TemplateId = vm.TemplateId,
@@ -154,8 +166,6 @@ namespace JapaneseLearningPlatform.Controllers
 
             _context.ClassroomInstances.Add(instance);
             await _context.SaveChangesAsync();
-
-            _logger.LogInformation("New classroom session created: TemplateId={TemplateId}, Start={StartDate}, End={EndDate}", vm.TemplateId, vm.StartDate, vm.EndDate);
 
             return RedirectToAction(nameof(MySession));
         }
@@ -189,12 +199,30 @@ namespace JapaneseLearningPlatform.Controllers
 
         // POST: EditSession
         [HttpPost]
-        [Authorize(Roles = UserRoles.Partner)]
+        [Authorize(Roles = UserRoles.Partner)]  
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditSession(int id, ClassroomInstanceVM vm)
         {
             if (id != vm.Id) return BadRequest();
+
+            var today = DateTime.Today;
+
+            // ✅ Validation cho StartDate và EndDate
+            if (vm.StartDate < today)
+                ModelState.AddModelError("StartDate", "Ngày bắt đầu không được là ngày quá khứ.");
+
+            if (vm.EndDate < today)
+                ModelState.AddModelError("EndDate", "Ngày kết thúc không được là ngày quá khứ.");
+
+            if (vm.EndDate <= vm.StartDate)
+                ModelState.AddModelError("EndDate", "Ngày kết thúc phải sau ngày bắt đầu.");
+
+            if ((vm.EndDate - vm.StartDate).TotalDays > 365)
+                ModelState.AddModelError("EndDate", "Khoảng thời gian giữa ngày bắt đầu và kết thúc không được vượt quá 1 năm.");
+
             if (!ModelState.IsValid)
             {
+                // Đổ lại dropdown Status khi có lỗi
                 ViewBag.StatusList = new SelectList(Enum.GetValues(typeof(ClassroomStatus))
                     .Cast<ClassroomStatus>()
                     .Select(s => new SelectListItem
@@ -205,6 +233,7 @@ namespace JapaneseLearningPlatform.Controllers
                 return View(vm);
             }
 
+            // ✅ Lấy instance từ DB
             var instance = await _context.ClassroomInstances
                 .Include(i => i.Template)
                 .FirstOrDefaultAsync(i => i.Id == id);
@@ -214,16 +243,19 @@ namespace JapaneseLearningPlatform.Controllers
             var userId = _userManager.GetUserId(User);
             if (instance.Template.PartnerId != userId) return Forbid();
 
+            // ✅ Cập nhật dữ liệu
             instance.StartDate = vm.StartDate;
             instance.EndDate = vm.EndDate;
             instance.Price = vm.Price;
             instance.MaxCapacity = vm.MaxCapacity;
             instance.GoogleMeetLink = vm.GoogleMeetLink;
             instance.ClassTime = TimeSpan.FromHours(vm.SessionDurationHours);
-            instance.Status = vm.Status; 
+            instance.Status = vm.Status;
 
             _context.Update(instance);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Classroom session updated: Id={Id}, Start={Start}, End={End}", vm.Id, vm.StartDate, vm.EndDate);
 
             return RedirectToAction("MySession");
         }
@@ -789,11 +821,11 @@ namespace JapaneseLearningPlatform.Controllers
             if (user == null)
                 return Unauthorized();
 
-            // Kiểm tra quyền (Learner hoặc Partner của lớp này)
             bool isMember = await _context.ClassroomEnrollments
                 .AnyAsync(e => e.InstanceId == classroomId && e.LearnerId == user.Id);
 
             bool isPartner = await _context.ClassroomInstances
+                .Include(ci => ci.Template)
                 .AnyAsync(ci => ci.Id == classroomId && ci.Template.PartnerId == user.Id);
 
             if (!isMember && !isPartner)
@@ -815,6 +847,9 @@ namespace JapaneseLearningPlatform.Controllers
                 return Ok(new
                 {
                     userName = user.FullName ?? user.Email,
+                    avatarUrl = string.IsNullOrEmpty(user.ProfilePicturePath)
+                        ? "/uploads/profile/default-img.jpg"
+                        : user.ProfilePicturePath,
                     message = chatMessage.Message,
                     sentAt = chatMessage.SentAt.ToLocalTime().ToString("HH:mm dd/MM")
                 });
@@ -830,6 +865,7 @@ namespace JapaneseLearningPlatform.Controllers
         [Authorize]
         public async Task<IActionResult> GetChatMessages(int classroomId)
         {
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Unauthorized();
@@ -856,6 +892,9 @@ namespace JapaneseLearningPlatform.Controllers
                     .Select(m => new
                     {
                         userName = !string.IsNullOrEmpty(m.User.FullName) ? m.User.FullName : m.User.Email,
+                        avatarUrl = string.IsNullOrEmpty(m.User.ProfilePicturePath)
+                            ? "/uploads/profile/default-img.jpg"
+                            : m.User.ProfilePicturePath,
                         message = m.Message,
                         sentAt = m.SentAt.ToLocalTime().ToString("HH:mm dd/MM"),
                         isOwn = m.UserId == currentUserId  // Thêm cờ isOwn
