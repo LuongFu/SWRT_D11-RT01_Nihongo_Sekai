@@ -163,6 +163,42 @@
                     width: 100%;
                 }
         }
+
+        /* Optional: làm paging nổi bật hơn */
+        .pagination .page-item .page-link {
+            color: #e53935;
+            border-radius: .25rem;
+            margin: 0 .125rem;
+            min-width: 2.25rem;
+            text-align: center;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #e53935;
+            color: #fff;
+            border-color: #e53935;
+        }
+
+        .pagination .page-item .page-link:hover {
+            background-color: rgba(229,53,92,0.1);
+        }
+
+        /* Cho pagination có khoảng “thở” */
+        .table-responsive nav {
+            padding: 0 1rem;
+        }
+
+        /* Nếu muốn pagination nhỏ gọn hơn */
+        .pagination {
+            margin-bottom: 0;
+        }
+
+            .pagination .page-item .page-link {
+                min-width: 2.25rem;
+                text-align: center;
+            }
+
+
     </style>
 }
 
@@ -306,6 +342,10 @@
             </tbody>
         </table>
     </div>
+    <!-- ==== 3) PAGINATION ==== -->
+    <nav aria-label="Page navigation" class="mt-3">
+        <ul id="pagination" class="pagination justify-content-center mb-0"></ul>
+    </nav>
 </div>
 </div>
 
@@ -356,33 +396,40 @@
     </script>
 
     <script>
-        (function() {
-          // 1) Đọc dữ liệu ban đầu từ DOM table
+        document.addEventListener('DOMContentLoaded', function() {
           const bodyEl = document.getElementById('orders-body');
-          const initialRows = Array.from(bodyEl.querySelectorAll('tr'));
+          const pagEl  = document.getElementById('pagination');
 
-          // Chuyển mỗi <tr> thành object dễ xử lý
+          // 1) Khởi tạo dữ liệu từ DOM
+          const initialRows = Array.from(bodyEl.querySelectorAll('tr'));
           const allOrders = initialRows.map(tr => {
-            const cells = tr.querySelectorAll('td');
+            const [c0,c1,c2,c3,c4] = tr.querySelectorAll('td');
             return {
-              Id:    cells[0].textContent.trim(),
-              Email: cells[1].textContent.trim(),
-              // Định dạng dd/MM/yyyy -> chuyển về Date object
-              Date:  cells[2].textContent.trim().split('/').reverse().join('-'),
-              Total: Number(cells[3].textContent.replace(/[^\d]/g, '')),
-              Count: Number(cells[4].textContent.trim())
+              Id:    c0.textContent.trim(),
+              Email: c1.textContent.trim(),
+              Date:  c2.textContent.trim().split('/').reverse().join('-'),
+              Total: Number(c3.textContent.replace(/[^\d]/g, '')),
+              Count: Number(c4.textContent.trim())
             };
           });
 
-          // 2) Các tham chiếu tới filter UI
+          // 2) State filter + paging
+          let filteredList = [...allOrders];
+          let currentPage  = 1;
+          const pageSize   = 10;
+
+          // 3) DOM refs filter UI
           const dfEl = document.getElementById('date-filter');
           const sdEl = document.getElementById('sort-date');
           const saEl = document.getElementById('sort-amount');
           const srEl = document.getElementById('order-search');
+          const clearEl = document.getElementById('clear-filters');
 
-          // 3) Hàm render lại <tbody>
-          function render(list) {
-            bodyEl.innerHTML = list.map(o => {
+          // 4) Hàm render tbody theo page
+          function renderTable(list, page) {
+            const start = (page - 1) * pageSize;
+            const slice = list.slice(start, start + pageSize);
+            bodyEl.innerHTML = slice.map(o => {
               const d  = new Date(o.Date);
               const dd = String(d.getDate()).padStart(2,'0');
               const mm = String(d.getMonth()+1).padStart(2,'0');
@@ -397,66 +444,109 @@
                   <td class="text-center">${o.Count}</td>
                 </tr>`;
             }).join('');
+            renderPagination(list.length, page);
           }
 
-          // 4) Hàm filter + sort + search
-          function applyFilters() {
+          // 5) Hàm vẽ pagination
+          function renderPagination(totalItems, page) {
+            const pageCount = Math.ceil(totalItems / pageSize);
+            let html = '';
+
+            // Prev
+            html += `<li class="page-item${page===1?' disabled':''}">
+                       <a class="page-link" href="#" data-page="${page-1}">&laquo;</a>
+                     </li>`;
+
+            // Page numbers (chỉ hiển thị tối đa 5 số, logic đơn giản)
+            const startPage = Math.max(1, page-2);
+            const endPage   = Math.min(pageCount, page+2);
+            for (let p = startPage; p <= endPage; p++) {
+              html += `<li class="page-item${p===page?' active':''}">
+                         <a class="page-link" href="#" data-page="${p}">${p}</a>
+                       </li>`;
+            }
+
+            // Next
+            html += `<li class="page-item${page===pageCount?' disabled':''}">
+                       <a class="page-link" href="#" data-page="${page+1}">&raquo;</a>
+                     </li>`;
+
+            pagEl.innerHTML = html;
+
+            // Gán event click
+            Array.from(pagEl.querySelectorAll('a.page-link')).forEach(a => {
+              a.addEventListener('click', e => {
+                e.preventDefault();
+                const np = Number(a.dataset.page);
+                if (np >= 1 && np <= pageCount) {
+                  currentPage = np;
+                  renderTable(filteredList, currentPage);
+                }
+              });
+            });
+          }
+
+          // 6) Hàm filter + sort + search
+          function doFilter() {
             const now = new Date();
             const df  = dfEl.value;
             const sd  = sdEl.value;
             const sa  = saEl.value;
             const txt = srEl.value.trim().toLowerCase();
 
-            let filtered = allOrders.filter(o => {
-              // a) date filter
+            filteredList = allOrders.filter(o => {
+              // date filter
               if (df !== 'All') {
                 const diff = Math.floor((now - new Date(o.Date)) / (1000*60*60*24));
-                if (df === 'Today'     && diff !== 0) return false;
-                if (df === 'Last3Days' && diff >  3)    return false;
-                if (df === 'Last7Days' && diff >  7)    return false;
+                if (df==='Today'     && diff!==0) return false;
+                if (df==='Last3Days' && diff>3)    return false;
+                if (df==='Last7Days' && diff>7)    return false;
               }
-              // b) text search
+              // text search
               if (txt) {
                 return (`${o.Email}|${o.Id}`).toLowerCase().includes(txt);
               }
               return true;
             });
 
-            // c) sort by date
-            filtered.sort((a,b) => {
-              const da = new Date(a.Date), db = new Date(b.Date);
-              return sd === 'Oldest' ? da - db : db - da;
+            // sort date
+            filteredList.sort((a,b) => {
+              const da=new Date(a.Date), db=new Date(b.Date);
+              return sd==='Oldest'? da-db : db-da;
             });
+            // sort amount
+            if (sa==='HighLow')   filteredList.sort((a,b)=>b.Total - a.Total);
+            if (sa==='LowHigh')   filteredList.sort((a,b)=>a.Total - b.Total);
 
-            // d) sort by amount
-            if (sa === 'HighLow')   filtered.sort((a,b)=> b.Total - a.Total);
-            else if (sa === 'LowHigh') filtered.sort((a,b)=> a.Total - b.Total);
-
-            render(filtered);
+            currentPage = 1;
+            renderTable(filteredList, currentPage);
           }
 
-          // 5) Gán event listener
-          dfEl.addEventListener('change', applyFilters);
-          sdEl.addEventListener('change', applyFilters);
-          saEl.addEventListener('change', applyFilters);
-          let debounce;
-          srEl.addEventListener('input', () => {
-            clearTimeout(debounce);
-            debounce = setTimeout(applyFilters, 300);
+          // 7) Gán sự kiện
+          [dfEl, sdEl, saEl].forEach(el => el.addEventListener('change', doFilter));
+          srEl.addEventListener('input', debounce(doFilter, 300));
+          clearEl.addEventListener('click', () => {
+            dfEl.value = 'All';
+            sdEl.value = 'Newest';
+            saEl.value = 'None';
+            srEl.value = '';
+            doFilter();
           });
 
-          // 6) Khởi tạo lần đầu
-          applyFilters();
-        })();
-              // hàm debounce generic
-        function debounce(fn, ms) {
-          let tid;
-          return (...args) => {
-            clearTimeout(tid);
-            tid = setTimeout(() => fn(...args), ms);
+          // 8) Utility debounce
+          function debounce(fn, ms) {
+            let t;
+            return (...args) => {
+              clearTimeout(t);
+              t = setTimeout(()=> fn(...args), ms);
+            };
           }
-        }
+
+          // 9) Khởi tạo lần đầu
+          doFilter();
+        });
     </script>
+
     <script>
         document.getElementById('clear-filters')
           .addEventListener('click', () => {
