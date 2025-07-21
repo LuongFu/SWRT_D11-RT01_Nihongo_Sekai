@@ -491,23 +491,41 @@
     }
 
     .chat-bubble {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 70%;
+        align-self: flex-start;
+    }
+
+        /* Tin nhắn của chính mình */
+        .chat-bubble.own {
+            align-self: flex-end;
+            flex-direction: row-reverse; /* avatar sang phải */
+        }
+
+    /* Avatar */
+    .chat-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    /* Nội dung tin nhắn */
+    .chat-content {
         background: #f1f0f0;
         padding: 8px 12px;
         border-radius: 12px;
-        max-width: 70%;
-        align-self: flex-start; /* mặc định trái */
         word-break: break-word;
     }
 
-        .chat-bubble.own {
-            background: #5AAEFF;
-            color: #fff;
-            align-self: flex-end; /* canh phải */
-        }
+    .chat-bubble.own .chat-content {
+        background: #5AAEFF;
+        color: #fff;
+    }
 
-        .chat-bubble .sender {
-            font-weight: bold;
-        }
+
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
@@ -666,14 +684,17 @@
             const chatInput = document.getElementById("chatInput");
             // const sendBtn = document.getElementById("sendChatBtn");
 
-            function appendMessage(user, message, sentAt = null, isOwn = false) {
-                const timeHtml = sentAt ? `<small class="text-muted ms-2">(${sentAt})</small>` : '';
-                const sideClass = isOwn ? 'chat-bubble own' : 'chat-bubble';
-                chatBox.innerHTML += `
-                    <div class="${sideClass}">
-                        <span class="sender">${user}:</span> ${message} ${timeHtml}
-                    </div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
+                function appendMessage(user, avatar, message, sentAt = null, isOwn = false) {
+            const timeHtml = sentAt ? `<small class="text-muted ms-2">(${sentAt})</small>` : '';
+            const sideClass = isOwn ? 'chat-bubble own' : 'chat-bubble';
+            chatBox.innerHTML += `
+                <div class="${sideClass}" title="${user}">
+                    <img src="${avatar}" alt="avatar" class="chat-avatar"/>
+                    <div class="chat-content">
+                        <span class="chat-message">${message}</span> ${timeHtml}
+                    </div>
+                </div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
             }
 
             async function loadMessages() {
@@ -681,12 +702,15 @@
                     const res = await fetch(`/ClassroomInstances/GetChatMessages?classroomId=${classroomId}`);
                     if (res.ok) {
                         const data = await res.json();
-                        chatBox.innerHTML = data.map(m =>
-                            `<div class="${m.isOwn ? 'chat-bubble own' : 'chat-bubble'}">
-                                <span class="sender">${m.userName}:</span> ${m.message}
-                                <small class="text-muted ms-2">(${m.sentAt})</small>
+                             chatBox.innerHTML = data.map(m => `
+                                <div class="${m.isOwn ? 'chat-bubble own' : 'chat-bubble'}" title="${m.userName}">
+                                <img src="${m.avatarUrl}" alt="avatar" class="chat-avatar"/>
+                                <div class="chat-content">
+                                    <span class="chat-message">${m.message}</span>
+                                    <small class="text-muted ms-2">(${m.sentAt})</small>
+                                </div>
                             </div>`
-                        ).join('');
+                         ).join('');
                         chatBox.scrollTop = chatBox.scrollHeight;
                     }
                 } catch (err) {

@@ -862,6 +862,7 @@ namespace JapaneseLearningPlatform.Controllers
         [Authorize]
         public async Task<IActionResult> GetChatMessages(int classroomId)
         {
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Unauthorized();
@@ -888,6 +889,9 @@ namespace JapaneseLearningPlatform.Controllers
                     .Select(m => new
                     {
                         userName = !string.IsNullOrEmpty(m.User.FullName) ? m.User.FullName : m.User.Email,
+                        avatarUrl = string.IsNullOrEmpty(m.User.ProfilePicturePath)
+                            ? "/uploads/profile/default-img.jpg"
+                            : m.User.ProfilePicturePath,
                         message = m.Message,
                         sentAt = m.SentAt.ToLocalTime().ToString("HH:mm dd/MM"),
                         isOwn = m.UserId == currentUserId  // Thêm cờ isOwn
