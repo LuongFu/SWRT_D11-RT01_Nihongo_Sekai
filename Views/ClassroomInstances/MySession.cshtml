@@ -46,8 +46,8 @@
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">@item.TemplateTitle</h5>
                             <p class="card-text">
-                                <strong>Thời gian:</strong> @item.StartDate.ToString("dd-MM-yyyy") → @item.EndDate.ToString("dd-MM-yyyy")<br />
-                                <strong>Session Time:</strong> @item.SessionDurationHours giờ<br />
+                                <strong>Thời gian đăng kí:</strong> @item.StartDate.ToString("dd-MM-yyyy") → @item.EndDate.ToString("dd-MM-yyyy")<br />
+                                <strong>Thời gian mỗi buổi:</strong> @item.SessionDurationHours giờ<br />
                                 <strong>Trạng thái:</strong> @item.Status.GetDisplayName().ToString()<br />
                                 <strong>Số học viên:</strong> @item.EnrollmentCount<br />
                                 <strong>Giá:</strong> @(item.IsPaid? item.Price.ToString("N0") + "đ" : "Free")

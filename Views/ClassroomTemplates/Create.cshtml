@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="DocumentFile" class="form-label">Tài liệu</label>
+                    <label asp-for="DocumentFile" class="form-label">Chương Trình Học</label>
                     <input asp-for="DocumentFile" type="file" class="form-control" />
                     <span asp-validation-for="DocumentFile" class="text-danger"></span>
                 </div>
@@ -56,4 +56,27 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const allowedExtensions = [".gif", ".pdf", ".doc", ".docx", ".xls", ".xlsx"];
+            const imageFile = document.querySelector('input[name="ImageFile"]').files[0];
+            const docFile = document.querySelector('input[name="DocumentFile"]').files[0];
+            let valid = true;
+
+            function checkFile(file, fieldName) {
+                if (file) {
+                    const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+                    if (!allowedExtensions.includes(ext)) {
+                        alert(`File "${file.name}" không đúng định dạng. Chỉ chấp nhận ảnh, PDF, Word, Excel.`);
+                        valid = false;
+                    }
+                }
+            }
+
+            checkFile(imageFile, 'ImageFile');
+            checkFile(docFile, 'DocumentFile');
+            if (!valid) e.preventDefault();
+        });
+    </script>
 }
+
