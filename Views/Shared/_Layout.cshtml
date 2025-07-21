@@ -72,14 +72,20 @@
                                     </a>
                                 </li>
                             <li>
-                                <a asp-controller="Reports"
+                                <a id="nav-report-link"
+                                   asp-controller="Reports"
                                    asp-action="AdminIndex"
                                    class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports"
-                                            && ViewContext.RouteData.Values["action"]?.ToString() == "AdminIndex"
-                                            ? "active-tab" : "")">
-                                    Báo cáo
-                                </a>
-                            </li>
+                                                 && ViewContext.RouteData.Values["action"]?.ToString() == "AdminIndex"
+                                                 ? "active-tab" : "")">
+                            Báo cáo
+                            <span id="nav-report-badge"
+                                  class="badge badge-success"
+                                  style="display:none; margin-left:4px;">
+                            </span>
+                        </a>
+                    </li>
+
 
 
                             }
@@ -275,10 +281,10 @@
                         </div>
                     </div>
                 </div>
-            </footer>
-            <script src="~/js/script.js"></script>
+            </footer>            
         }
     </div>
+    <script src="~/js/script.js"></script>
     <script>
         window.addEventListener("message", function (event) {
             if (!event.data || typeof event.data !== "object") return;
@@ -294,10 +300,50 @@
                 iframe.style.borderRadius = "50%";
             }
         }, false);
+        // Sinh URL chính xác dựa vào route MVC
+        const badgeApiUrl = '@Url.Action("GetUnresolvedCounts", "Reports")';
+
+        async function refreshReportBadges() {
+          try {
+            const res = await fetch(badgeApiUrl);
+            if (!res.ok) return;
+            const { total, bySubj } = await res.json();
+
+            // Badge tổng
+            const navBadge = document.getElementById('nav-report-badge');
+            if (total > 0) {
+              navBadge.style.display = 'inline-block';
+              navBadge.innerText     = total < 100 ? total : '99+';
+            } else {
+              navBadge.style.display = 'none';
+            }    
+            
+            // Badge chủ đề
+            document.querySelectorAll('.subject-badge').forEach(el => {
+              const subj = el.dataset.subject;
+              const entry = bySubj.find(x => x.Subject === subj);
+              const cnt   = entry ? entry.Count : 0;
+              if (cnt > 0) {
+                el.style.display = 'inline-block';
+                el.innerText     = cnt < 100 ? cnt : '99+';
+              } else {
+                el.style.display = 'none';
+              }
+            });
+          } catch (e) {
+            console.error(e);
+        }        
+    }   
+
+        document.addEventListener('DOMContentLoaded', () => {
+          refreshReportBadges();
+          setInterval(refreshReportBadges, 1000);
+        });
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

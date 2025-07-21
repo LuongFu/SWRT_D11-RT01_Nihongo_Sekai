@@ -1,5 +1,6 @@
 ﻿@using JapaneseLearningPlatform.Models
 @using JapaneseLearningPlatform.Data.Enums
+@using System.Text.Json
 
 @{
     ViewData["Title"] = "Bảng điều khiển quản trị";
@@ -114,6 +115,54 @@
             background: #ffe4e1;
             transform: translateY(-2px);
         }
+
+        /* Giới hạn chiều cao filter-bar, cho scrollbar khi overflow */
+        .filter-bar {
+            background-color: #f1f5f9;
+            border-radius: .5rem;
+            margin-top: 5%;
+        }
+
+            .filter-bar .form-label {
+                font-weight: 600;
+                color: #495057;
+            }
+
+            .filter-bar .form-select,
+            .filter-bar .form-control {
+                border-radius: .375rem;
+            }
+
+            .filter-bar .btn-outline-secondary {
+                display: flex;
+                align-items: center;
+                gap: .25rem;
+                border-radius: .375rem;
+            }
+
+                .filter-bar .btn-outline-secondary:hover {
+                    background-color: #f8f9fa;
+                    border-color: #ced4da;
+                }
+
+        #clear-filters:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+            color: #212529;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @@media (max-width: 768px) {
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+                .filter-bar .filter-group,
+                #clear-filters {
+                    width: 100%;
+                }
+        }
     </style>
 }
 
@@ -184,36 +233,81 @@
             </div>
         </div>
 
-        <!-- Bảng đơn hàng mới nhất -->
-        <div class="card mt-4">
-            <div class="card-header bg-white fw-bold">Đơn hàng mới nhất</div>
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Mã đơn hàng</th>
-                            <th>Email người dùng</th>
-                            <th>Ngày đặt hàng</th>
-                            <th>Tổng</th>
-                            <th>Số khóa học</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var order in (IEnumerable<Order>)ViewBag.RecentOrders)
-                        {
-                            <tr>
-                                <td>@order.Id</td>
-                                <td>@order.Email</td>
-                                <td>@order.OrderDate.ToShortDateString()</td>
-                                <td>@order.TotalAmount.ToString("N0") VND</td>
-                                <td>@order.OrderItems.Count</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+    <!-- ==== 1) FILTER BAR ==== -->
+    <div class="filter-bar card p-3 mb-4 shadow-sm">
+        <div class="row gx-2 gy-3 align-items-end">
+            <div class="col-auto">
+                <label for="date-filter" class="form-label small mb-1">Ngày đặt</label>
+                <select id="date-filter" class="form-select form-select-sm">
+                    <option value="All">Tất cả</option>
+                    <option value="Today">Hôm nay</option>
+                    <option value="Last3Days">3 ngày vừa rồi</option>
+                    <option value="Last7Days">7 ngày vừa rồi</option>
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <label for="sort-date" class="form-label small mb-1">Thứ tự ngày</label>
+                <select id="sort-date" class="form-select form-select-sm">
+                    <option value="Newest">Mới nhất</option>
+                    <option value="Oldest">Cũ nhất</option>
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <label for="sort-amount" class="form-label small mb-1">Thứ tự tiền</label>
+                <select id="sort-amount" class="form-select form-select-sm">
+                    <option value="None">Không</option>
+                    <option value="HighLow">Cao→Thấp</option>
+                    <option value="LowHigh">Thấp→Cao</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="order-search" class="form-label small mb-1">Tìm kiếm</label>
+                <input id="order-search"
+                       type="text"
+                       class="form-control form-control-sm"
+                       placeholder="Email hoặc mã đơn..." />
+            </div>
+
+            <div class="col-auto">
+                <button id="clear-filters" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-x-circle me-1"></i>Xóa bộ lọc
+                </button>
             </div>
         </div>
     </div>
+
+
+    <!-- ==== 2) ORDERS TABLE ==== -->
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Email người dùng</th>
+                    <th>Ngày đặt hàng</th>
+                    <th class="text-end">Tổng</th>
+                    <th class="text-center">Số khóa học</th>
+                </tr>
+            </thead>
+            <tbody id="orders-body">
+                @foreach (var o in (IEnumerable<Order>)ViewBag.RecentOrders)
+                {
+                    <tr>
+                        <td>@o.Id</td>
+                        <td>@o.Email</td>
+                        <td>@o.OrderDate.ToString("dd/MM/yyyy")</td>
+                        <td class="text-end">@o.TotalAmount.ToString("N0") VND</td>
+                        <td class="text-center">@o.OrderItems.Count</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -260,4 +354,122 @@
             });
         });
     </script>
+
+    <script>
+        (function() {
+          // 1) Đọc dữ liệu ban đầu từ DOM table
+          const bodyEl = document.getElementById('orders-body');
+          const initialRows = Array.from(bodyEl.querySelectorAll('tr'));
+
+          // Chuyển mỗi <tr> thành object dễ xử lý
+          const allOrders = initialRows.map(tr => {
+            const cells = tr.querySelectorAll('td');
+            return {
+              Id:    cells[0].textContent.trim(),
+              Email: cells[1].textContent.trim(),
+              // Định dạng dd/MM/yyyy -> chuyển về Date object
+              Date:  cells[2].textContent.trim().split('/').reverse().join('-'),
+              Total: Number(cells[3].textContent.replace(/[^\d]/g, '')),
+              Count: Number(cells[4].textContent.trim())
+            };
+          });
+
+          // 2) Các tham chiếu tới filter UI
+          const dfEl = document.getElementById('date-filter');
+          const sdEl = document.getElementById('sort-date');
+          const saEl = document.getElementById('sort-amount');
+          const srEl = document.getElementById('order-search');
+
+          // 3) Hàm render lại <tbody>
+          function render(list) {
+            bodyEl.innerHTML = list.map(o => {
+              const d  = new Date(o.Date);
+              const dd = String(d.getDate()).padStart(2,'0');
+              const mm = String(d.getMonth()+1).padStart(2,'0');
+              const yy = d.getFullYear();
+              const amt= o.Total.toLocaleString();
+              return `
+                <tr>
+                  <td>${o.Id}</td>
+                  <td>${o.Email}</td>
+                  <td>${dd}/${mm}/${yy}</td>
+                  <td class="text-end">${amt} VND</td>
+                  <td class="text-center">${o.Count}</td>
+                </tr>`;
+            }).join('');
+          }
+
+          // 4) Hàm filter + sort + search
+          function applyFilters() {
+            const now = new Date();
+            const df  = dfEl.value;
+            const sd  = sdEl.value;
+            const sa  = saEl.value;
+            const txt = srEl.value.trim().toLowerCase();
+
+            let filtered = allOrders.filter(o => {
+              // a) date filter
+              if (df !== 'All') {
+                const diff = Math.floor((now - new Date(o.Date)) / (1000*60*60*24));
+                if (df === 'Today'     && diff !== 0) return false;
+                if (df === 'Last3Days' && diff >  3)    return false;
+                if (df === 'Last7Days' && diff >  7)    return false;
+              }
+              // b) text search
+              if (txt) {
+                return (`${o.Email}|${o.Id}`).toLowerCase().includes(txt);
+              }
+              return true;
+            });
+
+            // c) sort by date
+            filtered.sort((a,b) => {
+              const da = new Date(a.Date), db = new Date(b.Date);
+              return sd === 'Oldest' ? da - db : db - da;
+            });
+
+            // d) sort by amount
+            if (sa === 'HighLow')   filtered.sort((a,b)=> b.Total - a.Total);
+            else if (sa === 'LowHigh') filtered.sort((a,b)=> a.Total - b.Total);
+
+            render(filtered);
+          }
+
+          // 5) Gán event listener
+          dfEl.addEventListener('change', applyFilters);
+          sdEl.addEventListener('change', applyFilters);
+          saEl.addEventListener('change', applyFilters);
+          let debounce;
+          srEl.addEventListener('input', () => {
+            clearTimeout(debounce);
+            debounce = setTimeout(applyFilters, 300);
+          });
+
+          // 6) Khởi tạo lần đầu
+          applyFilters();
+        })();
+              // hàm debounce generic
+        function debounce(fn, ms) {
+          let tid;
+          return (...args) => {
+            clearTimeout(tid);
+            tid = setTimeout(() => fn(...args), ms);
+          }
+        }
+    </script>
+    <script>
+        document.getElementById('clear-filters')
+          .addEventListener('click', () => {
+            // Đặt về mặc định
+            document.getElementById('date-filter').value   = 'All';
+            document.getElementById('sort-date').value     = 'Newest';
+            document.getElementById('sort-amount').value   = 'None';
+            document.getElementById('order-search').value  = '';
+
+            // Gọi lại hàm filter đã có
+            applyFilters();
+          });
+    </script>
+
+
 }
