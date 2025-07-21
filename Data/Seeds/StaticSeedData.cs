@@ -180,7 +180,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
     Name        = "Ultimate Japanese Bootcamp: Speak Like a Native + JLPT N5-N1",
     Description = "Master Japanese from JLPT N5 to N1, covering grammar, vocabulary, and conversation with native speakers.",
     Price       = 390000,
-    ImageURL    = "https://img-c.udemycdn.com/course/240x135/3821776_0ffd_3.jpg",
+    ImageURL    = "https://cdn2.tuoitre.vn/thumb_w/480/471584752817336320/2025/7/14/elun-musk-dat-nhieu-ky-vong-vao-strlink-nen-1726195298604249943426-17525078927271325572968.jpg",
     Discount    = 79,
     Category    = CourseCategory.Advanced,
     Sections    = new[]
@@ -713,7 +713,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
                 Name        = "Complete Japanese Course: Learn Japanese for Beginners",
                 Description = "Learn Japanese FAST…",
                 Price       = 230000,
-                ImageURL    = "https://img-c.udemycdn.com/course/240x135/3821776_0ffd_3.jpg",
+                ImageURL    = "https://upload.wikimedia.org/wikipedia/en/thumb/9/9e/Flag_of_Japan.svg/1200px-Flag_of_Japan.svg.png",
                 Discount    = 80,
                 Category    = CourseCategory.Basic,
                 Sections    = new[]
@@ -838,7 +838,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
     Name        = "Basic Japanese Lesson Bootcamp For Beginner",
     Description = "Master Basic Japanese, covering grammar, vocabulary, and conversation with native speakers!",
     Price       = 400000,
-    ImageURL    = "https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/494596807_1066825622149060_515537649384938644_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGqAYUUnUEKMkS46tcVl-iXLTq7tP5iLF8tOru0_mIsX-9Gwv09u2cJRgu0niPnL2k9nCNVNCjw7HFI4IZG08fW&_nc_ohc=lYX-EhRXiSEQ7kNvwGZ8vNp&_nc_oc=AdnfBCMb4k_Iog8Xe9Cj7klzEZ7b6bitAcANeBCqVnXSRjnnmrPKpM6M2RVMZefTIKidvHCT1RuFHEdmRfKzHP4F&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=jCJkq0adI0DML6i48iCrsg&oh=00_AfRUyvB_xQhxCHEFvXG3JI2132vZLem1A4nRy_yZlNuVXA&oe=6874F21A",
+    ImageURL    = "https://media-cdn-v2.laodong.vn/storage/newsportal/2025/1/21/1453214/Jack-4.jpg",
     Discount    = 30,
     Category    = CourseCategory.Advanced,
     Sections    = new[]
@@ -1175,7 +1175,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
     Name        = "Blue Japanese Lesson Series",
     Description = "Ez Basic Japanese from covering grammar, vocabulary, and conversation with native speakers!",
     Price       = 280000,
-    ImageURL    = "https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-6/494605120_1066826015482354_111264291537643622_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHj-AnSICXCxzsdrm7eu20bhAzc12pT_haEDNzXalP-Fr0G7o9h6rPJUf5WO2OfPEgnKFrFiw8a8acsZ4viTdhj&_nc_ohc=Bm-T3dM_fNkQ7kNvwEhv5BQ&_nc_oc=AdlBCU_io1iU7FJaScmbRCHXTwv28ilQW83qxBfFyLQjoNjEwdQvPKGlcAgwVykJN49vLs_pr64nIRwC-k2DHNnH&_nc_zt=23&_nc_ht=scontent.fsgn2-9.fna&_nc_gid=QWSljFk_-elxjIOEg8Dn2A&oh=00_AfSislzsWsIm6hlU1Hab5QudxFTsKIt4w-KvAn0LmgLc2Q&oe=68750D27",
+    ImageURL    = "https://hongbien.com.vn/images/article/2024/11/09/1731166572-jack--j97-va-he-luy-cua-the-he-ngoi-sao-sa-doa-trong-showbiz-viet.jpg",
     Discount    = 76,
     Category    = CourseCategory.Advanced,
     Sections    = new[]
@@ -1512,7 +1512,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
     Name        = "Beauty Japanese Lesson Series",
     Description = "Master Basic Japanese from JLPT N5, covering grammar, vocabulary, and conversation with native speakers!",
     Price       = 220000,
-    ImageURL    = "https://scontent.fsgn2-11.fna.fbcdn.net/v/t39.30808-6/494536627_1066826018815687_1077379566943298459_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeFbrFRalj1c2Ai7LY0FAjWZqAkZt9LhataoCRm30uFq1uMbKWpyMISZM53qt75Vo10MxcTRB2akh-D_6Q2mRbLi&_nc_ohc=q1y__9VZqLUQ7kNvwEm6ayt&_nc_oc=AdlKu-lEJ5CM-4Pg2SDE6zMsiwj07Rjk1syp2gCx7-JoccDxpZ7O-v7hqfCA8qSaRNE8cjWUhpdQDug32CIzDrgV&_nc_zt=23&_nc_ht=scontent.fsgn2-11.fna&_nc_gid=0eoHrSZJSRRN5Oukqlqeow&oh=00_AfTCQnNlifhrKthq9NASx-DYwD2xNW0_6isAauaAL2LLxw&oe=6874F726",
+    ImageURL    = "https://scontent.fdad3-1.fna.fbcdn.net/v/t39.30808-6/494596807_1066825622149060_515537649384938644_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGqAYUUnUEKMkS46tcVl-iXLTq7tP5iLF8tOru0_mIsX-9Gwv09u2cJRgu0niPnL2k9nCNVNCjw7HFI4IZG08fW&_nc_ohc=ynzibEtvLd0Q7kNvwFq38nL&_nc_oc=Adncc2UYsRPRMJrPh36ygOKMtVWV68e1Z09qjM6tZKgJq32cDaPYdVsKNdEd_vfSmsCrJGh4Vlv8gpn1clDI64B2&_nc_zt=23&_nc_ht=scontent.fdad3-1.fna&_nc_gid=bImQghT2rq1BgcsgOFnyiQ&oh=00_AfTGULE7KGqoaJE_gOCJ_AtJJaD_kgxI9jJMjaQRO4e-AA&oe=68841B5A",
     Discount    = 60,
     Category    = CourseCategory.Advanced,
     Sections    = new[]
@@ -1946,7 +1946,7 @@ namespace JapaneseLearningPlatform.Data.Seeds
                 MaxCapacity=10,
                 Price=120000,
                 IsPaid=true,
-                GoogleMeetLink="https://meet.google.com/test-class1",
+                GoogleMeetLink="uj9d-xzho-vasm",
                 Status=ClassroomStatus.Published
             },
             new ClassroomInstanceSeed {
@@ -1957,7 +1957,54 @@ namespace JapaneseLearningPlatform.Data.Seeds
                 MaxCapacity=8,
                 Price=0,
                 IsPaid=false,
-                GoogleMeetLink="https://meet.google.com/free-class",
+                GoogleMeetLink="55au-r15t-ahun",
+                Status=ClassroomStatus.InProgress
+            },
+            new ClassroomInstanceSeed {
+                TemplateIndex=0,
+                StartOffsetDays=-10,
+                EndOffsetDays=20,
+                ClassTime=new TimeSpan(20,0,0),
+                MaxCapacity=8,
+                Price=0,
+                IsPaid=false,
+                GoogleMeetLink="447u-r15t-ahun",
+                Status=ClassroomStatus.InProgress
+            }
+            ,
+            new ClassroomInstanceSeed {
+                TemplateIndex=0,
+                StartOffsetDays=-10,
+                EndOffsetDays=20,
+                ClassTime=new TimeSpan(20,0,0),
+                MaxCapacity=8,
+                Price=0,
+                IsPaid=false,
+                GoogleMeetLink="13au-r15t-ahun",
+                Status=ClassroomStatus.InProgress
+            }
+            ,
+            new ClassroomInstanceSeed {
+                TemplateIndex=0,
+                StartOffsetDays=-10,
+                EndOffsetDays=20,
+                ClassTime=new TimeSpan(20,0,0),
+                MaxCapacity=8,
+                Price=0,
+                IsPaid=false,
+                GoogleMeetLink="23au-r15t-ahun",
+                Status=ClassroomStatus.InProgress
+            }
+            ,
+            new ClassroomInstanceSeed {
+                TemplateIndex=0,
+                StartOffsetDays=-10,
+                EndOffsetDays=20,
+                ClassTime=new TimeSpan(20,0,0),
+                MaxCapacity=8,
+                Price=0,
+                IsPaid=false,
+                GoogleMeetLink="55au-r15t-ahun",
                 Status=ClassroomStatus.InProgress
             }
         };

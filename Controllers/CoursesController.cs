@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -23,7 +24,10 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrdersService _orderService;
         private readonly ICoursesService _courseService;
-        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService, ICoursesService courseService)
+        //private readonly ICertificateService _certService;
+        //private readonly IEmailSender _emailSender;
+        private readonly ICourseRatingService _ratingService;
+        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService, ICoursesService courseService, ICourseRatingService ratingService)
         {
             _service = service;
             _shoppingCart = shoppingCart;
@@ -31,6 +35,9 @@ namespace JapaneseLearningPlatform.Controllers
             _httpContextAccessor = httpContextAccessor;
             _orderService = orderService;
             _courseService = courseService;
+            //_certService = certService;     // gán
+            //_emailSender = emailSender;
+            _ratingService = ratingService;
         }
 
         [AllowAnonymous]
@@ -183,12 +190,31 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> Details(int id, int? videoId = null)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cartId = _shoppingCart.ShoppingCartId; // fix an toàn dựa trên session
-            var courseHierarchy = await _service.GetCourseHierarchyAsync(id, userId, cartId);
-            if (courseHierarchy == null || courseHierarchy.Course == null) return View("NotFound");
+            var cartId = _shoppingCart.ShoppingCartId;
 
-            return View(courseHierarchy);
+            // 1) Lấy toàn bộ cấu trúc course + tiến độ + quiz…
+            var vm = await _service.GetCourseHierarchyAsync(id, userId, cartId);
+            if (vm == null || vm.Course == null)
+                return View("NotFound");
+
+            // ─────── BỔ SUNG PHẦN RATING ───────
+
+            // 2) Thống kê số sao trung bình, tổng đánh giá và breakdown
+            var (avg, total, counts) = await _ratingService.GetStatsAsync(id);
+            vm.AverageRating = avg;
+            vm.TotalRatings = total;
+            vm.RatingCounts = counts;
+
+            // 3) Lấy 5 bình luận mới nhất (đã include luôn thông tin User)
+            vm.LatestRatings = (await _ratingService
+                                        .GetLatestAsync(id, pageSize: 5, page: 1, sort: "Newest"))
+                                        .ToList();
+
+            // ────────────────────────────────────
+
+            return View(vm);
         }
+
 
 
         //GET: Courses/Create
@@ -362,8 +388,5 @@ namespace JapaneseLearningPlatform.Controllers
 
             return Json(new { progress = progress.ToString("0") });
         }
-
-
-
     }
 }

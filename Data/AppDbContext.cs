@@ -78,6 +78,20 @@ namespace JapaneseLearningPlatform.Data
                 .HasForeignKey(qo => qo.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // ——— Cấu hình CourseRating → Course ———
+            modelBuilder.Entity<CourseRating>()
+                .HasOne(r => r.Course)
+                .WithMany(c => c.CourseRatings)      // Course cần có ICollection<CourseRating> CourseRatings
+                .HasForeignKey(r => r.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);   // hoặc Restrict tuỳ ý
+
+            // ——— Cấu hình CourseCertificate → Course ———
+            modelBuilder.Entity<CourseCertificate>()
+                .HasOne(c => c.Course)
+                .WithMany(c => c.CourseCertificates) // Course cần có ICollection<CourseCertificate> CourseCertificates
+                .HasForeignKey(c => c.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             //for classroom instance
             modelBuilder.Entity<ClassroomInstance>().Property(c => c.Status).HasConversion<int>();
             modelBuilder.Entity<ClassroomInstance>()
@@ -216,6 +230,9 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<QuizResult> QuizResults { get; set; }
         public DbSet<QuizResultDetail> QuizResultDetails { get; set; }
         public DbSet<CourseContentProgress> CourseContentProgresses { get; set; }
+        public DbSet<CourseRating> CourseRatings { get; set; }
+        public DbSet<CourseCertificate> CourseCertificates { get; set; }
+
         //Orders related tables
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }

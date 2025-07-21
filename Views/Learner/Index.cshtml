@@ -44,25 +44,22 @@
 
         /* Ở mobile: ép xuống hàng, căn giữa */
         @@media (max-width: 768px) {
-            .section-header
+            .section-header {
+                flex-direction: column !important;
+                text-align: center;
+            }
 
-        {
-            flex-direction: column !important;
-            text-align: center;
-        }
+                .section-header h2 {
+                    font-size: 1.75rem;
+                }
 
-        .section-header h2 {
-            font-size: 1.75rem;
-        }
+                .section-header p {
+                    font-size: 1rem;
+                }
 
-        .section-header p {
-            font-size: 1rem;
-        }
-
-        .section-header .btn {
-            margin-top: var(--spacing-md);
-        }
-
+                .section-header .btn {
+                    margin-top: var(--spacing-md);
+                }
         }
         /* Why Choose Section */
         .why-choose {
@@ -225,22 +222,19 @@
             text-overflow: ellipsis;
             /* Nếu cần hỗ trợ non-WebKit (Firefox): */
             /* display: block;
-             display: -moz-box;
-             -moz-box-orient: vertical;
-             line-clamp: 3; */
+                     display: -moz-box;
+                     -moz-box-orient: vertical;
+                     line-clamp: 3; */
         }
 
         @@media (max-width: 768px) {
-            .card-body
+            .card-body {
+                padding: 0.75rem;
+            }
 
-        {
-            padding: 0.75rem;
-        }
-
-        .clamp-3 {
-            -webkit-line-clamp: 2; /* Ví dụ chỉ 2 dòng trên mobile */
-        }
-
+            .clamp-3 {
+                -webkit-line-clamp: 2; /* Ví dụ chỉ 2 dòng trên mobile */
+            }
         }
     </style>
 }

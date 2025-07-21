@@ -29,10 +29,16 @@
 }
 else
 {
+    var currentUser = await UserManager.GetUserAsync(User);
+    var avatarUrl = string.IsNullOrEmpty(currentUser?.ProfilePicturePath)
+        ? Url.Content("~/images/default-avatar.png")
+        : Url.Content(currentUser.ProfilePicturePath);
+
     <div class="dropdown">
         <button class="btn btn-outline-danger dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
                 type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person"></i> @UserManager.GetUserName(User)
+            <img src="@avatarUrl" alt="Avatar" style="width:45px; height:45px; border-radius:50%; object-fit:cover;">
+            @UserManager.GetUserName(User)
         </button>
 
         <ul class="dropdown-menu dropdown-menu-end shadow-sm mt-2" aria-labelledby="userDropdown">
@@ -82,6 +88,11 @@ else
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Learner" asp-action="MyEnrolledClassrooms">
                         <i class="bi bi-easel"></i> Lớp học đã đăng ký
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-area="" asp-controller="Achievements" asp-action="Index">
+                        <i class="bi bi-person-circle"></i> Thành tích
                     </a>
                 </li>
                 <li>

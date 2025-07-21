@@ -1,4 +1,5 @@
-﻿using JapaneseLearningPlatform.Controllers;
+﻿using Google.Api;
+using JapaneseLearningPlatform.Controllers;
 using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Cart;
 using JapaneseLearningPlatform.Data.Seeds;
@@ -46,6 +47,13 @@ namespace JapaneseLearningPlatform
             builder.Services.AddScoped<ICourseContentItemsService, CourseContentItemsService>();
             builder.Services.AddScoped<IQuizzesService, QuizzesService>();
             builder.Services.AddScoped<IQuizQuestionsService, QuizQuestionsService>();
+
+            // Dịch vụ Course/Ratings/Certificates
+            builder.Services.AddScoped<ICourseRatingService, CourseRatingService>();
+            builder.Services.AddScoped<ICertificateService, CertificateService>();
+
+            builder.Services.AddScoped<ICourseRatingService, CourseRatingService>();
+
 
             //Classrooms:
             builder.Services.AddScoped<IClassroomTemplateService, ClassroomTemplateService>();

@@ -164,6 +164,29 @@ namespace JapaneseLearningPlatform.Data.Services
             int totalItems = course.Sections.Sum(s => s.ContentItems.Count);
             double progress = totalItems > 0 ? (completedIds.Count / (double)totalItems) * 100 : 0;
 
+            var ratings = await _context.CourseRatings
+            .Where(r => r.CourseId == courseId)
+            .ToListAsync();
+
+            var total = ratings.Count;
+            var avg = total > 0 ? ratings.Average(r => r.Stars) : 0;
+
+            var counts = ratings
+                .GroupBy(r => r.Stars)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            // Lấy 5 mới nhất
+            var latest5 = ratings
+                .OrderByDescending(r => r.CreatedAt)
+                .Take(5)
+                .ToList();
+
+            // Tính tỉ lệ phần trăm
+            var percents = counts.ToDictionary(
+                kv => kv.Key,
+                kv => total > 0 ? (int)(kv.Value * 100.0 / total) : 0
+            );
+
             return new CourseHierarchyVM
             {
                 Course = course,
@@ -172,7 +195,11 @@ namespace JapaneseLearningPlatform.Data.Services
                 IsInCart = isInCart,
                 QuizHighScores = quizScores,
                 CompletedContentIds = completedIds,
-                ProgressPercent = progress
+                AverageRating = Math.Round(avg, 1),
+                TotalRatings = total,
+                RatingCounts = counts,
+                LatestRatings = latest5,
+                ProgressPercent = progress,
             };
         }
 
