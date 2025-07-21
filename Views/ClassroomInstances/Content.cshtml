@@ -684,18 +684,27 @@
             const chatInput = document.getElementById("chatInput");
             // const sendBtn = document.getElementById("sendChatBtn");
 
-                function appendMessage(user, avatar, message, sentAt = null, isOwn = false) {
-            const timeHtml = sentAt ? `<small class="text-muted ms-2">(${sentAt})</small>` : '';
+                function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.appendChild(document.createTextNode(text));
+            return div.innerHTML;
+        }
+
+                function appendMessage(user, avatar, message, sentAt, isOwn) {
             const sideClass = isOwn ? 'chat-bubble own' : 'chat-bubble';
+            const timeHtml = sentAt ? `<small class="text-muted ms-2">(${sentAt})</small>` : '';
+
+            const safeUser = escapeHtml(user);
+            const avatarSrc = avatar && avatar.trim() !== '' ? avatar : '/uploads/profile/default-img.jpg';
+            const safeMessage = escapeHtml(message);
+
             chatBox.innerHTML += `
-                <div class="${sideClass}" title="${user}">
-                    <img src="${avatar}" alt="avatar" class="chat-avatar"/>
-                    <div class="chat-content">
-                        <span class="chat-message">${message}</span> ${timeHtml}
-                    </div>
+                <div class="${sideClass}" title="${safeUser}">
+                    <img src="${avatarSrc}" alt="avatar" class="chat-avatar" title="${safeUser}" />
+                    <div class="chat-content">${safeMessage} ${timeHtml}</div>
                 </div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
-            }
+        }
 
             async function loadMessages() {
                 try {
@@ -722,10 +731,11 @@
                 .withUrl(`/classroomChatHub?classroomId=${classroomId}`)
                 .build();
 
-            connection.on("ReceiveMessage", (user, message, sentAt, senderId) => {
+            connection.on("ReceiveMessage", (user, message, sentAt, senderId, avatarUrl) => {
                 const isOwn = senderId === currentUserId;
-                appendMessage(user, message, sentAt, isOwn);
+                appendMessage(user, avatarUrl, message, sentAt, isOwn);
             });
+
 
             connection.start()
                 .then(() => console.log("✅ SignalR connected"))

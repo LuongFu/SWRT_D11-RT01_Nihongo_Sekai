@@ -821,11 +821,11 @@ namespace JapaneseLearningPlatform.Controllers
             if (user == null)
                 return Unauthorized();
 
-            // Kiểm tra quyền (Learner hoặc Partner của lớp này)
             bool isMember = await _context.ClassroomEnrollments
                 .AnyAsync(e => e.InstanceId == classroomId && e.LearnerId == user.Id);
 
             bool isPartner = await _context.ClassroomInstances
+                .Include(ci => ci.Template)
                 .AnyAsync(ci => ci.Id == classroomId && ci.Template.PartnerId == user.Id);
 
             if (!isMember && !isPartner)
@@ -847,6 +847,9 @@ namespace JapaneseLearningPlatform.Controllers
                 return Ok(new
                 {
                     userName = user.FullName ?? user.Email,
+                    avatarUrl = string.IsNullOrEmpty(user.ProfilePicturePath)
+                        ? "/uploads/profile/default-img.jpg"
+                        : user.ProfilePicturePath,
                     message = chatMessage.Message,
                     sentAt = chatMessage.SentAt.ToLocalTime().ToString("HH:mm dd/MM")
                 });
