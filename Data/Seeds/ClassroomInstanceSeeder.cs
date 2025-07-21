@@ -28,9 +28,9 @@ namespace JapaneseLearningPlatform.Data.Seeds
                     EndDate = DateTime.Today.AddDays(33),
                     ClassTime = new TimeSpan(19, 0, 0),
                     MaxCapacity = 10,
-                    Price = 60,
+                    Price = 130000,
                     IsPaid = true,
-                    GoogleMeetLink = "https://meet.google.com/test-class1",
+                    GoogleMeetLink = "uj9d-xzho-vasm",
                     Status = ClassroomStatus.Published
                 },
                 new ClassroomInstance
@@ -41,7 +41,51 @@ namespace JapaneseLearningPlatform.Data.Seeds
                     ClassTime = new TimeSpan(20, 0, 0),
                     MaxCapacity = 8,
                     Price = 0,
-                    GoogleMeetLink = "https://meet.google.com/free-class",
+                    GoogleMeetLink = "uj9d-xzho-vasm",
+                    Status = ClassroomStatus.InProgress
+                },
+                new ClassroomInstance
+                {
+                    TemplateId = template.Id,
+                    StartDate = DateTime.Today.AddDays(-10),
+                    EndDate = DateTime.Today.AddDays(20),
+                    ClassTime = new TimeSpan(20, 0, 0),
+                    MaxCapacity = 8,
+                    Price = 240000,
+                    GoogleMeetLink = "uj9d-xzho-vasm",
+                    Status = ClassroomStatus.InProgress
+                },
+                new ClassroomInstance
+                {
+                    TemplateId = template.Id,
+                    StartDate = DateTime.Today.AddDays(-10),
+                    EndDate = DateTime.Today.AddDays(20),
+                    ClassTime = new TimeSpan(20, 0, 0),
+                    MaxCapacity = 8,
+                    Price = 300000,
+                    GoogleMeetLink = "uj9d-xzho-vasm",
+                    Status = ClassroomStatus.InProgress
+                },
+                new ClassroomInstance
+                {
+                    TemplateId = template.Id,
+                    StartDate = DateTime.Today.AddDays(-10),
+                    EndDate = DateTime.Today.AddDays(20),
+                    ClassTime = new TimeSpan(20, 0, 0),
+                    MaxCapacity = 7,
+                    Price = 500000,
+                    GoogleMeetLink = "uj9d-xzho-vasm",
+                    Status = ClassroomStatus.InProgress
+                },
+                new ClassroomInstance
+                {
+                    TemplateId = template.Id,
+                    StartDate = DateTime.Today.AddDays(-10),
+                    EndDate = DateTime.Today.AddDays(20),
+                    ClassTime = new TimeSpan(20, 0, 0),
+                    MaxCapacity = 8,
+                    Price = 140000,
+                    GoogleMeetLink = "uj9d-xzho-vasm",
                     Status = ClassroomStatus.InProgress
                 }
             };
