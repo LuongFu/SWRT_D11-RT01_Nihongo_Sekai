@@ -37,5 +37,7 @@ namespace JapaneseLearningPlatform.Models
                 return Price;
             }
         }
+        public ICollection<CourseRating> CourseRatings { get; set; } = new List<CourseRating>();
+        public ICollection<CourseCertificate> CourseCertificates { get; set; } = new List<CourseCertificate>();
     }
 }

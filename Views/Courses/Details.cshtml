@@ -23,6 +23,15 @@
 }
 
 <style>
+    /* thanh breakdown (5→1 sao) */
+    .ratings-section .progress {
+        background-color: #e9ecef; /* màu nền vạch trắng nhạt */
+    }
+
+    .ratings-section .progress-bar {
+        background-color: #f5365c !important; /* hoặc #ffc107 (vàng) để nổi bật */
+    }    
+
     /* ========== LAYOUT ========== */
 .course-layout {
     display: grid;
@@ -148,6 +157,24 @@
     padding: 0 40px;
 }
 
+    
+
+    /* text-secondary = màu xám, text-warning = vàng (bootstrap) */
+    .star-input {
+        transition: color .2s;
+    }
+
+        .star-input.text-secondary {
+            color: #adb5bd;
+        }
+        /* hoặc bất cứ */
+        .star-input.text-warning {
+            color: #ffc107;
+        }
+    /* vàng bootstrap */
+
+
+
 </style>
 
 
@@ -196,7 +223,93 @@
                     <i class="bi bi-arrow-left-circle"></i> Trở về danh sách khóa học
                 </a>
             </div>
+
+            <hr class="my-5" />
+
+            <div class="ratings-section mb-5">
+                <h3>Đánh giá khóa học</h3>
+
+                <!-- Tổng quan đánh giá -->
+                <div class="d-flex align-items-center mt-3 mb-3">
+                    <h4 class="text-danger me-3">
+                        @Model.AverageRating.ToString("0.0") / 5 (@Model.TotalRatings đánh giá)
+                    </h4>
+                    <div>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            var iconClass = i <= Math.Round(Model.AverageRating) ? "bi-star-fill" : "bi-star";
+                            <i class="bi @iconClass text-warning"></i>
+                        }
+                    </div>
+                </div>
+
+                <!-- Phân bổ sao với progress bars -->
+                <div class="mt-3">
+                    @for (int stars = 5; stars >= 1; stars--)
+                    {
+                        var count = Model.RatingCounts.GetValueOrDefault(stars, 0);
+                        var percent = Model.TotalRatings > 0
+                        ? count * 100.0 / Model.TotalRatings
+                        : 0;
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="me-2">
+                                @stars <i class="bi bi-star-fill text-warning"></i>
+                            </span>
+                            <div class="flex-fill">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width:@percent%"
+                                         aria-valuenow="@count"
+                                         aria-valuemin="0"
+                                         aria-valuemax="@Model.TotalRatings">
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="ms-2">(@count)</span>
+                        </div>
+                    }
+                </div>
+
+                <h5 class="mt-4">Bình luận mới nhất</h5>
+                <div id="latest-comments">
+                    <!-- JS sẽ inject cards vào đây -->
+                </div>
+
+
+
+                <!-- Sắp xếp và Xem thêm -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <label class="me-2">Sắp xếp:</label>
+                        <select id="sort-comments"
+                                class="form-select form-select-sm d-inline-block w-auto">
+                            <option value="Newest">Mới nhất</option>
+                            <option value="Oldest">Cũ nhất</option>
+                            <option value="RatingHigh">Sao cao→thấp</option>
+                            <option value="RatingLow">Sao thấp→cao</option>
+                        </select>
+                    </div>
+                    <button id="view-more" class="btn btn-link">Xem thêm</button>
+                </div>
+            </div>    
             
+            <div class="review-form mb-5">
+                <h5>Viết đánh giá của bạn</h5>
+                <div id="star-inputs">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <i class="bi bi-star text-secondary star-input"
+                           data-value="@i"
+                           style="cursor:pointer; font-size:1.5rem; margin-right:4px;"></i>
+                    }
+                </div>
+
+
+                <textarea id="comment-text" class="form-control mb-2"
+                          rows="3" placeholder="Viết bình luận..."></textarea>
+                <button id="submit-review" class="btn btn-primary">Gửi đánh giá</button>
+            </div>
+
         </div>
         @if (User.IsInRole("Admin"))
         {
@@ -399,59 +512,196 @@
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-                    document.querySelectorAll('.content-checkbox').forEach(cb => {
-            cb.addEventListener('change', function() {
-                const payload = {
-                    courseId: @Model.Course.Id,
-                    contentItemId: this.dataset.contentId,
-                    isCompleted: this.checked
-                };
+        (function(){
+          const courseId      = @Model.Course.Id;
+          const pageSize      = 5;
+          let   page          = 1;
+          let   selectedStars = 0;
 
-                fetch('/Courses/ToggleContentCompletion', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                }).then(res => res.json())
-                  .then(data => {
-                      console.log("Server response:", data);
-                      if (data.success) {
-                          updateProgressBar(data.progress);
-                      }
-                  })
-                  .catch(err => console.error("Fetch error:", err));
+          // ==== 1) LOAD STATS ====
+          function loadStats() {
+            fetch(`/api/CourseRatings/Stats/${courseId}`)
+              .then(r => r.json())
+              .then(s => {
+                // a) avg + total
+                document.querySelector('.ratings-section h4')
+                  .textContent = `${s.avg.toFixed(1)} / 5 (${s.total} đánh giá)`;
+
+                // b) highlight trung bình
+                const r = Math.round(s.avg);
+                document.querySelectorAll('.ratings-section h4 + div i')
+                  .forEach((star,i) => {
+                    star.classList.toggle('bi-star-fill', i < r);
+                    star.classList.toggle('bi-star',      i >= r);
+                  });
+
+                // c) breakdown bars
+                document.querySelectorAll('.ratings-section .progress-bar')
+                  .forEach((bar, idx) => {
+                    const star = 5 - idx;
+                    const cnt  = s.counts[star] || 0;
+                    const pct  = s.total ? Math.round(cnt*100/s.total) : 0;
+                    bar.style.width = pct + '%';
+                    bar.setAttribute('aria-valuenow', cnt);
+                    bar.closest('.d-flex')
+                       .querySelector('span.ms-2')
+                       .textContent = `(${cnt})`;
+                  });
+              });
+          }
+
+          // ==== 2) RENDER COMMENTS ====
+          function renderComments(list, append = false) {
+            const ctn = document.getElementById('latest-comments');
+            if (!append) ctn.innerHTML = '';
+            list.forEach(c => {
+              const card = document.createElement('div');
+              card.className = 'card mb-3';
+              card.innerHTML = `
+                <div class="card-body">
+                  <div class="d-flex mb-2">
+                    <img src="${c.avatarUrl||'/images/default-avatar.png'}"
+                         class="rounded-circle me-2" style="width:32px;height:32px;" alt="Avatar"/>
+                    <strong>${c.userName}</strong>
+                    <small class="text-muted ms-auto">${c.date}</small>
+                  </div>
+                  <div class="mb-2">
+                    ${[1,2,3,4,5].map(i=>
+                      `<i class="bi ${i<=c.rating?'bi-star-fill':'bi-star'} text-warning"></i>`
+                    ).join('')}
+                  </div>
+                  <p class="mb-0">${c.comment}</p>
+                </div>`;
+              ctn.appendChild(card);
             });
-        });
+            document.getElementById('view-more').style.display =
+              list.length < pageSize ? 'none' : '';
+          }
 
-                    function updateProgressBar(progress) {
-            const bar = document.querySelector('.progress-bar');
-            const percent = parseFloat(progress) || 0;
-            bar.style.width = percent + '%';
-            bar.setAttribute('aria-valuenow', percent);
-            bar.textContent = percent.toFixed(0) + '%';
+          // ==== 3) LOAD COMMENTS WITH PAGING & SORT ====
+          function loadComments(reset=false) {
+            if (reset) page = 1;
+            const sort = document.getElementById('sort-comments').value;
+            fetch(`/api/CourseRatings/Comments/${courseId}`
+                  + `?pageSize=${pageSize}&page=${page}&sort=${sort}`)
+              .then(r => r.json())
+              .then(list => renderComments(list, !reset));
+          }
 
-            if (percent >= 100) {
-                document.querySelectorAll('.content-checkbox').forEach(cb => cb.disabled = true);
-            }
+          // ==== 4) STAR‐INPUT UX ====
+          function initStars() {
+            const stars = document.querySelectorAll('.star-input');
+
+            // Hover → preview
+            stars.forEach((star, idx) => {
+              star.addEventListener('mouseover', () => {
+                stars.forEach((s, j) => {
+                  s.classList.toggle('text-warning', j <= idx);
+                  s.classList.toggle('text-secondary', j >  idx);
+                });
+              });
+            });
+
+            // Mouseout → restore selected
+            document.getElementById('star-inputs')
+              .addEventListener('mouseout', () => {
+                stars.forEach((s, j) => {
+                  s.classList.toggle('text-warning', j < selectedStars);
+                  s.classList.toggle('text-secondary', j >= selectedStars);
+                });
+              });
+
+            // Click → lock in selection
+            stars.forEach((star, idx) => {
+              star.addEventListener('click', () => {
+                selectedStars = idx + 1;
+                stars.forEach((s, j) => {
+                  s.classList.toggle('text-warning', j < selectedStars);
+                  s.classList.toggle('text-secondary', j >= selectedStars);
+                });
+              });
+            });
+          }
+
+          // ==== 5) SUBMIT REVIEW ====
+            function initSubmit() {
+          document.getElementById('submit-review')
+            .addEventListener('click', () => {
+              const comment = document.getElementById('comment-text').value.trim();
+
+              // 1) Kiểm tra đã chọn sao chưa
+              if (!selectedStars) {
+                return Swal.fire({
+                  title: 'Chưa chọn sao',
+                  text: 'Vui lòng chọn số sao trước khi gửi đánh giá.',
+                  icon: 'warning',
+                  confirmButtonText: 'OK'
+                });
+              }
+
+              // 2) Gửi lên API
+              fetch('/api/CourseRatings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  courseId,
+                  stars: selectedStars,
+                  comment
+                })
+              })
+              .then(r => {
+                if (!r.ok) throw new Error('Network response was not ok');
+                return r.json();
+              })
+              .then(x => {
+                // Thành công
+                Swal.fire({
+                  title: 'Cảm ơn!',
+                  html: x.message,
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+                }).then(() => {
+                  // reset form
+                  selectedStars = 0;
+                  document.getElementById('comment-text').value = '';
+                  document.querySelectorAll('.star-input')
+                    .forEach(s => {
+                      s.classList.replace('bi-star-fill','bi-star');
+                      s.classList.replace('text-warning','text-secondary');
+                    });
+
+                  // reload stats + comments
+                  loadStats();
+                  loadComments(true);
+                });
+              })
+              .catch(() => {
+                // Thất bại
+                Swal.fire({
+                  title: 'Lỗi',
+                  text: 'Gửi đánh giá thất bại. Vui lòng thử lại.',
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+                });
+              });
+            });
         }
 
-
-
-            document.addEventListener('DOMContentLoaded', function () {
-            const links = document.querySelectorAll('.play-video-link');
-            const player = document.getElementById('mainVideoPlayer');
-            const description = document.getElementById('videoDescription');
-            updateProgressBar(@Model.ProgressPercent);
-
-            links.forEach(link => {
-                link.addEventListener('click', function () {
-                    const url = this.getAttribute('data-video-url');
-                    const desc = this.getAttribute('data-description');
-
-                    if (url) player.src = url;
-                    if (desc !== null && description) description.textContent = desc;
-                });
-            });
+          // ==== 6) INIT ALL ONCE DOM READY ====
+            document.addEventListener('DOMContentLoaded', () => {
+          loadStats();
+          loadComments(true);
+          initStars();
+          initSubmit();
+          document.getElementById('sort-comments')
+            .addEventListener('change', () => loadComments(true));
+          document.getElementById('view-more')
+            .addEventListener('click', () => { page++; loadComments(); });
         });
+        })();
     </script>
 }
+
+
