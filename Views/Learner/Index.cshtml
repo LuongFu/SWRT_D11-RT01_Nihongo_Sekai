@@ -41,6 +41,49 @@
                 margin-top: var(--spacing-lg);
             }
 
+        .card.h-100 {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card-body {
+            flex: 1; /* đẩy nút xuống cuối */
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            line-height: 1.3;
+            min-height: 48px; /* cố định vùng title */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            min-height: 60px; /* chiều cao mô tả cố định */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            margin-bottom: 1rem;
+            color: #6c757d;
+        }
+
+        .content-wrapper {
+            flex: 1; /* chiếm phần còn lại */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
 
         /* Ở mobile: ép xuống hàng, căn giữa */
         @@media (max-width: 768px) {
@@ -229,6 +272,67 @@
              -moz-box-orient: vertical;
              line-clamp: 3; */
         }
+        /* Đảm bảo card có chiều cao đồng đều */
+        .course-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border-radius: 10px;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .course-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            }
+
+        /* Body của card: tiêu đề + mô tả + thông tin giá */
+        .course-card-body {
+            flex: 1; /* Đẩy phần nút xuống đáy */
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        /* Tiêu đề có chiều cao cố định */
+        .course-card-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            line-height: 1.4;
+            min-height: 50px; /* cố định chiều cao để thẻ đều nhau */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Mô tả cũng cố định chiều cao */
+        .course-card-desc {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            min-height: 65px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            margin-bottom: 1rem;
+        }
+
+        /* Khu vực giá */
+        .course-card-price {
+            min-height: 24px;
+            margin-bottom: 1rem;
+        }
+
+        /* Nút */
+        .course-card-footer {
+            margin-top: auto;
+        }
+
 
         @@media (max-width: 768px) {
             .card-body
@@ -287,21 +391,67 @@
         <div class="row g-4">
             @foreach (var item in Model)
             {
-                <div class="col-md-4">
-                    <div class="card h-100 shadow-sm border-0">
-                        <img src="@item.Course.ImageURL" class="card-img-top" alt="@item.Course.Name" style="height: 200px; object-fit: cover;" />
-                        <div class="card-body">
-                            <div class="content-wrapper">
-                                <h5 class="card-title">@item.Course.Name</h5>
-                                <p class="card-text">@item.Course.Description</p>
-                                <p class="text-muted">@item.Course.CourseCategory.GetDisplayName() - <strong>@item.Course.FinalPrice.ToString("N0") ₫</strong></p>
+                <div class="col">
+                    <div class="card course-card shadow-sm border-0">
+                        <img src="@item.Course.ImageURL" class="card-img-top"
+                             alt="@item.Course.Name" style="object-fit: cover; height: 200px;">
+                        <div class="course-card-body">
+                            <h5 class="course-card-title">@item.Course.Name</h5>
+                            <p class="course-card-desc">
+                                @(item.Course.Description?.Length > 100
+                                                            ? item.Course.Description.Substring(0, 100) + "..."
+                                                            : item.Course.Description)
+                        </p>
+                        <div class="course-card-price">
+                            <strong>Loại:</strong> @item.Course.CourseCategory.GetDisplayName()<br />
+                            @if (item.DiscountPercent != null && item.Course.StartDate <= DateTime.Now && item.Course.EndDate >= DateTime.Now)
+                                {
+                                    <p class="text-danger">
+                                        <del>@item.Course.Price.ToString("N0") ₫</del>
+                                        <strong>@item.Course.FinalPrice.ToString("N0") ₫</strong>
+                                        <span class="badge bg-danger text-white">@item.Course.DiscountPercent% OFF</span>
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p><strong>@item.Course.Price.ToString("N0") ₫</strong></p>
+                                }
                             </div>
-                            <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-danger w-100 mt-2">
-                                Xem khóa học
-                            </a>
+                            <div class="course-card-footer">
+                                @* Các nút Thêm giỏ hàng / Chi tiết *@
+                                @if (User.IsInRole("Learner"))
+                                {
+                                    if (item.IsPurchased)
+                                    {
+                                        <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-danger w-100 mt-2">
+                                            <i class="bi bi-play-btn"></i> Bắt đầu học
+                                        </a>
+                                    }
+                                    else if (item.IsInCart)
+                                    {
+                                        <a asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-outline-primary w-100">
+                                            <i class="bi bi-info-circle"></i> Chi tiết
+                                        </a>
+                                        <button class="btn btn-warning w-100 mt-2 disabled">
+                                            <i class="bi bi-cart-check"></i> Trong giỏ hàng
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Details" asp-route-id="@item.Course.Id" class="btn btn-outline-primary w-100">
+                                            <i class="bi bi-info-circle"></i> Chi tiết
+                                        </a>
+                                        <a asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@item.Course.Id"
+                                           class="btn btn-danger w-100 mt-2">
+                                            <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
+                                        </a>
+                                    }
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
+
             }
         </div>
 
