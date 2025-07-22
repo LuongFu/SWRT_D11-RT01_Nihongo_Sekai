@@ -2006,6 +2006,30 @@ namespace JapaneseLearningPlatform.Data.Seeds
                 IsPaid=false,
                 GoogleMeetLink="55au-r15t-ahun",
                 Status=ClassroomStatus.InProgress
+            },
+
+            new ClassroomInstanceSeed {
+                TemplateIndex=0,
+                StartOffsetDays=-10,
+                EndOffsetDays=20,
+                ClassTime=new TimeSpan(20,0,0),
+                MaxCapacity=8,
+                Price=0,
+                IsPaid=false,
+                GoogleMeetLink="55au-r15t-ahun",
+                Status=ClassroomStatus.InProgress
+            },
+
+            new ClassroomInstanceSeed {
+                TemplateIndex=0,
+                StartOffsetDays=-10,
+                EndOffsetDays=20,
+                ClassTime=new TimeSpan(20,0,0),
+                MaxCapacity=8,
+                Price=0,
+                IsPaid=false,
+                GoogleMeetLink="55au-r15t-ahun",
+                Status=ClassroomStatus.InProgress
             }
         };
 
