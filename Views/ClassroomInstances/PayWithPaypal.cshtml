@@ -17,7 +17,7 @@
                         <p><strong>Tên lớp học:</strong> @Model.Title</p>
                         <p>
                             <strong>Giá:</strong>
-                            <span class="text-danger fw-bold">$@Model.Price @Model.Currency</span>
+                            <span class="text-danger fw-bold">@Model.Price @Model.Currency</span>
                         </p>
                     </div>
 
@@ -62,7 +62,7 @@
                     transactions: [{
                         amount: {
                             total: '@Model.Price',
-                            currency: '@Model.Currency'
+                            currency: 'USD'
                         }
                     }]
                 });

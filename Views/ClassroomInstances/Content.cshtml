@@ -354,9 +354,12 @@
                 else
                 {
                     <p class="text-muted">Lớp học chưa có bài đánh giá cuối khóa nào.</p>
-                    <a asp-action="Create" asp-controller="Assignments" asp-route-instanceId="@Model.Instance.Id" class="btn btn-primary mb-3">
-                        <i class="bi bi-plus-circle"></i> Tạo bài tập cuối khóa
+                    @if (User.IsInRole("Partner"))
+                    {
+                        <a asp-action="Create" asp-controller="Assignments" asp-route-instanceId="@Model.Instance.Id" class="btn btn-primary mb-3">
+                            <i class="bi bi-plus-circle"></i> Tạo bài tập cuối khóa
                     </a>
+                    }
                 }
             </div>
         </div>
@@ -364,7 +367,6 @@
         <!-- 🔹 Feedback -->
         <div class="tab-pane fade" id="review" role="tabpanel">
             <div class="p-3">
-                <h5 class="fw-bold">Gửi Feedback</h5>
                 @if (User.IsInRole("Partner"))
                 {
                     <h5 class="fw-bold">Danh sách Feedback</h5>
@@ -405,7 +407,8 @@
                 }
                 else{
                 @if (!Model.HasReviewed)
-                {
+                    {
+                        <h5 class="fw-bold">Gửi Feedback</h5>
                     <form asp-action="SubmitReview" asp-route-instanceId="@Model.Instance.Id" method="post">
                         <div class="mb-3">
                             <label for="Rating" class="form-label">Rating (1-5)</label>
@@ -419,7 +422,9 @@
                     </form>
                 }
                 else
-                {
+                    {
+
+                        <h5 class="fw-bold">Gửi Feedback</h5>
                     <p class="text-success">✅ Bạn đã gửi feedback.</p>
                         <form asp-action="SubmitReview" asp-route-instanceId="@Model.Instance.Id" method="post">
                             <div class="mb-3">
@@ -432,7 +437,7 @@
                             </div>
                             <button type="submit" class="btn btn-warning">Cập nhật Feedback</button>
                         </form>
-                }
+                   }
                 }
             </div>
         </div>

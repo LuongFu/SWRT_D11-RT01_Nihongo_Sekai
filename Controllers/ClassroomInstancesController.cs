@@ -161,7 +161,8 @@ namespace JapaneseLearningPlatform.Controllers
                 ClassTime = TimeSpan.FromHours(vm.SessionDurationHours),
                 Price = vm.Price,
                 GoogleMeetLink = vm.GoogleMeetLink,
-                Status = vm.Status
+                Status = vm.Status,
+                IsPaid = vm.Price > 0 // ✅ Chỉ đánh dấu là trả phí nếu có giá
             };
 
             _context.ClassroomInstances.Add(instance);
@@ -191,7 +192,7 @@ namespace JapaneseLearningPlatform.Controllers
                 .Select(s => new SelectListItem
                 {
                     Value = ((int)s).ToString(),
-                    Text = s.ToString()
+                    Text = s.GetDisplayName().ToString()
                 }), "Value", "Text", (int)instance.Status);
 
             return View(instance.ToVM());
@@ -251,6 +252,7 @@ namespace JapaneseLearningPlatform.Controllers
             instance.GoogleMeetLink = vm.GoogleMeetLink;
             instance.ClassTime = TimeSpan.FromHours(vm.SessionDurationHours);
             instance.Status = vm.Status;
+            instance.IsPaid = vm.Price > 0;
 
             _context.Update(instance);
             await _context.SaveChangesAsync();
@@ -511,7 +513,7 @@ namespace JapaneseLearningPlatform.Controllers
                 InstanceId = instance.Id,
                 Title = instance.Template?.Title,
                 Price = instance.Price,
-                Currency = "USD"
+                Currency = "VND"
             };
 
             return View(vm);

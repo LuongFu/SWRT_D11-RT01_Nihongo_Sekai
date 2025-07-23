@@ -29,6 +29,7 @@ public static class ClassroomInstanceMapper
             Price = entity.Price,
             GoogleMeetLink = entity.GoogleMeetLink,
             Status = entity.Status,
+            MaxCapacity = entity.MaxCapacity, // ✅ Thêm dòng này
 
             // ✅ Trạng thái và thống kê
             IsPaid = entity.IsPaid,
