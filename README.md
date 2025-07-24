@@ -35,7 +35,7 @@ Hệ thống cung cấp các **khoá học trực tuyến**, **lớp học trự
 
 ```bash
 # Clone dự án về máy
-git clone [https://github.com/username/nihongosekai.git](https://github.com/LuongFu/SWRT_D11-RT01_Nihongo_Sekai.git)
+git clone https://github.com/LuongFu/SWRT_D11-RT01_Nihongo_Sekai.git
 cd nihongosekai
 
 # Khôi phục các package
