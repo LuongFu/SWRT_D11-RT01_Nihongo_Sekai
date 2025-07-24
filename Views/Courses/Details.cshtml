@@ -1,4 +1,4 @@
-﻿@using JapaneseLearningPlatform.Data.ViewModels
+﻿﻿@using JapaneseLearningPlatform.Data.ViewModels
 @using JapaneseLearningPlatform.Data.Enums
 @using JapaneseLearningPlatform.Data
 @model CourseHierarchyVM
@@ -30,134 +30,145 @@
 
     .ratings-section .progress-bar {
         background-color: #f5365c !important; /* hoặc #ffc107 (vàng) để nổi bật */
-    }    
+    }
 
     /* ========== LAYOUT ========== */
-.course-layout {
-    display: grid;
-    grid-template-columns: 75% 25%;
-    align-items: flex-start;
-    gap: 32px;
-}
+    .course-layout {
+        display: grid;
+        grid-template-columns: 75% 25%;
+        align-items: flex-start;
+        gap: 32px;
+    }
 
-/* ========== VIDEO SECTION ========== */
-.video-section iframe {
-    border-radius: 12px;
-    border: 3px solid #f5365c;
-    box-shadow: 0 0 12px rgba(245, 54, 92, 0.3);
-}
-.video-section h2,
-.sidebar-section h2 {
-    color: #f5365c;
-}
+    /* ========== VIDEO SECTION ========== */
+    .video-section iframe {
+        border-radius: 12px;
+        border: 3px solid #f5365c;
+        box-shadow: 0 0 12px rgba(245, 54, 92, 0.3);
+    }
 
-/* ========== SIDEBAR SECTION ========== */
-.sidebar-section {
-    width: 100%;
-    max-width: 500px;
-    position: sticky;
-    top: 100px;
-    padding: 16px;
-    background-color: #fff;
-    border: 2px solid #f5365c;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(245, 54, 92, 0.1);
-    max-height: calc(100vh - 150px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    word-break: break-word;
-}
+    .video-section h2,
+    .sidebar-section h2 {
+        color: #f5365c;
+    }
 
-.sidebar-section .btn {
-    padding: 4px 8px;
-    font-size: 0.85rem;
-}
+    /* ========== SIDEBAR SECTION ========== */
+    .sidebar-section {
+        width: 100%;
+        max-width: 500px;
+        position: sticky;
+        top: 100px;
+        padding: 16px;
+        background-color: #fff;
+        border: 2px solid #f5365c;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(245, 54, 92, 0.1);
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        word-break: break-word;
+    }
 
-/* ========== ACCORDION ========== */
-.accordion-item {
-    border: 1px solid #f5365c;
-    border-radius: 6px;
-}
-.accordion-button {
-    background-color: #fef2f4;
-    color: #f5365c;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-}
-.accordion-button:not(.collapsed) {
-    background-color: #f5365c;
-    color: #fff;
-}
-.accordion-body {
-    background-color: #fff;
-}
-.accordion-body .d-flex {
-    flex-wrap: wrap;
-    gap: 8px;
-}
-.accordion-body .d-flex > div {
-    flex: 1 1 auto;
-    min-width: 100px;
-}
+        .sidebar-section .btn {
+            padding: 4px 8px;
+            font-size: 0.85rem;
+        }
 
-/* ========== BUTTONS ========== */
-.btn-nihongo,
-.btn-nihongo-outline {
-    border: none;
-    font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-}
-.btn-nihongo {
-    background-color: #f5365c;
-    color: #fff;
-}
-.btn-nihongo:hover {
-    background-color: #d52d50;
-}
-.btn-nihongo-outline {
-    background-color: transparent;
-    color: #f5365c;
-    border: 2px solid #f5365c;
-}
-.btn-nihongo-outline:hover {
-    background-color: #f5365c;
-    color: #fff;
-}
+    /* ========== ACCORDION ========== */
+    .accordion-item {
+        border: 1px solid #f5365c;
+        border-radius: 6px;
+    }
 
-/* ========== BADGE ========== */
-.badge-nihongo {
-    background-color: #f5365c;
-    color: #fff;
-    font-weight: 600;
-    border-radius: 5px;
-    padding: 4px 8px;
-    font-size: 0.85rem;
-}
+    .accordion-button {
+        background-color: #fef2f4;
+        color: #f5365c;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
 
-/* ========== LIST GROUP ========== */
-.list-group-item {
-    border-left: 4px solid #f5365c;
-    background-color: #fff;
-    border-radius: 0;
-}
+        .accordion-button:not(.collapsed) {
+            background-color: #f5365c;
+            color: #fff;
+        }
 
-/* ========== LINKS ========== */
-.play-video-link {
-    color: #f5365c;
-}
-.play-video-link:hover {
-    text-decoration: underline;
-}
+    .accordion-body {
+        background-color: #fff;
+    }
 
-/* ========== CONTAINER ========== */
-.container {
-    max-width: 100% !important;
-    padding: 0 40px;
-}
+        .accordion-body .d-flex {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
 
-    
+            .accordion-body .d-flex > div {
+                flex: 1 1 auto;
+                min-width: 100px;
+            }
+
+    /* ========== BUTTONS ========== */
+    .btn-nihongo,
+    .btn-nihongo-outline {
+        border: none;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-nihongo {
+        background-color: #f5365c;
+        color: #fff;
+    }
+
+        .btn-nihongo:hover {
+            background-color: #d52d50;
+        }
+
+    .btn-nihongo-outline {
+        background-color: transparent;
+        color: #f5365c;
+        border: 2px solid #f5365c;
+    }
+
+        .btn-nihongo-outline:hover {
+            background-color: #f5365c;
+            color: #fff;
+        }
+
+    /* ========== BADGE ========== */
+    .badge-nihongo {
+        background-color: #f5365c;
+        color: #fff;
+        font-weight: 600;
+        border-radius: 5px;
+        padding: 4px 8px;
+        font-size: 0.85rem;
+    }
+
+    /* ========== LIST GROUP ========== */
+    .list-group-item {
+        border-left: 4px solid #f5365c;
+        background-color: #fff;
+        border-radius: 0;
+    }
+
+    /* ========== LINKS ========== */
+    .play-video-link {
+        color: #f5365c;
+    }
+
+        .play-video-link:hover {
+            text-decoration: underline;
+        }
+
+    /* ========== CONTAINER ========== */
+    .container {
+        max-width: 100% !important;
+        padding: 0 40px;
+    }
+
+
 
     /* text-secondary = màu xám, text-warning = vàng (bootstrap) */
     .star-input {
@@ -181,12 +192,12 @@
 <div class="container mt-4">
     <div class="course-layout">
         <div class="video-section">
-                <iframe id="mainVideoPlayer"
-                        class="rounded"
-                        src="@defaultEmbed"
-                        allowfullscreen
-                        style="width:97%; height:600px;">
-                </iframe>
+            <iframe id="mainVideoPlayer"
+                    class="rounded"
+                    src="@defaultEmbed"
+                    allowfullscreen
+                    style="width:97%; height:600px;">
+            </iframe>
 
             <h2 class="fw-bold">@Model.Course.Name</h2>
             <p class="text-muted mb-2">@Model.Course.Description</p>
@@ -291,8 +302,8 @@
                     </div>
                     <button id="view-more" class="btn btn-link">Xem thêm</button>
                 </div>
-            </div>    
-            
+            </div>
+
             <div class="review-form mb-5">
                 <h5>Viết đánh giá của bạn</h5>
                 <div id="star-inputs">
@@ -340,26 +351,26 @@
                             <div id="@collapseId" class="accordion-collapse collapse" aria-labelledby="@headingId" data-bs-parent="#courseSectionsAccordion">
                                 <div class="accordion-body">
                                     <div class="btn-group d-flex flex-wrap mb-3" role="group">
-                                            <a asp-controller="CourseContentItems" asp-action="Create"
-                                               asp-route-courseId="@Model.Course.Id"
-                                               asp-route-sectionId="@sections.Id"
-                                               class="btn btn-sm btn-nihongo-outline">
-                                                <i class="bi bi-plus-circle"></i>Sửa nội dung
-                                            </a>
-                                            <a asp-controller="CourseSections" asp-action="Edit"
-                                               asp-route-id="@sections.Id"
-                                               class="btn btn-sm btn-nihongo-outline">
-                                                <i class="bi bi-pencil"></i>Sửa tên mục
-                                            </a>
-                                            <a asp-controller="CourseSections" asp-action="Delete"
-                                               asp-route-id="@sections.Id"
-                                               class="btn btn-sm btn-nihongo-outline"
-                                               onclick="return confirm('Bạn có chắc xóa mục này chứ (Trong mục bao gồm nội dung sẽ mất)?');">
-                                                <i class="bi bi-trash"></i> Xóa mục
-                                            </a>
-                                           
-                                            
-                                        </div>
+                                        <a asp-controller="CourseContentItems" asp-action="Create"
+                                           asp-route-courseId="@Model.Course.Id"
+                                           asp-route-sectionId="@sections.Id"
+                                           class="btn btn-sm btn-nihongo-outline">
+                                            <i class="bi bi-plus-circle"></i>Sửa nội dung
+                                        </a>
+                                        <a asp-controller="CourseSections" asp-action="Edit"
+                                           asp-route-id="@sections.Id"
+                                           class="btn btn-sm btn-nihongo-outline">
+                                            <i class="bi bi-pencil"></i>Sửa tên mục
+                                        </a>
+                                        <a asp-controller="CourseSections" asp-action="Delete"
+                                           asp-route-id="@sections.Id"
+                                           class="btn btn-sm btn-nihongo-outline"
+                                           onclick="return confirm('Bạn có chắc xóa mục này chứ (Trong mục bao gồm nội dung sẽ mất)?');">
+                                            <i class="bi bi-trash"></i> Xóa mục
+                                        </a>
+
+
+                                    </div>
                                     <ul class="list-group list-group-flush">
                                         @foreach (var item in sections.ContentItems)
                                         {
@@ -421,7 +432,7 @@
                                 </div>
                             </div>
                         </div>
-                        }
+                    }
                 </div>
             </div>
         }
@@ -503,12 +514,12 @@
                 </div>
             </div>
         }
-        else if(!User.IsInRole("Admin"))
+        else if (!User.IsInRole("Admin"))
         {
             <div class="sidebar-section">
                 <h2 class="fw-bold"> Video xem trước </h2>
-                </div>
-           
+            </div>
+
         }
     </div>
 </div>
@@ -538,7 +549,13 @@
                   updateProgressBar(data.progress);
                   if (data.progress >= 100) {
                     document.querySelectorAll('.content-checkbox').forEach(cb => cb.disabled = true);
-                  }
+                    Swal.fire({
+                      title: '🎉 Chúc mừng!',
+                      text:  'Bạn đã hoàn thành 100% khoá học này.',
+                      icon:  'success',
+                      confirmButtonText: 'OK'
+                    });
+                  }                  
                 } else {
                   this.checked = !this.checked;
                 }
@@ -568,7 +585,6 @@
             if (url)  player.src = url;
             if (desc) description.textContent = desc;
           }));
-        });
 
         function updateProgressBar(percent) {
           const bar     = document.getElementById('mainProgressBar');
@@ -769,5 +785,3 @@
         })();
     </script>
 }
-
-
