@@ -468,7 +468,9 @@
                                                             <input type="checkbox"
                                                                    class="me-2 content-checkbox"
                                                                    data-content-id="@item.Id"
-                                                                   @(Model.CompletedContentIds.Contains(item.Id) ? "checked" : "") />
+                                                                   @(Model.CompletedContentIds.Contains(item.Id) ? "checked" : "")
+                                                                   @(Model.ProgressPercent >= 100 ? "disabled" : "") />
+
                                                             <a href="javascript:void(0);"
                                                                class="play-video-link text-decoration-none text-dark fw-semibold"
                                                                data-video-url="@ToEmbedUrl(item.Video.VideoURL)"
@@ -514,42 +516,45 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          // 1) Wire up content‑checkbox toggles
+               document.addEventListener('DOMContentLoaded', () => {
+          // Wire up toggles
           document.querySelectorAll('.content-checkbox').forEach(cb => {
             cb.addEventListener('change', async function() {
               const payload = {
-                courseId:       @Model.Course.Id,
-                contentItemId:  this.dataset.contentId,
-                isCompleted:    this.checked
+                courseId: @Model.Course.Id,
+                contentItemId: this.dataset.contentId,
+                isCompleted: this.checked
               };
 
               try {
-                const res  = await fetch('/Courses/ToggleContentCompletion', {
-                  method:  'POST',
+                const res = await fetch('/Courses/ToggleContentCompletion', {
+                  method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body:    JSON.stringify(payload)
+                  body: JSON.stringify(payload)
                 });
                 const data = await res.json();
 
                 if (data.success) {
                   updateProgressBar(data.progress);
                   if (data.progress >= 100) {
-                    // once you're at 100%, disable further toggles
-                    document.querySelectorAll('.content-checkbox')
-                            .forEach(c => c.disabled = true);
+                    document.querySelectorAll('.content-checkbox').forEach(cb => cb.disabled = true);
                   }
                 } else {
-                  // rollback if controller returned success:false
                   this.checked = !this.checked;
                 }
-              }
-              catch {
+              } catch {
                 this.checked = !this.checked;
                 Swal.fire('Lỗi', 'Không cập nhật được tiến độ, vui lòng thử lại.', 'error');
               }
             });
           });
+
+          // Initial bar + disable if 100%
+          updateProgressBar(@Model.ProgressPercent);
+          if (@Model.ProgressPercent >= 100) {
+            document.querySelectorAll('.content-checkbox').forEach(cb => cb.disabled = true);
+          }
+        });
 
           // 2) Video‑preview links & initial bar
           updateProgressBar(@Model.ProgressPercent);
@@ -763,60 +768,6 @@
         });
         })();
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          document.querySelectorAll('.content-checkbox').forEach(cb =>
-            cb.addEventListener('change', onContentToggle)
-          );
-
-          async function onContentToggle(e) {
-            const checkbox   = e.target;
-            const contentId  = checkbox.dataset.contentId;
-            const isCompleted= checkbox.checked;
-
-            try {
-              const resp = await fetch('/Courses/ToggleContentCompletion', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'RequestVerificationToken':
-                    document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: JSON.stringify({
-                  courseId:      @Model.Course.Id,
-                  contentItemId: contentId,
-                  isCompleted:   isCompleted
-                })
-              });
-
-              if (!resp.ok) throw new Error('Network error');
-
-              const { progress } = await resp.json();
-
-              // update bar
-              const bar = document.getElementById('mainProgressBar');
-              const pct = Math.round(progress);
-              bar.style.width = pct + '%';
-              bar.setAttribute('aria-valuenow', pct);
-              bar.textContent = pct + '%';
-
-              // once at 100% disable further toggles
-              if (pct >= 100) {
-                document.querySelectorAll('.content-checkbox')
-                        .forEach(c => c.disabled = true);
-              }
-            }
-            catch (err) {
-              // rollback and alert
-              checkbox.checked = !checkbox.checked;
-              Swal.fire('Lỗi', 'Không cập nhật được tiến độ, vui lòng thử lại.', 'error');
-            }
-          }
-        });
-    </script>
-
-
 }
 
 
