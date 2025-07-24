@@ -1,21 +1,20 @@
-﻿using JapaneseLearningPlatform.Data.Services;  // ICertificateService
+﻿using JapaneseLearningPlatform.Data;
+using JapaneseLearningPlatform.Data.Services;  // ICertificateService
 using JapaneseLearningPlatform.Data.ViewModels; // AchievementItemVM
 using JapaneseLearningPlatform.Models; // CourseCertificate
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using JapaneseLearningPlatform.Data;
 
 namespace JapaneseLearningPlatform.Controllers
 {
     [Authorize]
     public class AchievementsController : Controller
     {
-        private readonly ICertificateService _certService;
         private readonly AppDbContext _context;
-        public AchievementsController(ICertificateService certService, AppDbContext context)
+        public AchievementsController(AppDbContext context)
         {
-            _certService = certService;
             _context = context;
         }
 
@@ -23,48 +22,45 @@ namespace JapaneseLearningPlatform.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var certs = await _certService.GetByUserAsync(userId);
 
-            // Nếu chưa có chứng chỉ, hiển thị thông báo
-            if (!certs.Any())
-            {
-                ViewBag.Message = "Bạn chưa hoàn thành khóa nào, vì vậy chưa có chứng chỉ.";
-            }
+            // 1. Lấy về toàn bộ khoá kèm sections + contentItems
+            var allCourses = await _context.Courses
+                .Include(c => c.Sections)
+                   .ThenInclude(s => s.ContentItems)
+                .ToListAsync();
 
-            // Map CourseCertificate → AchievementItemVM nếu cần
-            var vm = certs.Select(c => new AchievementItemVM
+            // 2. Lọc ra những khoá đã hoàn thành
+            var completedCourses = allCourses
+                .Where(course =>
+                {
+                    int totalItems = course.Sections.Sum(s => s.ContentItems.Count);
+                    if (totalItems == 0) return false;    // không xét khoá trống
+                                                          // đếm số content đã completed
+                    int doneCount = _context.CourseContentProgresses
+                        .Count(p => p.UserId == userId
+                                 && p.CourseId == course.Id
+                                 && p.IsCompleted);
+                    return doneCount == totalItems;
+                })
+                .ToList();
+
+            // 3. Map sang VM để đổ ra view
+            var vm = completedCourses.Select(c => new AchievementItemVM
             {
-                CourseId = c.CourseId,
-                CourseName = c.Course.Name,
-                ThumbnailUrl = c.Course.ImageURL,
-                CompletedAt = c.IssuedAt,
-                FileUrl = c.FileUrl
+                CourseId = c.Id,
+                CourseName = c.Name,
+                ThumbnailUrl = c.ImageURL,
+                // Lấy thời điểm hoàn thành gần nhất
+                CompletedAt = _context.CourseContentProgresses
+                    .Where(p => p.UserId == userId && p.CourseId == c.Id)
+                    .Max(p => p.CompletedAt),
+                FileUrl = ""    // nếu bạn vẫn muốn giữ file URL của certificate (nếu đã có)
             }).ToList();
+
+            if (!vm.Any())
+                ViewBag.Message = "Bạn chưa hoàn thành khoá nào.";
             return View(vm);
         }
-
-
-        // GET: /Achievements/Certificate/5
-        public async Task<IActionResult> Certificate(int courseId)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // Check if user has a certificate for the given course
-            var cert = await _certService.GetByUserAsync(userId)
-                         .ContinueWith(t => t.Result
-                           .FirstOrDefault(c => c.CourseId == courseId));
-
-            if (cert == null)
-            {
-                return NotFound("Certificate not found");
-            }
-
-            // Redirect to certificate URL if found
-            return Redirect(cert.FileUrl);
-        }
-
-        // POST: /Achievements/MarkAsCompleted
-        // You can add a method here if you want to explicitly mark courses as completed and stored in achievements.
-        // This can be done automatically when the course reaches 100% progress.
     }
+
 }
