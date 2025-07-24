@@ -7,12 +7,13 @@ using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -24,10 +25,11 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrdersService _orderService;
         private readonly ICoursesService _courseService;
-        //private readonly ICertificateService _certService;
-        //private readonly IEmailSender _emailSender;
         private readonly ICourseRatingService _ratingService;
-        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService, ICoursesService courseService, ICourseRatingService ratingService)
+
+        private readonly IEmailSender _emailSender;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public CoursesController(ICoursesService service, ShoppingCart shoppingCart, AppDbContext context, IHttpContextAccessor httpContextAccessor, IOrdersService orderService, ICoursesService courseService, ICourseRatingService ratingService, IEmailSender emailSender, UserManager<ApplicationUser> userManager)
         {
             _service = service;
             _shoppingCart = shoppingCart;
@@ -35,9 +37,10 @@ namespace JapaneseLearningPlatform.Controllers
             _httpContextAccessor = httpContextAccessor;
             _orderService = orderService;
             _courseService = courseService;
-            //_certService = certService;     // gán
-            //_emailSender = emailSender;
             _ratingService = ratingService;
+
+            _emailSender = emailSender;
+            _userManager = userManager;
         }
 
         [AllowAnonymous]
@@ -362,6 +365,24 @@ namespace JapaneseLearningPlatform.Controllers
                 .CountAsync(p => p.UserId == userId && p.CourseId == model.CourseId && p.IsCompleted);
 
             double progress = totalItems > 0 ? (completedCount / (double)totalItems) * 100 : 0;
+
+            // 5) Nếu vừa từ <100% lên >=100% thì gửi mail chúc mừng
+            if (progress >= 100)
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                var course = await _context.Courses.FindAsync(model.CourseId);
+
+                string subject = $"🎉 Chúc mừng bạn hoàn thành “{course.Name}”!";
+                string body = $@"
+<p>Xin chào <strong>{user.FullName}</strong>,</p>
+<p>Bạn vừa hoàn thành 100% khoá học <strong>{course.Name}</strong> trên NihongoSekai!</p>
+<p>Chúc mừng và mong bạn tiếp tục chinh phục những khoá học mới.</p>
+<hr/>
+<p style='font-size:0.9em;color:#666;'>— NihongoSekai Team</p>
+";
+
+                await _emailSender.SendEmailAsync(user.Email, subject, body);
+            }
 
             return Json(new { success = true, progress });
         }
