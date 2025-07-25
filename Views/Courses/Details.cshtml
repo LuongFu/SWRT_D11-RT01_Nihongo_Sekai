@@ -184,6 +184,14 @@
         }
     /* vàng bootstrap */
 
+    /* Ứng với phần progress bar ở trang Detail */
+    .progress.sticky-progress {
+        position: sticky;
+        top: 0px; /* giữ cách trên cùng 100px (bạn có thể chỉnh lại) */
+        z-index: 10; /* đảm bảo nó nổi trên các phần tử khác */
+        /* background: #fff; /* thêm nền nếu cần, tránh chữ bị lọt ra sau */ */
+        padding: 4px 0; /* tuỳ chỉnh đệm cho đẹp */
+    }
 
 
 </style>
@@ -303,23 +311,44 @@
                     <button id="view-more" class="btn btn-link">Xem thêm</button>
                 </div>
             </div>
+            
 
-            <div class="review-form mb-5">
-                <h5>Viết đánh giá của bạn</h5>
-                <div id="star-inputs">
-                    @for (int i = 1; i <= 5; i++)
-                    {
-                        <i class="bi bi-star text-secondary star-input"
-                           data-value="@i"
-                           style="cursor:pointer; font-size:1.5rem; margin-right:4px;"></i>
-                    }
-                </div>
+            @if (Model.ProgressPercent >= 100)
+            {
+                @* Chỉ khi đã 100% *@
+                @if (!Model.HasReviewed)
+                {
+                    <div class="review-form mb-5">
+                        <h5>Viết đánh giá của bạn</h5>
+                        <div id="star-inputs">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="bi bi-star text-secondary star-input"
+                                   data-value="@i"
+                                   style="cursor:pointer; font-size:1.5rem; margin-right:4px;"></i>
+                            }
+                        </div>
 
 
-                <textarea id="comment-text" class="form-control mb-2"
+                        <textarea id="comment-text" class="form-control mb-2"
                           rows="3" placeholder="Viết bình luận..."></textarea>
-                <button id="submit-review" class="btn btn-primary">Gửi đánh giá</button>
-            </div>
+                        <button id="submit-review" class="btn btn-primary">Gửi đánh giá</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info mb-5">
+                        Bạn đã gửi đánh giá cho khoá học này. Cảm ơn bạn!
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-warning mb-5">
+                    Hoàn thành 100% khoá học để có thể gửi đánh giá.
+                </div>
+            }
+
 
         </div>
         @if (User.IsInRole("Admin"))
@@ -439,15 +468,16 @@
         @if ((Model.IsPurchased && User.IsInRole("Learner")) && Model.Sections != null && Model.Sections.Any())
         {
             <div class="sidebar-section">
-                <div class="progress mt-3" style="height: 20px;">
+                <div class="progress mt-3 sticky-progress" style="height: 20px;">
                     <div id="mainProgressBar" class="progress-bar bg-danger" role="progressbar"
                          style="width:@Model.ProgressPercent%"
                          aria-valuenow="@Model.ProgressPercent"
                          aria-valuemin="0" aria-valuemax="100">
-                        @Model.ProgressPercent.ToString("0")%
+                        @Model.ProgressPercent.ToString("0")%                        
                     </div>
                 </div>
-                <h5 class="fw-semibold mb-3">Nội dung khóa học</h5>
+
+                <h5 class="fw-semibold mb-3">Nội dung khóa học</h5>                
                 <div class="accordion" id="courseSectionsAccordion">
                     @for (int i = 0; i < Model.Sections.Count; i++)
                     {

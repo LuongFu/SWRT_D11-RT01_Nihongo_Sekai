@@ -214,6 +214,17 @@ namespace JapaneseLearningPlatform.Controllers
                                         .ToList();
 
             // ────────────────────────────────────
+            // Nếu là Learner và đã hoàn thành 100%, mới kiểm tra đã review chưa
+            if (User.IsInRole("Learner") && vm.ProgressPercent >= 100)
+            {
+                vm.HasReviewed = await _ratingService
+                    .HasUserReviewedAsync(userId, id);
+            }
+            else
+            {
+                vm.HasReviewed = false;
+            }
+            // ────────────────────────────────────
 
             return View(vm);
         }
@@ -374,12 +385,12 @@ namespace JapaneseLearningPlatform.Controllers
 
                 string subject = $"🎉 Chúc mừng bạn hoàn thành “{course.Name}”!";
                 string body = $@"
-<p>Xin chào <strong>{user.FullName}</strong>,</p>
-<p>Bạn vừa hoàn thành 100% khoá học <strong>{course.Name}</strong> trên NihongoSekai!</p>
-<p>Chúc mừng và mong bạn tiếp tục chinh phục những khoá học mới.</p>
-<hr/>
-<p style='font-size:0.9em;color:#666;'>— NihongoSekai Team</p>
-";
+                    <p>Xin chào <strong>{user.FullName}</strong>,</p>
+                    <p>Bạn vừa hoàn thành 100% khoá học <strong>{course.Name}</strong> trên NihongoSekai!</p>
+                    <p>Chúc mừng và mong bạn tiếp tục chinh phục những khoá học mới.</p>
+                    <hr/>
+                    <p style='font-size:0.9em;color:#666;'>— NihongoSekai Team</p>
+                    ";
 
                 await _emailSender.SendEmailAsync(user.Email, subject, body);
             }
