@@ -367,7 +367,7 @@
 
                         <!-- reCAPTCHA (disabled với admin) -->
                         <div class="g-recaptcha"
-                             data-sitekey="6LeiyogrAAAAAHjo-FHuRqMRrGnBo0s9wLdC4jBA"
+                             data-sitekey="6LcuZY4rAAAAAOB7URpx0BIssk-U9kmjQZvcBXD_"
                              style="pointer-events:none;opacity:0.6">
                         </div>
 
@@ -485,7 +485,7 @@
                             <span asp-validation-for="Message" class="text-danger"></span>
                         </div>
 
-                        <div id="recaptcha-container" data-sitekey="6LeiyogrAAAAAHjo-FHuRqMRrGnBo0s9wLdC4jBA"></div>
+                        <div id="recaptcha-container" data-sitekey="6LcuZY4rAAAAAOB7URpx0BIssk-U9kmjQZvcBXD_"></div>
                         <span asp-validation-for="RecaptchaToken" class="text-danger"></span>
 
 
@@ -576,7 +576,7 @@
 
                         <!-- reCAPTCHA -->
 
-                        <div id="recaptcha-container" data-sitekey="6LeiyogrAAAAAHjo-FHuRqMRrGnBo0s9wLdC4jBA"></div>
+                        <div id="recaptcha-container" data-sitekey="6LcuZY4rAAAAAOB7URpx0BIssk-U9kmjQZvcBXD_"></div>
                         <span asp-validation-for="RecaptchaToken" class="text-danger"></span>
 
 
@@ -681,7 +681,7 @@
         // 1) Đây là hàm Google sẽ gọi khi api.js đã load xong
                 function onRecaptchaLoad() {
           grecaptcha.render('recaptcha-container', {
-            sitekey: '6LeiyogrAAAAAHjo-FHuRqMRrGnBo0s9wLdC4jBA',
+            sitekey: '6LcuZY4rAAAAAOB7URpx0BIssk-U9kmjQZvcBXD_',
             callback: function(token) {
               document.getElementById('RecaptchaToken').value = token;
             }

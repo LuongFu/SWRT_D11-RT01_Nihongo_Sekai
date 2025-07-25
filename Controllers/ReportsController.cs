@@ -21,8 +21,8 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly ILogger<ReportsController> _logger;
 
         // Hard‑code ở đây
-        private const string RecaptchaSiteKey = "6LeiyogrAAAAAHjo-FHuRqMRrGnBo0s9wLdC4jBA";
-        private const string RecaptchaSecretKey = "6LeiyogrAAAAAH5aQagrRsWJdUjKJ-DEoK7AFv2T";
+        private const string RecaptchaSiteKey = "6LcuZY4rAAAAAOB7URpx0BIssk-U9kmjQZvcBXD_";
+        private const string RecaptchaSecretKey = "6LcuZY4rAAAAAMaZYSTeIuTGXJXgyDJWBffJI5zH";
 
         public ReportsController(
             AppDbContext context,
