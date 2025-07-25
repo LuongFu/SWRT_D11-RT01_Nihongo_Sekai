@@ -28,14 +28,42 @@
                         </div>
                     </div>
                     <div>
-                        <a asp-action="Certificate"
-                           asp-route-courseId="@a.CourseId"
-                           class="btn btn-sm btn-primary me-2">
-                            Xem chứng chỉ
+                        <!-- Nút Xem khóa -->
+                        <a asp-controller="Courses"
+                           asp-action="Details"
+                           asp-route-id="@a.CourseId"
+                           class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="bi bi-box-arrow-in-right"></i> Xem khóa
                         </a>
+
+                        <!-- Nút Xem chứng chỉ -->
+                        <button type="button"
+                                class="btn btn-sm btn-primary btn-cert"
+                                data-course-id="@a.CourseId">
+                            <i class="bi bi-file-earmark-person"></i> Xem chứng chỉ
+                        </button>
                     </div>
                 </div>
             }
         </div>
     }
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          document.querySelectorAll('.btn-cert').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+              e.preventDefault();
+              Swal.fire({
+                title: '🚧 Tính năng sắp tới',
+                text:  'Chứng chỉ cho khoá này đang được cập nhật. Vui lòng quay lại sau nhé!',
+                icon:  'info',
+                confirmButtonText: 'OK'
+              });
+            });
+          });
+        });
+    </script>
+}
