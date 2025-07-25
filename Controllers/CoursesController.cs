@@ -383,17 +383,33 @@ namespace JapaneseLearningPlatform.Controllers
                 var user = await _userManager.FindByIdAsync(userId);
                 var course = await _context.Courses.FindAsync(model.CourseId);
 
+                // tạo URL đến trang thành tích
+                var achievementsUrl = Url.Action(
+                    "Index",
+                    "Achievements",
+                    values: null,
+                    protocol: Request.Scheme
+                );
+
                 string subject = $"🎉 Chúc mừng bạn hoàn thành “{course.Name}”!";
+
                 string body = $@"
                     <p>Xin chào <strong>{user.FullName}</strong>,</p>
                     <p>Bạn vừa hoàn thành 100% khoá học <strong>{course.Name}</strong> trên NihongoSekai!</p>
                     <p>Chúc mừng và mong bạn tiếp tục chinh phục những khoá học mới.</p>
+                    <p><a href=""{achievementsUrl}"" 
+                          style=""display:inline-block;padding:.5em 1em;
+                                 background-color:#f5365c;color:#fff;
+                                 border-radius:4px;text-decoration:none;"">
+                         Xem thành tích của bạn
+                     </a></p>
                     <hr/>
                     <p style='font-size:0.9em;color:#666;'>— NihongoSekai Team</p>
-                    ";
+                ";
 
                 await _emailSender.SendEmailAsync(user.Email, subject, body);
             }
+
 
             return Json(new { success = true, progress });
         }
