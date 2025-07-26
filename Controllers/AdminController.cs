@@ -196,190 +196,81 @@ namespace JapaneseLearningPlatform.Controllers
             return View(vm);
         }
 
-
         /// <summary>
         /// Duyệt (approve=true) hoặc từ chối (approve=false) hồ sơ Partner
         /// </summary>
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> ApprovePartner(int id)
+        public async Task<IActionResult> ApprovePartner(int partnerId, string subject, string body)
         {
             var profile = await _context.PartnerProfiles
-                              .Include(p => p.User)
-                              .FirstOrDefaultAsync(p => p.Id == id);
+                                .Include(p => p.User)
+                                .FirstOrDefaultAsync(p => p.Id == partnerId);
             if (profile == null) return NotFound();
 
+            var user = profile.User!;
+
+            // 1) Cập nhật trạng thái trong DB
             profile.Status = PartnerStatus.Approved;
             profile.DecisionAt = DateTime.UtcNow;
-
-            profile.User.IsApproved = true;
-
+            user.IsApproved = true;
             await _context.SaveChangesAsync();
 
-            // Generate confirmation link
-            var user = profile.User;
+            // 2) Sinh token & callbackUrl để xác nhận email
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.Action(
-                nameof(AccountController.Login),
+                nameof(AccountController.Login),  
                 "Account",
                 new { userId = user.Id, token },
                 protocol: Request.Scheme
             );
 
-            // Send beautifully formatted email
-            var subject = "🎉 Your Partner Application Is Approved!";
-            var body = $@"<!DOCTYPE html>
-            <html><head><meta charset=""UTF-8""/></head>
-            <body style=""margin:0;padding:0;background:#f4f4f7;"">
-                <table width=""100%"" cellpadding=""0"" cellspacing=""0"" border=""0"">
-                <tr><td align=""center"">
-                    <table width=""600"" cellpadding=""0"" cellspacing=""0"" border=""0""
-                            style=""background:#ffffff;border-radius:8px;overflow:hidden;"">
-                    <!-- Banner -->
-                    <tr>
-                        <td>
-                        <img src=""https://source.unsplash.com/600x200/?celebration,confetti"" 
-                                alt=""Congratulations!"" width=""600"" style=""display:block;""/>
-                        </td>
-                    </tr>
-                    <!-- Content -->
-                    <tr>
-                        <td style=""padding:20px;font-family:Arial,sans-serif;color:#333;"">
-                        <img src=""https://source.unsplash.com/80x80/?logo,brand"" 
-                                alt=""Nihongo Sekai"" width=""80"" style=""display:block;margin-bottom:20px;""/>
-                        <h2 style=""margin:0 0 15px;color:#E53935;font-size:24px;"">
-                            Hello {user.FullName},
-                        </h2>
-                        <p style=""font-size:16px;line-height:1.5;"">
-                            Congratulations! Your application as a <strong>Teaching Partner</strong> has been
-                            <span style=""color:#22c55e;"">approved</span>.
-                        </p>
-                        <p style=""text-align:center;margin:30px 0;"">
-                            <a href=""{callbackUrl}""
-                                style=""display:inline-block;padding:12px 24px;
-                                    background:#E53935;color:#fff;text-decoration:none;
-                                    border-radius:4px;font-weight:bold;"">
-                            Confirm &amp; Log In
-                            </a>
-                        </p>
-                        <p style=""font-size:14px;color:#666;line-height:1.4;"">
-                            If the button above doesn’t work, copy &amp; paste this link into your browser:<br/>
-                            <a href=""{callbackUrl}"" style=""color:#1a73e8;word-break:break-all;"">
-                            {callbackUrl}
-                            </a>
-                        </p>
-                        </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td style=""background:#f9f9fa;padding:15px;text-align:center;
-                                    font-family:Arial,sans-serif;color:#888;font-size:12px;"">
-                        <p style=""margin:0 0 10px;"">Follow us</p>
-                        <a href=""https://facebook.com/nihongosekai"">
-                            <img src=""https://cdn-icons-png.flaticon.com/24/733/733547.png""
-                                alt=""FB"" width=""24"" style=""margin:0 5px;""/>
-                        </a>
-                        <a href=""https://twitter.com/nihongosekai"">
-                            <img src=""https://cdn-icons-png.flaticon.com/24/733/733579.png""
-                                alt=""TW"" width=""24"" style=""margin:0 5px;""/>
-                        </a>
-                        <a href=""https://instagram.com/nihongosekai"">
-                            <img src=""https://cdn-icons-png.flaticon.com/24/2111/2111463.png""
-                                alt=""IG"" width=""24"" style=""margin:0 5px;""/>
-                        </a>
-                        <p style=""margin-top:10px;"">© {DateTime.UtcNow.Year} Nihongo Sekai</p>
-                        </td>
-                    </tr>
-                    </table>
-                </td></tr>
-                </table>
-            </body>
-            </html>";
+            // 3) Tiêm callbackUrl vào template đã soạn
+            body = body.Replace("{{CallbackUrl}}", callbackUrl);
 
+            // 4) Gửi email
             await _emailSender.SendEmailAsync(user.Email!, subject, body);
+
+            TempData["Success"] = $"Đã phê duyệt {user.FullName} và gửi email xác nhận.";
             return RedirectToAction(nameof(PartnerApplications));
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> RejectPartner(int id)
+        public async Task<IActionResult> RejectPartner(int partnerId, string subject, string body)
         {
-            // 1) load profile + user
             var profile = await _context.PartnerProfiles
                                 .Include(p => p.User)
-                                .FirstOrDefaultAsync(p => p.Id == id);
+                                .FirstOrDefaultAsync(p => p.Id == partnerId);
             if (profile == null) return NotFound();
 
-            // 2) mark as Rejected for your audit table
+            var user = profile.User!;
+
+            // 1) Cập nhật trạng thái audit
             profile.Status = PartnerStatus.Rejected;
             profile.DecisionAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
-            // 3) send "sorry, not approved" email
-            var user = profile.User;
-            var subject = "🙏 Your Partner Application Status";
-            var registerUrl = Url.Action(nameof(AccountController.Register),
-                                         "Account", null, Request.Scheme)!;
+            // 2) Sinh registerUrl
+            var registerUrl = Url.Action(
+                nameof(AccountController.Register),
+                "Account",
+                null,
+                protocol: Request.Scheme
+            );
 
-            var body = $@"<!DOCTYPE html>
-            <html><head><meta charset=""UTF-8""/></head>
-            <body style=""margin:0;padding:0;background:#f4f4f7;"">
-              <table width=""100%"" cellpadding=""0"" cellspacing=""0"">
-                <tr><td align=""center"">
-                  <table width=""600"" cellpadding=""0"" cellspacing=""0"" 
-                         style=""background:#ffffff;border-radius:8px;overflow:hidden;"">
-                    <!-- Banner -->
-                    <tr>
-                      <td>
-                        <img src=""https://source.unsplash.com/600x200/?sorry,stamp"" 
-                             alt=""Application Not Approved"" width=""600"" 
-                             style=""display:block;""/>
-                      </td>
-                    </tr>
-                    <!-- Content -->
-                    <tr>
-                      <td style=""padding:20px;font-family:Arial,sans-serif;color:#333;"">
-                        <h2 style=""margin:0 0 15px;color:#D32F2F;font-size:24px;"">
-                          We’re Sorry, {user.FullName}
-                        </h2>
-                        <p style=""font-size:16px;line-height:1.5;"">
-                          Unfortunately, your application to become a Teaching Partner was 
-                          <strong style=""color:#D32F2F;"">not approved</strong> at this time.
-                        </p>
-                        <p style=""font-size:16px;line-height:1.5;margin-top:20px;"">
-                          You’re welcome to gain more experience and 
-                          <a href=""{registerUrl}"" style=""color:#1a73e8;"">
-                            apply again
-                          </a> when you’re ready.
-                        </p>
-                      </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                      <td style=""background:#f9f9fa;padding:15px;
-                                 text-align:center;font-family:Arial,sans-serif;
-                                 color:#888;font-size:12px;"">
-                        <p style=""margin:0;"">© {DateTime.UtcNow.Year} Nihongo Sekai</p>
-                      </td>
-                    </tr>
-                  </table>
-                </td></tr>
-              </table>
-            </body>
-            </html>";
+            // 3) Tiêm {{RegisterUrl}}
+            body = body.Replace("{{RegisterUrl}}", registerUrl);
 
+            // 4) Gửi email
             await _emailSender.SendEmailAsync(user.Email!, subject, body);
 
-            // 2) Remove the profile (documents go with it via cascade)
+            // 5) Xóa hồ sơ + user + folder
             _context.PartnerProfiles.Remove(profile);
             await _context.SaveChangesAsync();
+            await _userManager.DeleteAsync(user);
+            var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "partner_docs", user.Id);
+            if (Directory.Exists(uploadsDir)) Directory.Delete(uploadsDir, true);
 
-            // 3) Delete the user account
-            await _userManager.DeleteAsync(profile.User);
-
-            // 4) (Optional) Delete their physical uploads folder
-            var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "partners", profile.User.Id);
-            if (Directory.Exists(uploadsDir))
-                Directory.Delete(uploadsDir, recursive: true);
-
+            TempData["Success"] = $"Đã từ chối {user.FullName}, xóa hồ sơ và gửi email.";
             return RedirectToAction(nameof(PartnerApplications));
         }
         #endregion
