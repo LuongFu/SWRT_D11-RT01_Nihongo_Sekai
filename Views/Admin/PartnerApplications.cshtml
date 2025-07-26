@@ -904,24 +904,32 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
           @foreach (var p in items)
-          {
+        {
                 <text>
                 // —— Live preview cho Modal Phê duyệt ——
                 (function(){
                   var editor   = document.getElementById('approveEditor-@p.Id');
                   var extraDiv = document.getElementById('approveExtra-@p.Id');
-                  // Mỗi khi gõ, chuyển mỗi dòng thành <p>…</p> và append
                   editor.addEventListener('input', function() {
                     extraDiv.innerHTML = this.value
-                      .split('\n')
-                      .map(line => `<p>${line}</p>`)
-                      .join('');
+                      .split('\n').map(line => `<p>${line}</p>`).join('');
+                  });
+                })();
+
+                // —— Live preview cho Modal Từ chối ——
+                (function(){
+                  var rejectEditor = document.getElementById('rejectEditor-@p.Id');
+                  var rejectExtra  = document.getElementById('rejectExtra-@p.Id');
+                  rejectEditor.addEventListener('input', function() {
+                    rejectExtra.innerHTML = this.value
+                      .split('\n').map(line => `<p>${line}</p>`).join('');
                   });
                 })();
                 </text>
           }
         });
     </script>
+
 }
 
  
