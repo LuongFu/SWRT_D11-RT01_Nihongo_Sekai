@@ -6,6 +6,7 @@
     Layout = "_Layout";
     ViewData["HideNavbar"] = true;
     ViewData["HideFooter"] = true;
+    ViewData["HideDailyWord"] = true;
 }
 
 @section Head {
@@ -265,6 +266,89 @@
             order: 2; /* Benefit hiển thị sau */
         }
 
+        }        
+
+        /* ===== Inline shake + highlight cho input lỗi ===== */
+        @@keyframes shake-input {
+            0%, 100%
+
+        {
+            transform: translateX(0);
+        }
+
+        25%, 75% {
+            transform: translateX(-5px);
+        }
+
+        50% {
+            transform: translateX(5px);
+        }
+
+        }
+
+        .input-error {
+            border-color: var(--color-primary-600);
+            animation: shake-input 0.3s ease;
+        }
+
+        /* Dark-mode overrides scoped under html.dark */
+        html.dark {
+            /* dark theme variable overrides */
+            --color-primary-50: #1e1e1e;
+            --color-secondary-50: #2a2a2a;
+            --color-primary-600: #bb86fc;
+            --color-secondary-600: #03dac6;
+            --color-gray-200: #3a3a3a;
+            --color-gray-600: #cfcfcf;
+            --color-gray-700: #e0e0e0;
+            --color-gray-400: #888888;
+            --color-gray-100: #121212;
+            --color-white: #ffffff;
+            --color-black: #000000;
+        }
+
+            html.dark body,
+            html.dark .auth-page {
+                background: var(--color-gray-100);
+                color: var(--color-white);
+            }
+
+            html.dark .auth-card {
+                background: var(--color-primary-50);
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+            }
+
+            html.dark .form-control {
+                background: var(--color-gray-200);
+                color: var(--color-white);
+                border-color: var(--color-gray-400);
+            }
+
+                html.dark .form-control::placeholder {
+                    color: var(--color-gray-600);
+                }
+
+            html.dark .btn-danger {
+                background-color: var(--color-secondary-600);
+                border-color: var(--color-secondary-600);
+            }
+
+            html.dark .btn-outline-danger {
+                color: var(--color-secondary-600);
+                border-color: var(--color-secondary-600);
+            }
+
+            html.dark .text-danger {
+                color: var(--color-secondary-600) !important;
+            }
+
+            html.dark .auth-benefits-column {
+                background: linear-gradient( 135deg, var(--color-primary-600), var(--color-secondary-600) );
+            }
+
+            html.dark .benefit-icon {
+                background: rgba(255, 255, 255, 0.1);
+            }
         }
     </style>
 }
@@ -272,6 +356,9 @@
 <div class="auth-page">
     <main class="auth-main">
         <div class="auth-card">
+            <button id="darkModeToggle" class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-3" aria-label="Chuyển chế độ sáng/tối">
+                🌙
+            </button>
             <!-- Left: Sign-in Form -->
             <div class="auth-form-column">
                 <div class="auth-brand">
@@ -289,10 +376,11 @@
 
                 @if (TempData["Error"] != null)
                 {
-                    <div class="alert alert-danger" role="alert">
+                    <div class="alert alert-danger shake" role="alert">
                         <strong>Xin lỗi!</strong> @TempData["Error"]
                     </div>
                 }
+
                 @if (TempData["ErrorMessage"] != null)
                 {
                     <div class="alert alert-danger">
@@ -308,14 +396,27 @@
                         <span asp-validation-for="EmailAddress" class="text-danger"></span>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="password-input-wrapper mb-3">
                         <label asp-for="Password" class="form-label">Mật khẩu</label>
-                        <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu của bạn" />
+                        <input asp-for="Password"
+                               type="password"
+                               class="form-control"
+                               id="Password"
+                               placeholder="Nhập mật khẩu của bạn" />
+                        <button type="button" id="passwordToggle" class="password-toggle" aria-label="Toggle password visibility">
+                            <i class="bi bi-eye eye-icon"></i>
+                            <i class="bi bi-eye-slash eye-off-icon d-none"></i>
+                        </button>
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-danger w-100 mb-3" id="loginButton">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                    <button id="loginButton"
+                            type="submit"
+                            class="btn btn-danger w-100 mb-3"
+                            data-loading-text="Đang đăng nhập...">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>
+                        <span class="btn-text">Đăng nhập</span>
+                        <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
                     </button>
 
                     <div class="text-center text-muted mb-3">hoặc đăng nhập bằng</div>
@@ -370,41 +471,106 @@
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          // Password visibility toggle
-          const passwordToggle = document.getElementById("passwordToggle");
-          const passwordInput  = document.getElementById("Password");
-          if (passwordToggle && passwordInput) {
-            passwordToggle.addEventListener("click", function () {
-              const eyeIcon    = this.querySelector(".eye-icon");
-              const eyeOffIcon = this.querySelector(".eye-off-icon");
+        document.addEventListener("DOMContentLoaded", () => {
+          const form       = document.getElementById("loginForm");
+          const btn        = document.getElementById("loginButton");
+          const emailInput = form.querySelector('input[name="EmailAddress"]');
+          const passInput  = form.querySelector('input[name="Password"]');
 
-              if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                eyeIcon.style.display    = "none";
-                eyeOffIcon.style.display = "block";
+          function resetLoginButton() {
+            btn.disabled = false;
+            btn.querySelector(".btn-text").textContent = "Đăng nhập";
+            btn.querySelector(".spinner-border").classList.add("d-none");
+          }
+
+          // Chỉ chuyển sang loading khi cả email + password đều không rỗng
+          form.addEventListener("submit", e => {
+            const email = emailInput.value.trim();
+            const pass  = passInput.value.trim();
+                  // nếu có lỗi thì highlight + shake
+        let hasError = false;
+        if (!email) {
+          hasError = true;
+          emailInput.classList.add("input-error");
+          setTimeout(() => emailInput.classList.remove("input-error"), 300);
+        }
+        if (!pass) {
+          hasError = true;
+          passInput.classList.add("input-error");
+          setTimeout(() => passInput.classList.remove("input-error"), 300);
+        }
+
+        if (hasError) {
+          // abort loading để HTML5 validation show lỗi
+          resetLoginButton();
+          return;
+        }
+            // show loading
+            btn.disabled = true;
+            btn.querySelector(".btn-text").textContent = btn.getAttribute("data-loading-text");
+            btn.querySelector(".spinner-border").classList.remove("d-none");
+          });
+
+          // Khi user bắt đầu sửa input, reset button về normal
+          [emailInput, passInput].forEach(input =>
+            input.addEventListener("input", resetLoginButton)
+          );
+
+          // —— Password eye‐toggle ——
+          const passwordToggle = document.getElementById("passwordToggle");
+          if (passwordToggle) {
+            const eyeOn  = passwordToggle.querySelector(".eye-icon");
+            const eyeOff = passwordToggle.querySelector(".eye-off-icon");
+            passwordToggle.addEventListener("click", () => {
+              if (passInput.type === "password") {
+                passInput.type = "text";
+                eyeOn.classList.add("d-none");
+                eyeOff.classList.remove("d-none");
               } else {
-                passwordInput.type = "password";
-                eyeIcon.style.display    = "block";
-                eyeOffIcon.style.display = "none";
+                passInput.type = "password";
+                eyeOn.classList.remove("d-none");
+                eyeOff.classList.add("d-none");
               }
             });
           }
-
-          // (Tùy chọn) Hiển thị thông báo bảo mật nếu có element #securityNotification
-          const securityNotification = document.getElementById("securityNotification");
-          if (securityNotification) {
-            // Giả sử server có set 1 class "show-security" để trigger JS
-            if (securityNotification.classList.contains("show-security")) {
-              securityNotification.style.display   = "flex";
-              securityNotification.style.animation = "slideInFromTop 0.5s ease";
-              setTimeout(() => {
-                securityNotification.style.animation = "slideOutToTop 0.5s ease";
-                setTimeout(() => securityNotification.style.display = "none", 500);
-              }, 3000);
-            }
-          }
         });
     </script>
-}
 
+    <script>
+        // Giữ nguyên animation cho benefit-item
+        const items = document.querySelectorAll('.benefit-item');
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              e.target.classList.add('visible');
+              io.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.2 });
+        items.forEach(i => io.observe(i));
+    </script>
+
+    <script>
+                document.addEventListener('DOMContentLoaded', () => {
+          const btn = document.getElementById('darkModeToggle');
+          const root = document.documentElement;
+
+          // khởi tạo trạng thái từ localStorage
+          if (localStorage.getItem('theme') === 'dark') {
+            root.classList.add('dark');
+            btn.textContent = '☀️';
+          }
+
+          btn.addEventListener('click', () => {
+            if (root.classList.toggle('dark')) {
+              btn.textContent = '☀️';
+              localStorage.setItem('theme', 'dark');
+            } else {
+              btn.textContent = '🌙';
+              localStorage.setItem('theme', 'light');
+            }
+          });
+        });
+
+    </script>
+}

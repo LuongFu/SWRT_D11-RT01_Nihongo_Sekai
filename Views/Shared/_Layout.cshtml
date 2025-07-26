@@ -153,7 +153,11 @@
         }
 
         <main class="flex-grow-1">
-            @await Component.InvokeAsync("DailyWordPopup")
+            @if (!(ViewData["HideDailyWord"] as bool? ?? false))
+            {
+                @await Component.InvokeAsync("DailyWordPopup")
+            }
+
             @RenderBody()
             <!-- Chat bot -->
             @if (ViewData["HideChatbot"] == null || !(bool)ViewData["HideChatbot"])
@@ -172,9 +176,7 @@
                                overflow: hidden;">
                     </iframe>
                 </div>
-            }
-
-           
+            }           
         </main>
 
         @if (!hideFooter)
