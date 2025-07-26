@@ -334,6 +334,49 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <!-- badge–refresh script -->
+    <script>
+        // Sinh URL chính xác dựa vào route MVC
+        const badgeApiUrl = '@Url.Action("GetUnresolvedCounts", "Reports")';
+
+        async function refreshReportBadges() {
+          try {
+            const res = await fetch(badgeApiUrl);
+            if (!res.ok) return;
+            const { total, bySubj } = await res.json();
+
+            // Badge tổng
+            const navBadge = document.getElementById('nav-report-badge');
+            if (total > 0) {
+              navBadge.style.display = 'inline-block';
+              navBadge.innerText     = total < 100 ? total : '99+';
+            } else {
+              navBadge.style.display = 'none';
+            }
+
+            // Badge cho từng chủ đề (nếu bạn có thêm các .subject-badge)
+            document.querySelectorAll('.subject-badge').forEach(el => {
+              const subj = el.dataset.subject;
+              const entry = bySubj.find(x => x.Subject === subj);
+              const cnt   = entry ? entry.Count : 0;
+              if (cnt > 0) {
+                el.style.display = 'inline-block';
+                el.innerText     = cnt < 100 ? cnt : '99+';
+              } else {
+                el.style.display = 'none';
+              }
+            });
+          } catch (e) {
+            console.error('Không thể load badge báo cáo:', e);
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          refreshReportBadges();
+          setInterval(refreshReportBadges, 60000); // cập nhật mỗi phút
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

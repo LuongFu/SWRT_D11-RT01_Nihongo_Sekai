@@ -109,6 +109,33 @@
 <div class="container-fixed">
   <h2 class="text-center">@ViewData["Title"]</h2>
 
+    <div aria-live="polite" aria-atomic="true"
+         style="position: fixed; top:1rem; right:1rem; z-index:2000;">
+        <div id="newReportToast" class="toast" role="alert" data-bs-delay="8000">
+            <div class="toast-header bg-info text-white">
+                <strong class="me-auto">Báo cáo mới (@ViewBag.NewCount)</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body p-2">
+                <ul class="list-unstyled mb-1">
+                    @foreach (var r in (IEnumerable<dynamic>)ViewBag.NewReports)
+                    {
+                        <li>
+                            <a asp-action="Details" asp-route-id="@r.Id"
+                               class="small text-decoration-none">
+                                #@r.Id – @r.Subject
+                            </a>
+                        </li>
+                    }
+                </ul>
+                <a href="@Url.Action("AdminIndex", new { status = "Unresolved" })"
+                   class="small fw-bold">Xem tất cả →</a>
+            </div>
+        </div>
+    </div>
+
+
+
   <!-- Filter Chủ Đề -->
   <div class="filter-section text-center">
     <button type="button"
@@ -358,6 +385,44 @@
 
           // Chạy lần đầu để đồng bộ theo giá trị mặc định
           applyClientFilters();
+
+           const toastEl      = document.getElementById("newReportToast");
+        // Xuất đúng boolean & số
+        const toastEnabled = @Json.Serialize(ViewBag.EnableNewReportToast ?? false);
+        let   lastCount    = @Json.Serialize(ViewBag.NewCount ?? 0);
+        const badgeApiUrl  = "@Url.Action("GetUnresolvedCounts", "Reports")";
+
+        // 1) Hiển thị toast ngay khi load nếu feature on và count > 0
+        if (toastEnabled && lastCount > 0) {
+          new bootstrap.Toast(toastEl).show();
+        }
+
+        // 2) Polling mỗi 60s
+        setInterval(async () => {
+          try {
+            const res  = await fetch(badgeApiUrl);
+            if (!res.ok) return;
+            const data = await res.json();     // { total, bySubj }
+
+            if (data.total > lastCount) {
+              lastCount = data.total;
+
+              // Cập nhật số hiển thị trong toast
+              document.getElementById("toast-count").innerText = lastCount;
+              document.getElementById("toast-count-2").innerText = lastCount;
+
+              // Show toast
+              new bootstrap.Toast(toastEl).show();
+
+              // (Nếu cần) reload page list để cập nhật bảng
+              // if (window.location.pathname.endsWith("/Reports/AdminIndex"))
+              //   window.location.reload();
+            }
+          } catch (e) {
+            console.error("checkNewReports error:", e);
+          }
+        }, 60000);
+              // == Kết thúc phần toast ==
         });
     </script>
 }

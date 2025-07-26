@@ -80,70 +80,266 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
 
     <style>
-        /* ===== BASE ===== */
+        /* === BODY & BACKGROUND PETALS === */
         body {
             font-family: 'Source Sans Pro', sans-serif;
-            background: #faf8f6 url('/images/pattern-wave.png') center/200px repeat;
-            color: #4a4a4a;
+            background: #f9f5f2 url('/images/pattern-wave.png') center/200px repeat;
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* Sakura petals (subtle, few) */
+        .petal {
+            position: fixed;
+            top: -10px;
+            width: 16px;
+            height: 16px;
+            background: url('/images/petal.svg') no-repeat center/contain;
+            opacity: 0.7;
+            animation: fall linear infinite;
+        }
+
+        @@keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        /* === CONTAINER === */
+        .container {
+            margin-top: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: #a32a2a;
+            margin-bottom: 2rem;
+        }
+
+        /* === STAT CARDS === */
+        .stat-card {
+            border-radius: 1rem; /* bo góc to hơn */
+            padding: 0; /* bỏ padding dư */
+            overflow: hidden;
+            background: #fff;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+            .stat-card .card-body {
+                padding: 1rem; /* đưa padding vào card-body */
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            }
+
+
+        /* === FILTER FORM === */
+        .hover-dropdown {
+            position: relative;
+        }
+
+            .hover-dropdown .dropdown-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                max-height: 180px;
+                overflow-y: auto;
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 0.5rem;
+                box-shadow: 0 .5rem 1rem rgba(0,0,0,0.1);
+            }
+
+            .hover-dropdown:hover .dropdown-menu {
+                display: block;
+            }
+
+            .hover-dropdown .dropdown-item:hover {
+                background: #fef0f0;
+                color: #a32a2a;
+            }
+
+        .apply-btn {
+            background-color: #a32a2a;
+            border-color: #a32a2a;
+        }
+
+            .apply-btn:hover {
+                background-color: #8b2424;
+            }
+
+        /* === TABLE === */
+        .table-wrapper {
+            background: #fff;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+
+            .table-wrapper table {
+                border: none;
+            }
+
+            .table-wrapper thead th {
+                background: #fef2f2;
+                color: #a32a2a;
+                border-bottom: none;
+            }
+
+            .table-wrapper tbody tr {
+                transition: background .2s, transform .2s;
+            }
+
+                .table-wrapper tbody tr:hover {
+                    background: #fff5f5;
+                    transform: translateY(-1px);
+                }
+
+
+        .badge-special {
+            background: #ffe4ec !important;
+            color: #d6336c !important;
+            padding: .25em .5em;
+            border-radius: .5rem;
+        }
+
+
+        /* === FOOTER SPACING === */
+        .pagination {
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+
+        /* Make apply-btn match the style of the "Xóa bộ lọc" button on Users page */
+        .apply-btn {
+            background-color: transparent; /* trong suốt */
+            color: #a32a2a; /* chữ đỏ */
+            border: 1px solid #a32a2a; /* viền đỏ */
+            border-radius: 0.5rem; /* bo góc tương tự */
+            padding: 0.5rem 1.25rem; /* chiều cao & padding */
+            font-weight: 600; /* đậm như nút Clear */
+            transition: background-color .2s, color .2s;
+            white-space: nowrap;
+        }
+
+            .apply-btn:hover,
+            .apply-btn:focus {
+                background-color: #a32a2a; /* nền đỏ khi hover */
+                color: #fff; /* chữ trắng */
+                text-decoration: none;
+            }
+
+        /* Container chung cho filter + nút */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            background: #fff;
+            padding: .75rem 1rem;
+            border-radius: .75rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+            /* Mỗi dropdown và nút Apply cùng chiều cao */
+            .filter-bar .hover-dropdown,
+            .filter-bar .apply-btn {
+                flex: 1 1 0;
+                min-width: 150px;
+                height: 2.75rem;
+            }
+
+                /* Dropdown giữ nguyên style Bootstrap, chỉ bo góc và background */
+                .filter-bar .hover-dropdown .btn {
+                    height: 100%;
+                    border-radius: .5rem;
+                    background: #f8f9fa;
+                    text-align: left;
+                }
+
+            /* Style nút Apply nhỏ gọn như nút “Xóa bộ lọc” bên Users page */
+            .filter-bar .apply-btn {
+                background: transparent;
+                color: #a32a2a;
+                border: 1px solid #a32a2a;
+                border-radius: .5rem;
+                padding: 0; /* padding trên-xuống do height cố định */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                transition: background-color .2s, color .2s, transform .1s;
+            }
+
+                /* Hover & focus state */
+                .filter-bar .apply-btn:hover,
+                .filter-bar .apply-btn:focus {
+                    background-color: #a32a2a;
+                    color: #fff;
+                    transform: translateY(-1px);
+                    text-decoration: none;
+                }
+
+                /* Nếu cần icon bên trong nút */
+                .filter-bar .apply-btn i {
+                    margin-right: .5rem;
+                    font-size: 1.1rem;
+                }
+
+        /* ===== BASIC LAYOUT ===== */
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: #f9f5f2 url('/images/pattern-wave.png') center/200px repeat;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 3rem auto;
+            max-width: 1200px;
+            margin: 2rem auto;
             padding: 0 1rem;
         }
 
         h1 {
             text-align: center;
-            color: #9e2f2f;
-            margin-bottom: 2rem;
+            color: #a32a2a;
+            margin-bottom: 2.5rem;
         }
 
-        /* ===== STATS CARDS ===== */
+        /* ===== NAV & STATS ===== */
+        .btn-group a {
+            min-width: 120px;
+        }
+
         .stat-card {
-            background: #fff;
             border-radius: 0.75rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            transition: transform .15s, box-shadow .15s;
+            background: #fff;
+            transition: transform .2s, box-shadow .2s;
         }
 
             .stat-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            }
-
-            .stat-card .card-body {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0.75rem;
-            }
-
-        /* ===== TABS ===== */
-        .btn-group .btn {
-            min-width: 120px;
-            transition: background .15s;
-        }
-
-        .btn-group .btn-outline-secondary {
-            color: #6c6c6c;
-            border-color: #ccc;
-        }
-
-            .btn-group .btn-outline-secondary:hover {
-                background: #f5f5f5;
+                transform: translateY(-4px);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             }
 
         /* ===== FILTER BAR ===== */
         .filter-bar {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
+            gap: 1rem;
+            align-items: center;
             background: #fff;
             padding: 1rem;
             border-radius: 0.75rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
         }
 
             .filter-bar .hover-dropdown,
@@ -152,52 +348,35 @@
                 height: 2.75rem;
             }
 
-                /* dropdown button default */
+                /* dropdown button */
                 .filter-bar .hover-dropdown .btn {
-                    width: 100%;
                     height: 100%;
-                    text-align: left;
+                    width: 100%;
                     background: #f8f9fa;
                     border: 1px solid #ddd;
                     border-radius: 0.5rem;
+                    text-align: left;
                     padding: 0 .75rem;
-                    transition: box-shadow .15s;
-                }
-                /* specialization dropdown highlight */
-                .filter-bar .hover-dropdown:nth-child(2) .btn {
-                    background: #fde2e2;
-                    border-color: #f8d7da;
                 }
 
-                .filter-bar .hover-dropdown .dropdown-menu {
-                    max-height: 180px;
-                    overflow-y: auto;
-                    border-radius: 0.5rem;
-                    box-shadow: 0 .5rem 1rem rgba(0,0,0,0.1);
-                }
-
-            .filter-bar .dropdown-item:hover,
-            .filter-bar .dropdown-item.active {
-                background: #fdf0f0;
-                color: #9e2f2f;
-            }
-
-            /* Clear filters (“Xóa bộ lọc”) button */
+            /* apply button */
             .filter-bar .apply-btn {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background: #e53935;
-                color: #fff;
-                border: none;
+                background: transparent;
+                color: #a32a2a;
+                border: 1px solid #a32a2a;
                 border-radius: 0.5rem;
                 font-weight: 600;
-                transition: background .15s, transform .1s;
+                transition: background .2s, color .2s, transform .1s;
             }
 
                 .filter-bar .apply-btn:hover {
-                    background: #b71c1c;
+                    background: #a32a2a;
+                    color: #fff;
                     transform: translateY(-1px);
+                    text-decoration: none;
                 }
 
         /* ===== TABLE ===== */
@@ -205,57 +384,57 @@
             background: #fff;
             border-radius: 0.75rem;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.05);
             margin-bottom: 2rem;
         }
 
+            .table-wrapper table {
+                margin: 0;
+            }
+
             .table-wrapper thead th {
                 background: #fde2e2;
-                color: #9e2f2f;
+                color: #a32a2a;
                 border: none;
-                padding: 0.75rem;
+                font-weight: 600;
             }
 
-            .table-wrapper tbody tr {
-                transition: background .15s, transform .15s;
+            .table-wrapper tbody tr:nth-child(odd) {
+                background: #fff5f5;
             }
 
-                .table-wrapper tbody tr:hover {
-                    background: #fff5f5;
-                    transform: translateY(-1px);
-                }
+            .table-wrapper tbody tr:hover {
+                background: #ffecec;
+                transform: translateY(-1px);
+                transition: background .2s, transform .2s;
+            }
 
-        /* ===== SPECIALIZATION BADGE ===== */
+            .table-wrapper td, .table-wrapper th {
+                vertical-align: middle;
+            }
+
+        /* badge */
         .badge-special {
-            background: #ffd6d1 !important;
-            color: #a32a2f !important;
-            font-weight: 600;
-            padding: 0.25em 0.5em;
-            border-radius: 0.5rem;
+            background: #fde2e2 !important;
+            color: #a32a2a !important;
         }
 
-        /* ===== PAGINATION ===== */
+        /* pagination */
         .pagination {
             justify-content: center;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
         }
 
             .pagination .page-link {
-                margin: 0 0.25rem;
-                border-radius: 0.5rem;
-                transition: background .15s;
+                border-radius: .5rem;
+                margin: 0 .25rem;
             }
 
-            .pagination .page-item.active .page-link {
-                background: #9e2f2f;
-                border-color: #9e2f2f;
-                color: #fff;
-            }
-
-        /* ===== MODALS ===== */
+        /* make modals a bit more spacious */
         .modal-content {
-            border-radius: 0.75rem;
+            border-radius: .75rem;
         }
+
     </style>
 }
 
@@ -458,11 +637,11 @@
                 <td>
                     @foreach (var sp in shown)
                             {
-                                <span class="badge bg-secondary me-1">@sp.GetDisplayName()</span>
+                                <span class="badge-special me-1">@sp.GetDisplayName()</span>
                             }
                             @if (extra > 0)
                             {
-                                <span class="badge bg-secondary"
+                                <span class="badge-special"
                                       data-bs-toggle="tooltip"
                                       title="@string.Join(", ", specs.Skip(2).Select(x => x.GetDisplayName()))">
                                     +@extra

@@ -20,6 +20,8 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ReportsController> _logger;
 
+        private readonly IConfiguration _config;
+
         // Hard‑code ở đây
         private const string RecaptchaSiteKey = "6LcuZY4rAAAAAOB7URpx0BIssk-U9kmjQZvcBXD_";
         private const string RecaptchaSecretKey = "6LcuZY4rAAAAAMaZYSTeIuTGXJXgyDJWBffJI5zH";
@@ -27,11 +29,13 @@ namespace JapaneseLearningPlatform.Controllers
         public ReportsController(
             AppDbContext context,
             UserManager<ApplicationUser> userManager,
-            ILogger<ReportsController> logger)
+            ILogger<ReportsController> logger,
+            IConfiguration config)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _config = config;
         }
 
         [AllowAnonymous]
@@ -273,6 +277,31 @@ namespace JapaneseLearningPlatform.Controllers
             ViewBag.CurrentSubject = subject;
             ViewBag.CurrentRole = role;
             ViewBag.CurrentStatus = status;
+
+            // 1) read feature flag
+            bool toastEnabled = _config
+               .GetValue<bool>("Reporting:EnableNewReportToast");
+            ViewBag.EnableNewReportToast = toastEnabled;
+
+            // 2) compute how many unresolved since last admin visit
+            //    (you can adapt “lastVisit” however you persist it)
+            if (toastEnabled)
+            {
+                // e.g. count all unresolved
+                ViewBag.NewCount = await _context.Reports
+                                          .CountAsync(r => !r.IsResolved);
+            }
+
+            if (toastEnabled)
+            {
+                ViewBag.NewCount = await _context.Reports.CountAsync(r => !r.IsResolved);
+                ViewBag.NewReports = await _context.Reports
+                    .Where(r => !r.IsResolved)
+                    .OrderByDescending(r => r.SubmittedAt)
+                    .Take(3)
+                    .Select(r => new { r.Id, r.Subject, r.SubmittedAt })
+                    .ToListAsync();
+            }
 
             return View("~/Views/Admin/ViewReportsList.cshtml", items);
         }
