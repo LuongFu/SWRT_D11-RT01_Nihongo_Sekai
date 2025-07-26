@@ -17,10 +17,48 @@
 
     <link rel="stylesheet" href="~/css/styles.css" />
     <link rel="stylesheet" href="~/css/footer.css" />
+
+    <style>
+        /* Banner phát triển */
+        .under-construction-banner {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #FFF4E5;
+            border: 1px solid #FFC107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+            .under-construction-banner img {
+                width: 48px;
+                height: 48px;
+            }
+
+            .under-construction-banner .banner-text {
+                font-family: 'Source Sans Pro', sans-serif;
+                color: #663C00;
+            }
+
+                .under-construction-banner .banner-text strong {
+                    color: #BF360C;
+                }
+    </style>
 }
 
 <!-- Main Content -->
 <main class="main">
+    <!-- Banner “Đang Phát Triển” -->
+    <div class="container">
+        <div class="under-construction-banner">
+            <img src="https://cdn-icons-png.flaticon.com/512/3106/3106551.png"
+                 alt="🚧 Robot xây dựng" />
+            <div class="banner-text">
+                <strong>Chú ý:</strong> Trang này đang trong giai đoạn phát triển. Nội dung hiện tại chỉ là placeholder và có thể thay đổi.
+            </div>
+        </div>
+    </div>
     <!-- Hero Section -->
     <section class="legal-hero">
         <div class="container">
@@ -35,7 +73,7 @@
                     Tìm hiểu cách chúng tôi sử dụng cookie và các công nghệ tương tự để cải thiện trải nghiệm học tập của bạn trên Nihongo Sekai với sự minh bạch hoàn toàn.
                 </p>
                 <div class="legal-last-updated">
-                    <strong>Cập nhật lần cuối:</strong> January 15, 2024
+                    <strong>Cập nhật lần cuối:</strong> 25 tháng 7, 2025
                 </div>
             </div>
         </div>
@@ -489,5 +527,5 @@
 </main>
 
 @section Scripts {
-        <script src="~/js/script.js"></script>
+    <script src="~/js/script.js"></script>
 }
