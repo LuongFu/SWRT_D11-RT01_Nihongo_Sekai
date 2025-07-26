@@ -169,6 +169,39 @@
             background: #dc3545;
             color: #fff;
         }
+
+        .empty-cart img {
+            pointer-events: none;
+        }
+
+        .empty-cart h4 {
+            font-size: 1.25rem;
+        }
+
+        @@media(max - width:767.98px) {
+            .cart-container
+
+        {
+            flex-direction: column;
+        }
+
+        .cart-item-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cart-item-img {
+            width: 100%;
+            height: auto;
+            margin-bottom: .5rem;
+        }
+
+        .cart-right {
+            position: static;
+            margin-top: 2rem;
+        }
+
+        }
     </style>
 }
 
@@ -178,6 +211,18 @@
         <!-- Danh sách khóa học trong giỏ -->
         <div class="cart-left">
             <p>@Model.ShoppingCart.ShoppingCartItems.Count khóa học trong giỏ</p>
+            @if (!Model.ShoppingCart.ShoppingCartItems.Any())
+            {
+                <div class="empty-cart text-center py-5">
+                    <img src="https://cdn-icons-png.flaticon.com/512/11329/11329060.png" alt="Giỏ hàng trống" style="width:150px; opacity:.7;" />
+                    <h4 class="mt-3 text-muted">Giỏ hàng của bạn đang trống</h4>
+                    <a asp-controller="Courses" asp-action="Index" class="btn btn-primary mt-2">
+                        Khám phá khoá học
+                    </a>
+                </div>
+            }
+            else
+            {
             @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
             {
                 <div class="cart-item-card">
@@ -186,22 +231,24 @@
                         <div>
                             <div class="cart-course-title">@item.Course.Name</div>
                             <div class="text-muted">@item.Course.FinalPrice.ToString("N0") ₫</div>
-                            <a class="cart-remove"
-                               asp-controller="Orders"
-                               asp-action="RemoveItemFromShoppingCart"
-                               asp-route-id="@item.Course.Id">
+                            <a href="javascript:;"
+                               class="cart-remove"
+                               data-course-id="@item.Course.Id"
+                               data-course-name="@item.Course.Name">
                                 Xóa
                             </a>
+
                         </div>
                     </div>
                     <div class="fw-bold">@((item.Amount * item.Course.FinalPrice).ToString("N0")) ₫</div>
                 </div>
             }
+            }
         </div>
 
         <!-- Sidebar tổng tiền & thanh toán -->
         <div class="cart-right">
-            <h4>Tổng: @Model.ShoppingCartTotal.ToString("N0") ₫</h4>
+            <h4>Tổng: <span id="totalAmount">@Model.ShoppingCartTotal.ToString("N0")</span> ₫</h4>
 
             <!-- PayPal Button -->
             <div id="paypal-btn" class="mb-3 w-100"></div>
@@ -222,6 +269,26 @@
             </a>
         </div>
     </div>
+
+    <!-- Modal Xác nhận xóa -->
+    <div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-labelledby="confirmRemoveLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmRemoveLabel">Xác nhận</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc muốn xóa khóa học <span id="removeCourseName" class="fw-bold"></span> khỏi giỏ hàng?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmRemoveBtn">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     @if (Model.RecommendedCourses?.Any() ?? false)
     {
@@ -280,5 +347,56 @@
                     window.location.href = '@Url.Action("CompleteOrder", "Orders")';
                 })
         }, '#paypal-btn');
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          let removedId, removeRow;
+          const modalEl = document.getElementById('confirmRemoveModal');
+          const bsModal = new bootstrap.Modal(modalEl);
+
+          document.querySelectorAll('.cart-remove').forEach(btn => {
+            btn.addEventListener('click', () => {
+              removedId = btn.dataset.courseId;
+              removeRow = btn.closest('.cart-item-card');
+              document.getElementById('removeCourseName').textContent = btn.dataset.courseName;
+              bsModal.show();
+            });
+          });
+
+          document.getElementById('confirmRemoveBtn').addEventListener('click', () => {
+            window.location.href = `/Orders/RemoveItemFromShoppingCart/${removedId}`;
+          });
+        });
+    </script>
+
+    <script>
+        function animateValue(id, end, duration = 800) {
+          const obj = document.getElementById(id);
+          if (!obj) return;
+          const start = 0;
+          const range = end - start;
+          if (range <= 0) {
+            obj.textContent = end.toLocaleString('vi-VN');
+            return;
+          }
+          let startTime = null;
+          function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const value = Math.floor(progress * range + start);
+            obj.textContent = value.toLocaleString('vi-VN');
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            }
+          }
+          requestAnimationFrame(step);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          // Lấy giá trị cuối từ server
+          const endValue = parseInt('@Model.ShoppingCartTotal');
+          animateValue('totalAmount', endValue, 800);
+        });
     </script>
 }
