@@ -1,15 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -21,6 +22,7 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly ILogger<ReportsController> _logger;
 
         private readonly IConfiguration _config;
+        private readonly IEmailSender _emailSender;
 
         // Hard‑code ở đây
         private const string RecaptchaSiteKey = "6LcuZY4rAAAAAOB7URpx0BIssk-U9kmjQZvcBXD_";
@@ -30,12 +32,14 @@ namespace JapaneseLearningPlatform.Controllers
             AppDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<ReportsController> logger,
-            IConfiguration config)
+            IConfiguration config,
+            IEmailSender emailSender)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
             _config = config;
+            _emailSender = emailSender;
         }
 
         [AllowAnonymous]
@@ -346,6 +350,33 @@ namespace JapaneseLearningPlatform.Controllers
             return Json(new { total, bySubj });
         }
 
+        [HttpPost, Authorize(Roles = "Admin"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> Respond(int reportId, string subject, string body)
+        {
+            var report = await _context.Reports.FindAsync(reportId);
+            if (report == null) return NotFound();
+
+            // 1) (Tuỳ bạn) đánh dấu đã trả lời
+            report.IsResolved = true;
+            await _context.SaveChangesAsync();
+
+            // 2) Inject placeholder nếu cần
+            //    ví dụ {{ReporterName}}, {{OriginalMessage}}
+            body = body
+              .Replace("{{ReporterName}}", report.FullName)
+              .Replace("{{OriginalMessage}}", report.Message);
+
+            // 3) Gửi email
+            await _emailSender.SendEmailAsync(
+                report.Email,
+                subject,
+                body);
+
+            TempData["ToastMessage"] = $"Đã gửi phản hồi cho {report.FullName}";
+            TempData["ToastType"] = "success";
+
+            return RedirectToAction(nameof(AdminIndex));                
+        }
     }
 }
 

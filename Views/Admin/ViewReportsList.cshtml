@@ -242,16 +242,35 @@
             <td>@r.OrderNumber</td>
           }
           <td>@r.SubmittedAt.ToLocalTime():g</td>
-                    <td>@(r.IsResolved ? "Đã Giải Quyết" : "Đang Chờ")</td>
-          <td>
-            <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info">Xem</a>
-            @if (!r.IsResolved) {
-              <form asp-action="Resolve" method="post" class="d-inline">
-                <input type="hidden" name="id" value="@r.Id" />
-                <button type="submit" class="btn btn-sm btn-success">Hoàn thành</button>
-              </form>
-            }
-          </td>
+            <td>@(r.IsResolved ? "Đã Giải Quyết" : "Đang Chờ")</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info">
+                    Xem
+                </a>
+                @if (!r.IsResolved)
+                {
+                    <!-- Nút mở modal “Trả lời” -->
+                    <button type="button"
+                            class="btn btn-sm btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#respondModal-@r.Id">
+                        Trả lời
+                    </button>
+
+                    <!-- Form Resolve (Hoàn thành) riêng biệt -->
+                    <form asp-action="Resolve"
+                            asp-controller="Reports"
+                            method="post"
+                            class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@r.Id" />
+                        <button type="submit" class="btn btn-sm btn-success">
+                            Hoàn thành
+                        </button>
+                    </form>
+                }
+            </td>
+
         </tr>
       }
             <tr id="noResults" style="display:none">
@@ -261,6 +280,71 @@
             </tr>
     </tbody>
   </table>
+
+    @foreach (var r in Model)
+    {
+        <div class="modal fade" id="respondModal-@r.Id" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <form asp-action="Respond" asp-controller="Reports"
+                      method="post" class="modal-content">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="reportId" value="@r.Id" />
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Soạn thư trả lời</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- Chủ đề -->
+                        <div class="mb-3">
+                            <label class="form-label">Chủ đề</label>
+                            <input type="text" name="subject" class="form-control"
+                                   value="Phản hồi về báo cáo #@r.Id"
+                                   required />
+                        </div>
+
+                        <!-- Preview + hidden body -->
+                        <div class="mb-3">
+                            <label class="form-label">Xem trước thư</label>
+                            <div id="respondPreview-@r.Id"
+                                 class="border rounded p-3"
+                                 style="background:#fff; max-height:300px; overflow:auto;">
+                                <p>Xin chào <strong>@r.FullName</strong>,</p>
+                                <p>Chúng tôi đã nhận được báo cáo của bạn:</p>
+                                <blockquote style="font-style:italic;color:#555;">
+                                    "@r.Message"
+                                </blockquote>
+                                <div id="respondExtra-@r.Id"></div>
+                                <hr />
+                                <p>Trân trọng,<br />Nihongo Sekai Team</p>
+                            </div>
+                            <input type="hidden" name="body" id="hiddenRespondBody-@r.Id" />
+                        </div>
+
+                        <!-- Nội dung trả lời -->
+                        <div class="mb-3">
+                            <label class="form-label">Nội dung trả lời</label>
+                            <textarea id="respondEditor-@r.Id"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="Viết lời cảm ơn hoặc hướng dẫn…"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Hủy
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Gửi trả lời & Đánh dấu hoàn thành
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
 
   <!-- Phân Trang -->
   <nav class="mb-5">
@@ -425,6 +509,36 @@
               // == Kết thúc phần toast ==
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', ()=>{
+          @foreach (var r in Model)
+        {
+                <text>
+                // —— Respond modal ——
+                (function(){
+                  var editor   = document.getElementById('respondEditor-@r.Id');
+                  var extraDiv = document.getElementById('respondExtra-@r.Id');
+                  var preview  = document.getElementById('respondPreview-@r.Id');
+                  var hidden   = document.getElementById('hiddenRespondBody-@r.Id');
+                  var form     = document.querySelector('#respondModal-@r.Id form');
+
+                  // live update phần bổ sung
+                  editor.addEventListener('input', function(){
+                    extraDiv.innerHTML = this.value
+                      .split('\n').map(l=>`<p>${l}</p>`).join('');
+                  });
+
+                  // trước khi submit, gom toàn bộ preview HTML
+                  form.addEventListener('submit', function(){
+                    hidden.value = preview.innerHTML;
+                  });
+                })();
+                </text>
+          }
+        });
+    </script>
+
 }
 
 
