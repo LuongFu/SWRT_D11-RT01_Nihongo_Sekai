@@ -483,23 +483,7 @@
                 position: relative;
                 z-index: 1;
             } */
-        /* .auth-benefits-column {
-                    background: linear-gradient(135deg, var(--color-primary-600), var(--color-secondary-600) );
-                    color: var(--color-white);
-                    padding: var(--spacing-3xl);
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    position: relative;
-                    overflow: hidden;
-                }
-
-                    .auth-benefits-column::before {
-                        content: "";
-                        position: absolute;
-                        inset: 0;
-                        background: url("data:image/svg+xml,%3Csvg width='40' height='40' ...%3E") repeat;
-                    } */
+ 
 
         .benefits-content {
             position: relative;
@@ -706,6 +690,65 @@
             align-items: center;
             text-align: center;
         }
+
+        /* --- CSS --- */
+        .role-option {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+            .role-option:hover {
+                transform: scale(1.02);
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            }
+
+        /* Spinner (ẩn mặc định) */
+        .spinner {
+            display: none;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        /* Check icon (ẩn mặc định) */
+        .check-icon {
+            display: none;
+            margin-left: 0.5rem;
+            font-size: 1.2rem;
+            color: #22c55e;
+        }
+
+        /* Khi đang loading */
+        .auth-button.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+            .auth-button.loading .spinner {
+                display: inline-block;
+            }
+
+        /* Khi thành công */
+        .auth-button.success .spinner {
+            display: none;
+        }
+
+        .auth-button.success .check-icon {
+            display: inline-block;
+        }
+
+        /* keyframes spin */
+        @@keyframes spin {
+            to
+
+        {
+            transform: rotate(360deg);
+        }
+
+        }
     </style>
 }
 
@@ -904,13 +947,14 @@
           </div>
 
           <!-- Submit Button -->
-          <button type="submit"
-                  id="registerButton"
-                  class="auth-button"
-                  disabled>
+        <button type="submit"
+                id="registerButton"
+                class="auth-button">
             <span id="registerButtonText">Tạo tài khoản</span>
-            <div id="registerSpinner" class="spinner" style="display:none;"></div>
-          </button>
+            <div id="registerSpinner" class="spinner"></div>
+            <span id="registerCheck" class="check-icon">✓</span>
+        </button>
+
         </form>
 
         <!-- Social Login -->
@@ -1093,6 +1137,54 @@
           updateEnableState();
         });
     </script>
+
+    <script>
+        const form    = document.getElementById('registerForm');
+        const btn     = document.getElementById('registerButton');
+        const spinner = document.getElementById('registerSpinner');
+        const check   = document.getElementById('registerCheck');
+
+        form.addEventListener('submit', async e => {
+          e.preventDefault();
+
+          // 1) Disable form + show spinner
+          form.classList.add('disabled');
+          btn.classList.add('loading');
+          spinner.style.display = 'inline-block';
+
+          try {
+            // 2) Gửi AJAX
+            const res = await fetch(form.action, {
+              method: 'POST',
+              body: new FormData(form),
+              credentials: 'same-origin'
+            });
+
+            if (res.ok) {
+              // 3) Hiển thị checkmark
+              btn.classList.remove('loading');
+              btn.classList.add('success');
+              spinner.style.display = 'none';
+              check.style.display = 'inline-block';
+
+              // 4) Chờ 1s rồi redirect về URL server trả (nếu có)
+              const redirectUrl = res.redirected ? res.url : window.location.href;
+              setTimeout(() => {
+                window.location.href = redirectUrl;
+              }, 1000);
+            } else {
+              throw new Error(res.statusText || 'Server trả về lỗi');
+            }
+          } catch (err) {
+            // Bật lại form, ẩn spinner và thông báo
+            btn.classList.remove('loading');
+            form.classList.remove('disabled');
+            spinner.style.display = 'none';
+            alert('Có lỗi: ' + err.message);
+          }
+        });
+    </script>
+
 }
 
 
