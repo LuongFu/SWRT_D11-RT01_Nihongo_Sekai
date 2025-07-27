@@ -192,6 +192,71 @@
         /* background: #fff; /* thêm nền nếu cần, tránh chữ bị lọt ra sau */ */
         padding: 4px 0; /* tuỳ chỉnh đệm cho đẹp */
     }
+
+    /* Pulse animation cho nút */
+    @@keyframes pulse {
+        0%
+
+    {
+        box-shadow: 0 0 0 0 rgba(245,54,92, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(245,54,92, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(245,54,92, 0);
+    }
+
+    }
+
+    .btn-nihongo.pulse {
+        position: relative;
+        animation: pulse 2s infinite;
+    }
+
+    /* Subtext dưới nút */
+    .cta-subtext {
+        font-size: 0.85rem;
+        opacity: 0.8;
+    }
+
+    /* Chevron rotate & transition */
+    .accordion-chevron {
+        transition: transform 0.3s ease;
+        font-size: 1.25rem;
+        color: #f5365c;
+    }
+    /* Khi mở (button không còn .collapsed) */
+    .accordion-button:not(.collapsed) .accordion-chevron {
+        transform: rotate(180deg);
+    }
+
+    /* Smooth collapse height */
+    .accordion-collapse {
+        transition: height 0.4s ease;
+    }
+
+    /* Floating label styling (Bootstrap 5) */
+    /* Star hover effect */
+    .star-input {
+        font-size: 1.5rem;
+        transition: transform .2s, color .2s;
+        cursor: pointer;
+    }
+
+        .star-input:hover {
+            transform: scale(1.2);
+            color: #ffc107;
+        }
+
+    /* Disable button opacity */
+    #submit-review:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
 </style>
 
 
@@ -223,11 +288,17 @@
 
             @if (!Model.IsPurchased && !User.IsInRole("Admin") && DateTime.Now <= Model.Course.EndDate && !Model.IsInCart)
             {
-                <a class="btn btn-nihongo mt-2"
-                   asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Course.Id">
-                    <i class="bi bi-cart-plus"></i> Mua với @Model.Course.FinalPrice.ToString("N0") ₫
-                </a>
+                <div class="cta-wrapper mt-2">
+                    <a class="btn btn-nihongo pulse"
+                       asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Course.Id">
+                        <i class="bi bi-cart-plus me-1"></i> Mua với @Model.Course.FinalPrice.ToString("N0") ₫
+                    </a>
+                    <small class="cta-subtext d-block mt-1 text-muted">
+                        Bảo đảm hoàn tiền 7 ngày nếu không hài lòng
+                    </small>
+                </div>
             }
+
             else if (Model.IsInCart)
             {
                 <button asp-controller="Orders" asp-action="ShoppingCart" class="btn btn-warning mt-2 disabled">
@@ -318,20 +389,47 @@
                 {
                     <div class="review-form mb-5">
                         <h5>Viết đánh giá của bạn</h5>
-                        <div id="star-inputs">
+
+                        <!-- Star inputs (giữ nguyên markup) -->
+                        <div id="star-inputs" class="mb-2">
                             @for (int i = 1; i <= 5; i++)
                             {
                                 <i class="bi bi-star text-secondary star-input"
                                    data-value="@i"
-                                   style="cursor:pointer; font-size:1.5rem; margin-right:4px;"></i>
+                                   aria-label="@i sao"
+                                   role="button"></i>
                             }
                         </div>
 
+                        <!-- Floating Label Container -->
+                        <div class="form-floating mb-1">
+                            <textarea id="comment-text"
+                              class="form-control"
+                              placeholder="Viết bình luận..."
+                              minlength="10"
+                              style="height:100px"
+                              required></textarea>
+                            <label for="comment-text">Bình luận (tối thiểu 10 ký tự)</label>
+                            <div class="invalid-feedback">
+                                Vui lòng nhập ít nhất 10 ký tự.
+                            </div>
+                        </div>
 
-                        <textarea id="comment-text" class="form-control mb-2"
-                          rows="3" placeholder="Viết bình luận..."></textarea>
-                        <button id="submit-review" class="btn btn-primary">Gửi đánh giá</button>
+                        <!-- Char counter -->
+                        <div class="d-flex justify-content-between mb-3">
+                            <small id="charCount" class="text-muted">0/500 ký tự</small>
+                        </div>
+
+                        <button id="submit-review"
+                                class="btn btn-primary d-flex align-items-center"
+                                disabled>
+                            <span id="submitText">Gửi đánh giá</span>
+                            <div id="submitSpinner" class="spinner-border spinner-border-sm ms-2" role="status" style="display:none;">
+                                <span class="visually-hidden">Đang gửi…</span>
+                            </div>
+                        </button>
                     </div>
+
                 }
                 else
                 {
@@ -366,12 +464,13 @@
 
                         <div class="accordion-item mb-2">
                             <h2 class="accordion-header" id="@headingId">
-                                <button class="accordion-button collapsed" type="button"
+                                <button class="accordion-button collapsed d-flex align-items-center" type="button"
                                         data-bs-toggle="collapse"
                                         data-bs-target="#@collapseId"
                                         aria-expanded="false"
                                         aria-controls="@collapseId">
-                                    @sections.Title
+                                    <span class="flex-grow-1">@sections.Title</span>
+                                    <i class="bi bi-chevron-down accordion-chevron"></i>
                                 </button>
                             </h2>
 
@@ -811,5 +910,60 @@
             .addEventListener('click', () => { page++; loadComments(); });
         });
         })();
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const stars       = Array.from(document.querySelectorAll('.star-input'));
+          const textarea    = document.getElementById('comment-text');
+          const charCount   = document.getElementById('charCount');
+          const submitBtn   = document.getElementById('submit-review');
+          const submitText  = document.getElementById('submitText');
+          const spinner     = document.getElementById('submitSpinner');
+          let selectedStars = 0;
+
+          // 1) Star selection logic (như trước, nhưng đảm bảo updateState() sau mỗi tương tác)
+          stars.forEach((star, idx) => {
+            star.addEventListener('click', () => {
+              selectedStars = idx + 1;
+              stars.forEach((s, j) => {
+                s.classList.toggle('bi-star-fill', j < selectedStars);
+                s.classList.toggle('bi-star',      j >= selectedStars);
+              });
+              updateState();
+            });
+          });
+
+          // 2) Char counter & validation feedback
+          textarea.addEventListener('input', () => {
+            const len = textarea.value.length;
+            charCount.textContent = `${len}/500 ký tự`;
+
+            if (len >= 10) {
+              textarea.classList.remove('is-invalid');
+            } else {
+              textarea.classList.add('is-invalid');
+            }
+            updateState();
+          });
+
+          // 3) Update button state
+          function updateState() {
+            const validText = textarea.value.length >= 10;
+            submitBtn.disabled = !(selectedStars > 0 && validText);
+          }
+
+          // 4) Submit handler: show spinner, disable form
+          submitBtn.addEventListener('click', () => {
+            submitBtn.disabled = true;
+            submitText.textContent = 'Đang gửi…';
+            spinner.style.display = 'inline-block';
+            // Form sẽ được gửi qua AJAX hoặc classic post; restore state tuỳ controller trả về
+            // Ví dụ, nếu AJAX, send fetch rồi handle callback, reset spinner/text...
+          });
+
+          // Khởi tạo ban đầu
+          updateState();
+        });
     </script>
 }
