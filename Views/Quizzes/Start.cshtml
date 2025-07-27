@@ -3,72 +3,332 @@
 
 @{
     ViewData["Title"] = "Làm Quiz";
+    ViewData["HideNavbar"] = true;
+    ViewData["HideFooter"] = true;
 }
 
-<div class="container mt-5">
-    <div class="card shadow-sm border-0 rounded-4 p-4">
-        <h2 class="fw-bold mb-3">@Model.QuizTitle</h2>
-
-        <form asp-action="Submit" method="post">
-            <input type="hidden" asp-for="QuizId" />
-
-            @for (int i = 0; i < Model.Questions.Count; i++)
-            {
-                var question = Model.Questions[i];
-                <div class="mb-4">
-                    <h5>Câu @(i + 1): @question.QuestionText</h5>
-                    <input type="hidden" asp-for="Questions[@i].QuestionId" />
-                    <input type="hidden" asp-for="Questions[@i].QuestionText" />
-
-                    @if (question.QuestionType == QuestionType.SingleChoice)
-                    {
-                        for (int j = 0; j < question.Options.Count; j++)
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar: Tiến độ + nút -->
+        <nav class="col-12 col-md-2 mb-4 mb-md-0">
+            <div class="progress-sidebar bg-white p-3 d-flex flex-column justify-content-between">
+                <div>
+                    <h6 class="text-uppercase text-secondary mb-3">Tiến độ</h6>
+                    <div id="questionMatrix" class="d-grid gap-2 matrix-grid mb-3">
+                        @for (int i = 0; i < Model.Questions.Count; i++)
                         {
-                            var option = question.Options[j];
-                            <div class="form-check ms-3">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="Questions[@i].SelectedOptionId"
-                                       value="@option.OptionId"
-                                       id="q@i-opt@j" />
-                                <label class="form-check-label" for="q@i-opt@j">@option.OptionText</label>
-                                <input type="hidden" name="Questions[@i].Options[@j].OptionId" value="@option.OptionId" />
-                                <input type="hidden" name="Questions[@i].Options[@j].OptionText" value="@option.OptionText" />
-                                <input type="hidden" name="Questions[@i].Options[@j].IsCorrect" value="@option.IsCorrect" />
-                            </div>
+                            <button type="button"
+                                    class="btn matrix-btn"
+                                    data-index="@i">
+                                @(i + 1)
+                            </button>
                         }
-                    }
-                    else if (question.QuestionType == QuestionType.MultipleChoice)
-                    {
-                        for (int j = 0; j < question.Options.Count; j++)
-                        {
-                            var option = question.Options[j];
-                            <div class="form-check ms-3">
-                                <input class="form-check-input"
-                                       type="checkbox"
-                                       name="Questions[@i].SelectedOptionIds"
-                                       value="@option.OptionId"
-                                       id="q@i-opt@j" />
-                                <label class="form-check-label" for="q@i-opt@j">@option.OptionText</label>
-                                <input type="hidden" name="Questions[@i].Options[@j].OptionId" value="@option.OptionId" />
-                                <input type="hidden" name="Questions[@i].Options[@j].OptionText" value="@option.OptionText" />
-                                <input type="hidden" name="Questions[@i].Options[@j].IsCorrect" value="@option.IsCorrect" />
-                            </div>
-                        }
-                    }
+                    </div>
+                    <div class="text-center text-muted mb-4">
+                        <small><span id="answeredCount">0</span> đã trả lời</small>
+                    </div>
                 </div>
-                <hr />
-            }
+                <div class="d-grid gap-2">
+                    <button id="btnSubmitSidebar" class="btn btn-danger">
+                        <i class="bi bi-check-circle me-1"></i> Nộp bài
+                    </button>
+                    <a asp-controller="Courses" asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Thoát
+                    </a>
+                </div>
+            </div>
+        </nav>
 
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-circle"></i> Nộp bài
-            </button>
-        </form>
+        <!-- Main: Nội dung Quiz -->
+        <main class="col-12 col-md-10">
+            <div class="card shadow-sm border-0 rounded-4 p-4">
+                <h2 class="fw-bold mb-4">@Model.QuizTitle</h2>
+                <form id="quizForm" asp-action="Submit" method="post">
+                    <input type="hidden" asp-for="QuizId" />
 
-        <div class="mt-4">
-            <a asp-controller="Courses" asp-action="Index" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left-circle"></i> Về trang Khóa học
-            </a>
-        </div>
+                    @for (int i = 0; i < Model.Questions.Count; i++)
+                    {
+                        var q = Model.Questions[i];
+                        <div class="mb-5 question-container" id="question-@i" data-index="@i">
+                            <h5 class="mb-3">Câu @(i + 1): @q.QuestionText</h5>
+                            <div class="options-list">
+                                @if (q.QuestionType == QuestionType.SingleChoice)
+                                {
+                                    @for (int j = 0; j < q.Options.Count; j++)
+                                    {
+                                        var o = q.Options[j];
+                                        <label class="option-card form-check">
+                                            <input class="form-check-input"
+                                                   type="radio"
+                                                   name="Questions[@i].SelectedOptionId"
+                                                   value="@o.OptionId"
+                                                   id="q@i-opt@j" />
+                                            <span class="form-check-label">@o.OptionText</span>
+                                        </label>
+                                    }
+                                }
+                                else
+                                {
+                                    @for (int j = 0; j < q.Options.Count; j++)
+                                    {
+                                        var o = q.Options[j];
+                                        <label class="option-card form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   name="Questions[@i].SelectedOptionIds"
+                                                   value="@o.OptionId"
+                                                   id="q@i-opt@j" />
+                                            <span class="form-check-label">@o.OptionText</span>
+                                        </label>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <hr />
+                    }
+
+                </form>
+            </div>
+        </main>
     </div>
 </div>
+
+@section Styles {
+    <style>
+        /* Sidebar cố định full-height, không scroll nội bộ */
+        .progress-sidebar {
+            position: fixed !important;
+            /* position: sticky; */
+            top: 155px; /* cao nav bar */
+            bottom: 80px; /* cao footer */
+            width: 16%;
+            height: calc(100vh - 160px); /* viewport trừ header+footer */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid #e2e6ea;
+            border-radius: .5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* Matrix 3 cột */
+        .matrix-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .matrix-btn {
+            padding: .5rem;
+            border: 1px solid #dee2e6;
+            border-radius: .375rem;
+            background: #f8f9fa;
+            transition: background .2s, color .2s;
+            font-weight: 500;
+            width: 100%;
+        }
+
+            .matrix-btn.current {
+                background: #dc3545;
+                color: #fff;
+                border-color: #b02a37;
+            }
+
+            .matrix-btn.answered {
+                background: #f5365c;
+                color: #fff;
+                border-color: #a71d2a;
+            }
+
+            .matrix-btn:not(.current):hover {
+                background: #e9ecef;
+            }
+
+        /* Option cards */
+        .option-card {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: .75rem 1rem;
+            margin-bottom: .75rem;
+            border: 1px solid #e2e6ea;
+            border-radius: .5rem;
+            transition: background .2s, box-shadow .2s;
+            cursor: pointer;
+            user-select: none;
+        }
+
+            .option-card:hover {
+                background: #fff5f5;
+                box-shadow: 0 2px 8px rgba(220,53,69,0.15);
+            }
+
+            .option-card .form-check-input {
+                margin-top: 0;
+            }
+
+                .option-card .form-check-input:checked + .form-check-label {
+                    font-weight: 600;
+                }
+
+        .form-check-label {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        /* Mobile: sidebar thành top bar */
+        @@media (max-width: 767.98px) {
+            nav .col-12.col-md-2
+
+        {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 200;
+            margin-bottom: 1rem !important;
+        }
+
+        .progress-sidebar {
+            height: auto;
+            bottom: auto;
+            overflow-x: auto;
+            overflow-y: hidden;
+            flex-direction: column;
+        }
+
+        .matrix-grid {
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+        }
+
+        }
+
+
+/* 1) Khung sidebar */
+.progress-sidebar {
+  position: sticky;
+  top: 20px;       /* luôn cách header 20px khi dính */
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100vh - 40px - 80px); /* 40px = 20px header + 20px footer, 80px là footer height */
+  border: 1px solid #e2e6ea;
+  border-radius: .5rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  overflow: hidden; /* không có scroll nội bộ */
+  padding: 1rem;
+}
+
+/* 2) Đảm bảo main-content không bị che khuất */
+@@media(min-width: 768px) {
+  main.col-md-10 {
+    margin-left: calc(16.6667% + 1rem); /* tương ứng col-md-2 + gap */
+  }
+}
+
+/* 3) Matrix grid & buttons (giữ nguyên hoặc tuỳ chỉnh lại) */
+.matrix-grid { grid-template-columns: repeat(3, 1fr); }
+.matrix-btn {
+  padding: .75rem;
+  border: 1px solid #dee2e6;
+  border-radius: .375rem;
+  background: #f8f9fa;
+  transition: background .2s, color .2s;
+  font-weight: 500;
+  width: 100%;
+}
+.matrix-btn.current { background: #dc3545; color: #fff; border-color: #b02a37; }
+.matrix-btn.answered { background: #f5365c; color: #fff; border-color: #a71d2a; }
+.matrix-btn:not(.current):hover { background: #e9ecef; }
+
+/* 4) Option cards (giữ nguyên) */
+.option-card {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .75rem 1rem;
+  margin-bottom: .75rem;
+  border: 1px solid #e2e6ea;
+  border-radius: .5rem;
+  transition: background .2s, box-shadow .2s;
+  cursor: pointer;
+}
+.option-card:hover {
+  background: #fff5f5;
+  box-shadow: 0 2px 8px rgba(220,53,69,0.15);
+}
+.option-card .form-check-input { margin-top: 0; }
+.option-card .form-check-input:checked + .form-check-label {
+  font-weight: 600;
+}
+.form-check-label { flex: 1; cursor: pointer; }
+
+/* 5) Mobile: sidebar thành top bar */
+@@media(max-width: 767.98px) {
+  nav.col-md-2 {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: #fff;
+  }
+  .progress-sidebar {
+    height: auto;
+    bottom: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-direction: column;
+  }
+  .matrix-grid { grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)); }
+}
+
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const buttons     = Array.from(document.querySelectorAll('.matrix-btn'));
+          const containers  = Array.from(document.querySelectorAll('.question-container'));
+          const answeredSet = new Set();
+          let   current     = 0;
+          const answeredCount = document.getElementById('answeredCount');
+          const quizForm       = document.getElementById('quizForm');
+          const btnSubmitSidebar = document.getElementById('btnSubmitSidebar');
+
+          function updateUI() {
+            buttons.forEach((btn, idx) => {
+              btn.classList.toggle('current', idx === current);
+              btn.classList.toggle('answered', answeredSet.has(idx));
+            });
+            answeredCount.textContent = answeredSet.size;
+          }
+
+          function gotoQuestion(idx) {
+            current = idx;
+            containers[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            updateUI();
+          }
+
+          // Click matrix
+          buttons.forEach((btn, idx) => {
+            btn.addEventListener('click', () => gotoQuestion(idx));
+          });
+
+          // Chọn answer
+          document.querySelectorAll('input[type="radio"], input[type="checkbox"]')
+            .forEach(inp => {
+              inp.addEventListener('change', () => {
+                const idx = parseInt(inp.closest('.question-container').dataset.index, 10);
+                answeredSet.add(idx);
+                updateUI();
+              });
+          });
+
+          // Nút submit trong sidebar
+          btnSubmitSidebar.addEventListener('click', () => quizForm.submit());
+
+          // Khởi tạo
+          gotoQuestion(0);
+        });
+    </script>
+}
