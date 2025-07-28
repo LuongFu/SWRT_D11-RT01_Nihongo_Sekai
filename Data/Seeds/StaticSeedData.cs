@@ -1898,7 +1898,8 @@ namespace JapaneseLearningPlatform.Data.Seeds
         // 4. Users & Roles
         public static IReadOnlyList<UserSeed> Users = new List<UserSeed>
 {
-    new() { Email="lmp14589@gmail.com", FullName="Admin", Password="Phu123123@", Role="Admin" },
+    new() { Email="lmp14589@gmail.com", FullName="Luong Minh Phu", Password="Phu123123@", Role="Admin" },
+    new() { Email="admin@nihongosekai.com", FullName="Admin", Password="Test123@", Role="Admin" },
     new() { Email="giakhoiquang@gmail.com", FullName="Gia Khoi Partner", Password="Khoi2005.", Role="Partner", IsApproved = true },
     new() { Email="partner1@nihongo.com", FullName="Partner One", Password="Test123@", Role="Partner", IsApproved = true  },
     new() { Email="partner2@nihongo.com", FullName="Partner Two", Password="Test123@", Role="Partner", IsApproved = true },

@@ -28,7 +28,6 @@
     @RenderSection("Styles", required: false)
     @RenderSection("Head", required: false)
 </head>
-
 <body class="@(ViewData["LockScroll"] as bool? == true ? "home-lock-scroll" : "")">
     <div class="d-flex flex-column min-vh-100">
         @if (!hideNavbar)
@@ -194,7 +193,7 @@
                                 Chinh phục tiếng Nhật qua trải nghiệm nhập vai, hiểu sâu văn hóa và lộ trình cá nhân hóa cùng người bản xứ.
                             </p>
                             <div class="social-links">
-                                <!-- Facebook -->
+                                @* <!-- Facebook -->
                                 <a asp-controller="SidePages" asp-action="About" class="social-link" aria-label="Facebook">
                                     <svg viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43
@@ -231,7 +230,7 @@
                                                  c.748.948 1.197 2.25 1.197 3.654 0 1.404-.449 2.706-1.197 3.654
                                                  -.749.948-1.9 1.559-3.197 1.559z" />
                                     </svg>
-                                </a>
+                                </a> *@
                             </div>
                         </div>
                         <!-- Học tập -->
@@ -240,18 +239,18 @@
                             <ul class="footer-links">
                                 <li><a asp-controller="Courses" asp-action="Index">Khóa học</a></li>
                                 <li><a asp-controller="ClassroomInstances" asp-action="Index">Lớp học</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Partners">Đối tác</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Pricing">Giá cả</a></li>
+                                @* <li><a asp-controller="SidePages" asp-action="Partners">Đối tác</a></li> *@
+                                @* <li><a asp-controller="SidePages" asp-action="Pricing">Giá cả</a></li> *@
                             </ul>
                         </div>
                         <!-- Hỗ trợ -->
                         <div class="footer-section">
                             <h4 class="footer-title">Hỗ trợ</h4>
                             <ul class="footer-links">
-                                <li><a asp-controller="SidePages" asp-action="Help">Trung tâm trợ giúp</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Contact">Liên hệ</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Community">Cộng đồng</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Blog">Blog</a></li>
+                                @* <li><a asp-controller="SidePages" asp-action="Help">Trung tâm trợ giúp</a></li> *@
+                                <li><a asp-controller="SidePages" asp-action="Contact">Gửi yêu cầu hỗ trợ</a></li>
+                                @* <li><a asp-controller="SidePages" asp-action="Community">Cộng đồng</a></li> *@
+                                @* <li><a asp-controller="SidePages" asp-action="Blog">Blog</a></li> *@
                             </ul>
                         </div>
                         <!-- Công ty -->
@@ -259,8 +258,8 @@
                             <h4 class="footer-title">Công ty</h4>
                             <ul class="footer-links">
                                 <li><a asp-controller="SidePages" asp-action="About">Về chúng tôi</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Careers">Tuyển dụng</a></li>
-                                <li><a asp-controller="SidePages" asp-action="Press">Báo chí</a></li>
+                                @* <li><a asp-controller="SidePages" asp-action="Careers">Tuyển dụng</a></li> *@
+                                @* <li><a asp-controller="SidePages" asp-action="Press">Báo chí</a></li> *@
                             </ul>
                         </div>
                     </div>

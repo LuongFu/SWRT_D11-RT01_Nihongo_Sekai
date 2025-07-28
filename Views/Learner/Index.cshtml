@@ -240,7 +240,7 @@
 }
 
 <!--Header Advertisement-->
-@if (!User.Identity.IsAuthenticated || !User.IsInRole("Learner"))
+@if (!User.Identity.IsAuthenticated)
 {
     <section class="hero animate-on-scroll">
         <div class="container hero-content">
@@ -256,12 +256,6 @@
                         <i class="bi bi-play-circle me-1"></i> Bắt đầu học ngay hôm nay
                     </a>
                     <a href="~/About" class="btn btn-outline btn-large">Tìm hiểu thêm</a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat-item"><strong>20+</strong> <span class="stat-label">Học viên</span></div>
-                    <div class="stat-item"><strong>10+</strong> <span class="stat-label">Khóa học</span></div>
-                    <div class="stat-item"><strong>10+</strong> <span class="stat-label">Đối tác</span></div>
-                    <div class="stat-item"><strong>70%</strong> <span class="stat-label">Tỷ lệ thành công</span></div>
                 </div>
             </div>
             <div class="hero-image-wrapper float-animation shadow-lg">
@@ -372,7 +366,7 @@
     </div>
 </section>
 
-<!-- Testimonials -->
+@* <!-- Testimonials -->
 <section class="testimonials animate-on-scroll">
     <div class="container">
         <div class="section-header">
@@ -441,7 +435,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> *@
 
 <!-- Call to Action Section -->
 <section class="cta-section text-center animate-on-scroll"

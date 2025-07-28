@@ -110,11 +110,12 @@
                             <a asp-action="Edit" asp-controller="QuizQuestions" asp-route-id="@q.Id" class="btn btn-sm btn-warning">
                                 <i class="bi bi-pencil"></i> Sửa
                             </a>
-                            <form asp-action="Delete" asp-controller="QuizQuestions" asp-route-id="@q.Id" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this question?')">
-                                    <i class="bi bi-trash"></i> Xóa
-                                </button>
-                            </form>
+                            <a asp-controller="QuizQuestions" asp-action="Delete"
+                               asp-route-id="@q.Id" asp-route-quizId="@Model.Id"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Bạn có muốn xóa câu hỏi này?');">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
                         </td>
                     </tr>
                 }

@@ -241,6 +241,7 @@ html, body {
 }
 
 .footer-title {
+    color:white !important;
     font-weight: 600;
     font-size: 1.1rem;
     margin-bottom: 1rem;

@@ -91,6 +91,13 @@ namespace JapaneseLearningPlatform.Data.Seeds
             };
 
             context.ClassroomInstances.AddRange(instances);
+            foreach (var instance in instances)
+            {
+                if (instance.Price > 0)
+                {
+                    instance.IsPaid = true;
+                }
+            }
             await context.SaveChangesAsync();
         }
     }
