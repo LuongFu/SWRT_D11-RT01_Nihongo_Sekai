@@ -368,35 +368,5 @@
             window.location.href = `/Orders/RemoveItemFromShoppingCart/${removedId}`;
           });
         });
-    </script>
-
-    <script>
-        function animateValue(id, end, duration = 800) {
-          const obj = document.getElementById(id);
-          if (!obj) return;
-          const start = 0;
-          const range = end - start;
-          if (range <= 0) {
-            obj.textContent = end.toLocaleString('vi-VN');
-            return;
-          }
-          let startTime = null;
-          function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-            const progress = Math.min((timestamp - startTime) / duration, 1);
-            const value = Math.floor(progress * range + start);
-            obj.textContent = value.toLocaleString('vi-VN');
-            if (progress < 1) {
-              requestAnimationFrame(step);
-            }
-          }
-          requestAnimationFrame(step);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-          // Lấy giá trị cuối từ server
-          const endValue = parseInt('@Model.ShoppingCartTotal');
-          animateValue('totalAmount', endValue, 800);
-        });
-    </script>
+    </script>  
 }
