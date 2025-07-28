@@ -180,7 +180,14 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (ViewBag.ScorePercent >= 80)
             {
-                await MarkContentAsCompleted(quiz.CourseId, quiz.Id, userId);
+                // Lấy ContentItemId của quiz
+                var quizContentItem = await _context.CourseContentItems
+                    .FirstOrDefaultAsync(ci => ci.QuizId == quiz.Id && ci.Section.CourseId == quiz.CourseId);
+
+                if (quizContentItem != null)
+                {
+                    await MarkContentAsCompleted(quiz.CourseId, quizContentItem.Id, userId);
+                }
             }
 
             return View("Result", model);

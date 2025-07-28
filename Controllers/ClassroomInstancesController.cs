@@ -161,7 +161,8 @@ namespace JapaneseLearningPlatform.Controllers
                 ClassTime = TimeSpan.FromHours(vm.SessionDurationHours),
                 Price = vm.Price,
                 GoogleMeetLink = vm.GoogleMeetLink,
-                Status = vm.Status
+                Status = vm.Status,
+                IsPaid = vm.Price > 0 // ✅ Chỉ đánh dấu là trả phí nếu có giá
             };
 
             _context.ClassroomInstances.Add(instance);
@@ -191,7 +192,7 @@ namespace JapaneseLearningPlatform.Controllers
                 .Select(s => new SelectListItem
                 {
                     Value = ((int)s).ToString(),
-                    Text = s.ToString()
+                    Text = s.GetDisplayName().ToString()
                 }), "Value", "Text", (int)instance.Status);
 
             return View(instance.ToVM());
@@ -251,6 +252,7 @@ namespace JapaneseLearningPlatform.Controllers
             instance.GoogleMeetLink = vm.GoogleMeetLink;
             instance.ClassTime = TimeSpan.FromHours(vm.SessionDurationHours);
             instance.Status = vm.Status;
+            instance.IsPaid = vm.Price > 0;
 
             _context.Update(instance);
             await _context.SaveChangesAsync();
@@ -511,7 +513,7 @@ namespace JapaneseLearningPlatform.Controllers
                 InstanceId = instance.Id,
                 Title = instance.Template?.Title,
                 Price = instance.Price,
-                Currency = "USD"
+                Currency = "VND"
             };
 
             return View(vm);
@@ -908,6 +910,42 @@ namespace JapaneseLearningPlatform.Controllers
                 _logger.LogError(ex, $"[GetChatMessages] Error khi tải tin nhắn của Classroom {classroomId}");
                 return StatusCode(500, new { error = $"Lỗi khi tải tin nhắn: {ex.Message}" });
             }
+        }
+
+        // ========== CHAT RIÊNG ==========
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetPrivateChatMessages(int classroomId, string targetUserId)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            bool isAuthorized = await _context.ClassroomInstances
+                .AnyAsync(ci => ci.Id == classroomId &&
+                    (ci.Template.PartnerId == userId || ci.Enrollments.Any(e => e.LearnerId == userId)) &&
+                    (ci.Template.PartnerId == targetUserId || ci.Enrollments.Any(e => e.LearnerId == targetUserId)));
+
+            if (!isAuthorized)
+                return Forbid();
+
+            var messages = await _context.PrivateChatMessages
+                .Include(m => m.User)
+                .Where(m => m.ClassroomInstanceId == classroomId &&
+                           ((m.UserId == userId && m.TargetUserId == targetUserId) ||
+                            (m.UserId == targetUserId && m.TargetUserId == userId)))
+                .OrderBy(m => m.SentAt)
+                .Select(m => new
+                {
+                    userName = m.User.FullName ?? m.User.Email,
+                    avatarUrl = string.IsNullOrEmpty(m.User.ProfilePicturePath)
+                        ? "/uploads/profile/default-img.jpg"
+                        : m.User.ProfilePicturePath,
+                    message = m.Message,
+                    sentAt = m.SentAt.ToLocalTime().ToString("HH:mm dd/MM"),
+                    isOwn = m.UserId == userId
+                })
+                .ToListAsync();
+
+            return Ok(messages);
         }
     }
 }

@@ -8,7 +8,7 @@
 
         public decimal Price { get; set; }
 
-        public string Currency { get; set; } = "USD";
+        public string Currency { get; set; } = "VND";
     }
 }
 

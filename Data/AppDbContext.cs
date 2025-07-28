@@ -217,6 +217,18 @@ namespace JapaneseLearningPlatform.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<PrivateChatMessage>()
+                .HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PrivateChatMessage>()
+                .HasOne(m => m.TargetUser)
+                .WithMany()
+                .HasForeignKey(m => m.TargetUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -255,5 +267,7 @@ namespace JapaneseLearningPlatform.Data
         public DbSet<Report> Reports { get; set; }
         public DbSet<ClassroomFeedback> ClassroomFeedbacks { get; set; }
         public DbSet<ClassroomChatMessage> ClassroomChatMessages { get; set; }
+        public DbSet<PrivateChatMessage> PrivateChatMessages { get; set; }
+
     }
 }

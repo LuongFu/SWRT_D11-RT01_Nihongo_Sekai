@@ -161,6 +161,7 @@ namespace JapaneseLearningPlatform
             ///////////////////////////////////////////
             //Chat mesage hub
             app.MapHub<ClassroomChatHub>("/classroomChatHub");
+            app.MapHub<PrivateChatHub>("/privateChatHub");
             ///////////////////////////////////////////
 
             // Seed database

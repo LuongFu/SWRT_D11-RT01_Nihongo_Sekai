@@ -37,6 +37,13 @@
                     Danh sách học viên
                 </a>
             }
+            else if (User.IsInRole("Learner"))
+            {
+                <a class="nav-link" id="learners-tab" data-bs-toggle="tab" href="#learners" role="tab"
+                   style="padding: 4px 10px; font-size: 14px; border: none; background: none;">
+                    Thành viên lớp
+                </a>
+            }
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" id="resources-tab" data-bs-toggle="tab" href="#resources" role="tab"
@@ -60,6 +67,12 @@
             <a class="nav-link" id="chat-tab" data-bs-toggle="tab" href="#chat" role="tab"
                style="padding: 4px 10px; font-size: 14px; border: none; background: none;">
                 Chat
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="private-chat-tab" data-bs-toggle="tab" href="#private-chat" role="tab"
+               style="padding: 4px 10px; font-size: 14px; border: none; background: none;">
+                Chat Riêng
             </a>
         </li>
         <li class="nav-item" role="presentation">
@@ -143,6 +156,102 @@
                 </div>
             </div>
         }
+        else if (User.IsInRole("Learner"))
+        {
+            <div class="tab-pane fade" id="learners" role="tabpanel">
+                <div class="p-3">
+                    <h5 class="fw-bold mb-3">Danh sách thành viên</h5>
+                    <table class="table mt-3">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên</th>
+                                <th>Email</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Partner -->
+                            <tr style="background-color: #f8f9fa;">
+                                <td>1</td>
+                                <td>@Model.Template.Partner.FullName (Partner)</td>
+                                <td>@Model.Template.Partner.Email</td>
+                                <td>
+                                    <a asp-controller="Account"
+                                       asp-action="ViewProfile"
+                                       asp-route-learnerId="@Model.Template.Partner.Id"
+                                       class="btn btn-info btn-sm">Xem Hồ Sơ</a>
+                                    <button class="btn btn-outline-secondary btn-sm start-private-chat"
+                                            data-user-id="@Model.Template.Partner.Id"
+                                            data-user-name="@Model.Template.Partner.FullName">
+                                        Chat
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Học viên khác -->
+                            @{
+                                int index = 2;
+                                foreach (var e in Model.Instance.Enrollments.Where(en => en.LearnerId != ViewBag.CurrentUserId))
+                                {
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>@e.Learner?.FullName</td>
+                                        <td>@e.Learner?.Email</td>
+                                        <td>
+                                            <a asp-controller="Account"
+                                               asp-action="ViewProfile"
+                                               asp-route-learnerId="@e.Learner?.Id"
+                                               class="btn btn-info btn-sm">Xem Hồ Sơ</a>
+                                            <button class="btn btn-outline-secondary btn-sm start-private-chat"
+                                                    data-user-id="@e.Learner?.Id"
+                                                    data-user-name="@e.Learner?.FullName">
+                                                Chat
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    index++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+        <!-- Chat Riêng -->
+        <div class="tab-pane fade" id="private-chat" role="tabpanel">
+            <div class="row" style="height: 400px;">
+                <!-- Danh sách user -->
+                <div class="col-3 border-end p-0" style="overflow-y:auto;">
+                    <ul id="privateChatUserList" class="list-group list-group-flush">
+                        <li class="list-group-item start-private-chat"
+                            data-user-id="@Model.Template.Partner.Id"
+                            data-user-name="@Model.Template.Partner.FullName">
+                            @Model.Template.Partner.FullName (Partner)
+                        </li>
+                        @foreach (var e in Model.Instance.Enrollments.Where(en => en.LearnerId != ViewBag.CurrentUserId))
+                        {
+                            <li class="list-group-item start-private-chat"
+                                data-user-id="@e.Learner.Id"
+                                data-user-name="@e.Learner.FullName">
+                                @e.Learner.FullName
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- Chat box -->
+                <div class="col-9 d-flex flex-column">
+                    <div id="privateChatMessages" class="flex-grow-1 p-2"
+                         style="overflow-y:auto; border-bottom:1px solid #ddd;"></div>
+                    <div class="input-group mt-2">
+                        <input id="privateChatInput" class="form-control" placeholder="Nhập tin nhắn riêng...">
+                        <button id="sendPrivateChatBtn" class="btn btn-primary">Gửi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- 🔹 Resources -->
         <div class="tab-pane fade" id="resources" role="tabpanel">
@@ -532,8 +641,6 @@
         background: #5AAEFF;
         color: #fff;
     }
-
-
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
@@ -680,94 +787,12 @@
 </script>
 
 @section Scripts {
-    <!-- Load SignalR -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
     <script>
-                document.addEventListener("DOMContentLoaded", () => {
-            const classroomId = @Model.Instance.Id;
-            const userName = '@(ViewBag.CurrentUserName ?? User.Identity.Name)';
-            const currentUserId = '@ViewBag.CurrentUserId';
-
-            const chatBox = document.getElementById("chatMessages");
-            const chatInput = document.getElementById("chatInput");
-            // const sendBtn = document.getElementById("sendChatBtn");
-
-                function escapeHtml(text) {
-            const div = document.createElement("div");
-            div.appendChild(document.createTextNode(text));
-            return div.innerHTML;
-        }
-
-                function appendMessage(user, avatar, message, sentAt, isOwn) {
-            const sideClass = isOwn ? 'chat-bubble own' : 'chat-bubble';
-            const timeHtml = sentAt ? `<small class="text-muted ms-2">(${sentAt})</small>` : '';
-
-            const safeUser = escapeHtml(user);
-            const avatarSrc = avatar && avatar.trim() !== '' ? avatar : '/uploads/profile/default-img.jpg';
-            const safeMessage = escapeHtml(message);
-
-            chatBox.innerHTML += `
-                <div class="${sideClass}" title="${safeUser}">
-                    <img src="${avatarSrc}" alt="avatar" class="chat-avatar" title="${safeUser}" />
-                    <div class="chat-content">${safeMessage} ${timeHtml}</div>
-                </div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-            async function loadMessages() {
-                try {
-                    const res = await fetch(`/ClassroomInstances/GetChatMessages?classroomId=${classroomId}`);
-                    if (res.ok) {
-                        const data = await res.json();
-                             chatBox.innerHTML = data.map(m => `
-                                <div class="${m.isOwn ? 'chat-bubble own' : 'chat-bubble'}" title="${m.userName}">
-                                <img src="${m.avatarUrl}" alt="avatar" class="chat-avatar"/>
-                                <div class="chat-content">
-                                    <span class="chat-message">${m.message}</span>
-                                    <small class="text-muted ms-2">(${m.sentAt})</small>
-                                </div>
-                            </div>`
-                         ).join('');
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    }
-                } catch (err) {
-                    console.error("LoadMessages error:", err);
-                }
-            }
-
-            const connection = new signalR.HubConnectionBuilder()
-                .withUrl(`/classroomChatHub?classroomId=${classroomId}`)
-                .build();
-
-            connection.on("ReceiveMessage", (user, message, sentAt, senderId, avatarUrl) => {
-                const isOwn = senderId === currentUserId;
-                appendMessage(user, avatarUrl, message, sentAt, isOwn);
-            });
-
-
-            connection.start()
-                .then(() => console.log("✅ SignalR connected"))
-                .catch(err => console.error("❌ SignalR connect error:", err));
-
-            function sendMessage() {
-                const message = chatInput.value.trim();
-                if (!message) return;
-                connection.invoke("SendMessage", classroomId, userName, message)
-                    .then(() => chatInput.value = '')
-                    .catch(err => console.error("❌ SendMessage error:", err));
-            }
-
-            // sendBtn.addEventListener("click", sendMessage);
-            chatInput.addEventListener("keydown", e => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            // Load ngay khi mở tab Chat
-            document.querySelector('#chat-tab')?.addEventListener('click', loadMessages);
-        });
+        window.classroomId = @Model.Instance.Id;
+        window.currentUserId = '@ViewBag.CurrentUserId';
+        window.currentUserName = '@(ViewBag.CurrentUserName ?? User.Identity.Name)';
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+    <script src="~/js/chat-common.js"></script>
+    <script src="~/js/chat-private.js"></script>
 }
-

@@ -15,6 +15,11 @@ namespace JapaneseLearningPlatform.Data.ViewModels
         public List<ClassroomResource>? Resources { get; set; }
         public List<ClassroomFeedback>? Feedbacks { get; set; } = new List<ClassroomFeedback>();
         public ClassroomFeedback? UserFeedback { get; set; }
+
+        // === Chat Properties ===
+        public string CurrentUserId { get; set; }  // ID của người dùng hiện tại
+        public string CurrentUserName { get; set; } // Tên người dùng hiện tại
+        public List<ApplicationUser>? ChatMembers { get; set; } // Danh sách thành viên trong lớp để hiển thị chat riêng
     }
 
 }
