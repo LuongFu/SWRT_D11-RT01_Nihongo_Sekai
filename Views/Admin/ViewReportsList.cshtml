@@ -118,14 +118,17 @@
             </div>
             <div class="toast-body p-2">
                 <ul class="list-unstyled mb-1">
-                    @foreach (var r in (IEnumerable<dynamic>)ViewBag.NewReports)
+                    @if (ViewBag.NewReports != null)
                     {
-                        <li>
-                            <a asp-action="Details" asp-route-id="@r.Id"
-                               class="small text-decoration-none">
-                                #@r.Id – @r.Subject
-                            </a>
-                        </li>
+                        foreach (var r in (IEnumerable<dynamic>)ViewBag.NewReports)
+                        {
+                            <li>
+                                <a asp-action="Details" asp-route-id="@r.Id"
+                                   class="small text-decoration-none">
+                                    #@r.Id – @r.Subject
+                                </a>
+                            </li>
+                        }
                     }
                 </ul>
                 <a href="@Url.Action("AdminIndex", new { status = "Unresolved" })"
