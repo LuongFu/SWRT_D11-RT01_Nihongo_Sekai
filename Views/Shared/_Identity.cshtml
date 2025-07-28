@@ -44,16 +44,6 @@ else
         <ul class="dropdown-menu dropdown-menu-end shadow-sm mt-2" aria-labelledby="userDropdown">
             @if (User.IsInRole("Admin"))
             {
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Account" asp-action="Users">
-                        <i class="bi bi-people"></i> Quản lý người dùng
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2 text-danger" asp-controller="Videos" asp-action="Index">
-                        <i class="bi bi-camera-video"></i> Quản lý video
-                    </a>
-                </li>
             }
             else if (User.IsInRole("Partner"))
             {
