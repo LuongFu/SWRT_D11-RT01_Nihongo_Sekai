@@ -1,0 +1,1115 @@
+﻿/* Reset & layout basics */
+html, body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    min-height: 100%;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+    body.home-lock-scroll {
+        overflow: hidden;
+    }
+
+/* Gradient text (for "Sekai") */
+.gradient-text {
+    background: linear-gradient(270deg, #DD2931, #F5365C, #FFFFFF);
+    background-size: 600% 600%;
+    animation: moveGradient 5s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+@keyframes moveGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Buttons */
+.gradient-btn {
+    background-color: white;
+    color: #333;
+    border: 1px solid white;
+    border-radius: 30px;
+    padding: 0.6rem 1.6rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+    .gradient-btn:hover {
+        background: linear-gradient(90deg, #DD2931, #F5365C);
+        color: white;
+        transform: scale(1.05);
+    }
+
+/* Hero video background */
+.hero-video-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: 0;
+}
+/* === BRANDING === */
+.brand-icon {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #d9232e;
+}
+.brand-link {
+    text-decoration: none !important;
+}
+
+.navbar a {
+    text-decoration: none !important;
+}
+
+
+.brand-nihongo {
+    font-weight: 700;
+    color: #d9232e;
+    font-size: 1.5rem;
+}
+
+.brand-sekai {
+    font-weight: 700;
+    color: #111;
+    font-size: 1.5rem;
+}
+
+/* === HEADER LAYOUT === */
+.header {
+    background-color: #ffffff;
+    padding: 1.2rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-list {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+.nav-link:hover,
+.nav-link.active-tab {
+    color: #d9232e;
+}
+
+.nav-link.active-tab::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #d9232e;
+}
+
+/* === SEARCH === */
+.nav-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nav-actions input[type="text"] {
+    max-width: 130px;
+    border: 1px solid #d9232e;
+    color: #d9232e;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.nav-actions input[type="text"]:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(217, 35, 46, 0.5);
+    border-color: #d9232e;
+}
+
+.nav-actions button {
+    color: #d9232e;
+    font-size: 1.25rem;
+    padding: 0 0.25rem;
+}
+
+/* === DROPDOWN OVERRIDE === */
+.dropdown-menu .dropdown-item.text-danger:hover {
+    background-color: #f8d7da;
+    color: #a71d2a;
+}
+
+/* ACTION BUTTONS */
+.nav-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.btn {
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: #d9232e;
+    color: #fff;
+    border-color: #d9232e;
+}
+
+    .btn-primary:hover {
+        background-color: #b81e26;
+        border-color: #b81e26;
+    }
+
+.btn-outline {
+    color: #d9232e !important;
+    background-color: #fff !important;
+}
+
+
+    .btn-outline:hover {
+        background-color: #fbe6e8;
+    }
+
+/* ====== FOOTER STYLES ====== */
+.footer {
+    background-color: #0f0f1d;
+    color: #ffffff;
+    padding: 4rem 0 2rem;
+    margin-top: 4rem;
+}
+
+    .footer .container {
+        max-width: 1280px;
+        margin: auto;
+        padding: 0 1.5rem;
+    }
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.footer-section {
+    flex: 1 1 200px;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.footer-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #ccc;
+}
+
+.footer-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .footer-links li {
+        margin-bottom: 0.5rem;
+    }
+
+    .footer-links a {
+        text-decoration: none;
+        color: #aaa;
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+    }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+.footer-bottom {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #888;
+    gap: 0.5rem;
+}
+
+.footer-bottom-links a {
+    margin: 0 0.5rem;
+    text-decoration: none;
+    color: #aaa;
+}
+
+    .footer-bottom-links a:hover {
+        color: #fff;
+    }
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 1.25rem;
+}
+
+.hero {
+    background: linear-gradient(to right, #de2e33, #ef4c8a);
+    color: #fff;
+    padding: 6rem 2rem;
+    position: relative;
+}
+
+.hero-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1280px;
+    margin: auto;
+}
+
+.hero-text {
+    max-width: 600px;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: #111;
+}
+
+.highlight-yellow {
+    color: #f5b800;
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: #f3f3f3;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.hero-stats {
+    display: flex;
+    flex-wrap: nowrap; /* ❌ Không cho xuống dòng */
+    justify-content: center;
+    gap: 2.5rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #fff;
+    margin-top: 2rem;
+    white-space: nowrap; /* ❌ Không cho label xuống dòng */
+    margin-left: 2rem; /* Thêm khoảng cách từ bên trái */
+}
+
+.stat-item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    font-size: 1.1rem;
+}
+
+    .stat-item strong {
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+.stat-label {
+    font-weight: 400;
+    color: #ffffffb3;
+}
+
+
+.stat-item:hover .stat-number,
+.stat-item:hover .stat-label {
+    color: #ffffff;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+
+.hero-image-wrapper {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    animation: floatUpDown 3s ease-in-out infinite;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25); 
+    border-radius: 16px;
+    overflow: hidden;
+}
+    .hero-image-wrapper::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 15px;
+        background: radial-gradient(rgba(0,0,0,0.3), transparent);
+        border-radius: 50%;
+        z-index: -1;
+        filter: blur(5px);
+    }
+
+.hero-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
+    z-index: 2;
+    position: relative;
+}
+
+@keyframes floatUpDown {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.hero-image-wrapper {
+    animation: floatUpDown 3s ease-in-out infinite;
+}
+
+.kanji-overlay {
+    position: absolute;
+    right: 4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12rem;
+    color: rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+    user-select: none;
+    font-weight: bold;
+}
+
+/* RED BACKGROUND, WHITE BORDER + TEXT */
+.btn-red-white {
+    background-color: #d9232e;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-red-white:hover {
+        background-color: #b81e26;
+        color: #fff;
+    }
+
+/* Tuỳ chỉnh lại .btn-outline theo đúng giao diện */
+.btn-outline {
+    background-color: transparent;
+    color: #fff; /* 👈 chữ trắng tĩnh */
+    border: 2px solid #d9232e;
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-outline:hover {
+        background-color: #d9232e;
+        color: #fff;
+    }
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dropdown-menu .dropdown-item.text-danger:hover {
+    background-color: #f8d7da;
+    color: #a71d2a;
+}
+
+.feature-card {
+    border-radius: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+.transition-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .transition-hover:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+footer.footer {
+    margin-top: 0 !important;
+}
+
+.nav-link.active-tab {
+    color: #dc3545 !important;
+    font-weight: bold;
+    position: relative;
+}
+
+    .nav-link.active-tab::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        background-color: #dc3545;
+    }
+
+/* loading */
+.loader-container {
+    text-align: center;
+    color: white;
+}
+
+.spinner {
+    width: 80px;
+    height: 80px;
+    border: 8px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+.card .card-body p {
+    font-size: 15px;
+}
+
+.badge {
+    font-size: 13px;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+
+/*Change password*/
+.change-password-wrapper {
+    background: linear-gradient(135deg, #f43f5e, #f9a8d4, #fdf2f8);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.change-password-card {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    width: 100%;
+    max-width: 480px;
+}
+
+.change-password-bg {
+    background: linear-gradient(135deg, #ffe0ec, #ffeaf3); /* Hồng phấn nhạt */
+    min-height: 100vh;
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+/* ===== Change Password Styling ===== */
+.change-password-bg {
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0); /* Nền hồng nhạt */
+    min-height: 100vh;
+    padding-top: 100px;
+    padding-bottom: 100px;
+}
+
+.change-password-card {
+    background-color: rgba(255, 255, 255, 0.92); /* Form trắng dịu */
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 460px;
+    backdrop-filter: blur(2px);
+}
+
+/* Button styles */
+.btn-danger {
+    background-color: #e63946;
+    border-color: #e63946;
+}
+
+    .btn-danger:hover {
+        background-color: #d62839;
+        border-color: #d62839;
+    }
+
+.btn-outline-danger {
+    color: #e63946;
+    border-color: #e63946;
+}
+
+    .btn-outline-danger:hover {
+        background-color: #e63946;
+        color: #fff;
+    }
+
+/* change pass Sakura petals animation */
+.sakura-petal {
+    position: fixed;
+    top: -40px;
+    width: 20px;
+    height: 20px;
+    background-image: url('/images/sakura.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 1000;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+/* My Profile*/
+.my-profile-container {
+    padding: 60px 40px;
+    background-color: #ffffff; /* Nền trắng */
+    min-height: 100vh;
+}
+
+
+.avatar-box {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.info-wrapper {
+    background-color: white;
+    border: none;
+    border-radius: 20px; 
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.action-link {
+    display: inline-block;
+    width: 220px;
+    padding: 12px 12px;
+    background-color: #e5424d;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+    text-align: center;
+    margin: 0 auto;
+}
+
+
+    .action-link:hover {
+        background-color: #c83741; /* Hover đỏ đậm hơn */
+        transform: translateY(-2px);
+    }
+
+    .action-link,
+    .action-link:visited,
+    .action-link:hover,
+    .action-link:focus {
+        color: #ffffff !important;
+        text-decoration: none;
+    }
+
+
+.user-info {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+    .user-info strong {
+        font-weight: 600;
+        color: #be123c; /* đỏ pastel đậm nhẹ */
+    }
+
+/* Loading spinner styles */
+.loader-container {
+    text-align: center;
+    color: white;
+}
+
+.spinner {
+    width: 80px;
+    height: 80px;
+    border: 8px solid #DD2931;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    animation: colorShift 3s ease-in-out infinite;
+    color: #DD2931;
+    text-align: center;
+}
+
+@keyframes colorShift {
+    0% {
+        color: #DD2931;
+    }
+
+    50% {
+        color: #F5365C;
+    }
+
+    100% {
+        color: #aaa;
+    }
+}
+
+/*My purchase course*/
+.course-card {
+    background-color: #fff;
+    border-radius: 1rem;
+    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 4px 10px rgba(255, 0, 0, 0.05);
+}
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 18px rgba(255, 0, 0, 0.15);
+    }
+
+.course-thumbnail {
+    height: 220px;
+    object-fit: cover;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+
+.card .card-body p {
+    font-size: 15px;
+}
+
+.badge {
+    font-size: 13px;
+    padding: 5px 10px;
+    border-radius: 6px;
+
+}
+
+/*.bg-gradient-danger {
+    background: linear-gradient(87deg, #f5365c 0, #f56036 100%) !important;
+}*/
+
+#sidenav-main .nav-link.active {
+    background-color: rgba(255,255,255,0.15);
+    border-radius: 0.5rem;
+    font-weight: 600;
+}
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.2);
+        font-weight: 600;
+    }
+
+.daily-word-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+}
+
+    .daily-word-modal .modal-content {
+        margin: auto;
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        width: 80%;
+        max-width: 500px;
+        text-align: center;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .daily-word-modal .close {
+        color: #aaa;
+        float: right;
+        font-size: 30px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+/* Center file input + upload button */
+.custom-upload-input {
+    width: 240px;
+    text-align: center;
+}
+
+/* Chỉnh lại kích thước nút */
+.custom-upload-btn {
+    width: 240px;
+}
+
+/* Center Quick Action buttons */
+.centered-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.edit-profile-wrapper {
+    padding: 60px 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.form-box {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    padding: 40px;
+}
+
+.form-title {
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+    color: #d9232e;
+}
+
+.avatar-section img {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #eee;
+}
+
+.custom-upload-btn {
+    margin-top: 12px;
+}
+
+.social-group input {
+    width: 100%;
+}
+
+form .form-label {
+    font-weight: 500;
+}
+
+form .form-control {
+    border-radius: 6px;
+}
+
+.shadow-box {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.btn-back-profile {
+    background-color: #6c757d; /* xám đậm hơn */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.2s ease;
+}
+
+    .btn-back-profile:hover {
+        background-color: #343a40;
+        color: white;
+    }
+
+.profile-box {
+    max-width: 600px;
+    background: #fff;
+    border-radius: 12px;
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+/* Nút chính màu đỏ */
+.btn-danger {
+    background-color: #b30000;
+    border-color: #b30000;
+}
+
+    .btn-danger:hover {
+        background-color: #a00000;
+    }
+
+/* Nút viền đỏ */
+.btn-outline-danger {
+    color: #b30000;
+    border-color: #b30000;
+}
+
+    .btn-outline-danger:hover {
+        background-color: #b30000;
+        color: #fff;
+    }
+
+/* Social Buttons */
+.social-btn {
+    font-weight: 600;
+    text-align: center;
+}
+
+.profile-container {
+    margin-bottom: 120px !important; /* Đảm bảo khoảng cách dưới */
+}
+
+    .profile-container .card.text-center {
+        text-align: center;
+    }
+
+    .profile-container .badge {
+        display: inline-block;
+        margin: 0 auto;
+        font-size: 0.95rem;
+    }
+
+    .profile-container .btn {
+        text-align: center;
+    }
+
+.btn-change-pass {
+    background-color: #f7f7f7;
+    border: 1px solid #f0f0f0;
+    color: #b30000;
+}
+
+    .btn-change-pass:hover {
+        background-color: #e6e6e6;
+        color: #b30000;
+    }
+
+.btn-back-simple {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #dc3545; /* Màu đỏ */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-back-simple:hover {
+        background-color: #bb2d3b; /* Màu đỏ đậm khi hover */
+        color: white;
+
+.result-container {
+    max-width: 900px;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, #f5365c, #ff7e5f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.result-card {
+    background: #fffdfc;
+}
+
+.score-section .score-circle {
+    background: linear-gradient(to bottom right, #f5365c, #ff7e5f);
+    color: #fff;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto;
+}
+
+.option-item {
+    transition: transform 0.2s ease;
+}
+
+    .option-item:hover {
+        transform: scale(1.02);
+    }
+
+.btn-gradient {
+    background: linear-gradient(to right, #f5365c, #ff7e5f);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    transition: 0.3s ease;
+}
+
+    .btn-gradient:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+
+.btn-change-pass {
+    background-color: #f7f7f7;
+    border: 1px solid #f0f0f0;
+    color: #b30000;
+}
+
+    .btn-change-pass:hover {
+        background-color: #e6e6e6;
+        color: #b30000;
+    }
+
+.btn-back-simple {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #dc3545; /* Màu đỏ */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-back-simple:hover {
+        background-color: #bb2d3b; /* Màu đỏ đậm khi hover */
+        color: white;
+    }

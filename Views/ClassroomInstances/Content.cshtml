@@ -291,7 +291,7 @@
                         <form id="deleteForm" asp-action="Delete" asp-controller="Assignments"
                               asp-route-assignmentId="@Model.FinalAssignment.Id"
                               method="post">
-                            <button type="button" class="btn btn-outline-danger btn-sm" id="btnDelete">
+                            <button type="button" class="btn btn-danger btn-sm" id="btnDelete">
                                 <i class="bi bi-trash"></i> Xóa
                             </button>
                         </form>
@@ -604,7 +604,7 @@
             li.className = "list-group-item d-flex justify-content-between align-items-center";
             li.textContent = file.name;
             const removeBtn = document.createElement("button");
-            removeBtn.className = "btn btn-sm btn-outline-danger";
+            removeBtn.className = "btn btn-sm btn-danger";
             removeBtn.textContent = "X";
             removeBtn.onclick = () => {
                 fileList.splice(index, 1);

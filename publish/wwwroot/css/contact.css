@@ -1,0 +1,204 @@
+﻿/* contact.css */
+
+/* Page header */
+.page-header {
+    padding: var(--spacing-3xl) 0;
+    background: var(--color-white);
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    text-align: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.page-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-gray-600);
+    text-align: center;
+}
+
+/* Contact options grid */
+.contact-options-section {
+    padding: var(--spacing-3xl) 0;
+    background: var(--color-gray-50);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-xl);
+}
+
+.contact-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-2xl);
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal);
+}
+
+    .contact-card:hover {
+        transform: translateY(-5px);
+    }
+
+.contact-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--color-primary-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-lg);
+    color: var(--color-primary);
+}
+
+    .contact-icon svg {
+        width: 32px;
+        height: 32px;
+    }
+
+.contact-title {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-gray-900);
+}
+
+.contact-description {
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.6;
+}
+
+/* Contact form */
+.contact-form-section {
+    padding: var(--spacing-3xl) 0;
+    background: var(--color-white);
+}
+
+.form-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.contact-form {
+    background: var(--color-white);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+/* Office locations */
+.office-locations-section {
+    padding: var(--spacing-3xl) 0;
+    background: var(--color-gray-50);
+}
+
+.offices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: var(--spacing-2xl);
+    margin-top: var(--spacing-2xl);
+}
+
+.office-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.office-image img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.office-info {
+    padding: var(--spacing-xl);
+}
+
+.office-title {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-gray-900);
+}
+
+.office-address p,
+.office-hours p,
+.office-contact p {
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-xs);
+}
+
+.office-hours h4 {
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1rem;
+}
+
+/* FAQ */
+.contact-faq-section {
+    padding: var(--spacing-3xl) 0;
+    background: var(--color-white);
+}
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-2xl);
+}
+
+.faq-item {
+    background: var(--color-white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.faq-question {
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-gray-900);
+}
+
+.faq-answer {
+    color: var(--color-gray-600);
+    line-height: 1.6;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .offices-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .faq-grid {
+        grid-template-columns: 1fr;
+    }
+}
