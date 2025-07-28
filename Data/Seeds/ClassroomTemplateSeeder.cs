@@ -24,24 +24,24 @@ namespace JapaneseLearningPlatform.Data.Seeds
             {
                 new ClassroomTemplate
                 {
-                    Title = "Beginner Japanese Conversation 1",
-                    Description = "Focus on daily life dialogues for beginners.",
+                    Title = "１０２さいで死去",
+                    Description = "再審無罪の前川彰司さん 袴田ひで子さんに判決を報告",
                     LanguageLevel = LanguageLevel.N5,
                     PartnerId = partner.Id,
                     ImageURL = "https://dungmori.b-cdn.net/assets/img/new_home/06-2024/jlpt-new-n54-banner.png"
                 },
                 new ClassroomTemplate
                 {
-                    Title = "Intermediate Listening Practice 2",
-                    Description = "Listen and discuss JLPT N4-level audios.",
+                    Title = "ツール・ド・フランスで観",
+                    Description = "モヤ選手の妻がなくなりました.",
                     LanguageLevel = LanguageLevel.N4,
                     PartnerId = partner.Id,
                     ImageURL = "https://static.vecteezy.com/system/resources/previews/009/385/472/original/school-desk-clipart-design-illustration-free-png.png"
                 },
                 new ClassroomTemplate
                 {
-                    Title = "Intermediate Listening Practice 3",
-                    Description = "Listen and discuss JLPT N4-level audios.",
+                    Title = "ドイツのまつりで花火がちかくで爆発",
+                    Description = "ロシアでおおきいじしんがありました.",
                     LanguageLevel = LanguageLevel.N4,
                     PartnerId = partner.Id,
                     ImageURL = "https://i-vnexpress.vnecdn.net/2020/01/02/hoc-sinh-nhat-4649-1577932394.jpg"
@@ -49,8 +49,8 @@ namespace JapaneseLearningPlatform.Data.Seeds
                 ,
                 new ClassroomTemplate
                 {
-                    Title = "Intermediate Listening Practice 4",
-                    Description = "Listen and discuss JLPT N4-level audios.",
+                    Title = "アメリカのテキサスでおおきなみず",
+                    Description = "ロシアで、マグニチュード7.4の 地震が ありました。地震の 深さは 20キロです。",
                     LanguageLevel = LanguageLevel.N4,
                     PartnerId = partner.Id,
                     ImageURL = "https://lophoctiengnhat.edu.vn/images/2017/04/19/hoc-tieng-nhat.jpg"
@@ -58,8 +58,8 @@ namespace JapaneseLearningPlatform.Data.Seeds
                 ,
                 new ClassroomTemplate
                 {
-                    Title = "Intermediate Listening Practice 5",
-                    Description = "Listen and discuss JLPT N4-level audios.",
+                    Title = "アメリカのテキサスでおおきなみず 5",
+                    Description = "アメリカでタトゥーを消したい人が増えています.",
                     LanguageLevel = LanguageLevel.N4,
                     PartnerId = partner.Id,
                     ImageURL = "https://kilala.vn/data/article/lop-hoc-fb.jpg"
@@ -67,8 +67,8 @@ namespace JapaneseLearningPlatform.Data.Seeds
                 ,
                 new ClassroomTemplate
                 {
-                    Title = "Intermediate Listening Practice 6",
-                    Description = "Listen and discuss JLPT N4-level audios.",
+                    Title = "アメリカのテキサスでおおきなみず 6",
+                    Description = "ツール・ド・フランスで観客がチームカーにぶつかる.",
                     LanguageLevel = LanguageLevel.N4,
                     PartnerId = partner.Id,
                     ImageURL = "https://static.edupia.vn/dungchung/dungchung/core_cms/resources/uploads/common/images/2023/11/07/edupia-pro.jpg"

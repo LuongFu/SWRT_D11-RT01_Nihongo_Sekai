@@ -31,7 +31,7 @@ else
 {
     var currentUser = await UserManager.GetUserAsync(User);
     var avatarUrl = string.IsNullOrEmpty(currentUser?.ProfilePicturePath)
-        ? Url.Content("~/images/default-avatar.png")
+        ? Url.Content("/uploads/profile/default-img.jpg") 
         : Url.Content(currentUser.ProfilePicturePath);
 
     <div class="dropdown">
