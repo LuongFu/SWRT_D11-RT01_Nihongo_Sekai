@@ -1,16 +1,21 @@
 ﻿@model List<DictionaryWord>
 @{
     ViewData["Title"] = "Từ vựng JLPT";
+
+    // số item hiển thị mỗi lần
+    const int Batch = 10;
+    // keyword & level
+    string keyword = (string)ViewBag.Keyword;
+    int? level = (int?)ViewBag.Level;
 }
 
 @section Styles {
-    <!-- Google Fonts -->
+    <!-- Google Fonts & Bootstrap Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
     <style>
-        /* Tiêu đề gradient đỏ → đậm, canh giữa */
+        /* Title gradient */
         h2 {
             font-family: 'Source Sans Pro', sans-serif;
             background: linear-gradient(45deg, #ff6b6b, #dc3545);
@@ -20,196 +25,204 @@
             margin-bottom: 1.5rem;
             margin-left: 27rem;
         }
-
-        /* Khung search chung */
+        /* Search box */
         #searchForm {
             background: #fff;
             padding: 1rem 1.5rem;
-            padding-top: 0.2rem;
-            margin-top: 0.5rem;
             border-radius: 1rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-
-            #searchForm .row {
-                align-items: flex-end;
-            }
-
-            /* Input-group cho search */
-            #searchForm .input-group {
-                width: 100%;
-            }
-            /* Icon search nền đỏ nhạt */
-            #searchForm .input-group-text {
-                background: #ffcccc;
-                border: none;
-                border-top-left-radius: 50px;
-                border-bottom-left-radius: 50px;
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-                padding: 0.75rem;
-            }
-            /* Thanh nhập từ: chỉ bo bên phải */
-            #searchForm .form-control {
-                border: 1px solid #ddd;
-                border-left: none;
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-                border-top-right-radius: 50px;
-                border-bottom-right-radius: 50px;
-                height: 3.2rem;
-                padding: 0 1.2rem;
-            }
-            /* Dropdown bo pill-shape */
-            #searchForm .form-select {
-                border-radius: 50px;
-                height: 3.2rem;
-                padding: 0 1.2rem;
-                border: 1px solid #ddd;
-            }
-
-                #searchForm .form-control:focus,
-                #searchForm .form-select:focus {
-                    outline: none;
-                    box-shadow: 0 0 0 0.2rem rgba(220,53,69,0.4);
-                    border-color: #dc3545;
-                }
-
-        /* Badge level đỏ nhạt */
+        #searchForm .input-group-text {
+            background: #ffcccc;
+            border: none;
+            border-top-left-radius: 50px;
+            border-bottom-left-radius: 50px;
+        }
+        #searchForm .form-control {
+            border: 1px solid #ddd;
+            border-left: none;
+            border-top-right-radius: 50px;
+            border-bottom-right-radius: 50px;
+            height: 3.2rem;
+            padding: 0 1.2rem;
+        }
+        #searchForm .form-select {
+            border-radius: 50px;
+            height: 3.2rem;
+            padding: 0 1.2rem;
+            border: 1px solid #ddd;
+        }
+        /* Cards */
         .badge-level {
             background-color: #ffcccc;
             color: #b02a37;
-            font-weight: 500;
-            border-radius: 0.25rem;
-            padding: 0.25em 0.6em;
-            margin-top: 0.5rem;
-            display: inline-block;
+            padding: .25em .6em;
+            border-radius: .25rem;
         }
-
-        /* Nút loa */
         .play-btn {
             font-size: 1.25rem;
             color: #dc3545;
             background: transparent;
             border: none;
-            cursor: pointer;
         }
+        .play-btn:hover { color: #a71d2a; }
 
-            .play-btn:hover {
-                color: #a71d2a;
-            }
+        /* Grid */
+        .row-cols-md-2 { --bs-columns: 2; }
     </style>
 }
 
 <div class="container my-4">
     <h2 class="gradient-text">Từ điển từ vựng JLPT</h2>
 
-    <form id="searchForm"
-          method="get"
-          asp-controller="Dictionary"
-          asp-action="Search"
-          class="row g-3 justify-content-center mb-4"
-          onkeypress="if(event.keyCode===13){ event.preventDefault(); }">
-
-        <div class="col-md-5">
-            <div class="input-group">
-                <span class="input-group-text">
-                    <i class="bi bi-search"></i>
-                </span>
-                <input type="text"
-                       id="keywordInput"
-                       name="keyword"
-                       class="form-control"
-                       placeholder="Nhập từ tiếng Nhật..."
-                       value="@ViewBag.Keyword"
-                       oninput="filterWords()" />
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <select name="level"
-                    class="form-select"
-                    onchange="this.form.submit()">
+  <form id="searchForm" method="get"
+      asp-controller="Dictionary"
+      asp-action="Search"
+      class="row g-3 justify-content-center mb-4">
+  <div class="col-md-5">
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" name="keyword" class="form-control"
+             placeholder="Nhập từ tiếng Nhật…"
+             value="@keyword" />
+    </div>
+  </div>
+  <div class="col-md-3">
+            <select id="levelFilter" name="level" class="form-select">
                 <option value="">-- Cấp độ JLPT --</option>
-                <option value="5" @@(ViewBag.Level?.ToString()= ="5" ? "selected" : "" )>N5</option>
-                <option value="4" @@(ViewBag.Level?.ToString()= ="4" ? "selected" : "" )>N4</option>
-                <option value="3" @@(ViewBag.Level?.ToString()= ="3" ? "selected" : "" )>N3</option>
-                <option value="2" @@(ViewBag.Level?.ToString()= ="2" ? "selected" : "" )>N2</option>
-                <option value="1" @@(ViewBag.Level?.ToString()= ="1" ? "selected" : "" )>N1</option>
+                @for (int lv = 5; lv >= 1; lv--)
+                {
+                    if (level == lv)
+                    {
+                        <option value="@lv" selected>@($"N{lv}")</option>
+                    }
+                    else
+                    {
+                        <option value="@lv">@($"N{lv}")</option>
+                    }
+                }
             </select>
-        </div>
-    </form>
 
-    <div id="liveNoResults" class="alert alert-warning text-center mb-4" style="display:none;">
-        Không tìm thấy kết quả phù hợp.
+  </div>
+</form>
+
+
+  @if (!Model.Any())
+  {
+    <div class="alert alert-warning text-center">
+      Không tìm thấy kết quả phù hợp.
+    </div>
+  }
+  else
+  {
+    <div id="wordsContainer" class="row row-cols-1 row-cols-md-2 g-4">
+      @for(int i = 0; i < Model.Count; i++)
+      {
+        var w = Model[i];
+        // hide anything beyond the first Batch items
+        var hidden = i >= Batch ? "style=\"display:none;\"" : "";
+        <div class="col word-card" data-index="@i" @Html.Raw(hidden)>
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="card-title text-danger fw-bold">@w.Word</h5>
+                <button type="button" class="play-btn" title="Phát âm">
+                  <i class="bi bi-volume-up-fill"></i>
+                </button>
+              </div>
+              <h6 class="card-subtitle mb-2 text-muted">@w.Romaji</h6>
+              <p class="card-text">
+                <strong>Phiên âm:</strong> @w.Furigana <br/>
+                <strong>Nghĩa:</strong> @w.Meaning <br/>
+                <span class="badge-level">@($"JLPT N{w.Level}")</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      }
     </div>
 
-    @if (Model != null && Model.Any())
+    @* view-more button *@
+    @if (Model.Count > Batch)
     {
-        <div id="wordsContainer" class="row row-cols-1 row-cols-md-2 g-4">
-            @foreach (var w in Model)
-            {
-                <div class="col word-card"
-                     data-word="@w.Word.ToLower()"
-                     data-romaji="@w.Romaji.ToLower()"
-                     data-furigana="@w.Furigana.ToLower()">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="card-title text-danger fw-bold">@w.Word</h5>
-                                <button type="button" class="play-btn" title="Phát âm">
-                                    <i class="bi bi-volume-up-fill"></i>
-                                </button>
-                            </div>
-                            <h6 class="card-subtitle mb-2 text-muted">@w.Romaji</h6>
-                            <p class="card-text">
-                                <strong>Phiên âm:</strong> @w.Furigana <br />
-                                <strong>Nghĩa:</strong> @w.Meaning <br />
-                                <span class="badge-level">@($"JLPT N{w.Level}")</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+      <div class="text-center mt-4">
+        <button id="btnViewMore" class="btn btn-outline-danger">
+          Xem thêm…
+        </button>
+      </div>
     }
-    else if (ViewBag.Keyword != null || ViewBag.Level != null)
-    {
-        <div class="alert alert-warning text-center mt-4">
-            Không tìm thấy kết quả phù hợp.
-        </div>
-    }
+  }
 </div>
 
 @section Scripts {
     <script>
-        function filterWords() {
-            const filter = document.getElementById('keywordInput').value.toLowerCase();
+        (function(){
+          const batch = @Batch;     // 10
+          let shown   = batch;      // đã lộ
+          const total = @Model.Count;
+
+          // 1) Play audio (giữ nguyên)
+          document.querySelectorAll('.play-btn').forEach(btn =>
+            btn.addEventListener('click', () => {
+              const jp   = btn.closest('.word-card')
+                            .querySelector('.card-title').textContent;
+              const utt  = new SpeechSynthesisUtterance(jp);
+              utt.lang   = 'ja-JP';
+              speechSynthesis.speak(utt);
+            })
+          );
+
+          // 2) View more (chỉ khi không đang tìm)
+          const btnMore = document.getElementById('btnViewMore');
+          function revealBatch() {
             const cards = document.querySelectorAll('.word-card');
-            let visibleCount = 0;
+            const next  = Math.min(shown + batch, total);
+            for (let i = shown; i < next; i++) {
+              cards[i].style.display = '';
+            }
+            shown = next;
+            if (shown >= total) btnMore.style.display = 'none';
+          }
+          if (btnMore) {
+            btnMore.addEventListener('click', revealBatch);
+          }
 
-            cards.forEach(card => {
-                const w = card.dataset.word;
-                const r = card.dataset.romaji;
-                const f = card.dataset.furigana;
-                const show = w.includes(filter) || r.includes(filter) || f.includes(filter);
-                card.style.display = show ? '' : 'none';
-                if (show) visibleCount++;
+          // 3) Live‐filter trên toàn bộ cards
+          const input = document.querySelector('input[name="keyword"]');
+          input.addEventListener('input', ()=>{
+            const term = input.value.trim().toLowerCase();
+            const cards = document.querySelectorAll('.word-card');
+
+            if (term === "") {
+              // *Không tìm*: quay về trạng thái ban đầu
+              cards.forEach((c, idx) => {
+                c.style.display = (idx < shown) ? "" : "none";
+              });
+              if (btnMore && shown < total) btnMore.style.display = "";
+              return;
+            }
+
+            // *Đang tìm*: show tất cả khớp, ẩn hết còn lại
+            cards.forEach(c => {
+              const text = (
+                c.querySelector('.card-title').textContent +
+                c.querySelector('.card-subtitle').textContent +
+                c.querySelector('.card-text').textContent
+              ).toLowerCase();
+              c.style.display = text.includes(term) ? "" : "none";
             });
+            // lúc tìm thì ẩn luôn nút ViewMore
+            if (btnMore) btnMore.style.display = "none";
+          });
+        })();
+    </script>
 
-            document.getElementById('liveNoResults').style.display = visibleCount === 0 ? '' : 'none';
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.play-btn').forEach(btn =>
-                btn.addEventListener('click', () => {
-                    const text = btn.closest('.word-card').dataset.word;
-                    const u = new SpeechSynthesisUtterance(text);
-                    u.lang = 'ja-JP';
-                    speechSynthesis.speak(u);
-                })
-            );
-            filterWords();
-        });
+    <!-- level dropdown auto‐submit -->
+    <script>
+        document.getElementById('levelFilter')
+          .addEventListener('change', ()=> {
+            document.getElementById('searchForm').submit();
+          });
     </script>
 }
+
