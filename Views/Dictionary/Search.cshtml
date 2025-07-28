@@ -32,26 +32,29 @@
             border-radius: 1rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        #searchForm .input-group-text {
-            background: #ffcccc;
-            border: none;
-            border-top-left-radius: 50px;
-            border-bottom-left-radius: 50px;
-        }
-        #searchForm .form-control {
-            border: 1px solid #ddd;
-            border-left: none;
-            border-top-right-radius: 50px;
-            border-bottom-right-radius: 50px;
-            height: 3.2rem;
-            padding: 0 1.2rem;
-        }
-        #searchForm .form-select {
-            border-radius: 50px;
-            height: 3.2rem;
-            padding: 0 1.2rem;
-            border: 1px solid #ddd;
-        }
+
+            #searchForm .input-group-text {
+                background: #ffcccc;
+                border: none;
+                border-top-left-radius: 50px;
+                border-bottom-left-radius: 50px;
+            }
+
+            #searchForm .form-control {
+                border: 1px solid #ddd;
+                border-left: none;
+                border-top-right-radius: 50px;
+                border-bottom-right-radius: 50px;
+                height: 3.2rem;
+                padding: 0 1.2rem;
+            }
+
+            #searchForm .form-select {
+                border-radius: 50px;
+                height: 3.2rem;
+                padding: 0 1.2rem;
+                border: 1px solid #ddd;
+            }
         /* Cards */
         .badge-level {
             background-color: #ffcccc;
@@ -59,35 +62,41 @@
             padding: .25em .6em;
             border-radius: .25rem;
         }
+
         .play-btn {
             font-size: 1.25rem;
             color: #dc3545;
             background: transparent;
             border: none;
         }
-        .play-btn:hover { color: #a71d2a; }
+
+            .play-btn:hover {
+                color: #a71d2a;
+            }
 
         /* Grid */
-        .row-cols-md-2 { --bs-columns: 2; }
+        .row-cols-md-2 {
+            --bs-columns: 2;
+        }
     </style>
 }
 
 <div class="container my-4">
     <h2 class="gradient-text">Từ điển từ vựng JLPT</h2>
 
-  <form id="searchForm" method="get"
-      asp-controller="Dictionary"
-      asp-action="Search"
-      class="row g-3 justify-content-center mb-4">
-  <div class="col-md-5">
-    <div class="input-group">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" name="keyword" class="form-control"
-             placeholder="Nhập từ tiếng Nhật…"
-             value="@keyword" />
-    </div>
-  </div>
-  <div class="col-md-3">
+    <form id="searchForm" method="get"
+          asp-controller="Dictionary"
+          asp-action="Search"
+          class="row g-3 justify-content-center mb-4">
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="keyword" class="form-control"
+                       placeholder="Nhập từ tiếng Nhật…"
+                       value="@keyword" />
+            </div>
+        </div>
+        <div class="col-md-3">
             <select id="levelFilter" name="level" class="form-select">
                 <option value="">-- Cấp độ JLPT --</option>
                 @for (int lv = 5; lv >= 1; lv--)
@@ -103,55 +112,55 @@
                 }
             </select>
 
-  </div>
-</form>
-
-
-  @if (!Model.Any())
-  {
-    <div class="alert alert-warning text-center">
-      Không tìm thấy kết quả phù hợp.
-    </div>
-  }
-  else
-  {
-    <div id="wordsContainer" class="row row-cols-1 row-cols-md-2 g-4">
-      @for(int i = 0; i < Model.Count; i++)
-      {
-        var w = Model[i];
-        // hide anything beyond the first Batch items
-        var hidden = i >= Batch ? "style=\"display:none;\"" : "";
-        <div class="col word-card" data-index="@i" @Html.Raw(hidden)>
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5 class="card-title text-danger fw-bold">@w.Word</h5>
-                <button type="button" class="play-btn" title="Phát âm">
-                  <i class="bi bi-volume-up-fill"></i>
-                </button>
-              </div>
-              <h6 class="card-subtitle mb-2 text-muted">@w.Romaji</h6>
-              <p class="card-text">
-                <strong>Phiên âm:</strong> @w.Furigana <br/>
-                <strong>Nghĩa:</strong> @w.Meaning <br/>
-                <span class="badge-level">@($"JLPT N{w.Level}")</span>
-              </p>
-            </div>
-          </div>
         </div>
-      }
-    </div>
+    </form>
 
-    @* view-more button *@
-    @if (Model.Count > Batch)
+
+    @if (!Model.Any())
     {
-      <div class="text-center mt-4">
-        <button id="btnViewMore" class="btn btn-outline-danger">
-          Xem thêm…
-        </button>
-      </div>
+        <div class="alert alert-warning text-center">
+            Không tìm thấy kết quả phù hợp.
+        </div>
     }
-  }
+    else
+    {
+        <div id="wordsContainer" class="row row-cols-1 row-cols-md-2 g-4">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                var w = Model[i];
+                // hide anything beyond the first Batch items
+                var hidden = i >= Batch ? "style=\"display:none;\"" : "";
+                <div class="col word-card" data-index="@i" @Html.Raw(hidden)>
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title text-danger fw-bold">@w.Word</h5>
+                                <button type="button" class="play-btn" title="Phát âm">
+                                    <i class="bi bi-volume-up-fill"></i>
+                                </button>
+                            </div>
+                            <h6 class="card-subtitle mb-2 text-muted">@w.Romaji</h6>
+                            <p class="card-text">
+                                <strong>Phiên âm:</strong> @w.Furigana <br />
+                                <strong>Nghĩa:</strong> @w.Meaning <br />
+                                <span class="badge-level">@($"JLPT N{w.Level}")</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @* view-more button *@
+        @if (Model.Count > Batch)
+        {
+            <div class="text-center mt-4">
+                <button id="btnViewMore" class="btn btn-outline-danger">
+                    Xem thêm…
+                </button>
+            </div>
+        }
+    }
 </div>
 
 @section Scripts {
