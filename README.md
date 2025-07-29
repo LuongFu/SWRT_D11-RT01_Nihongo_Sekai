@@ -69,7 +69,10 @@ dotnet run
 
 ## 👥 **Tác giả & Người đóng góp**
 
-> *(Bạn có thể điền thông tin nhóm hoặc cá nhân ở đây)*
+Minh Phú
+Minh Khôi
+Gia Khôi
+Văn Hoàng
 
 ---
 
