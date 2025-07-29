@@ -52,7 +52,7 @@ dotnet run
 
 ## 🚀 **Cách sử dụng**
 
-1. Mở trình duyệt và truy cập: **[http://3.26.115.130:5000](http://3.26.115.130:5000)**
+1. Mở trình duyệt và truy cập: [**[https://nihongosekai.site](https://nihongosekai.site)**]
 2. Đăng ký tài khoản **(Learner hoặc Partner)**, hoặc đăng nhập bằng Google.
 3. Duyệt danh sách khoá học và thêm vào giỏ hàng.
 4. Thanh toán khoá học và bắt đầu học qua trang **Chi tiết khoá học**.
