@@ -25,8 +25,8 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly IEmailSender _emailSender;
 
         // Hard‑code ở đây
-        private const string RecaptchaSiteKey = "6LfvMJMrAAAAAGdot2HmNEoU-3n6XB4F-jZ3L2Yl";
-        private const string RecaptchaSecretKey = "6LfvMJMrAAAAAD99e1w-5A64WDcmwbnqqsTsx-VN";
+        private const string RecaptchaSiteKey = "6LcuZY4rAAAAAOB7URpx0BIssk-U9kmjQZvcBXD_";
+        private const string RecaptchaSecretKey = "6LcuZY4rAAAAAMaZYSTeIuTGXJXgyDJWBffJI5zH";
 
         public ReportsController(
             AppDbContext context,
