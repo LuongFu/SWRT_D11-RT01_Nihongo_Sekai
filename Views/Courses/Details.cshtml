@@ -654,316 +654,217 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-               document.addEventListener('DOMContentLoaded', () => {
-          // Wire up toggles
-          document.querySelectorAll('.content-checkbox').forEach(cb => {
-            cb.addEventListener('change', async function() {
-              const payload = {
-                courseId: @Model.Course.Id,
-                contentItemId: this.dataset.contentId,
-                isCompleted: this.checked
-              };
-
-              try {
-                const res = await fetch('/Courses/ToggleContentCompletion', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                  updateProgressBar(data.progress);
-                  if (data.progress >= 100) {
-                    document.querySelectorAll('.content-checkbox').forEach(cb => cb.disabled = true);
-                    Swal.fire({
-                      title: '🎉 Chúc mừng!',
-                      text:  'Bạn đã hoàn thành 100% khoá học này.',
-                      icon:  'success',
-                      confirmButtonText: 'OK'
-                    });
-                  }                  
-                } else {
-                  this.checked = !this.checked;
-                }
-              } catch {
-                this.checked = !this.checked;
-                Swal.fire('Lỗi', 'Không cập nhật được tiến độ, vui lòng thử lại.', 'error');
-              }
-            });
-          });
-
-          // Initial bar + disable if 100%
-          updateProgressBar(@Model.ProgressPercent);
-          if (@Model.ProgressPercent >= 100) {
-            document.querySelectorAll('.content-checkbox').forEach(cb => cb.disabled = true);
-          }
-        });
-
-          // 2) Video‑preview links & initial bar
-          updateProgressBar(@Model.ProgressPercent);
-          const links      = document.querySelectorAll('.play-video-link');
-          const player     = document.getElementById('mainVideoPlayer');
-          const description= document.getElementById('videoDescription');
-
-          links.forEach(link => link.addEventListener('click', function() {
-            const url  = this.dataset.videoUrl;
-            const desc = this.dataset.description;
-            if (url)  player.src = url;
-            if (desc) description.textContent = desc;
-          }));
-
-        function updateProgressBar(percent) {
-          const bar     = document.getElementById('mainProgressBar');
-          const rounded = Math.round(percent);
-          bar.style.width           = rounded + '%';
-          bar.setAttribute('aria-valuenow', rounded);
-          bar.textContent           = rounded + '%';
-        }
-    </script>
-    <script>
-        (function(){
-          const courseId      = @Model.Course.Id;
-          const pageSize      = 5;
-          let   page          = 1;
-          let   selectedStars = 0;
-
-          // ==== 1) LOAD STATS ====
-          function loadStats() {
-            fetch(`/api/CourseRatings/Stats/${courseId}`)
-              .then(r => r.json())
-              .then(s => {
-                // a) avg + total
-                document.querySelector('.ratings-section h4')
-                  .textContent = `${s.avg.toFixed(1)} / 5 (${s.total} đánh giá)`;
-
-                // b) highlight trung bình
-                const r = Math.round(s.avg);
-                document.querySelectorAll('.ratings-section h4 + div i')
-                  .forEach((star,i) => {
-                    star.classList.toggle('bi-star-fill', i < r);
-                    star.classList.toggle('bi-star',      i >= r);
-                  });
-
-                // c) breakdown bars
-                document.querySelectorAll('.ratings-section .progress-bar')
-                  .forEach((bar, idx) => {
-                    const star = 5 - idx;
-                    const cnt  = s.counts[star] || 0;
-                    const pct  = s.total ? Math.round(cnt*100/s.total) : 0;
-                    bar.style.width = pct + '%';
-                    bar.setAttribute('aria-valuenow', cnt);
-                    bar.closest('.d-flex')
-                       .querySelector('span.ms-2')
-                       .textContent = `(${cnt})`;
-                  });
-              });
-          }
-
-          // ==== 2) RENDER COMMENTS ====
-          function renderComments(list, append = false) {
-            const ctn = document.getElementById('latest-comments');
-            if (!append) ctn.innerHTML = '';
-            list.forEach(c => {
-              const card = document.createElement('div');
-              card.className = 'card mb-3';
-              card.innerHTML = `
-                <div class="card-body">
-                  <div class="d-flex mb-2">
-                    <img src="${c.avatarUrl||'/images/default-avatar.png'}"
-                         class="rounded-circle me-2" style="width:32px;height:32px;" alt="Avatar"/>
-                    <strong>${c.userName}</strong>
-                    <small class="text-muted ms-auto">${c.date}</small>
-                  </div>
-                  <div class="mb-2">
-                    ${[1,2,3,4,5].map(i=>
-                      `<i class="bi ${i<=c.rating?'bi-star-fill':'bi-star'} text-warning"></i>`
-                    ).join('')}
-                  </div>
-                  <p class="mb-0">${c.comment}</p>
-                </div>`;
-              ctn.appendChild(card);
-            });
-            document.getElementById('view-more').style.display =
-              list.length < pageSize ? 'none' : '';
-          }
-
-          // ==== 3) LOAD COMMENTS WITH PAGING & SORT ====
-          function loadComments(reset=false) {
-            if (reset) page = 1;
-            const sort = document.getElementById('sort-comments').value;
-            fetch(`/api/CourseRatings/Comments/${courseId}`
-                  + `?pageSize=${pageSize}&page=${page}&sort=${sort}`)
-              .then(r => r.json())
-              .then(list => renderComments(list, !reset));
-          }
-
-          // ==== 4) STAR‐INPUT UX ====
-          function initStars() {
-            const stars = document.querySelectorAll('.star-input');
-
-            // Hover → preview
-            stars.forEach((star, idx) => {
-              star.addEventListener('mouseover', () => {
-                stars.forEach((s, j) => {
-                  s.classList.toggle('text-warning', j <= idx);
-                  s.classList.toggle('text-secondary', j >  idx);
-                });
-              });
-            });
-
-            // Mouseout → restore selected
-            document.getElementById('star-inputs')
-              .addEventListener('mouseout', () => {
-                stars.forEach((s, j) => {
-                  s.classList.toggle('text-warning', j < selectedStars);
-                  s.classList.toggle('text-secondary', j >= selectedStars);
-                });
-              });
-
-            // Click → lock in selection
-            stars.forEach((star, idx) => {
-              star.addEventListener('click', () => {
-                selectedStars = idx + 1;
-                stars.forEach((s, j) => {
-                  s.classList.toggle('text-warning', j < selectedStars);
-                  s.classList.toggle('text-secondary', j >= selectedStars);
-                });
-              });
-            });
-          }
-
-          // ==== 5) SUBMIT REVIEW ====
-            function initSubmit() {
-          document.getElementById('submit-review')
-            .addEventListener('click', () => {
-              const comment = document.getElementById('comment-text').value.trim();
-              const token   = document.querySelector('input[name="__RequestVerificationToken"]').value;
-
-              // 1) Kiểm tra đã chọn sao chưa
-              if (!selectedStars) {
-                return Swal.fire({
-                  title: 'Chưa chọn sao',
-                  text: 'Vui lòng chọn số sao trước khi gửi đánh giá.',
-                  icon: 'warning',
-                  confirmButtonText: 'OK'
-                });
-              }
-
-              // 2) Gửi lên API
-              fetch('/api/CourseRatings', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': token },
-                body: JSON.stringify({
-                  courseId,
-                  stars: selectedStars,
-                  comment
-                })
-              })
-              .then(r => {
-                if (!r.ok) throw new Error('Network response was not ok');
-                return r.json();
-              })
-              .then(x => {
-                // Thành công
-                Swal.fire({
-                  title: 'Cảm ơn!',
-                  html: x.message,
-                  icon: 'success',
-                  confirmButtonText: 'OK'
-                }).then(() => {
-                  // reset form
-                  selectedStars = 0;
-                  document.getElementById('comment-text').value = '';
-                  document.querySelectorAll('.star-input')
-                    .forEach(s => {
-                      s.classList.replace('bi-star-fill','bi-star');
-                      s.classList.replace('text-warning','text-secondary');
-                    });
-
-                  // reload stats + comments
-                  loadStats();
-                  loadComments(true);
-                });
-              })
-              .catch(() => {
-                // Thất bại
-                Swal.fire({
-                  title: 'Lỗi',
-                  text: 'Gửi đánh giá thất bại. Vui lòng thử lại.',
-                  icon: 'error',
-                  confirmButtonText: 'OK'
-                });
-              });
-            });
-        }
-
-          // ==== 6) INIT ALL ONCE DOM READY ====
-            document.addEventListener('DOMContentLoaded', () => {
-          loadStats();
-          loadComments(true);
-          initStars();
-          initSubmit();
-          document.getElementById('sort-comments')
-            .addEventListener('change', () => loadComments(true));
-          document.getElementById('view-more')
-            .addEventListener('click', () => { page++; loadComments(); });
-        });
-        })();
-    </script>
-
-    <script>
         document.addEventListener('DOMContentLoaded', () => {
-          const stars       = Array.from(document.querySelectorAll('.star-input'));
-          const textarea    = document.getElementById('comment-text');
-          const charCount   = document.getElementById('charCount');
-          const submitBtn   = document.getElementById('submit-review');
-          const submitText  = document.getElementById('submitText');
-          const spinner     = document.getElementById('submitSpinner');
-          let selectedStars = 0;
+            const courseId      = @Model.Course.Id;
+            const progress      = @Model.ProgressPercent;
+            const contentBoxes  = document.querySelectorAll('.content-checkbox');
+            const player        = document.getElementById('mainVideoPlayer');
+            const description   = document.getElementById('videoDescription');
+            const mainBar       = document.getElementById('mainProgressBar');
+            const starInputs    = document.querySelectorAll('.star-input');
+            const commentText   = document.getElementById('comment-text');
+            const charCount     = document.getElementById('charCount');
+            const submitBtn     = document.getElementById('submit-review');
+            const submitText    = document.getElementById('submitText');
+            const submitSpinner = document.getElementById('submitSpinner');
+            let selectedStars   = 0;
+            let page            = 1;
+            const pageSize      = 5;
 
-          // 1) Star selection logic (như trước, nhưng đảm bảo updateState() sau mỗi tương tác)
-          stars.forEach((star, idx) => {
-            star.addEventListener('click', () => {
-              selectedStars = idx + 1;
-              stars.forEach((s, j) => {
-                s.classList.toggle('bi-star-fill', j < selectedStars);
-                s.classList.toggle('bi-star',      j >= selectedStars);
-              });
-              updateState();
-            });
-          });
-
-          // 2) Char counter & validation feedback
-          textarea.addEventListener('input', () => {
-            const len = textarea.value.length;
-            charCount.textContent = `${len}/500 ký tự`;
-
-            if (len >= 10) {
-              textarea.classList.remove('is-invalid');
-            } else {
-              textarea.classList.add('is-invalid');
+            // ==== PROGRESS BAR ====
+            function updateProgressBar(percent) {
+                if (!mainBar) return;
+                const rounded = Math.round(percent);
+                mainBar.style.width = rounded + '%';
+                mainBar.setAttribute('aria-valuenow', rounded);
+                mainBar.textContent = rounded + '%';
             }
+            updateProgressBar(progress);
+            if (progress >= 100) contentBoxes.forEach(cb => cb.disabled = true);
+
+            // ==== CHECKBOX TOGGLE ====
+            contentBoxes.forEach(cb => cb.addEventListener('change', async function () {
+                const payload = {
+                    courseId: @Model.Course.Id,
+                    contentItemId: this.dataset.contentId,
+                    isCompleted: this.checked
+                };
+                try {
+                    const res = await fetch('/Courses/ToggleContentCompletion', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        updateProgressBar(data.progress);
+                        if (data.progress >= 100) {
+                            contentBoxes.forEach(x => x.disabled = true);
+                            Swal.fire('🎉 Chúc mừng!', 'Bạn đã hoàn thành 100% khoá học này.', 'success');
+                        }
+                    } else {
+                        this.checked = !this.checked;
+                    }
+                } catch {
+                    this.checked = !this.checked;
+                    Swal.fire('Lỗi', 'Không cập nhật được tiến độ, vui lòng thử lại.', 'error');
+                }
+            }));
+
+            // ==== VIDEO LINKS ====
+            document.querySelectorAll('.play-video-link').forEach(link =>
+                link.addEventListener('click', function () {
+                    const url  = this.dataset.videoUrl;
+                    const desc = this.dataset.description;
+                    if (url) player.src = url;
+                    if (desc && description) description.textContent = desc;
+                })
+            );
+
+            // ==== RATING STATS ====
+            function loadStats() {
+                fetch(`/api/CourseRatings/Stats/${courseId}`)
+                    .then(r => r.json())
+                    .then(s => {
+                        const ratingHeader = document.querySelector('.ratings-section h4');
+                        if (ratingHeader)
+                            ratingHeader.textContent = `${s.avg.toFixed(1)} / 5 (${s.total} đánh giá)`;
+
+                        const stars = document.querySelectorAll('.ratings-section h4 + div i');
+                        stars.forEach((star, i) => {
+                            star.classList.toggle('bi-star-fill', i < Math.round(s.avg));
+                            star.classList.toggle('bi-star', i >= Math.round(s.avg));
+                        });
+
+                        document.querySelectorAll('.ratings-section .progress-bar')
+                            .forEach((bar, idx) => {
+                                const star = 5 - idx;
+                                const cnt = s.counts[star] || 0;
+                                const pct = s.total ? Math.round(cnt * 100 / s.total) : 0;
+                                bar.style.width = pct + '%';
+                                bar.setAttribute('aria-valuenow', cnt);
+                                bar.closest('.d-flex').querySelector('span.ms-2').textContent = `(${cnt})`;
+                            });
+                    });
+            }
+
+            // ==== COMMENTS ====
+            function renderComments(list, append = false) {
+                const ctn = document.getElementById('latest-comments');
+                if (!ctn) return;
+                if (!append) ctn.innerHTML = '';
+                list.forEach(c => {
+                    const card = document.createElement('div');
+                    card.className = 'card mb-3';
+                    card.innerHTML = `
+                        <div class="card-body">
+                            <div class="d-flex mb-2">
+                                <img src="${c.avatarUrl || '/images/default-avatar.png'}"
+                                     class="rounded-circle me-2" style="width:32px;height:32px;" alt="Avatar"/>
+                                <strong>${c.userName}</strong>
+                                <small class="text-muted ms-auto">${c.date}</small>
+                            </div>
+                            <div class="mb-2">
+                                ${[1, 2, 3, 4, 5].map(i =>
+                                    `<i class="bi ${i <= c.rating ? 'bi-star-fill' : 'bi-star'} text-warning"></i>`
+                                ).join('')}
+                            </div>
+                            <p class="mb-0">${c.comment}</p>
+                        </div>`;
+                    ctn.appendChild(card);
+                });
+                document.getElementById('view-more').style.display = list.length < pageSize ? 'none' : '';
+            }
+            function loadComments(reset = false) {
+                if (reset) page = 1;
+                const sort = document.getElementById('sort-comments').value;
+                fetch(`/api/CourseRatings/Comments/${courseId}?pageSize=${pageSize}&page=${page}&sort=${sort}`)
+                    .then(r => r.json())
+                    .then(list => renderComments(list, !reset));
+            }
+
+            // ==== STAR INPUT ====
+            function updateState() {
+                const validText = commentText && commentText.value.length >= 10;
+                if (submitBtn) submitBtn.disabled = !(selectedStars > 0 && validText);
+            }
+            starInputs.forEach((star, idx) => {
+                star.addEventListener('mouseover', () => {
+                    starInputs.forEach((s, j) => s.classList.toggle('text-warning', j <= idx));
+                });
+                star.addEventListener('click', () => {
+                    selectedStars = idx + 1;
+                    starInputs.forEach((s, j) => {
+                        s.classList.toggle('bi-star-fill', j < selectedStars);
+                        s.classList.toggle('bi-star', j >= selectedStars);
+                        s.classList.toggle('text-warning', j < selectedStars);
+                        s.classList.toggle('text-secondary', j >= selectedStars);
+                    });
+                    updateState();
+                });
+            });
+            if (commentText) {
+                commentText.addEventListener('input', () => {
+                    const len = commentText.value.length;
+                    charCount.textContent = `${len}/500 ký tự`;
+                    commentText.classList.toggle('is-invalid', len < 10);
+                    updateState();
+                });
+            }
+
+            // ==== SUBMIT REVIEW ====
+            if (submitBtn) {
+                submitBtn.addEventListener('click', () => {
+                    const comment = commentText.value.trim();
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    if (!selectedStars) {
+                        return Swal.fire('Chưa chọn sao', 'Vui lòng chọn số sao trước khi gửi.', 'warning');
+                    }
+                    submitBtn.disabled = true;
+                    submitText.textContent = 'Đang gửi…';
+                    submitSpinner.style.display = 'inline-block';
+
+                    fetch('/api/CourseRatings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token
+                        },
+                        body: JSON.stringify({ courseId, stars: selectedStars, comment })
+                    })
+                    .then(r => {
+                        if (!r.ok) throw new Error();
+                        return r.json();
+                    })
+                    .then(x => {
+                        Swal.fire('Cảm ơn!', x.message, 'success').then(() => {
+                            selectedStars = 0;
+                            commentText.value = '';
+                            starInputs.forEach(s => {
+                                s.classList.replace('bi-star-fill', 'bi-star');
+                                s.classList.replace('text-warning', 'text-secondary');
+                            });
+                            updateState();
+                            loadStats();
+                            loadComments(true);
+                        });
+                    })
+                    .catch(() => Swal.fire('Lỗi', 'Gửi đánh giá thất bại. Vui lòng thử lại.', 'error'))
+                    .finally(() => {
+                        submitText.textContent = 'Gửi đánh giá';
+                        submitSpinner.style.display = 'none';
+                        submitBtn.disabled = false;
+                    });
+                });
+            }
+
+            // ==== INIT LOAD ====
+            loadStats();
+            loadComments(true);
+            document.getElementById('sort-comments')?.addEventListener('change', () => loadComments(true));
+            document.getElementById('view-more')?.addEventListener('click', () => { page++; loadComments(); });
             updateState();
-          });
-
-          // 3) Update button state
-          function updateState() {
-            const validText = textarea.value.length >= 10;
-            submitBtn.disabled = !(selectedStars > 0 && validText);
-          }
-
-          // 4) Submit handler: show spinner, disable form
-          submitBtn.addEventListener('click', () => {
-            submitBtn.disabled = true;
-            submitText.textContent = 'Đang gửi…';
-            spinner.style.display = 'inline-block';
-            // Form sẽ được gửi qua AJAX hoặc classic post; restore state tuỳ controller trả về
-            // Ví dụ, nếu AJAX, send fetch rồi handle callback, reset spinner/text...
-          });
-
-          // Khởi tạo ban đầu
-          updateState();
         });
     </script>
 }
+

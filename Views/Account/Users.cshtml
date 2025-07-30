@@ -192,52 +192,59 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @if (Model != null)
                 {
-                    <tr data-name="@item.FullName.ToLower()"
-                        data-role="@item.Role"
-                        data-status="@(item.IsBanned ? "Bị cấm" : "Hoạt động")">
-                        <td>@item.FullName</td>
-                        <td>@item.UserName</td>
-                        <td>@item.Email</td>
-                        <td>@item.Role</td>
-                        <td>
-                            @if (item.IsBanned)
-                            {
-                                <span class="text-danger fw-bold">Bị cấm</span>
-                            }
-                            else
-                            {
-                                <span class="text-success fw-bold">Hoạt động</span>
-                            }
-                        </td>
-                        <td>
-                            @if (item.Role != "Admin")
-                            {
-                                <form asp-action="ToggleBan" asp-route-id="@item.Id" method="post">
-                                    <button type="submit"
-                                            class="btn @(item.IsBanned ? "btn-success" : "btn-danger") btn-sm">
-                                        @(item.IsBanned ? "Bỏ cấm" : "Cấm")
-                                    </button>
-                                </form>
-                            }
-                            else
-                            {
-                                <span class="text-muted">Được bảo vệ</span>
-                            }
-                        </td>
-                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr data-name="@item.FullName.ToLower()"
+                            data-role="@item.Role"
+                            data-status="@(item.IsBanned ? "Bị cấm" : "Hoạt động")">
+                            <td>@item.FullName</td>
+                            <td>@item.UserName</td>
+                            <td>@item.Email</td>
+                            <td>@item.Role</td>
+                            <td>
+                                @if (item.IsBanned)
+                                {
+                                    <span class="text-danger fw-bold">Bị cấm</span>
+                                }
+                                else
+                                {
+                                    <span class="text-success fw-bold">Hoạt động</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.Role != "Admin")
+                                {
+                                    <form asp-action="ToggleBan" asp-route-id="@item.Id" method="post">
+                                        <button type="submit"
+                                                class="btn @(item.IsBanned ? "btn-success" : "btn-danger") btn-sm">
+                                            @(item.IsBanned ? "Bỏ cấm" : "Cấm")
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Được bảo vệ</span>
+                                }
+                            </td>
+                        </tr>
+                    }
                 }
+               
             </tbody>
         </table>
         <!-- PHÂN TRANG -->
         <nav aria-label="User pagination">
             <ul class="pagination">
-                @for (int p = 1; p <= ViewBag.TotalPages; p++)
+                @if (ViewBag.TotalPages != null)
                 {
-                    <li class="page-item @(p == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("Index", new { page = p })">@p</a>
-                    </li>
+                    @for (int p = 1; p <= ViewBag.TotalPages; p++)
+                    {
+                        <li class="page-item @(p == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = p })">@p</a>
+                        </li>
+                    }
                 }
             </ul>
         </nav>

@@ -1,4 +1,4 @@
-/* wwwroot/css/about.css */
+﻿/* wwwroot/css/about.css */
 
 /* About page specific styles */
 .about-hero {
@@ -141,7 +141,6 @@
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius-md);
     font-weight: 600;
-    min-width: 80px;
     text-align: center;
 }
 
@@ -215,6 +214,13 @@
         height: 100%;
         object-fit: cover;
     }
+
+.member-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
 .member-name {
     font-size: 1.25rem;

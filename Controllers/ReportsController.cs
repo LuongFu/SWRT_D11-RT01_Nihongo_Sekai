@@ -375,8 +375,7 @@ namespace JapaneseLearningPlatform.Controllers
             TempData["ToastMessage"] = $"Đã gửi phản hồi cho {report.FullName}";
             TempData["ToastType"] = "success";
 
-            return RedirectToAction(nameof(AdminIndex));                
+            return RedirectToAction(nameof(AdminIndex));
         }
     }
 }
-

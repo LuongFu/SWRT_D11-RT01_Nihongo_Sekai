@@ -1,0 +1,8 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Nền trắng hình tròn -->
+  <circle cx="50" cy="50" r="50" fill="white" />
+  
+  <!-- Chữ 日 màu đỏ -->
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" 
+        font-size="2rem" font-weight="bold" font-family="Arial, sans-serif" fill="#d9232e">日</text>
+</svg>

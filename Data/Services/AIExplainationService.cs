@@ -22,7 +22,7 @@ namespace JapaneseLearningPlatform.Data.Services
             if (string.IsNullOrWhiteSpace(userAnswer)) userAnswer = "[Không có đáp án]";
             if (string.IsNullOrWhiteSpace(correctAnswer)) correctAnswer = "[Không có đáp án đúng]";
 
-            var prompt = $"Giải thích tại sao câu trả lời đúng cho câu hỏi '{question}' là '{correctAnswer}' và vì sao người dùng trả lời '{userAnswer}' là sai. Giải thích trong một đoạn văn ngắn.";
+            var prompt = $"Giải thích tại sao câu trả lời đúng cho câu hỏi '{question}' là '{correctAnswer}' và vì sao người dùng trả lời '{userAnswer}' là sai. Giải thích trong một đoạn ngắn với khoảng 80 từ và lấy các tài liệu liên quan để chứng minh nó đúng.";
 
             var requestBody = new
             {

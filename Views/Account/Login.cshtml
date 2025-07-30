@@ -396,17 +396,13 @@
                         <span asp-validation-for="EmailAddress" class="text-danger"></span>
                     </div>
 
-                    <div class="password-input-wrapper mb-3">
+                    <div class="mb-3">
                         <label asp-for="Password" class="form-label">Mật khẩu</label>
                         <input asp-for="Password"
                                type="password"
                                class="form-control"
                                id="Password"
                                placeholder="Nhập mật khẩu của bạn" />
-                        <button type="button" id="passwordToggle" class="password-toggle" aria-label="Toggle password visibility">
-                            <i class="bi bi-eye eye-icon"></i>
-                            <i class="bi bi-eye-slash eye-off-icon d-none"></i>
-                        </button>
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
