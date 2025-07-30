@@ -371,7 +371,7 @@
                 },
                 options: {
                     scales: {
-                        y: { beginAtZero:true, ticks:{ callback: v=>`$${v}` } }
+                        y: { beginAtZero:true, ticks:{ callback: v=>`${v} VNĐ` } }
                     }
                 }
             });
@@ -440,7 +440,7 @@
                   <td>${o.Id}</td>
                   <td>${o.Email}</td>
                   <td>${dd}/${mm}/${yy}</td>
-                  <td class="text-end">${amt} VND</td>
+                  <td class="text-end">${amt} VNĐ</td>
                   <td class="text-center">${o.Count}</td>
                 </tr>`;
             }).join('');

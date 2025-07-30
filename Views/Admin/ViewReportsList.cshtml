@@ -8,26 +8,27 @@
     // Lấy dữ liệu từ ViewBag
     var subjectsCount = ((IEnumerable<dynamic>)ViewBag.Subjects ?? Enumerable.Empty<dynamic>())
                         .ToDictionary(x => (ReportSubject)x.Key, x => (int)x.Count);
-    var totalAll      = subjectsCount.Values.Sum();
+    var totalAll = subjectsCount.Values.Sum();
 
-    var roles         = (string[])(ViewBag.Roles    ?? Array.Empty<string>());
-    var statuses      = (string[])(ViewBag.Statuses ?? Array.Empty<string>());
-    var currentSubj   = (string)(ViewBag.CurrentSubject ?? "");
-    var currentRole   = (string)(ViewBag.CurrentRole    ?? "");
-    var currentStat   = (string)(ViewBag.CurrentStatus  ?? "");
-    var q             = (string)(ViewBag.Q              ?? "");
-    var page          = (int)(ViewBag.Page     ?? 1);
-    var pageSize      = (int)(ViewBag.PageSize ?? 10);
-    var total         = (int)(ViewBag.Total    ?? 0);
-    var totalPages    = (int)Math.Ceiling((double)total / pageSize);
+    var roles = (string[])(ViewBag.Roles ?? Array.Empty<string>());
+    var statuses = (string[])(ViewBag.Statuses ?? Array.Empty<string>());
+    var currentSubj = (string)(ViewBag.CurrentSubject ?? "");
+    var currentRole = (string)(ViewBag.CurrentRole ?? "");
+    var currentStat = (string)(ViewBag.CurrentStatus ?? "");
+    var q = (string)(ViewBag.Q ?? "");
+    var page = (int)(ViewBag.Page ?? 1);
+    var pageSize = (int)(ViewBag.PageSize ?? 10);
+    var total = (int)(ViewBag.Total ?? 0);
+    var totalPages = (int)Math.Ceiling((double)total / pageSize);
 
-    Func<ReportSubject, string> subjLabel = subj => subj switch {
-        ReportSubject.Technical    => "Hỗ Trợ Kỹ Thuật",
-        ReportSubject.Billing      => "Thanh Toán & Hóa Đơn",
-        ReportSubject.Courses      => "Câu Hỏi Về Khóa Học",
+    Func<ReportSubject, string> subjLabel = subj => subj switch
+    {
+        ReportSubject.Technical => "Hỗ Trợ Kỹ Thuật",
+        ReportSubject.Billing => "Thanh Toán & Hóa Đơn",
+        ReportSubject.Courses => "Câu Hỏi Về Khóa Học",
         ReportSubject.Partnerships => "Đối Tác Doanh Nghiệp",
-        ReportSubject.Feedback     => "Phản Hồi & Góp Ý",
-        _                          => "Khác"
+        ReportSubject.Feedback => "Phản Hồi & Góp Ý",
+        _ => "Khác"
     };
 
     ReportSubject? currentEnum = null;
@@ -35,79 +36,93 @@
 }
 
 @section Styles {
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
-  <style>
-    body { font-family: "Source Sans Pro", sans-serif; }
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Source Sans Pro", sans-serif;
+        }
 
-    .container-fixed {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
+        .container-fixed {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
 
-    h2.text-center {
-      color: #ad1457;
-      margin-bottom: 1.5rem;
-      margin-top: 3%;
-    }
+        h2.text-center {
+            color: #ad1457;
+            margin-bottom: 1.5rem;
+            margin-top: 3%;
+        }
 
-    .filter-section {
-      background: #fff1f1;
-      padding: 1rem;
-      border-radius: .5rem;
-      margin-bottom: 1.5rem;
-    }
+        .filter-section {
+            background: #fff1f1;
+            padding: 1rem;
+            border-radius: .5rem;
+            margin-bottom: 1.5rem;
+        }
 
-    .btn-subject, .btn-subject:hover {
-      margin: .25rem;
-      padding: .5rem 1rem;
-      border: 1px solid #f8bbd0;
-      border-radius: .5rem;
-      background: transparent;
-      color: #ad1457;
-      transition: all .2s;
-    }
-    .btn-subject.active {
-      background: #f8bbd0;
-      color: #880e4f;
-    }
+        .btn-subject, .btn-subject:hover {
+            margin: .25rem;
+            padding: .5rem 1rem;
+            border: 1px solid #f8bbd0;
+            border-radius: .5rem;
+            background: transparent;
+            color: #ad1457;
+            transition: all .2s;
+        }
 
-    .reports-table {
-      background: #ffffff;
-      border-radius: .5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      margin-bottom: 1.5rem;
-    }
-    .reports-table th, .reports-table td {
-      vertical-align: middle;
-    }
+            .btn-subject.active {
+                background: #f8bbd0;
+                color: #880e4f;
+            }
 
-    .btn-info  { background-color: #29b6f6; border-color: #29b6f6; color: #fff; }
-    .btn-success { background-color: #66bb6a; border-color: #66bb6a; color: #fff; }
+        .reports-table {
+            background: #ffffff;
+            border-radius: .5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
 
-    .pagination .page-item.active .page-link {
-      background-color: #29b6f6;
-      border-color: #29b6f6;
-    }
+            .reports-table th, .reports-table td {
+                vertical-align: middle;
+            }
 
-    .filter-form .form-label {
-      font-weight: 600;
-      margin-bottom: .25rem;
-    }
+        .btn-info {
+            background-color: #29b6f6;
+            border-color: #29b6f6;
+            color: #fff;
+        }
 
-    .filter-actions {
-      display: flex;
-      justify-content: flex-end;
-      align-items: flex-end;
-    }
-    .filter-actions .btn-clear {
-      margin-left: 1rem;
-    }
-  </style>
+        .btn-success {
+            background-color: #66bb6a;
+            border-color: #66bb6a;
+            color: #fff;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #29b6f6;
+            border-color: #29b6f6;
+        }
+
+        .filter-form .form-label {
+            font-weight: 600;
+            margin-bottom: .25rem;
+        }
+
+        .filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+
+            .filter-actions .btn-clear {
+                margin-left: 1rem;
+            }
+    </style>
 }
 
 <div class="container-fixed">
-  <h2 class="text-center">@ViewData["Title"]</h2>
+    <h2 class="text-center">@ViewData["Title"]</h2>
 
     <div aria-live="polite" aria-atomic="true"
          style="position: fixed; top:1rem; right:1rem; z-index:2000;">
@@ -139,150 +154,155 @@
 
 
 
-  <!-- Filter Chủ Đề -->
-  <div class="filter-section text-center">
-    <button type="button"
-            class="btn-subject @(currentSubj == "" ? "active" : "")"
-            data-subject="">
-      Tất cả (@totalAll)
-    </button>
-    @foreach (var subj in Enum.GetValues<ReportSubject>().Cast<ReportSubject>()) {
-      var val = subj.ToString();
-      var cnt = subjectsCount.ContainsKey(subj) ? subjectsCount[subj] : 0;
-      <button type="button"
-              class="btn-subject @(val == currentSubj ? "active" : "")"
-              data-subject="@val">
-        @subjLabel(subj) (@cnt)
-      </button>
-    }
-  </div>
-
-  <!-- Filter Vai Trò / Trạng Thái / Tìm kiếm + Clear -->
-  <div class="filter-section">
-  <div class="row gy-2 align-items-end filter-form">
-    <!-- Vai Trò -->
-    <div class="col-12 col-md-2">
-      <label for="roleFilter" class="form-label">Vai Trò</label>
-      <select id="roleFilter" class="form-select">
-        <option value="">Tất cả</option>
-        @foreach (var r in roles) {
-          <option value="@r" @@(r == currentRole ? "selected" : "")>@r</option>
+    <!-- Filter Chủ Đề -->
+    <div class="filter-section text-center">
+        <button type="button"
+                class="btn-subject @(currentSubj == "" ? "active" : "")"
+                data-subject="">
+            Tất cả (@totalAll)
+        </button>
+        @foreach (var subj in Enum.GetValues<ReportSubject>().Cast<ReportSubject>())
+        {
+            var val = subj.ToString();
+            var cnt = subjectsCount.ContainsKey(subj) ? subjectsCount[subj] : 0;
+            <button type="button"
+                    class="btn-subject @(val == currentSubj ? "active" : "")"
+                    data-subject="@val">
+                @subjLabel(subj) (@cnt)
+            </button>
         }
-      </select>
     </div>
 
-    <!-- Trạng Thái -->
-    <div class="col-12 col-md-2">
-      <label for="statusFilter" class="form-label">Trạng Thái</label>
-      <select id="statusFilter" class="form-select">
-        <option value="">Tất cả</option>
-        <option value="Đã Giải Quyết" @@(currentStat=="Đã Giải Quyết"?"selected":"")>Đã Giải Quyết</option>
-        <option value="Đang Chờ"       @@(currentStat=="Đang Chờ"      ?"selected":"")>Đang Chờ</option>
-      </select>
+    <!-- Filter Vai Trò / Trạng Thái / Tìm kiếm + Clear -->
+    <div class="filter-section">
+        <div class="row gy-2 align-items-end filter-form">
+            <!-- Vai Trò -->
+            <div class="col-12 col-md-2">
+                <label for="roleFilter" class="form-label">Vai Trò</label>
+                <select id="roleFilter" class="form-select">
+                    <option value="">Tất cả</option>
+                    @foreach (var r in roles)
+                    {
+                        <option value="@r" @@(r= =currentRole ? "selected" : "" )>@r</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Trạng Thái -->
+            <div class="col-12 col-md-2">
+                <label for="statusFilter" class="form-label">Trạng Thái</label>
+                <select id="statusFilter" class="form-select">
+                    <option value="">Tất cả</option>
+                    <option value="Đã Giải Quyết" @@(currentStat= ="Đã Giải Quyết" ?"selected":"")>Đã Giải Quyết</option>
+                    <option value="Đang Chờ" @@(currentStat= ="Đang Chờ" ?"selected":"")>Đang Chờ</option>
+                </select>
+            </div>
+
+            <!-- Thời gian -->
+            <div class="col-12 col-md-2">
+                <label for="dateFilter" class="form-label">Thời gian</label>
+                <select id="dateFilter" class="form-select">
+                    <option value="">Tất cả</option>
+                    <option value="today" @@(ViewBag.CurrentDateFilter= ="today" ?"selected":"")>Hôm nay</option>
+                    <option value="3days" @@(ViewBag.CurrentDateFilter= ="3days" ?"selected":"")>3 ngày trước</option>
+                    <option value="7days" @@(ViewBag.CurrentDateFilter= ="7days" ?"selected":"")>7 ngày trước</option>
+                </select>
+            </div>
+
+            <!-- Tìm kiếm -->
+            <div class="col-12 col-md-4">
+                <label for="search" class="form-label">Tìm kiếm</label>
+                <input type="search"
+                       id="search"
+                       class="form-control"
+                       placeholder="Nhập email hoặc nội dung…"
+                       value="@q" />
+            </div>
+
+            <!-- Xóa bộ lọc -->
+            <div class="col-12 col-md-2 text-end">
+                <!-- đổi thành màu đỏ để nổi bật hơn -->
+                <button id="clearFilters"
+                        class="btn btn-danger w-100">
+                    Xóa bộ lọc
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- Thời gian -->
-    <div class="col-12 col-md-2">
-      <label for="dateFilter" class="form-label">Thời gian</label>
-      <select id="dateFilter" class="form-select">
-        <option value="">Tất cả</option>
-        <option value="today" @@(ViewBag.CurrentDateFilter=="today"?"selected":"")>Hôm nay</option>
-        <option value="3days" @@(ViewBag.CurrentDateFilter=="3days"?"selected":"")>3 ngày trước</option>
-        <option value="7days" @@(ViewBag.CurrentDateFilter=="7days"?"selected":"")>7 ngày trước</option>
-      </select>
-    </div>
 
-    <!-- Tìm kiếm -->
-    <div class="col-12 col-md-4">
-      <label for="search" class="form-label">Tìm kiếm</label>
-      <input type="search"
-             id="search"
-             class="form-control"
-             placeholder="Nhập email hoặc nội dung…"
-             value="@q" />
-    </div>
-
-    <!-- Xóa bộ lọc -->
-    <div class="col-12 col-md-2 text-end">
-      <!-- đổi thành màu đỏ để nổi bật hơn -->
-      <button id="clearFilters"
-              class="btn btn-danger w-100">
-        Xóa bộ lọc
-      </button>
-    </div>
-  </div>
-</div>
-
-
-  <!-- Bảng Báo Cáo -->
-  <table class="table table-hover reports-table">
-    <thead class="table-light">
-      <tr>
-        <th>Id</th>
-        <th>Email</th>
-        <th>Chủ Đề</th>
-        <th>Vai Trò</th>
-        @if (currentEnum == ReportSubject.Billing) {
-          <th>Mã Đơn Hàng</th>
-        }
-        <th>Ngày Gửi</th>
-        <th>Trạng Thái</th>
-        <th>Hành Động</th>
-      </tr>
-    </thead>
-    <tbody id="reportsBody">
-      @foreach (var r in Model) {
-        <tr data-subject="@r.Subject"
-            data-role="@r.Role"
-            data-status="@(r.IsResolved ? "Đã Giải Quyết" : "Đang Chờ")"
-            data-submitted="@r.SubmittedAt.ToString("yyyy-MM-dd")"
-            data-search="@($"{r.Email} {r.Message}".ToLower())">
-          <td>@r.Id</td>
-          <td>@r.Email</td>
-          <td>@subjLabel(r.Subject)</td>
-          <td>@r.Role</td>
-          @if (currentEnum == ReportSubject.Billing) {
-            <td>@r.OrderNumber</td>
-          }
-          <td>@r.SubmittedAt.ToLocalTime():g</td>
-            <td>@(r.IsResolved ? "Đã Giải Quyết" : "Đang Chờ")</td>
-            <td>
-                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info">
-                    Xem
-                </a>
-                @if (!r.IsResolved)
+    <!-- Bảng Báo Cáo -->
+    <table class="table table-hover reports-table">
+        <thead class="table-light">
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Chủ Đề</th>
+                <th>Vai Trò</th>
+                @if (currentEnum == ReportSubject.Billing)
                 {
-                    <!-- Nút mở modal “Trả lời” -->
-                    <button type="button"
-                            class="btn btn-sm btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#respondModal-@r.Id">
-                        Trả lời
-                    </button>
-
-                    <!-- Form Resolve (Hoàn thành) riêng biệt -->
-                    <form asp-action="Resolve"
-                            asp-controller="Reports"
-                            method="post"
-                            class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@r.Id" />
-                        <button type="submit" class="btn btn-sm btn-success">
-                            Hoàn thành
-                        </button>
-                    </form>
+                    <th>Mã Đơn Hàng</th>
                 }
-            </td>
+                <th>Ngày Gửi</th>
+                <th>Trạng Thái</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody id="reportsBody">
+            @foreach (var r in Model)
+            {
+                <tr data-subject="@r.Subject"
+                    data-role="@r.Role"
+                    data-status="@(r.IsResolved ? "Đã Giải Quyết" : "Đang Chờ")"
+                    data-submitted="@r.SubmittedAt.ToString("yyyy-MM-dd")"
+                    data-search="@($"{r.Email} {r.Message}".ToLower())">
+                    <td>@r.Id</td>
+                    <td>@r.Email</td>
+                    <td>@subjLabel(r.Subject)</td>
+                    <td>@r.Role</td>
+                    @if (currentEnum == ReportSubject.Billing)
+                    {
+                        <td>@r.OrderNumber</td>
+                    }
+                    <td>@r.SubmittedAt.ToLocalTime():g</td>
+                    <td>@(r.IsResolved ? "Đã Giải Quyết" : "Đang Chờ")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info">
+                            Xem
+                        </a>
+                        @if (!r.IsResolved)
+                        {
+                            <!-- Nút mở modal “Trả lời” -->
+                            <button type="button"
+                                    class="btn btn-sm btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#respondModal-@r.Id">
+                                Trả lời
+                            </button>
 
-        </tr>
-      }
+                            <!-- Form Resolve (Hoàn thành) riêng biệt -->
+                            <form asp-action="Resolve"
+                                  asp-controller="Reports"
+                                  method="post"
+                                  class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@r.Id" />
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    Hoàn thành
+                                </button>
+                            </form>
+                        }
+                    </td>
+
+                </tr>
+            }
             <tr id="noResults" style="display:none">
                 <td colspan="@(currentEnum == ReportSubject.Billing ? "7" : "6")" class="text-center text-muted">
                     Không tìm thấy báo cáo nào
                 </td>
             </tr>
-    </tbody>
-  </table>
+        </tbody>
+    </table>
 
     @foreach (var r in Model)
     {
@@ -349,24 +369,25 @@
         </div>
     }
 
-  <!-- Phân Trang -->
-  <nav class="mb-5">
-    <ul class="pagination justify-content-center">
-      @for (int i = 1; i <= totalPages; i++) {
-        <li class="page-item @(i == page ? "active" : "")">
-          <a class="page-link"
-             asp-action="AdminIndex"
-             asp-route-page="@i"
-             asp-route-subject="@currentSubj"
-             asp-route-role="@currentRole"
-             asp-route-status="@currentStat"
-             asp-route-q="@q">
-            @i
-          </a>
-        </li>
-      }
-    </ul>
-  </nav>
+    <!-- Phân Trang -->
+    <nav class="mb-5">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == page ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="AdminIndex"
+                       asp-route-page="@i"
+                       asp-route-subject="@currentSubj"
+                       asp-route-role="@currentRole"
+                       asp-route-status="@currentStat"
+                       asp-route-q="@q">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
 
 @section Scripts {
@@ -517,31 +538,30 @@
         document.addEventListener('DOMContentLoaded', ()=>{
           @foreach (var r in Model)
         {
-                <text>
-                // —— Respond modal ——
-                (function(){
-                  var editor   = document.getElementById('respondEditor-@r.Id');
-                  var extraDiv = document.getElementById('respondExtra-@r.Id');
-                  var preview  = document.getElementById('respondPreview-@r.Id');
-                  var hidden   = document.getElementById('hiddenRespondBody-@r.Id');
-                  var form     = document.querySelector('#respondModal-@r.Id form');
+                    <text>
+                    // —— Respond modal ——
+                    (function(){
+                      var editor   = document.getElementById('respondEditor-@r.Id');
+                      var extraDiv = document.getElementById('respondExtra-@r.Id');
+                      var preview  = document.getElementById('respondPreview-@r.Id');
+                      var hidden   = document.getElementById('hiddenRespondBody-@r.Id');
+                      var form     = document.querySelector('#respondModal-@r.Id form');
 
-                  // live update phần bổ sung
-                  editor.addEventListener('input', function(){
-                    extraDiv.innerHTML = this.value
-                      .split('\n').map(l=>`<p>${l}</p>`).join('');
-                  });
+                      // live update phần bổ sung
+                      editor.addEventListener('input', function(){
+                        extraDiv.innerHTML = this.value
+                          .split('\n').map(l=>`<p>${l}</p>`).join('');
+                      });
 
-                  // trước khi submit, gom toàn bộ preview HTML
-                  form.addEventListener('submit', function(){
-                    hidden.value = preview.innerHTML;
-                  });
-                })();
-                </text>
+                      // trước khi submit, gom toàn bộ preview HTML
+                      form.addEventListener('submit', function(){
+                        hidden.value = preview.innerHTML;
+                      });
+                    })();
+                    </text>
           }
         });
     </script>
 
 }
-
 

@@ -43,6 +43,12 @@ namespace JapaneseLearningPlatform.Controllers
         {
             return View();
         }
+        public IActionResult Users()
+        {
+            var users = _context.Users.ToList();
+            return View(users ?? new List<ApplicationUser>());
+        }
+
 
         // GET: /Account/RegisterCompleted
         [HttpGet]

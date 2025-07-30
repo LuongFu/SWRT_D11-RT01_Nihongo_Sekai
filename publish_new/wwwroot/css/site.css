@@ -191,15 +191,16 @@ html, body {
         border-color: #b81e26;
     }
 
-.btn-outline {
-    color: #d9232e !important;
-    background-color: #fff !important;
+.btn-outline-primary {
+    background-color: #0d6efd;
+    color: #fff;
 }
 
-
-    .btn-outline:hover {
-        background-color: #fbe6e8;
+    .btn-outline-primary:hover {
+        background-color: #0b5ed7; /* màu hover */
+        color: #fff;
     }
+
 
 /* ====== FOOTER STYLES ====== */
 .footer {
@@ -241,6 +242,7 @@ html, body {
 }
 
 .footer-title {
+    color:white !important;
     font-weight: 600;
     font-size: 1.1rem;
     margin-bottom: 1rem;
@@ -1112,4 +1114,28 @@ form .form-control {
     .btn-back-simple:hover {
         background-color: #bb2d3b; /* Màu đỏ đậm khi hover */
         color: white;
+    }
+#word-popup-button {
+    position: fixed !important;
+    bottom: 1rem !important;
+    right: 1rem !important;
+    margin: 0 !important;
+    transform: none !important;
+    z-index: 9999 !important;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--color-primary-600);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    #word-popup-button:hover {
+        transform: scale(1.1) !important;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.3) !important;
     }
