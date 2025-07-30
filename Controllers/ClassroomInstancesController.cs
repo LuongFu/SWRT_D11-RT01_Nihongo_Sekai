@@ -2,13 +2,16 @@
 using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.Static;
 using JapaneseLearningPlatform.Data.ViewModels;
+using JapaneseLearningPlatform.Data.ViewModels.Chat;
 using JapaneseLearningPlatform.Helpers;
+using JapaneseLearningPlatform.Hubs;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -24,13 +27,16 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ClassroomInstancesController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHubContext<PrivateChatHub> _privateChatHubContext;
 
-        public ClassroomInstancesController(AppDbContext context, UserManager<ApplicationUser> userManager, ILogger<ClassroomInstancesController> logger, IWebHostEnvironment webHostEnvironment)
+        public ClassroomInstancesController(AppDbContext context, UserManager<ApplicationUser> userManager, ILogger<ClassroomInstancesController> logger, IWebHostEnvironment webHostEnvironment, IHubContext<PrivateChatHub> privateChatHubContext)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
+            _privateChatHubContext = privateChatHubContext;
+
         }
 
         [AllowAnonymous]
@@ -912,40 +918,101 @@ namespace JapaneseLearningPlatform.Controllers
             }
         }
 
-        // ========== CHAT RIÊNG ==========
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetPrivateChatMessages(int classroomId, string targetUserId)
         {
-            var userId = _userManager.GetUserId(User);
-
-            bool isAuthorized = await _context.ClassroomInstances
-                .AnyAsync(ci => ci.Id == classroomId &&
-                    (ci.Template.PartnerId == userId || ci.Enrollments.Any(e => e.LearnerId == userId)) &&
-                    (ci.Template.PartnerId == targetUserId || ci.Enrollments.Any(e => e.LearnerId == targetUserId)));
-
-            if (!isAuthorized)
-                return Forbid();
-
-            var messages = await _context.PrivateChatMessages
-                .Include(m => m.User)
-                .Where(m => m.ClassroomInstanceId == classroomId &&
-                           ((m.UserId == userId && m.TargetUserId == targetUserId) ||
-                            (m.UserId == targetUserId && m.TargetUserId == userId)))
-                .OrderBy(m => m.SentAt)
-                .Select(m => new
+            try
+            {
+                var currentUserId = _userManager.GetUserId(User);
+                if (string.IsNullOrEmpty(currentUserId))
                 {
-                    userName = m.User.FullName ?? m.User.Email,
-                    avatarUrl = string.IsNullOrEmpty(m.User.ProfilePicturePath)
-                        ? "/uploads/profile/default-img.jpg"
-                        : m.User.ProfilePicturePath,
-                    message = m.Message,
-                    sentAt = m.SentAt.ToLocalTime().ToString("HH:mm dd/MM"),
-                    isOwn = m.UserId == userId
-                })
-                .ToListAsync();
+                    // Không có user đăng nhập
+                    return Unauthorized(new { error = "User not authenticated" });
+                }
 
-            return Ok(messages);
+                if (string.IsNullOrEmpty(targetUserId))
+                {
+                    return BadRequest(new { error = "Target user ID is required." });
+                }
+
+                var messages = await _context.PrivateChatMessages
+                    .Include(m => m.User) // Load user gửi
+                    .Where(m => m.ClassroomInstanceId == classroomId &&
+                                ((m.UserId == currentUserId && m.TargetUserId == targetUserId) ||
+                                 (m.UserId == targetUserId && m.TargetUserId == currentUserId)))
+                    .OrderBy(m => m.SentAt)
+                    .Select(m => new
+                    {
+                        UserId = m.UserId,
+                        TargetUserId = m.TargetUserId,
+                        Message = m.Message,
+                        SentAt = m.SentAt.ToLocalTime().ToString("HH:mm dd/MM"),
+                        SenderName = m.User != null
+                            ? (string.IsNullOrEmpty(m.User.FullName) ? m.User.Email : m.User.FullName)
+                            : "Unknown User",
+                        AvatarUrl = m.User != null && !string.IsNullOrEmpty(m.User.ProfilePicturePath)
+                            ? m.User.ProfilePicturePath
+                            : "/uploads/profile/default-img.jpg"
+                    })
+                    .ToListAsync();
+
+                return Ok(messages); // Đảm bảo trả về JSON hợp lệ
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetPrivateChatMessages] Error: {ex.Message}");
+                return StatusCode(500, new { error = "Internal server error." });
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> SendPrivateMessage([FromBody][Required] SendPrivateMessageRequestVM request)
+        {
+            try
+            {
+                var senderId = _userManager.GetUserId(User);
+                if (string.IsNullOrEmpty(senderId))
+                    return Unauthorized(new { error = "User not authenticated" });
+
+                if (string.IsNullOrWhiteSpace(request.Message))
+                    return BadRequest(new { error = "Message cannot be empty." });
+
+                if (string.IsNullOrEmpty(request.TargetUserId))
+                    return BadRequest(new { error = "Target user ID is required." });
+
+                var classroomExists = await _context.ClassroomInstances
+                    .AnyAsync(ci => ci.Id == request.ClassroomId);
+                if (!classroomExists)
+                    return NotFound(new { error = "Classroom not found." });
+
+                var chatMessage = new PrivateChatMessage
+                {
+                    ClassroomInstanceId = request.ClassroomId,
+                    UserId = senderId,
+                    TargetUserId = request.TargetUserId,
+                    Message = request.Message.Trim(),
+                    SentAt = DateTime.UtcNow
+                };
+
+                _context.PrivateChatMessages.Add(chatMessage);
+                await _context.SaveChangesAsync();
+
+                var timeSent = chatMessage.SentAt.ToLocalTime().ToString("HH:mm dd/MM");
+
+                await _privateChatHubContext.Clients.User(senderId)
+                    .SendAsync("ReceivePrivateMessage", senderId, request.Message, timeSent, true);
+                await _privateChatHubContext.Clients.User(request.TargetUserId)
+                    .SendAsync("ReceivePrivateMessage", senderId, request.Message, timeSent, false);
+
+                return Ok(new { success = true, sentAt = timeSent, message = request.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[SendPrivateMessage] Error: {ex.Message}");
+                return StatusCode(500, new { error = "Internal server error." });
+            }
         }
     }
 }

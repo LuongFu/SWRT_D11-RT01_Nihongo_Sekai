@@ -204,9 +204,12 @@
 
 
         .badge-special {
-            background: #fde2e2;
-            color: #a32a2a;
+            background: #ffe4ec !important;
+            color: #d6336c !important;
+            padding: .25em .5em;
+            border-radius: .5rem;
         }
+
 
         /* === FOOTER SPACING === */
         .pagination {
@@ -214,7 +217,7 @@
             justify-content: center;
         }
 
-        
+
         /* Make apply-btn match the style of the "Xóa bộ lọc" button on Users page */
         .apply-btn {
             background-color: transparent; /* trong suốt */
@@ -432,10 +435,9 @@
             border-radius: .75rem;
         }
 
-
-
     </style>
 }
+
 
 <div class="container">
     <h1>@ViewData["Title"]</h1>
@@ -635,11 +637,11 @@
                 <td>
                     @foreach (var sp in shown)
                             {
-                                <span class="badge bg-secondary me-1">@sp.GetDisplayName()</span>
+                                <span class="badge-special me-1">@sp.GetDisplayName()</span>
                             }
                             @if (extra > 0)
                             {
-                                <span class="badge bg-secondary"
+                                <span class="badge-special"
                                       data-bs-toggle="tooltip"
                                       title="@string.Join(", ", specs.Skip(2).Select(x => x.GetDisplayName()))">
                                     +@extra
@@ -700,49 +702,153 @@
 
 @foreach (var p in items)
 {
-    <!-- Modal phê duyệt -->
-    <div class="modal fade" id="approveModal-@p.Id" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <!-- Modal Phê duyệt -->
+    <div class="modal fade" id="approveModal-@p.Id" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <form asp-action="ApprovePartner" asp-controller="Admin" method="post" class="modal-content">
-                <input type="hidden" name="id" value="@p.Id" />
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-success"><i class="bi bi-check-circle-fill"></i> Xác nhận phê duyệt</h5>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="partnerId" value="@p.Id" />
+
+                <div class="modal-header">
+                    <h5 class="modal-title text-success">
+                        <i class="bi bi-check-circle-fill"></i> Soạn thư phê duyệt
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
-                    Bạn có chắc muốn <strong>phê duyệt</strong> đơn của <em>@p.User.FullName</em>?
+                    <!-- 1) Chủ đề -->
+                    <div class="mb-3">
+                        <label class="form-label">Chủ đề thư</label>
+                        <input type="text" name="subject" class="form-control"
+                               value="🎉 Yêu cầu Đối tác của bạn đã được chấp thuận!"
+                               required />
+                    </div>
+
+                    <!-- 2) Preview + hidden body -->
+                    <div class="mb-3">
+                        <label class="form-label">Xem trước thư</label>
+                        <div id="approvePreview-@p.Id"
+                             class="border rounded p-3"
+                             style="background:#fff; max-height:300px; overflow:auto;">
+                            <!-- --- cố định trước --- -->
+                            <div style="font-family:Arial,sans-serif;color:#333">
+                                <h2 style="color:#E53935;">Xin chào @p.User.FullName,</h2>
+                                <p>
+                                    Xin chúc mừng! Yêu cầu trở thành
+                                    <strong>Đối tác giảng dạy</strong> của bạn
+                                    đã được <span style="color:#22c55e">chấp thuận</span>.
+                                </p>
+                            </div>
+                            <!-- chỗ chèn thêm -->
+                            <div id="approveExtra-@p.Id"></div>
+                            <!-- --- cố định sau --- -->
+                            <div style="font-family:Arial,sans-serif;color:#333; margin-top:1rem;">
+                                <p class="text-center">
+                                    <a href="{{CallbackUrl}}"
+                                       id="approveLink-@p.Id"
+                                       style="display:inline-block;padding:10px 20px;
+                                                  background:#E53935;color:#fff;text-decoration:none;
+                                                  border-radius:4px;font-weight:bold;">
+                                        Xác nhận và đăng nhập
+                                    </a>
+                                </p>
+                                <p style="font-size:.85rem;color:#666;">
+                                    Nếu nút trên không hoạt động, sao chép & dán liên kết sau:<br />
+                                    <a href="{{CallbackUrl}}"
+                                       id="approveUrl-@p.Id"
+                                       style="color:#1a73e8;word-break:break-all;">
+                                        {{CallbackUrl}}
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                        <input type="hidden" name="body" id="hiddenApproveBody-@p.Id" />
+                    </div>
+
+                    <!-- 3) Editor admin chèn thêm -->
+                    <div class="mb-3">
+                        <label class="form-label">Nội dung bổ sung</label>
+                        <textarea id="approveEditor-@p.Id"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Nhắc nhẹ partner về điều gì đó…"></textarea>
+                    </div>
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-                        Hủy
-                    </button>
-                    <button type="submit" class="btn btn-success">Đồng ý phê duyệt</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success">Gửi thư & Phê duyệt</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal từ chối -->
-    <div class="modal fade" id="rejectModal-@p.Id" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <!-- Modal Từ chối -->
+    <div class="modal fade" id="rejectModal-@p.Id" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <form asp-action="RejectPartner" asp-controller="Admin" method="post" class="modal-content">
-                <input type="hidden" name="id" value="@p.Id" />                
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-success"><i class="bi bi-check-circle-fill"></i> Xác nhận từ chối</h5>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="partnerId" value="@p.Id" />
+
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger">
+                        <i class="bi bi-x-circle-fill"></i> Soạn thư từ chối
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
-                    Bạn có chắc muốn <strong>từ chối</strong> đơn của <em>@p.User.FullName</em>?
+                    <!-- 1) Chủ đề -->
+                    <div class="mb-3">
+                        <label class="form-label">Chủ đề thư</label>
+                        <input type="text" name="subject" class="form-control"
+                               value="🙏 Cập nhật trạng thái Đối tác" required />
+                    </div>
+
+                    <!-- 2) Preview + hidden body -->
+                    <div class="mb-3">
+                        <label class="form-label">Xem trước thư</label>
+                        <div id="rejectPreview-@p.Id"
+                             class="border rounded p-3"
+                             style="background:#fff; max-height:300px; overflow:auto;">
+                            <!-- --- cố định trước --- -->
+                            <div style="font-family:Arial,sans-serif;color:#333">
+                                <h2 style="color:#D32F2F;">Rất tiếc, @p.User.FullName</h2>
+                                <p>
+                                    Rất tiếc, yêu cầu trở thành
+                                    <strong>Đối tác giảng dạy</strong> của bạn
+                                    <span style="color:#D32F2F">chưa được chấp thuận</span>.
+                                </p>
+                            </div>
+                            <!-- chỗ chèn thêm -->
+                            <div id="rejectExtra-@p.Id"></div>
+                            <!-- --- cố định sau --- -->
+                            <div style="font-family:Arial,sans-serif;color:#333; margin-top:1rem;">
+                                <p>
+                                    Bạn có thể tích lũy thêm kinh nghiệm và
+                                    <a href="{{RegisterUrl}}" id="rejectRegisterLink-@p.Id" style="color:#1a73e8;">
+                                        nộp đơn lại
+                                    </a> khi sẵn sàng.
+                                </p>
+                            </div>
+                        </div>
+                        <input type="hidden" name="body" id="hiddenRejectBody-@p.Id" />
+                    </div>
+
+                    <!-- 3) Editor admin chèn thêm -->
+                    <div class="mb-3">
+                        <label class="form-label">Lý do / lưu ý thêm</label>
+                        <textarea id="rejectEditor-@p.Id"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Giải thích thêm lý do hoặc hướng dẫn…"></textarea>
+                    </div>
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-                        Hủy
-                    </button>
-                    <button type="submit" class="btn btn-danger">Đồng ý từ chối</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger">Gửi thư & Từ chối</button>
                 </div>
             </form>
         </div>
@@ -751,12 +857,12 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', ()=> {
+        document.addEventListener('DOMContentLoaded', () => {
             // Tooltip init
             document.querySelectorAll('[data-bs-toggle="tooltip"]')
                     .forEach(el => new bootstrap.Tooltip(el));
 
-            // Wire up dropdown selection (chỉ set hidden input, highlight active, update button text)
+            // Wire up dropdown selection
             const wireUp = (selector, inputId) => {
                 document.querySelectorAll(selector).forEach(el =>
                     el.addEventListener('click', e => {
@@ -768,10 +874,62 @@
                     })
                 );
             };
-            wireUp('.exp-item' , 'expInput');
+            wireUp('.exp-item', 'expInput');
             wireUp('.spec-item', 'specInput');
             wireUp('.date-item', 'dateInput');
+
+            // Copy preview HTML into hidden body before submit
+            @foreach (var p in items)
+            {
+                    <text>
+                    (function() {
+                        var form = document.querySelector('#approveModal-@p.Id form');
+                        var preview = document.getElementById('approvePreview-@p.Id');
+                        var hidden = document.getElementById('hiddenApproveBody-@p.Id');
+                        form.addEventListener('submit', function() {
+                            hidden.value = preview.innerHTML;
+                        });
+
+                        var rejectForm = document.querySelector('#rejectModal-@p.Id form');
+                        var rejectPreview = document.getElementById('rejectPreview-@p.Id');
+                        var rejectHidden = document.getElementById('hiddenRejectBody-@p.Id');
+                        rejectForm.addEventListener('submit', function() {
+                            rejectHidden.value = rejectPreview.innerHTML;
+                        });
+                    })();
+                    </text>
+            }
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          @foreach (var p in items)
+        {
+                <text>
+                // —— Live preview cho Modal Phê duyệt ——
+                (function(){
+                  var editor   = document.getElementById('approveEditor-@p.Id');
+                  var extraDiv = document.getElementById('approveExtra-@p.Id');
+                  editor.addEventListener('input', function() {
+                    extraDiv.innerHTML = this.value
+                      .split('\n').map(line => `<p>${line}</p>`).join('');
+                  });
+                })();
+
+                // —— Live preview cho Modal Từ chối ——
+                (function(){
+                  var rejectEditor = document.getElementById('rejectEditor-@p.Id');
+                  var rejectExtra  = document.getElementById('rejectExtra-@p.Id');
+                  rejectEditor.addEventListener('input', function() {
+                    rejectExtra.innerHTML = this.value
+                      .split('\n').map(line => `<p>${line}</p>`).join('');
+                  });
+                })();
+                </text>
+          }
+        });
+    </script>
+
 }
+
  

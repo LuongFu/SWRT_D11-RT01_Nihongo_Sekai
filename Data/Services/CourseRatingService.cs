@@ -66,5 +66,11 @@ namespace JapaneseLearningPlatform.Data.Services
                 .Include(r => r.User)
                 .ToListAsync();
         }
+
+        public async Task<bool> HasUserReviewedAsync(string userId, int courseId)
+        {
+            return await _context.CourseRatings
+                .AnyAsync(r => r.UserId == userId && r.CourseId == courseId);
+        }
     }
 }

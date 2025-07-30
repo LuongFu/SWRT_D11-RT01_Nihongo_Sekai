@@ -6899,3 +6899,27 @@ a:focus {
         .custom-navbar .dropdown-menu .dropdown-item:hover {
             background-color: var(--color-primary-50);
         }
+
+/* Banner Under-Construction */
+.dev-banner {
+    background-color: #fff8e1;
+    border-bottom: 1px solid #ffe0b2;
+    padding: .75rem 0;
+    font-family: "Source Sans Pro", sans-serif;
+}
+
+.dev-banner-icon {
+    width: 48px;
+    height: 48px;
+}
+
+.dev-banner-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #f57c00;
+}
+
+.dev-banner-text {
+    font-size: .95rem;
+    color: #5d4037;
+}

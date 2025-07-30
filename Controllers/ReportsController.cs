@@ -1,15 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using JapaneseLearningPlatform.Data;
+﻿using JapaneseLearningPlatform.Data;
 using JapaneseLearningPlatform.Data.Enums;
 using JapaneseLearningPlatform.Data.ViewModels;
 using JapaneseLearningPlatform.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace JapaneseLearningPlatform.Controllers
 {
@@ -20,18 +21,25 @@ namespace JapaneseLearningPlatform.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ReportsController> _logger;
 
+        private readonly IConfiguration _config;
+        private readonly IEmailSender _emailSender;
+
         // Hard‑code ở đây
-        private const string RecaptchaSiteKey = "6LeiyogrAAAAAHjo-FHuRqMRrGnBo0s9wLdC4jBA";
-        private const string RecaptchaSecretKey = "6LeiyogrAAAAAH5aQagrRsWJdUjKJ-DEoK7AFv2T";
+        private const string RecaptchaSiteKey = "6LcuZY4rAAAAAOB7URpx0BIssk-U9kmjQZvcBXD_";
+        private const string RecaptchaSecretKey = "6LcuZY4rAAAAAMaZYSTeIuTGXJXgyDJWBffJI5zH";
 
         public ReportsController(
             AppDbContext context,
             UserManager<ApplicationUser> userManager,
-            ILogger<ReportsController> logger)
+            ILogger<ReportsController> logger,
+            IConfiguration config,
+            IEmailSender emailSender)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _config = config;
+            _emailSender = emailSender;
         }
 
         [AllowAnonymous]
@@ -274,6 +282,31 @@ namespace JapaneseLearningPlatform.Controllers
             ViewBag.CurrentRole = role;
             ViewBag.CurrentStatus = status;
 
+            // 1) read feature flag
+            bool toastEnabled = _config
+               .GetValue<bool>("Reporting:EnableNewReportToast");
+            ViewBag.EnableNewReportToast = toastEnabled;
+
+            // 2) compute how many unresolved since last admin visit
+            //    (you can adapt “lastVisit” however you persist it)
+            if (toastEnabled)
+            {
+                // e.g. count all unresolved
+                ViewBag.NewCount = await _context.Reports
+                                          .CountAsync(r => !r.IsResolved);
+            }
+
+            if (toastEnabled)
+            {
+                ViewBag.NewCount = await _context.Reports.CountAsync(r => !r.IsResolved);
+                ViewBag.NewReports = await _context.Reports
+                    .Where(r => !r.IsResolved)
+                    .OrderByDescending(r => r.SubmittedAt)
+                    .Take(3)
+                    .Select(r => new { r.Id, r.Subject, r.SubmittedAt })
+                    .ToListAsync();
+            }
+
             return View("~/Views/Admin/ViewReportsList.cshtml", items);
         }
 
@@ -317,6 +350,33 @@ namespace JapaneseLearningPlatform.Controllers
             return Json(new { total, bySubj });
         }
 
+        [HttpPost, Authorize(Roles = "Admin"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> Respond(int reportId, string subject, string body)
+        {
+            var report = await _context.Reports.FindAsync(reportId);
+            if (report == null) return NotFound();
+
+            // 1) (Tuỳ bạn) đánh dấu đã trả lời
+            report.IsResolved = true;
+            await _context.SaveChangesAsync();
+
+            // 2) Inject placeholder nếu cần
+            //    ví dụ {{ReporterName}}, {{OriginalMessage}}
+            body = body
+              .Replace("{{ReporterName}}", report.FullName)
+              .Replace("{{OriginalMessage}}", report.Message);
+
+            // 3) Gửi email
+            await _emailSender.SendEmailAsync(
+                report.Email,
+                subject,
+                body);
+
+            TempData["ToastMessage"] = $"Đã gửi phản hồi cho {report.FullName}";
+            TempData["ToastType"] = "success";
+
+            return RedirectToAction(nameof(AdminIndex));                
+        }
     }
 }
 

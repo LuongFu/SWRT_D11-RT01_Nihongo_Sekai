@@ -3,65 +3,131 @@
 @{
     ViewData["Title"] = "Mẫu lớp của tôi";
 }
-<div class="container mt-4">
 
-<h2 class="mb-4">Mẫu lớp của tôi</h2>
+<div class="container mt-4 mb-5">
+    <h2 class="mb-4 text-center">Mẫu lớp của tôi</h2>
 
-<div class="mb-3 text-end">
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-circle me-1"></i> Tạo mẫu mới
-    </a>
-</div>
-
-@if (!Model.Any())
-{
-    <div class="alert alert-warning text-center">
-        <i class="bi bi-exclamation-circle me-2"></i> Chưa có mẫu nào.
+    <div class="mb-3 text-end">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Tạo mẫu mới
+        </a>
     </div>
-}
-else
-{
-    <table class="table table-bordered table-striped align-middle">
-        <thead class="table-light">
-            <tr>
-                <th style="width:100px">Ảnh thu nhỏ</th>
-                <th>Tên</th>
-                <th>Trình độ</th>
-                <th style="width:170px" class="text-center">Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-circle me-2"></i> Chưa có mẫu nào.
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @if (!string.IsNullOrEmpty(item.ImageURL))
-                        {
-                            <img src="@item.ImageURL" class="img-thumbnail" style="width:80px; height:80px; object-fit:cover;" />
-                        }
-                        else
-                        {
-                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="width:80px; height:80px;">
-                                <i class="bi bi-image" style="font-size:1.5rem;"></i>
-                            </div>
-                        }
-                    </td>
-                    <td>@item.Title</td>
-                    <td>@item.LanguageLevel.GetDisplayName()</td>
-                    <td class="text-center">
-                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-info me-1" title="Xem chi tiết">
-                            <i class="bi bi-eye"></i>
-                        </a>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1" title="Chỉnh sửa">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Xóa">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@item.ImageURL" class="card-img-top" alt="@item.Title" style="height:200px; object-fit:cover;" />
+
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate" title="@item.Title">@item.Title</h5>
+                            <p class="card-text">
+                                <strong>Trình độ:</strong> @item.LanguageLevel
+                            </p>
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-between">
+                            <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('Bạn có chắc muốn xóa mẫu này không?');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
-</div> <!-- End container -->
+        </div>
+    }
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: #fff;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-img-top {
+        border-bottom: 1px solid #eee;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
+
+        .btn-info:hover {
+            background-color: #138496;
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #fff;
+    }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-danger:hover {
+            background-color: #bd2130;
+        }
+
+    /* ==== "Tạo mẫu mới" Button ==== */
+    .btn-create {
+        background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: opacity 0.3s ease;
+    }
+
+        .btn-create:hover {
+            opacity: 0.9;
+        }
+</style>

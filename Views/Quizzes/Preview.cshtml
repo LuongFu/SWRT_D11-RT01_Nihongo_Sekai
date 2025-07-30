@@ -4,7 +4,66 @@
     ViewData["Title"] = "Xem trước Q&A";
     var courseId = ViewData["CourseId"] as int? ?? 0;
 }
+<!-- Internal Theme Styles -->
+<style>
+    h2 {
+        color: #b91c1c;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+    }
 
+    .btn-red {
+        background-color: #dc2626;
+        color: white;
+        border: none;
+    }
+
+        .btn-red:hover {
+            background-color: #b91c1c;
+        }
+
+    .btn-outline-red {
+        background-color: white;
+        color: #dc2626;
+        border: 1px solid #dc2626;
+    }
+
+        .btn-outline-red:hover {
+            background-color: #fef2f2;
+            color: #b91c1c;
+            border-color: #b91c1c;
+        }
+
+    .table thead {
+        background-color: #fee2e2;
+        color: #7f1d1d;
+    }
+
+    .table-bordered {
+        border: 1px solid #fecaca;
+    }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #fecaca;
+            vertical-align: middle;
+        }
+
+    ul {
+        padding-left: 1.2rem;
+    }
+
+    li strong {
+        color: #16a34a;
+    }
+
+    .btn-sm {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.6rem;
+    }
+</style>
+<div class="container mt-4 mb-5">
+    <div class="card shadow-sm rounded-4 p-4">
 <h2>Xem trước Quiz: @Model.QuizTitle</h2>
 
 @for (int i = 0; i < Model.Questions.Count; i++)
@@ -23,3 +82,5 @@
 }
 
 <a asp-action="Details" asp-controller="Courses" asp-route-id="@courseId" class="btn btn-secondary mt-3">← Về trang Khóa học</a>
+</div>
+    </div>

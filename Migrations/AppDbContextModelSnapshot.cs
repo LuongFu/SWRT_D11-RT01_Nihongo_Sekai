@@ -811,7 +811,8 @@ namespace JapaneseLearningPlatform.Migrations
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime>("SentAt")
                         .HasColumnType("datetime2");
@@ -1488,13 +1489,13 @@ namespace JapaneseLearningPlatform.Migrations
                     b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "TargetUser")
                         .WithMany()
                         .HasForeignKey("TargetUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("JapaneseLearningPlatform.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("ClassroomInstance");

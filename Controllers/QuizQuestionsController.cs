@@ -69,7 +69,7 @@ namespace JapaneseLearningPlatform.Controllers
             await _service.SaveQuestionAsync(vm);
 
             TempData["SuccessMessage"] = "Đã lưu câu hỏi.";
-            return RedirectToAction("Details", "Quizzes", new { id = vm.QuizId });
+            return RedirectToAction("Manage", "Quizzes", new { id = vm.QuizId });
         }
 
         // Confirm delete via GET (optional modal later)
@@ -78,7 +78,7 @@ namespace JapaneseLearningPlatform.Controllers
         {
             await _service.DeleteQuestionAsync(id);
             TempData["SuccessMessage"] = "Đã xóa câu hỏi.";
-            return RedirectToAction("Details", "Quizzes", new { id = quizId });
+            return RedirectToAction("Manage", "Quizzes", new { id = quizId });
         }
     }
 }

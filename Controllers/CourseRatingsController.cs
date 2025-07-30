@@ -34,6 +34,10 @@ namespace JapaneseLearningPlatform.Controllers
             if (userId == null)
                 return Unauthorized();
 
+            // **Nếu đã bình luận rồi → lỗi luôn**
+            if (await _svc.HasUserReviewedAsync(userId, model.CourseId))
+                return BadRequest(new { message = "Bạn chỉ được bình luận 1 lần cho mỗi khoá học." });
+
             await _svc.AddRatingAsync(userId, model.CourseId, model.Stars, model.Comment ?? "");
             return Ok(new { message = "Cảm ơn bạn đã gửi đánh giá!" });
         }
@@ -47,10 +51,10 @@ namespace JapaneseLearningPlatform.Controllers
 
         [HttpGet("Comments/{courseId}")]
         public async Task<IActionResult> GetComments(
-    int courseId,
-    int pageSize = 5,
-    int page = 1,           // <-- thêm page
-    string sort = "Newest")
+            int courseId,
+            int pageSize = 5,
+            int page = 1,           // <-- thêm page
+            string sort = "Newest")
         {
             // gọi service với paging + sort
             var comments = await _svc.GetLatestAsync(courseId, pageSize, page, sort);
@@ -65,8 +69,5 @@ namespace JapaneseLearningPlatform.Controllers
 
             return Ok(dto);
         }
-
-
-
     }
 }

@@ -13,166 +13,140 @@
         body {
             margin: 0;
             font-family: 'Source Sans Pro', sans-serif;
-            background: linear-gradient(135deg, #ffe4e1 0%, #e53935 100%);
+            background: linear-gradient(135deg, #f6f5f3 0%, #e8e7e3 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            color: #4a4a4a;
         }
 
         /* ========== HEADER & CONTAINER ========== */
         .container {
             flex: 1 0 auto;
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
         h4 {
-            color: #661414;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            color: #5a5a5a;
+            text-shadow: none;
+            margin-bottom: 1rem;
         }
 
         /* ========== FILTER BAR ========== */
         .filter-card {
-            background: #fff;
-            border-radius: 1rem;
-            padding: 1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            background: #ffffff;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             margin-bottom: 1.5rem;
         }
 
         .filter-bar {
             display: flex;
-            flex-wrap: nowrap;
-            gap: 1rem;
+            gap: 0.75rem;
             align-items: center;
             overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
             .filter-bar::-webkit-scrollbar {
-                height: 6px;
-            }
-
-            .filter-bar::-webkit-scrollbar-thumb {
-                background: rgba(0,0,0,0.1);
-                border-radius: 3px;
+                display: none;
             }
 
             .filter-bar input,
             .filter-bar select {
                 flex: 1;
-                min-width: 180px;
-                transition: box-shadow .2s;
+                min-width: 140px;
+                padding: 0.5rem 0.75rem;
+                border: 1px solid #dcdcdc;
+                border-radius: 0.5rem;
+                transition: box-shadow 0.2s, border-color 0.2s;
             }
 
                 .filter-bar input:focus,
                 .filter-bar select:focus {
-                    box-shadow: 0 0 0 3px rgba(229,57,53,.3);
+                    border-color: #c9b7d4;
+                    box-shadow: 0 0 4px rgba(201,183,212,0.3);
+                    outline: none;
                 }
 
             .filter-bar button {
-                flex: 0 0 auto;
-                background-color: #e53935;
+                background-color: #a391b8;
                 border: none;
                 color: #fff;
-                padding: .6rem 1.2rem;
-                border-radius: .75rem;
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
                 cursor: pointer;
-                transition: background .2s, transform .2s;
-                min-width: 130px;
+                transition: background 0.2s;
             }
 
                 .filter-bar button:hover {
-                    background-color: #b71c1c;
-                    transform: translateY(-2px);
+                    background-color: #9180a2;
                 }
 
         /* ========== BẢNG DỮ LIỆU ========== */
         .table-wrapper {
-            background: #fff;
-            border-radius: 1rem;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            background: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             overflow: hidden;
-            max-height: 600px; /* cố định chiều cao khi ít bản ghi */
+            margin-bottom: 2rem;
         }
 
         #usersTable {
-            margin-bottom: 0;
+            width: 100%;
             border-collapse: separate;
         }
 
             #usersTable thead th {
-                background-color: #faebeb;
-                color: #661414;
+                background-color: #f0eef0;
+                color: #5a5a5a;
                 position: sticky;
                 top: 0;
                 z-index: 1;
-                border-bottom: 2px solid #ddd;
+                padding: 0.75rem;
+                border-bottom: 1px solid #e0e0e0;
             }
 
             #usersTable tbody tr {
-                opacity: 0;
-                transform: translateY(10px);
-                animation: fadeInUp .4s forwards;
+                transition: background 0.2s;
             }
 
                 #usersTable tbody tr:nth-child(odd) {
-                    background-color: #fff5f5;
+                    background-color: #faf9fa;
                 }
 
                 #usersTable tbody tr:hover {
-                    background-color: #ffe4e1;
-                    transform: translateY(-2px);
-                    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+                    background-color: #f4f2f5;
                 }
 
-        @@keyframes fadeInUp {
-            to
+            #usersTable td {
+                padding: 0.75rem;
+                border-bottom: 1px solid #f0f0f0;
+            }
 
-        {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        }
-
-        /* ========== FOOTER CỐ ĐỊNH ========== */
+        /* ========== FOOTER ========== */
         footer {
             flex-shrink: 0;
-            background: #661414;
-            color: #fff;
+            background: #5a4f6e;
+            color: #f2f0f4;
             text-align: center;
-            padding: 1rem 0;
+            padding: 0.75rem 0;
         }
 
             footer a {
-                color: #ffdede;
-                text-decoration: underline;
+                color: #d1c9dd;
+                text-decoration: none;
             }
-        /* Thay đổi ở phần table-wrapper và footer */
 
-        /* 1) Loại bỏ max-height, cho phép table tự do dài ra */
-        .table-wrapper {
-            background: #fff;
-            border-radius: 1rem;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-            overflow: auto; /* cuộn nội dung khi cần */
-            margin-bottom: 2rem; /* thêm khoảng cách trước footer */
-        }
-
-        /* 2) Footer giữ nguyên ở cuối nội dung */
-        footer {
-            background: #661414;
-            color: #fff;
-            text-align: center;
-            padding: 1rem 0;
-            /* Nếu muốn dính luôn dưới viewport khi nội dung ít:
-             position: sticky;
-             bottom: 0;
-             width: 100%; */
-        }
-
+                footer a:hover {
+                    text-decoration: underline;
+                }
     </style>
+
 }
 
 <div class="container">
@@ -256,6 +230,17 @@
                 }
             </tbody>
         </table>
+        <!-- PHÂN TRANG -->
+        <nav aria-label="User pagination">
+            <ul class="pagination">
+                @for (int p = 1; p <= ViewBag.TotalPages; p++)
+                {
+                    <li class="page-item @(p == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = p })">@p</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
 </div>
 
@@ -325,5 +310,51 @@
         });
 
         })();
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const rowsPerPage = 10;
+          const tbody = document.querySelector('#usersTable tbody');
+          const allRows = Array.from(tbody.querySelectorAll('tr'));
+          const totalPages = Math.ceil(allRows.length / rowsPerPage);
+
+          // Tạo vùng phân trang
+          const nav = document.createElement('nav');
+          const ul  = document.createElement('ul');
+          ul.className = 'pagination justify-content-center mt-3';
+          nav.appendChild(ul);
+
+          // Hàm hiển thị trang
+          function showPage(page) {
+            // ẩn/hiện các dòng
+            allRows.forEach((row, idx) => {
+              const start = (page - 1) * rowsPerPage;
+              row.style.display = idx >= start && idx < start + rowsPerPage ? '' : 'none';
+            });
+            // cập nhật active
+            ul.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+            ul.querySelector(`li[data-page="${page}"]`).classList.add('active');
+          }
+
+          // Sinh các nút page
+          for (let p = 1; p <= totalPages; p++) {
+            const li = document.createElement('li');
+            li.className = 'page-item';
+            li.dataset.page = p;
+            li.innerHTML = `<a class="page-link" href="#">${p}</a>`;
+            li.addEventListener('click', e => {
+              e.preventDefault();
+              showPage(p);
+            });
+            ul.appendChild(li);
+          }
+
+          // Chèn phân trang sau bảng
+          document.querySelector('.table-wrapper').appendChild(nav);
+
+          // Khởi đầu hiển thị trang 1
+          if (totalPages > 0) showPage(1);
+        });
     </script>
 }

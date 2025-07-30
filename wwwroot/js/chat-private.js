@@ -1,109 +1,190 @@
-﻿// ==================== CHAT RIÊNG ====================
-let privateChatTargetId = null;
+﻿"use strict";
+
 let privateConnection = null;
+let activePrivateUserId = null;
 
-const privateChatBox = document.getElementById("privateChatMessages");
-const privateChatInput = document.getElementById("privateChatInput");
-const classroomId = window.classroomId;
-const currentUserId = window.currentUserId;
+// === Khởi tạo SignalR cho Chat Riêng ===
+function initPrivateChat() {
+    privateConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/privateChatHub")
+        .withAutomaticReconnect()
+        .build();
 
-// Escape text để chống XSS
+    privateConnection.start()
+        .then(() => console.log("[PrivateChat] Connected to hub"))
+        .catch(err => console.error("[PrivateChat] Connection error:", err));
+
+    // Lắng nghe tin nhắn realtime từ server
+    privateConnection.on("ReceivePrivateMessage", (senderId, message, sentAt, isOwn) => {
+        if (!activePrivateUserId || (senderId !== activePrivateUserId && senderId !== window.currentUserId)) {
+            console.log("[PrivateChat] New message from:", senderId);
+        }
+
+        appendPrivateMessage({
+            userId: senderId,
+            message: message,
+            sentAt: sentAt,
+            avatarUrl: senderId === window.currentUserId
+                ? (window.currentUserAvatar || "/uploads/profile/default-img.jpg")
+                : getUserAvatar(senderId),
+            senderName: senderId === window.currentUserId
+                ? (window.currentUserName || "Tôi")
+                : getUserName(senderId)
+        });
+    });
+}
+
+// === Gửi tin nhắn ===
+async function sendPrivateMessage() {
+    const input = document.getElementById("privateChatInput");
+    const message = input.value.trim();
+
+    if (!message) {
+        console.warn("[PrivateChat] Message is empty");
+        return;
+    }
+    if (!activePrivateUserId) {
+        alert("Hãy chọn người để chat riêng.");
+        return;
+    }
+
+    const payload = {
+        classroomId: window.classroomId,
+        targetUserId: activePrivateUserId,
+        message: message
+    };
+
+    try {
+        const response = await fetch("/ClassroomInstances/SendPrivateMessage", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            console.log("[PrivateChat] Message sent:", result.message);
+            input.value = "";
+        } else {
+            console.error("[PrivateChat] Error:", result.error);
+            alert(result.error || "Không thể gửi tin nhắn.");
+        }
+    } catch (err) {
+        console.error("[PrivateChat] Send error:", err);
+    }
+}
+
+// === Thêm tin nhắn vào UI ===
+function appendPrivateMessage(msg) {
+    const container = document.getElementById("privateChatMessages");
+    const isOwn = msg.userId === window.currentUserId;
+
+    const bubble = document.createElement("div");
+    bubble.className = `chat-bubble ${isOwn ? "own" : ""}`;
+    bubble.innerHTML = `
+        <img src="${msg.avatarUrl}" class="chat-avatar" alt="${msg.senderName}" />
+        <div class="chat-content">
+            <p class="mb-1"><strong>${msg.senderName}:</strong> ${escapeHtml(msg.message)}</p>
+            <small class="text-muted">${msg.sentAt}</small>
+        </div>
+    `;
+    container.appendChild(bubble);
+    container.scrollTop = container.scrollHeight;
+}
+
+// === Load tin nhắn từ API ===
+async function loadPrivateMessages(targetUserId) {
+    try {
+        const response = await fetch(`/ClassroomInstances/GetPrivateChatMessages?classroomId=${window.classroomId}&targetUserId=${targetUserId}`);
+        const messages = await response.json();
+
+        const container = document.getElementById("privateChatMessages");
+        container.innerHTML = "";
+
+        messages.forEach(msg => {
+            appendPrivateMessage({
+                userId: msg.userId,
+                message: msg.message,
+                sentAt: msg.sentAt,
+                avatarUrl: msg.avatarUrl,
+                senderName: msg.senderName
+            });
+        });
+    } catch (err) {
+        console.error("[PrivateChat] Load messages error:", err);
+    }
+}
+
+// === Khi click "Chat" bên Thành viên lớp ===
+function handleStartPrivateChat(button) {
+    const userId = button.getAttribute("data-user-id");
+    const userName = button.getAttribute("data-user-name");
+
+    if (!userId || userId === window.currentUserId) return;
+
+    const chatTab = document.querySelector('a[href="#private-chat"]');
+    if (chatTab) {
+        const tabInstance = new bootstrap.Tab(chatTab);
+        tabInstance.show();
+    }
+
+    const userList = document.getElementById("privateChatUserList");
+    let existing = userList.querySelector(`li[data-user-id="${userId}"]`);
+    if (!existing) {
+        const li = document.createElement("li");
+        li.className = "list-group-item start-private-chat";
+        li.setAttribute("data-user-id", userId);
+        li.setAttribute("data-user-name", userName);
+        li.innerHTML = `<img src="/uploads/profile/default-img.jpg" class="rounded-circle me-2" width="28" height="28" /> ${userName}`;
+        userList.appendChild(li);
+        existing = li;
+    }
+
+    setActivePrivateUser(existing);
+}
+
+// === Chọn user trong Chat Riêng ===
+function setActivePrivateUser(element) {
+    document.querySelectorAll("#privateChatUserList li").forEach(li => li.classList.remove("active"));
+    element.classList.add("active");
+    activePrivateUserId = element.getAttribute("data-user-id");
+    loadPrivateMessages(activePrivateUserId);
+
+    const input = document.getElementById("privateChatInput");
+    input.focus();
+}
+
+// === Helper ===
+function getUserAvatar(userId) {
+    const li = document.querySelector(`#privateChatUserList li[data-user-id="${userId}"] img`);
+    return li ? li.src : "/uploads/profile/default-img.jpg";
+}
+function getUserName(userId) {
+    const li = document.querySelector(`#privateChatUserList li[data-user-id="${userId}"]`);
+    return li ? li.getAttribute("data-user-name") : "Unknown";
+}
 function escapeHtml(text) {
     const div = document.createElement("div");
-    div.appendChild(document.createTextNode(text));
+    div.innerText = text;
     return div.innerHTML;
 }
 
-// Thêm tin nhắn vào UI
-function appendPrivateMessage(user, avatar, message, sentAt, isOwn) {
-    const sideClass = isOwn ? 'chat-bubble own' : 'chat-bubble';
-    const timeHtml = sentAt ? `<small class="text-muted ms-2">(${sentAt})</small>` : '';
-    const avatarSrc = avatar && avatar.trim() !== '' ? avatar : '/uploads/profile/default-img.jpg';
+// === Binding events ===
+document.addEventListener("DOMContentLoaded", function () {
+    initPrivateChat();
 
-    privateChatBox.innerHTML += `
-        <div class="${sideClass}" title="${escapeHtml(user)}">
-            <img src="${avatarSrc}" alt="avatar" class="chat-avatar"/>
-            <div class="chat-content">${escapeHtml(message)} ${timeHtml}</div>
-        </div>`;
-    privateChatBox.scrollTop = privateChatBox.scrollHeight;
-}
-
-// Load lịch sử tin nhắn
-async function loadPrivateChatMessages(userId) {
-    try {
-        const res = await fetch(`/ClassroomInstances/GetPrivateChatMessages?classroomId=${classroomId}&targetUserId=${userId}`);
-        if (res.ok) {
-            const data = await res.json();
-            privateChatBox.innerHTML = data.map(m => `
-                <div class="${m.isOwn ? 'chat-bubble own' : 'chat-bubble'}" title="${escapeHtml(m.userName)}">
-                    <img src="${m.avatarUrl}" alt="avatar" class="chat-avatar"/>
-                    <div class="chat-content">
-                        <span class="chat-message">${escapeHtml(m.message)}</span>
-                        <small class="text-muted ms-2">(${m.sentAt})</small>
-                    </div>
-                </div>`).join('');
-            privateChatBox.scrollTop = privateChatBox.scrollHeight;
-        }
-    } catch (err) {
-        console.error("LoadPrivateChat error:", err);
-    }
-}
-
-// Tạo kết nối SignalR
-async function startPrivateConnection(targetUserId) {
-    if (privateConnection) {
-        await privateConnection.stop();
-        privateConnection = null;
-    }
-
-    privateConnection = new signalR.HubConnectionBuilder()
-        .withUrl(`/privateChatHub?classroomId=${classroomId}&targetUserId=${targetUserId}`)
-        .build();
-
-    privateConnection.on("ReceivePrivateMessage", (userName, message, sentAt, senderId, avatarUrl) => {
-        const isOwn = senderId === currentUserId;
-        appendPrivateMessage(userName, avatarUrl, message, sentAt, isOwn);
+    document.getElementById("sendPrivateChatBtn")?.addEventListener("click", sendPrivateMessage);
+    document.getElementById("privateChatInput")?.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") sendPrivateMessage();
     });
 
-    privateConnection.start()
-        .then(() => console.log(`✅ Chat riêng - Connected with ${targetUserId}`))
-        .catch(err => console.error("❌ PrivateChat connect error:", err));
-}
-
-// Gửi tin nhắn
-function sendPrivateChatMessage() {
-    const msg = privateChatInput.value.trim();
-    if (!msg || !privateChatTargetId) return;
-
-    privateConnection.invoke("SendPrivateMessage", classroomId, privateChatTargetId, msg)
-        .then(() => privateChatInput.value = '')
-        .catch(err => console.error("SendPrivateMessage error:", err));
-}
-
-// Event chọn user
-$(document).on('click', '.start-private-chat', async function () {
-    privateChatTargetId = $(this).data('user-id');
-    $('#privateChatUserList .list-group-item').removeClass('active');
-    $(this).addClass('active');
-    await loadPrivateChatMessages(privateChatTargetId);
-    await startPrivateConnection(privateChatTargetId);
-
-    // Auto switch sang tab Chat Riêng
-    const privateTab = document.querySelector('#private-chat-tab');
-    if (privateTab) new bootstrap.Tab(privateTab).show();
-});
-
-// Event gửi tin nhắn
-$('#sendPrivateChatBtn').on('click', sendPrivateChatMessage);
-privateChatInput.addEventListener('keydown', e => {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendPrivateChatMessage();
-    }
-});
-
-// Auto chọn user đầu tiên khi mở tab Chat Riêng
-$('#private-chat-tab').on('shown.bs.tab', function () {
-    const firstUser = $('#privateChatUserList .list-group-item').first();
-    if (firstUser.length > 0) firstUser.trigger('click');
+    document.querySelectorAll(".start-private-chat").forEach(btn => {
+        btn.addEventListener("click", function () {
+            if (this.tagName === "BUTTON") {
+                handleStartPrivateChat(this);
+            } else {
+                setActivePrivateUser(this);
+            }
+        });
+    });
 });

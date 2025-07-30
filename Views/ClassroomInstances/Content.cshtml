@@ -122,7 +122,7 @@
                                     <th style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Tên</th>
                                     <th style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Email</th>
                                     <th style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Thời điểm tham gia</th>
-                                    <th style="width:15%; text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Thông Tin Học Viên</th>
+                                    <th style="width:20%; text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -145,6 +145,11 @@
                                                    class="btn btn-info btn-sm">
                                                     Xem Hồ Sơ
                                                 </a>
+                                                <button class="btn btn-outline-secondary btn-sm start-private-chat"
+                                                        data-user-id="@enrollment.Learner?.Id"
+                                                        data-user-name="@enrollment.Learner?.FullName">
+                                                    Chat
+                                                </button>
                                             </td>
                                         </tr>
                                         index++;
@@ -156,31 +161,34 @@
                 </div>
             </div>
         }
+
         else if (User.IsInRole("Learner"))
         {
             <div class="tab-pane fade" id="learners" role="tabpanel">
                 <div class="p-3">
                     <h5 class="fw-bold mb-3">Danh sách thành viên</h5>
-                    <table class="table mt-3">
-                        <thead>
+                    <table class="table mt-3" style="border-collapse: collapse; border: 1px solid #dee2e6; width: 100%;">
+                        <thead style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
                             <tr>
-                                <th>#</th>
-                                <th>Tên</th>
-                                <th>Email</th>
-                                <th>Hành động</th>
+                                <th style="width:5%; text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">#</th>
+                                <th style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Tên</th>
+                                <th style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Email</th>
+                                <th style="width:20%; text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Partner -->
-                            <tr style="background-color: #f8f9fa;">
-                                <td>1</td>
-                                <td>@Model.Template.Partner.FullName (Partner)</td>
-                                <td>@Model.Template.Partner.Email</td>
-                                <td>
+                            <tr style="border: 1px solid #dee2e6; background-color: #f8f9fa;">
+                                <td style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">1</td>
+                                <td style="vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">@Model.Template.Partner.FullName (Partner)</td>
+                                <td style="vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">@Model.Template.Partner.Email</td>
+                                <td style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">
                                     <a asp-controller="Account"
                                        asp-action="ViewProfile"
                                        asp-route-learnerId="@Model.Template.Partner.Id"
-                                       class="btn btn-info btn-sm">Xem Hồ Sơ</a>
+                                       class="btn btn-info btn-sm">
+                                        Xem Hồ Sơ
+                                    </a>
                                     <button class="btn btn-outline-secondary btn-sm start-private-chat"
                                             data-user-id="@Model.Template.Partner.Id"
                                             data-user-name="@Model.Template.Partner.FullName">
@@ -194,15 +202,17 @@
                                 int index = 2;
                                 foreach (var e in Model.Instance.Enrollments.Where(en => en.LearnerId != ViewBag.CurrentUserId))
                                 {
-                                    <tr>
-                                        <td>@index</td>
-                                        <td>@e.Learner?.FullName</td>
-                                        <td>@e.Learner?.Email</td>
-                                        <td>
+                                    <tr style="border: 1px solid #dee2e6;">
+                                        <td style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">@index</td>
+                                        <td style="vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">@e.Learner?.FullName</td>
+                                        <td style="vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">@e.Learner?.Email</td>
+                                        <td style="text-align:center; vertical-align:middle; padding:6px; border: 1px solid #dee2e6;">
                                             <a asp-controller="Account"
                                                asp-action="ViewProfile"
                                                asp-route-learnerId="@e.Learner?.Id"
-                                               class="btn btn-info btn-sm">Xem Hồ Sơ</a>
+                                               class="btn btn-info btn-sm">
+                                                Xem Hồ Sơ
+                                            </a>
                                             <button class="btn btn-outline-secondary btn-sm start-private-chat"
                                                     data-user-id="@e.Learner?.Id"
                                                     data-user-name="@e.Learner?.FullName">
@@ -221,33 +231,40 @@
 
         <!-- Chat Riêng -->
         <div class="tab-pane fade" id="private-chat" role="tabpanel">
-            <div class="row" style="height: 400px;">
+            <div class="private-chat-wrapper">
                 <!-- Danh sách user -->
-                <div class="col-3 border-end p-0" style="overflow-y:auto;">
-                    <ul id="privateChatUserList" class="list-group list-group-flush">
-                        <li class="list-group-item start-private-chat"
+                <div class="private-chat-users">
+                    <ul id="privateChatUserList">
+                        <li class="chat-user active start-private-chat"
                             data-user-id="@Model.Template.Partner.Id"
                             data-user-name="@Model.Template.Partner.FullName">
-                            @Model.Template.Partner.FullName (Partner)
+                            <img src="@(string.IsNullOrEmpty(Model.Template.Partner.ProfilePicturePath)
+                                                                   ? "/uploads/profile/default-img.jpg"
+                                                                   : Model.Template.Partner.ProfilePicturePath)"
+                                 title="@Model.Template.Partner.FullName (Partner)" />
+                            <span>@Model.Template.Partner.FullName (Partner)</span>
                         </li>
                         @foreach (var e in Model.Instance.Enrollments.Where(en => en.LearnerId != ViewBag.CurrentUserId))
                         {
-                            <li class="list-group-item start-private-chat"
+                            <li class="chat-user start-private-chat"
                                 data-user-id="@e.Learner.Id"
                                 data-user-name="@e.Learner.FullName">
-                                @e.Learner.FullName
-                            </li>
-                        }
+                                <img src="@(string.IsNullOrEmpty(e.Learner?.ProfilePicturePath)
+                                                                           ? "/uploads/profile/default-img.jpg"
+                                                                           : e.Learner.ProfilePicturePath)"
+                                 title="@e.Learner.FullName" />
+                            <span>@e.Learner.FullName</span>
+                        </li>
+                                                }
                     </ul>
                 </div>
 
                 <!-- Chat box -->
-                <div class="col-9 d-flex flex-column">
-                    <div id="privateChatMessages" class="flex-grow-1 p-2"
-                         style="overflow-y:auto; border-bottom:1px solid #ddd;"></div>
-                    <div class="input-group mt-2">
-                        <input id="privateChatInput" class="form-control" placeholder="Nhập tin nhắn riêng...">
-                        <button id="sendPrivateChatBtn" class="btn btn-primary">Gửi</button>
+                <div class="private-chat-box">
+                    <div id="privateChatMessages" class="messages"></div>
+                    <div class="input-area">
+                        <input id="privateChatInput" type="text" placeholder="Nhập tin nhắn riêng..." />
+                        <button id="sendPrivateChatBtn">➤</button>
                     </div>
                 </div>
             </div>
@@ -641,6 +658,141 @@
         background: #5AAEFF;
         color: #fff;
     }
+
+    /* --- Private Chat Wrapper --- */
+    .private-chat-wrapper {
+        display: flex;
+        height: 400px;
+        background-color: #ffffff; /* Nền trắng */
+        color: #1c1e21; /* Chữ đen nhạt */
+        font-family: 'Segoe UI', Arial, sans-serif;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        margin-bottom: 40px;
+    }
+
+    /* --- Sidebar (User List) --- */
+    .private-chat-users {
+        width: 250px;
+        background-color: #f7f7f7; /* Sidebar xám sáng */
+        border-right: 1px solid #ddd;
+        overflow-y: auto;
+    }
+
+        .private-chat-users ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .private-chat-users .chat-user {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .private-chat-users .chat-user img {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-right: 10px;
+            }
+
+            .private-chat-users .chat-user:hover,
+            .private-chat-users .chat-user.active {
+                background-color: #e4e6eb; /* Hover giống Messenger */
+                font-weight: 500;
+            }
+
+    /* --- Chat Box --- */
+    .private-chat-box {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #ffffff; /* Nền trắng */
+    }
+
+        /* --- Messages Area --- */
+        .private-chat-box .messages {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            /* Bubble chung */
+            .private-chat-box .messages .bubble {
+                max-width: 65%;
+                padding: 8px 12px;
+                border-radius: 18px;
+                word-break: break-word;
+                display: inline-block;
+                position: relative;
+            }
+
+                /* Bubble đối phương */
+                .private-chat-box .messages .bubble.other {
+                    background-color: #e4e6eb;
+                    color: #000;
+                    align-self: flex-start;
+                }
+
+                /* Bubble của mình */
+                .private-chat-box .messages .bubble.own {
+                    background-color: #0084ff;
+                    color: #fff;
+                    align-self: flex-end;
+                }
+
+            /* --- Timestamp --- */
+            .private-chat-box .messages .timestamp {
+                font-size: 12px;
+                color: #555;
+                margin-top: 2px;
+            }
+
+        /* --- Input Area --- */
+        .private-chat-box .input-area {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            border-top: 1px solid #ddd;
+            background-color: #f7f7f7;
+        }
+
+            .private-chat-box .input-area input {
+                flex: 1;
+                border: 1px solid #ccc;
+                padding: 10px 12px;
+                border-radius: 20px;
+                background-color: #ffffff;
+                color: #000;
+                outline: none;
+                margin-right: 8px;
+                font-size: 14px;
+            }
+
+            .private-chat-box .input-area button {
+                background-color: #0084ff;
+                border: none;
+                padding: 8px 14px;
+                border-radius: 50%;
+                cursor: pointer;
+                color: white;
+                font-size: 16px;
+                transition: background 0.2s;
+            }
+
+                .private-chat-box .input-area button:hover {
+                    background-color: #1877f2;
+                }
+
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />

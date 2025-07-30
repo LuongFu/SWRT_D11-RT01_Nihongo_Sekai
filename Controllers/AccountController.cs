@@ -153,6 +153,28 @@ namespace JapaneseLearningPlatform.Controllers
 
             if (registerVM.ApplyAsPartner)
             {
+                // ─── GỬI MAIL XÁC NHẬN PARTNER ─────────────────────────
+                var subject = "Đơn đăng ký Partner đã được gửi";
+                var body = $@"
+                    <p>Xin chào <strong>{registerVM.FullName}</strong>,</p>
+                    <p>Bạn đã gửi đơn đăng ký Partner thành công. Admin sẽ xét duyệt trong vòng 24 giờ tới.</p>
+                    <hr/>
+                    <p style='font-size:0.9em;color:#666;'>— NihongoSekai Team</p>
+                ";
+                await _emailSender.SendEmailAsync(
+                    registerVM.EmailAddress!,
+                    subject,
+                    body
+                );
+                // ────────────────────────────────────────────────────────
+
+                TempData["PostRegisterMessage"] =
+                    "Bạn đã gửi đơn đăng ký thành công. Chúng tôi sẽ xem xét trong vòng 3 ngày.";
+                return View("RequestPending");
+            }
+
+            if (registerVM.ApplyAsPartner)
+            {
                 // instead of email confirmation:
                 TempData["PostRegisterMessage"] =
                     "Bạn đã gửi đơn đăng ký thành công. Chúng tôi sẽ xem xét trong vòng 3 ngày.";
