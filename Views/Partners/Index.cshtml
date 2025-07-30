@@ -199,7 +199,7 @@
 }
 
 <!--Header Advertisement-->
-@if (!User.Identity.IsAuthenticated || !User.IsInRole("Learner"))
+@if (!User.Identity.IsAuthenticated)
 {
     <section class="hero animate-on-scroll">
         <div class="container hero-content">
@@ -214,7 +214,6 @@
                     <a href="/Courses" class="btn btn-primary btn-large">
                         <i class="bi bi-play-circle me-1"></i> Bắt đầu học ngay
                     </a>
-                    <a href="~/About" class="btn btn-outline btn-large">Tìm hiểu thêm</a>
                 </div>
                 <div class="hero-stats">
                     <div class="stat-item"><strong>20+</strong> <span class="stat-label">Học viên</span></div>

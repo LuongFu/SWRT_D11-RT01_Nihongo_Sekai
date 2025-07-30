@@ -43,9 +43,10 @@ namespace JapaneseLearningPlatform.Data.Seeds
                     Message = vm.Message,
                     Role = roles[i % roles.Length],
                     SubmittedAt = now
-                                    .AddDays(-(i % 10))
-                                    .AddHours(i % 24)
-                                    .AddMinutes((i * 7) % 60),
+                        .Subtract(TimeSpan.FromDays(i % 10))
+                        .Subtract(TimeSpan.FromHours(i % 24))
+                        .Subtract(TimeSpan.FromMinutes((i * 7) % 60)),
+
                     IsResolved = false
                 });
             }
